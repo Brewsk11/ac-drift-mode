@@ -14,14 +14,32 @@ function DataBroker.serialize(data)
         return new_data
     end
 
-    -- vec3
-    if type(data) == 'cdata' and data.x ~= nil and data.y ~= nil and data.z ~= nil then
+    -- -- vec3
+    if vec3.isvec3(data) then
         return {
             __vector = true,
             x = data.x,
             y = data.y,
             z = data.z
         }
+    end
+
+    -- rgbm & rgb
+    if rgb.isrgb(data) or rgbm.isrgbm(data) then
+        local color = {
+            r = data.r,
+            g = data.g,
+            b = data.b
+        }
+
+        if rgbm.isrgbm(data) then
+            color.__rgbm = true
+            color.mult = data.mult
+        else
+            color.__rgb = true
+        end
+
+        return color
     end
 
     assert(
@@ -52,6 +70,10 @@ function DataBroker.deserialize(data)
     if data['__vector'] ~= nil then
         return vec3(data.x, data.y, data.z)
     end
+
+    -- rgbm & rgb
+    if data['__rgb'] ~= nil then return rgb(data.r, data.g, data.b) end
+    if data['__rgbm'] ~= nil then return rgbm(data.r, data.g, data.b, data.mult) end
 
     return data.__val
 end
