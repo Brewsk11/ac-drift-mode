@@ -1,0 +1,9 @@
+{
+    "triggerTaskOnSave.on": true,
+    "triggerTaskOnSave.tasks": {
+        "install_files": [
+            "*.lua",
+            "*.ini"
+        ],
+    }
+}

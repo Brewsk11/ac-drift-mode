@@ -2,11 +2,10 @@
 
 # Assemble directories for release/installation
 
-mkdir -p output/assettocorsa/apps/lua/drift-mode
-mkdir -p output/assettocorsa/lua/drift-mode
-mkdir -p output/assettocorsa/extension/lua/new-modes/drift-mode
+mkdir -p output/apps/lua/drift-mode
+mkdir -p output/lua/drift-mode
+mkdir -p output/extension/lua/new-modes/drift-mode
 
-cp app/* output/assettocorsa/apps/lua/drift-mode
-cp lua_libs/* output/assettocorsa/lua/drift-mode
-cp mode/* output/assettocorsa/extension/lua/new-modes/drift-mode
-
+cp app/* output/apps/lua/drift-mode
+cp lua_libs/* output/lua/drift-mode
+cp mode/* output/extension/lua/new-modes/drift-mode
