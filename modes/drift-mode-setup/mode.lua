@@ -69,6 +69,7 @@ function drawTrackPOIs()
   end
 
   for name, element in pairs(track_data) do
+
     if element.type == 'clipping_point' then
       local origin_lifted = element.position + vec3(0, 1, 0)
       render.debugSphere(element.position, 0.02, rgbm(0, 0, 3, 1))
@@ -101,8 +102,17 @@ function drawTrackPOIs()
         end
       end
 
-      center = center / element['outside_points_count'] + element['inside_points_count']
+      center = center / (element['outside_points_count'] + element['inside_points_count'])
       render.debugText(center + vec3(0, 2, 0), name, rgb.colors.white, 3)
+    end
+
+    if element.type == 'gate' then
+      render.debugSphere(element.point_a, 0.02, rgbm(0, 0, 3, 0.5))
+      render.debugSphere(element.point_b, 0.02, rgbm(0, 3, 0, 0.5))
+      render.debugLine(element.point_a, element.point_b)
+
+      local center = (element.point_a + element.point_b) / 2
+      render.debugText(center + vec3(0, 1, 0), element.name)
     end
 
   end
@@ -150,6 +160,13 @@ function drawCursorPOIs()
         if point_data.prev_name ~= nil then
           render.debugLine(point_data.position, data[point_data.prev_name].position, rgbm(0, 3, 0, 1))
         end
+      end
+    end
+
+    if name == 'gate' then
+      if data.point_a ~= nil then
+        render.debugSphere(data.point_a, 0.02)
+        render.debugLine(data.point_a, cursor_data.selector.position)
       end
     end
 

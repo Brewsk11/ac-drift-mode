@@ -1,12 +1,12 @@
 local json = require('drift-mode/json')
 
-local user_cfg_path = os.getenv("USERPROFILE") .. "/Documents/Assetto Corsa/cfg/extension/drift-mode"
+local user_cfg_path = os.getenv("USERPROFILE") .. "\\Documents\\Assetto Corsa\\cfg\\extension\\drift-mode"
 
 local DataBroker = require('drift-mode/databroker')
 local ConfigIO = require('drift-mode/configio')
 
-local car_cfg_path = user_cfg_path .. '/' .. ac.getCarID(0) .. '.ini'
-local track_cfg_path = user_cfg_path .. '/' .. ac.getTrackID() .. '.ini'
+local car_cfg_path = user_cfg_path .. '\\' .. ac.getCarID(0) .. '.ini'
+local track_cfg_path = user_cfg_path .. '\\' .. ac.getTrackID() .. '.ini'
 
 local car_data = nil
 local track_data = nil
@@ -78,13 +78,13 @@ local createClippingPoint = (function ()
 
       if ui.keyboardButtonPressed(ui.KeyIndex.S) then
         cursor_data.clipping_point = { position = hit:clone() }
+
+        waitForRelease(ui.KeyIndex.S)
         break
       end
     end
     coroutine.yield(nil)
   end
-
-  waitForRelease(ui.KeyIndex.S)
 
   while true do
     local ray = render.createMouseRay()
@@ -95,6 +95,8 @@ local createClippingPoint = (function ()
         local length = cursor_data.clipping_point.position:distance(cursor_data.selector.position)
         cursor_data.clipping_point.length = length
         cursor_data.clipping_point.direction = direction
+
+        waitForRelease(ui.KeyIndex.S)
         break
       end
     end
@@ -141,9 +143,9 @@ local createZone = (function ()
       local ray = render.createMouseRay()
       if physics.raycastTrack(ray.pos, ray.dir, ray.length, hit) ~= -1 then
 
-        if ui.keyboardButtonPressed(ui.KeyIndex.S) then
+        if ui.keyboardButtonPressed(ui.KeyIndex.NumPad0) then
           point = hit:clone()
-          waitForRelease(ui.KeyIndex.S)
+          waitForRelease(ui.KeyIndex.NumPad0)
           break
         end
       end
@@ -178,9 +180,9 @@ local createZone = (function ()
       local ray = render.createMouseRay()
       if physics.raycastTrack(ray.pos, ray.dir, ray.length, hit) ~= -1 then
 
-        if ui.keyboardButtonPressed(ui.KeyIndex.S) then
+        if ui.keyboardButtonPressed(ui.KeyIndex.NumPad0) then
           point = hit:clone()
-          waitForRelease(ui.KeyIndex.S)
+          waitForRelease(ui.KeyIndex.NumPad0)
           break
         end
       end
@@ -244,6 +246,53 @@ local createZone = (function ()
   DataBroker.store("track_data", track_data)
 end)
 
+local createGate = (function (gate_name)
+  local hit = vec3()
+
+  cursor_data.selector = { position = hit }
+  cursor_data.gate = {}
+
+  while true do
+    local ray = render.createMouseRay()
+    if physics.raycastTrack(ray.pos, ray.dir, ray.length, hit) ~= -1 then
+
+      if ui.keyboardButtonPressed(ui.KeyIndex.S) then
+        cursor_data.gate.point_a = hit:clone()
+
+        waitForRelease(ui.KeyIndex.S)
+        break
+      end
+    end
+    coroutine.yield(nil)
+  end
+
+  while true do
+    local ray = render.createMouseRay()
+    if physics.raycastTrack(ray.pos, ray.dir, ray.length, hit) ~= -1 then
+
+      if ui.keyboardButtonPressed(ui.KeyIndex.S) then
+        cursor_data.gate.point_b = hit:clone()
+
+        waitForRelease(ui.KeyIndex.S)
+        break
+      end
+    end
+    coroutine.yield(nil)
+  end
+
+  track_data[gate_name] = {
+    type = 'gate',
+    name = gate_name,
+    point_a = cursor_data.gate.point_a,
+    point_b = cursor_data.gate.point_b
+  }
+
+  cursor_data.selector = nil
+  cursor_data.gate = nil
+
+  DataBroker.store("track_data", track_data)
+end)
+
 
 local running_task = nil
 
@@ -299,6 +348,20 @@ function WindowMain()
 
   if ui.button("Create zone") then
     running_task = coroutine.create(createZone)
+  end
+
+  if ui.button("Create start line") then
+    running_task = coroutine.create(createGate)
+    coroutine.resume(running_task, "start_line")
+  end
+
+  if ui.button("Create finish line") then
+    running_task = coroutine.create(createGate)
+    coroutine.resume(running_task, "finish_line")
+  end
+
+  if ui.button("Open config directory") then
+    os.openInExplorer(user_cfg_path)
   end
 
   if running_task ~= nil then
