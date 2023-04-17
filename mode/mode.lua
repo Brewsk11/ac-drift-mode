@@ -93,7 +93,15 @@ function drawTrackPOIs()
         end
       end
 
-      center = center / element['outside_points_count']
+      for _, point in pairs(element.inside_points) do
+        center:add(point.position)
+        render.debugText(point.position + vec3(0, 0.2, 0), point.number)
+        if point.prev_name ~= nil then
+          render.debugLine(point.position, element['inside_points'][point.prev_name].position, rgb(0, 3, 0))
+        end
+      end
+
+      center = center / element['outside_points_count'] + element['inside_points_count']
       render.debugText(center + vec3(0, 2, 0), name, rgb.colors.white, 3)
     end
 
@@ -113,8 +121,8 @@ function drawCursorPOIs()
     if name == 'show_wireframe' and data then drawAligningWireframe() end
 
     if name == 'selector' then
-      render.debugSphere(data.position, 1, rgbm(3, 0, 0, 0.5))
-      render.debugSphere(data.position, 0.02, rgbm(3, 0, 0, 1))
+      render.debugSphere(data.position, 1, data.color)
+      render.debugSphere(data.position, 0.02, data.color)
     end
 
     if name == 'clipping_point' then
@@ -125,15 +133,26 @@ function drawCursorPOIs()
       end
     end
 
-    if name == 'zone_points' then
-      for point_name, point_data in pairs(data) do
+    if name == 'outside_zone_points' then
+      for _, point_data in pairs(data) do
         render.debugSphere(point_data.position, 0.02, rgbm(3, 0, 0, 1))
         render.debugText(point_data.position + vec3(0, 0.2, 0), point_data.number)
         if point_data.prev_name ~= nil then
-          render.debugLine(point_data.position, data[point_data.prev_name].position)
+          render.debugLine(point_data.position, data[point_data.prev_name].position, rgbm(3, 0, 0, 1))
         end
       end
     end
+
+    if name == 'inside_zone_points' then
+      for _, point_data in pairs(data) do
+        render.debugSphere(point_data.position, 0.02, rgbm(0, 3, 0, 1))
+        render.debugText(point_data.position + vec3(0, 0.2, 0), point_data.number)
+        if point_data.prev_name ~= nil then
+          render.debugLine(point_data.position, data[point_data.prev_name].position, rgbm(0, 3, 0, 1))
+        end
+      end
+    end
+
     ::continue::
   end
 end

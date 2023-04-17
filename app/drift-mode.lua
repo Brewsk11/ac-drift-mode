@@ -128,10 +128,13 @@ local createZone = (function ()
 
   cursor_data.selector = { position = hit }
 
-  local points = {}
-  local point_no = 1
+  local outside_points = {}
+  local inside_points = {}
 
-  while true do
+  local outside_point_no = 1
+  while true do -- Create outside points
+    cursor_data.selector.color = rgbm(3, 0, 0, 1)
+
     local point = nil
 
     while true do
@@ -145,42 +148,75 @@ local createZone = (function ()
         end
       end
 
-      if ui.keyboardButtonPressed(ui.KeyIndex.F) then
-        break
-      end
+      if ui.keyboardButtonPressed(ui.KeyIndex.F) then break end
       coroutine.yield(nil)
     end
 
-    if ui.keyboardButtonPressed(ui.KeyIndex.F) then
-      break
-    end
+    if ui.keyboardButtonPressed(ui.KeyIndex.F) then waitForRelease(ui.KeyIndex.F); break end
 
     local prev_name = nil
-    if point_no ~= 1 then prev_name = "point_" .. string.format('%03d', point_no - 1) end
+    if outside_point_no ~= 1 then prev_name = "point_" .. string.format('%03d', outside_point_no - 1) end
 
-    points["point_" .. string.format('%03d', point_no)] = {
+    outside_points["point_" .. string.format('%03d', outside_point_no)] = {
       position = point,
       prev_name = prev_name,
-      number = point_no
+      number = outside_point_no
     }
-    point_no = point_no + 1
+    outside_point_no = outside_point_no + 1
 
-    ac.debug("#points", #{a = 1, b = 1})
+    cursor_data.outside_zone_points = outside_points
+    coroutine.yield(nil)
+  end
 
-    cursor_data.zone_points = points
+  local inside_point_no = 1
+  while true do -- Create inside points
+    cursor_data.selector.color = rgbm(0, 3, 0, 1)
 
-    if ui.keyboardButtonPressed(ui.KeyIndex.F) then
-      break
+    local point = nil
+
+    while true do
+      local ray = render.createMouseRay()
+      if physics.raycastTrack(ray.pos, ray.dir, ray.length, hit) ~= -1 then
+
+        if ui.keyboardButtonPressed(ui.KeyIndex.S) then
+          point = hit:clone()
+          waitForRelease(ui.KeyIndex.S)
+          break
+        end
+      end
+
+      if ui.keyboardButtonPressed(ui.KeyIndex.F) then break end
+      coroutine.yield(nil)
     end
+
+    if ui.keyboardButtonPressed(ui.KeyIndex.F) then waitForRelease(ui.KeyIndex.F); break end
+
+    local prev_name = nil
+    if inside_point_no ~= 1 then prev_name = "point_" .. string.format('%03d', inside_point_no - 1) end
+
+    inside_points["point_" .. string.format('%03d', inside_point_no)] = {
+      position = point,
+      prev_name = prev_name,
+      number = inside_point_no
+    }
+    inside_point_no = inside_point_no + 1
+
+    cursor_data.inside_zone_points = inside_points
+
+    if ui.keyboardButtonPressed(ui.KeyIndex.F) then break end
     coroutine.yield(nil)
   end
 
   cursor_data.selector = nil
+  cursor_data.outside_zone_points = nil
+  cursor_data.inside_zone_points = nil
 
   track_data['zone_' .. string.format('%03d', zone_number)] = {
     type = 'zone',
-    outside_points = points,
-    outside_points_count = point_no
+    outside_points = outside_points,
+    outside_points_count = inside_point_no,
+    inside_points = inside_points,
+    inside_points_count = inside_point_no
   }
 
   DataBroker.store("track_data", track_data)
@@ -191,7 +227,7 @@ local createZone = (function ()
     if physics.raycastTrack(ray.pos, ray.dir, ray.length, hit) ~= -1 then
 
       if ui.keyboardButtonPressed(ui.KeyIndex.S) then
-        cursor_data['point_' .. string.format('%03d', point_no)] = { position = hit:clone() }
+        cursor_data['point_' .. string.format('%03d', inside_point_no)] = { position = hit:clone() }
         break
       end
     end
@@ -202,7 +238,7 @@ local createZone = (function ()
 
   track_data['zone_' .. string.format('%03d', zone_number)] = {
     type = 'zone',
-    outside_points = points
+    outside_points = outside_points
   }
 
   DataBroker.store("track_data", track_data)
