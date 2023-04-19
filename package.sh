@@ -9,5 +9,5 @@ fi
 echo "Packaging $VERSION"
 
 cd output
-zip ../packaged/ac-drift-mode.$VERSION.zip -r ./*
+zip ../packaged/ac-drift-mode-$VERSION.zip -r ./*
 cd - 2>&1 > /dev/null
