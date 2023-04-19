@@ -133,7 +133,7 @@ local createZone = (function ()
   local outside_points = {}
   local inside_points = {}
 
-  local outside_point_no = 1
+  local outside_point_no = 0
   while true do -- Create outside points
     cursor_data.selector.color = rgbm(3, 0, 0, 1)
 
@@ -159,18 +159,18 @@ local createZone = (function ()
     local prev_name = nil
     if outside_point_no ~= 1 then prev_name = "point_" .. string.format('%03d', outside_point_no - 1) end
 
+    outside_point_no = outside_point_no + 1
     outside_points["point_" .. string.format('%03d', outside_point_no)] = {
       position = point,
       prev_name = prev_name,
       number = outside_point_no
     }
-    outside_point_no = outside_point_no + 1
 
     cursor_data.outside_zone_points = outside_points
     coroutine.yield(nil)
   end
 
-  local inside_point_no = 1
+  local inside_point_no = 0
   while true do -- Create inside points
     cursor_data.selector.color = rgbm(0, 3, 0, 1)
 
@@ -196,12 +196,12 @@ local createZone = (function ()
     local prev_name = nil
     if inside_point_no ~= 1 then prev_name = "point_" .. string.format('%03d', inside_point_no - 1) end
 
+    inside_point_no = inside_point_no + 1
     inside_points["point_" .. string.format('%03d', inside_point_no)] = {
       position = point,
       prev_name = prev_name,
       number = inside_point_no
     }
-    inside_point_no = inside_point_no + 1
 
     cursor_data.inside_zone_points = inside_points
 
@@ -216,31 +216,9 @@ local createZone = (function ()
   track_data['zone_' .. string.format('%03d', zone_number)] = {
     type = 'zone',
     outside_points = outside_points,
-    outside_points_count = inside_point_no,
+    outside_points_count = outside_point_no,
     inside_points = inside_points,
     inside_points_count = inside_point_no
-  }
-
-  DataBroker.store("track_data", track_data)
-
-  while true do
-
-    local ray = render.createMouseRay()
-    if physics.raycastTrack(ray.pos, ray.dir, ray.length, hit) ~= -1 then
-
-      if ui.keyboardButtonPressed(ui.KeyIndex.S) then
-        cursor_data['point_' .. string.format('%03d', inside_point_no)] = { position = hit:clone() }
-        break
-      end
-    end
-    coroutine.yield(nil)
-  end
-
-  cursor_data.selector = nil
-
-  track_data['zone_' .. string.format('%03d', zone_number)] = {
-    type = 'zone',
-    outside_points = outside_points
   }
 
   DataBroker.store("track_data", track_data)
