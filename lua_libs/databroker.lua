@@ -14,10 +14,19 @@ function DataBroker.serialize(data)
         return new_data
     end
 
-    -- -- vec3
+    -- vec2
+    if vec2.isvec2(data) then
+        return {
+            __vec2 = true,
+            x = data.x,
+            y = data.y
+        }
+    end
+
+    -- vec3
     if vec3.isvec3(data) then
         return {
-            __vector = true,
+            __vec3 = true,
             x = data.x,
             y = data.y,
             z = data.z
@@ -66,8 +75,13 @@ function DataBroker.deserialize(data)
         return new_data
     end
 
+    -- vec2
+    if data['__vec2'] ~= nil then
+        return vec2(data.x, data.y)
+    end
+
     -- vec3
-    if data['__vector'] ~= nil then
+    if data['__vec3'] ~= nil then
         return vec3(data.x, data.y, data.z)
     end
 
