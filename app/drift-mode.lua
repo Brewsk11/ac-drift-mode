@@ -156,10 +156,10 @@ local createZone = (function ()
 
     if ui.keyboardButtonPressed(ui.KeyIndex.F) then waitForRelease(ui.KeyIndex.F); break end
 
+    outside_point_no = outside_point_no + 1
     local prev_name = nil
     if outside_point_no ~= 1 then prev_name = "point_" .. string.format('%03d', outside_point_no - 1) end
 
-    outside_point_no = outside_point_no + 1
     outside_points["point_" .. string.format('%03d', outside_point_no)] = {
       position = point,
       prev_name = prev_name,
@@ -193,6 +193,7 @@ local createZone = (function ()
 
     if ui.keyboardButtonPressed(ui.KeyIndex.F) then waitForRelease(ui.KeyIndex.F); break end
 
+    inside_point_no = inside_point_no + 1
     local prev_name = nil
     if inside_point_no ~= 1 then prev_name = "point_" .. string.format('%03d', inside_point_no - 1) end
 
