@@ -2,4 +2,4 @@
 
 ./assemble.sh
 
-cp -R ./output/* "$(cat assetto_directory.txt)"
+cp -R ./output/ac_gamedir/* "$(cat assetto_directory.txt)"
