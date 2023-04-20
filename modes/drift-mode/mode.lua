@@ -260,29 +260,43 @@ function shortestCrossSection(point, polygon)
   for i = 1, ray_count do
     local dir = direction_candidates[i]
 
-    local outside_hits = {}
+    local out_hit = { hit = nil, distance = 999 }
     for segment in segmentIter(polygon.outside_points_2d, false) do
-      local segment_hit = vec2.intersect(point + dir, point - dir, segment.a, segment.b)
-      if segment_hit ~= nil then outside_hits[#outside_hits+1] = segment_hit end
-    end
-
-    local inside_hits = {}
-    for segment in segmentIter(polygon.inside_points_2d, false) do
-      local segment_hit = vec2.intersect(point + dir, point - dir, segment.a, segment.b)
-      if segment_hit ~= nil then inside_hits[#inside_hits+1] = segment_hit end
-    end
-
-    if #outside_hits ~= 0 and #inside_hits ~= 0 then
-      if shortest == nil then shortest = { outside_hit = outside_hits[1], inside_hit = inside_hits[1] }
-      else
-        local shortest_lenght = shortest.outside_hit:distance(shortest.inside_hit)
-        local new_lenght = outside_hits[1]:distance(inside_hits[1])
-
-        if shortest_lenght > new_lenght then
-          shortest = { outside_hit = outside_hits[1], inside_hit = inside_hits[1] }
+      local segment_center = (segment.a + segment.b) / 2
+      local segment_distance = point:distance(segment_center)
+      if segment_distance < out_hit.distance then
+        local segment_hit = vec2.intersect(point + dir, point - dir, segment.a, segment.b)
+        if segment_hit ~= nil then
+          out_hit = { hit = segment_hit, distance = segment_distance }
         end
       end
     end
+
+    local in_hit = { hit = nil, distance = 999 }
+    for segment in segmentIter(polygon.inside_points_2d, false) do
+      local segment_center = (segment.a + segment.b) / 2
+      local segment_distance = point:distance(segment_center)
+      if segment_distance < in_hit.distance then
+        local segment_hit = vec2.intersect(point + dir, point - dir, segment.a, segment.b)
+        if segment_hit ~= nil then
+          in_hit = { hit = segment_hit, distance = segment_distance }
+        end
+      end
+    end
+
+    if out_hit.hit ~= nil and in_hit.hit ~= nil then
+      if shortest == nil then shortest = { outside_hit = out_hit.hit, inside_hit = in_hit.hit }
+      else
+        local shortest_lenght = shortest.outside_hit:distance(shortest.inside_hit)
+        local new_lenght = out_hit.hit:distance(in_hit.hit)
+
+        if shortest_lenght > new_lenght then
+          shortest = { outside_hit = out_hit.hit, inside_hit = in_hit.hit }
+        end
+      end
+    end
+
+    ac.debug("dist", out_hit.distance)
   end
 
   return shortest
@@ -354,15 +368,16 @@ function script.draw3D()
       render.debugLine(shortest_proj.inside_hit, rear_pos_proj, rgbm(0, 3, 0, 1))
       render.debugLine(rear_pos_proj, shortest_proj.outside_hit)
 
-      local cross_distance = shortest_proj.inside_hit:distance(shortest_proj.outside_hit)
+      -- inhit and outhit are not always colinear due to imperfect logic in shortestCrossSection()..
+      local cross_distance = shortest_proj.inside_hit:distance(rear_pos_proj) + shortest_proj.outside_hit:distance(rear_pos_proj)
       local point_distance = shortest_proj.inside_hit:distance(rear_pos_proj)
-      local score = point_distance / cross_distance * 100
+      local score = point_distance / cross_distance
 
       current_ratio = score
 
       ac.debug("cross", cross_distance)
       ac.debug("point", point_distance)
-      ac.debug("score", point_distance / cross_distance * 100)
+      ac.debug("score", score)
 
       render.debugSphere(rear_pos, 0.1, rgbm(0, 3, 0, 1))
       render.debugSphere(rear_pos_proj, 0.1, rgbm(0, 3, 0, 1))
