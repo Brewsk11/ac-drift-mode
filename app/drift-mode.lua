@@ -197,7 +197,6 @@ local createZone = (function ()
     local prev_name = nil
     if inside_point_no ~= 1 then prev_name = "point_" .. string.format('%03d', inside_point_no - 1) end
 
-    inside_point_no = inside_point_no + 1
     inside_points["point_" .. string.format('%03d', inside_point_no)] = {
       position = point,
       prev_name = prev_name,
