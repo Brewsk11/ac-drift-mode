@@ -4,8 +4,7 @@ local json = require('drift-mode/json')
 local track_data = nil
 local car_data = nil
 
-
-local hiTimerDuration = 0.1
+local hiTimerDuration = 0.05
 local hiRefreshTimer = 99 -- Force refresh on 1st frame
 
 local loTimerDuration = 1
@@ -23,6 +22,12 @@ local current_speed = nil
 local mult_angle = nil
 local mult_speed = nil
 
+local max_angle = 60
+local min_angle = 5
+
+local max_speed = 100
+local min_speed = 15
+
 local total_score = 0
 
 local zones_data = {}
@@ -38,7 +43,6 @@ end
 
 function zoneToPolygon(zone_data)
   local point_no = 0
-
   local polygon = {}
   local polygon_2d = {}
   local polygon_projected = {}
@@ -146,20 +150,19 @@ function scorePlayer()
   current_angle = math.deg(math.acos(car_direction:dot(car.look)))
   current_speed = car.speedKmh
 
-  local max_angle = 80
-  local min_angle = 10
-
-  local max_speed = 100
-  local min_speed = 30
-
-  local scoring_angle = math.clamp(current_angle, min_angle, max_angle)
   local scoring_speed = math.clamp(current_speed, min_speed, max_speed)
+  local scoring_angle = math.clamp(current_angle, min_angle, max_angle)
 
-  mult_angle = (scoring_angle - min_angle) / max_angle
   mult_speed = (scoring_speed - min_speed) / (max_speed - min_speed)
+  mult_angle = (scoring_angle - min_angle) / (max_angle - min_angle)
+  if mult_speed == 0 then
+    mult_angle = 0
+  else
+    mult_angle = (scoring_angle - min_angle) / (max_angle - min_angle)
+  end
 
   if current_ratio ~= nil then
-    current_scoring = current_ratio * mult_angle * mult_speed
+    current_scoring = current_ratio * mult_angle * mult_speed * 100
     total_score = total_score + current_scoring
   else
     current_scoring = nil
@@ -168,9 +171,8 @@ end
 
 function loReloadData()
   track_data = DataBroker.read("track_data")
-  calcZones()
-
   car_data = DataBroker.read("car_data")
+  calcZones()
 end
 
 function hiReloadData()
