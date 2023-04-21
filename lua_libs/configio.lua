@@ -1,4 +1,4 @@
-local DataBroker = require('drift-mode/databroker')
+local Serializer = require('drift-mode/serializer')
 local json = require('drift-mode/json')
 
 local ConfigIO = {}
@@ -15,7 +15,7 @@ function ConfigIO.loadConfig(path)
 
     ac.debug("file_content", file_content)
     local json_repr = json.decode(file_content)
-    local deserialized = DataBroker.deserialize(json_repr)
+    local deserialized = Serializer.deserialize(json_repr)
 
     ac.debug("json_repr", deserialized)
 	return deserialized
@@ -26,7 +26,7 @@ function ConfigIO.saveConfig(path, data)
 	assert(type(data) == 'table', 'Parameter "data" must be a table.')
 	local file = assert(io.open(path, 'w+b'), 'Error loading file :' .. path)
 
-    local serialized = DataBroker.serialize(data)
+    local serialized = Serializer.serialize(data)
     local json_content = json.encode(serialized)
 
 	file:write(json_content)

@@ -3,6 +3,7 @@ local json = require('drift-mode/json')
 local user_cfg_path = os.getenv("USERPROFILE") .. "\\Documents\\Assetto Corsa\\cfg\\extension\\drift-mode"
 
 local DataBroker = require('drift-mode/databroker')
+local Serializer = require('drift-mode/serializer')
 local ConfigIO = require('drift-mode/configio')
 
 local car_cfg_path = user_cfg_path .. '\\' .. ac.getCarID(0) .. '.ini'
@@ -357,6 +358,6 @@ function WindowMain()
 
   ac.debug("running_task", running_task)
 
-  ac.debug("cursor_data", json.encode(DataBroker.serialize(cursor_data)))
+  ac.debug("cursor_data", json.encode(Serializer.serialize(cursor_data)))
   DataBroker.store("cursor_data", cursor_data)
 end

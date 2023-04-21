@@ -1,4 +1,5 @@
 local DataBroker = require('drift-mode/databroker')
+local Serializer = require('drift-mode/serializer')
 local json = require('drift-mode/json')
 
 local track_data = nil
@@ -25,7 +26,7 @@ function script.update(dt)
     hiRefreshTimer = 0
   end
 
-  ac.debug("track_data", json.encode(DataBroker.serialize(track_data)))
+  ac.debug("track_data", json.encode(Serializer.serialize(track_data)))
 end
 
 function loReloadData()
