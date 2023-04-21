@@ -342,6 +342,11 @@ function WindowMain()
     os.openInExplorer(user_cfg_path)
   end
 
+  if ac.getCar(0).extraD then
+    physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
+    ac.setExtraSwitch(5, false)
+  end
+
   if running_task ~= nil then
     coroutine.resume(running_task)
 
