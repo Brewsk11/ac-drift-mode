@@ -13,7 +13,7 @@ local hiTimerDuration = 0.02
 local loRefreshTimer = 0
 local loTimerDuration = 0.2
 
-local listener_id = EventSystem.registerListener("mode")
+local listener_id = EventSystem.registerListener("drift-mode-setup")
 
 function script.update(dt)
   hiRefreshTimer = hiRefreshTimer + dt
@@ -39,10 +39,6 @@ end
 function hiReloadData()
   car_data = DataBroker.read("car_data")
   cursor_data = DataBroker.read("cursor_data")
-
-  EventSystem.listen(listener_id, EventSystem.Signal.Restart, function(payload)
-    ac.log("Mode callback: " .. payload.message)
-  end)
 end
 
 

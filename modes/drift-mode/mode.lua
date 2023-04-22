@@ -1,6 +1,9 @@
 local DataBroker = require('drift-mode/databroker')
 local Serializer = require('drift-mode/serializer')
+local EventSystem = require('drift-mode/eventsystem')
 local json = require('drift-mode/json')
+
+local listener_id = EventSystem.registerListener('drift-mode-play')
 
 local track_data = nil
 local car_data = nil
@@ -8,7 +11,7 @@ local car_data = nil
 local hiTimerDuration = 0.05
 local hiRefreshTimer = 99 -- Force refresh on 1st frame
 
-local loTimerDuration = 1
+local loTimerDuration = 0.2
 local loRefreshTimer = 99 -- Force refresh on 1st frame
 
 local in_zone = false
@@ -173,6 +176,11 @@ end
 function loReloadData()
   track_data = DataBroker.read("track_data")
   car_data = DataBroker.read("car_data")
+
+  EventSystem.listen(listener_id, EventSystem.Signal.Restart, function(payload)
+    total_score = 0
+  end)
+
   calcZones()
 end
 

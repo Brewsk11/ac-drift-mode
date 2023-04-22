@@ -3,9 +3,9 @@ local DataBroker = require('drift-mode/databroker')
 local EventSystem = {}
 
 ---@alias EventSystem.Signal
----| `Finished`
----| `Started`
----| `Restart`
+---| `EventSystem.Signal.Finished`
+---| `EventSystem.Signal.Started`
+---| `EventSystem.Signal.Restart`
 EventSystem.Signal = {
     Finished = "Finished", ---Crossed finish line
     Started = "Started", ---Crossed start line

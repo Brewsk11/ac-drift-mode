@@ -346,14 +346,10 @@ function WindowMain()
     os.openInExplorer(user_cfg_path)
   end
 
-  if ui.button("Test event") then
-    EventSystem.emit(EventSystem.Signal.Restart, { message = "ABC" })
-  end
-
-
-  if ac.getCar(0).extraD then
+  if ac.getCar(0).extraF then
     physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
     ac.setExtraSwitch(5, false)
+    EventSystem.emit(EventSystem.Signal.Restart, {})
   end
 
   if running_task ~= nil then
@@ -364,12 +360,5 @@ function WindowMain()
     end
   end
 
-  EventSystem.listen(listener_id, EventSystem.Signal.Restart, function(payload)
-    ac.log("App callback: " .. payload.message)
-  end)
-
-  ac.debug("running_task", running_task)
-
-  ac.debug("cursor_data", json.encode(Serializer.serialize(cursor_data)))
   DataBroker.store("cursor_data", cursor_data)
 end
