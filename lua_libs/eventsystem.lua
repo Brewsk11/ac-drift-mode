@@ -41,7 +41,7 @@ function EventSystem.registerListener(name)
     return name
 end
 
-function EventSystem.listen(listener_id, signal_name)
+function EventSystem.listen(listener_id, signal_name, callback)
     loadEventTable()
 
     local signal_data = event_table.signals[signal_name]
@@ -58,16 +58,14 @@ function EventSystem.listen(listener_id, signal_name)
     end
     local listener_signal_log = listener_signals_log[signal_name]
 
-    local changed = false
-    local payload = nil
     if listener_signal_log.last_responded.id ~= signal_data.last_sent.id then
-        payload = signal_data.last_sent.payload
+        callback(signal_data.last_sent.payload)
         listener_signal_log.last_responded = signal_data.last_sent
-        changed = true
         storeEventTable()
+        return true
     end
 
-    return changed, payload
+    return false
 end
 
 function EventSystem.emit(signal_name, payload)

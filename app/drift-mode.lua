@@ -364,10 +364,9 @@ function WindowMain()
     end
   end
 
-  local responded, payload = EventSystem.listen(listener_id, "reset")
-  if responded then
-    ac.log("App recieving: " .. payload.message)
-  end
+  EventSystem.listen(listener_id, "reset", function(payload)
+    ac.log("App callback: " .. payload.message)
+  end)
 
   ac.debug("running_task", running_task)
 

@@ -40,10 +40,9 @@ function hiReloadData()
   car_data = DataBroker.read("car_data")
   cursor_data = DataBroker.read("cursor_data")
 
-  local changed, payload = EventSystem.listen(listener_id, "reset")
-  if changed then
-    ac.log("Mode recieving: " .. payload.message)
-  end
+  EventSystem.listen(listener_id, "reset", function(payload)
+    ac.log("Mode callback: " .. payload.message)
+  end)
 end
 
 
