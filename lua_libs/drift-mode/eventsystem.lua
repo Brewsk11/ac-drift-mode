@@ -1,8 +1,17 @@
-local json = require('drift-mode/json')
-local Serializer = require('drift-mode/serializer')
 local DataBroker = require('drift-mode/databroker')
 
 local EventSystem = {}
+
+---@alias EventSystem.Signal
+---| `Finished`
+---| `Started`
+---| `Restart`
+EventSystem.Signal = {
+    Finished = "Finished", ---Crossed finish line
+    Started = "Started", ---Crossed start line
+    Restart = "Restart", ---User requested game restart
+}
+
 
 local event_table = nil
 
@@ -30,6 +39,7 @@ local function randomString(length)
     end
 end
 
+---@param name string
 function EventSystem.registerListener(name)
     loadEventTable()
 
@@ -41,22 +51,25 @@ function EventSystem.registerListener(name)
     return name
 end
 
-function EventSystem.listen(listener_id, signal_name, callback)
+---@param listener_id string
+---@param signal EventSystem.Signal
+---@param callback fun(payload: table)
+function EventSystem.listen(listener_id, signal, callback)
     loadEventTable()
 
-    local signal_data = event_table.signals[signal_name]
+    local signal_data = event_table.signals[signal]
     if signal_data == nil then return end
 
     local listener_signals_log = event_table.listeners[listener_id].signals
-    if listener_signals_log[signal_name] == nil then
-        listener_signals_log[signal_name] = {
+    if listener_signals_log[signal] == nil then
+        listener_signals_log[signal] = {
             last_responded = {
                 id = nil,
                 payload = nil
             }
         }
     end
-    local listener_signal_log = listener_signals_log[signal_name]
+    local listener_signal_log = listener_signals_log[signal]
 
     if listener_signal_log.last_responded.id ~= signal_data.last_sent.id then
         callback(signal_data.last_sent.payload)
@@ -68,8 +81,10 @@ function EventSystem.listen(listener_id, signal_name, callback)
     return false
 end
 
-function EventSystem.emit(signal_name, payload)
-    event_table.signals[signal_name] = {
+---@param signal EventSystem.Signal
+---@param payload table
+function EventSystem.emit(signal, payload)
+    event_table.signals[signal] = {
         last_sent = {
             id = randomString(8),
             payload = payload

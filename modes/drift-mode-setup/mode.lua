@@ -40,7 +40,7 @@ function hiReloadData()
   car_data = DataBroker.read("car_data")
   cursor_data = DataBroker.read("cursor_data")
 
-  EventSystem.listen(listener_id, "reset", function(payload)
+  EventSystem.listen(listener_id, EventSystem.Signal.Restart, function(payload)
     ac.log("Mode callback: " .. payload.message)
   end)
 end

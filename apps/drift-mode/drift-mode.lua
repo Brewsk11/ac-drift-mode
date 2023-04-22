@@ -347,7 +347,7 @@ function WindowMain()
   end
 
   if ui.button("Test event") then
-    EventSystem.emit("reset", { message = "ABC" })
+    EventSystem.emit(EventSystem.Signal.Restart, { message = "ABC" })
   end
 
 
@@ -364,7 +364,7 @@ function WindowMain()
     end
   end
 
-  EventSystem.listen(listener_id, "reset", function(payload)
+  EventSystem.listen(listener_id, EventSystem.Signal.Restart, function(payload)
     ac.log("App callback: " .. payload.message)
   end)
 
