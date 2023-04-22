@@ -104,17 +104,17 @@ local function test()
     local serialized = Serializer.serialize(test_payload)
     local deserialized = Serializer.deserialize(serialized)
 
-    local test = function (a, b)
+    local test_item = function (a, b)
         assert(a == b, "Serializing test failed: " .. tostring(a) .. ' vs. ' .. tostring(b))
     end
 
-    test(test_payload.a, deserialized.a)
-    test(test_payload.b, deserialized.b)
-    test(test_payload.c, deserialized.c)
-    test(test_payload.d, deserialized.d)
-    test(test_payload.e, deserialized.e)
-    test(test_payload.f.a, deserialized.f.a)
-    test(test_payload.f.b, deserialized.f.b)
+    test_item(test_payload.a, deserialized.a)
+    test_item(test_payload.b, deserialized.b)
+    test_item(test_payload.c, deserialized.c)
+    test_item(test_payload.d, deserialized.d)
+    test_item(test_payload.e, deserialized.e)
+    test_item(test_payload.f.a, deserialized.f.a)
+    test_item(test_payload.f.b, deserialized.f.b)
 end
 
 test()
