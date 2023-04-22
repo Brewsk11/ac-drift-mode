@@ -24,3 +24,5 @@ function DataBroker.readRaw(name)
 
     return json.decode(json_repr)
 end
+
+return DataBroker

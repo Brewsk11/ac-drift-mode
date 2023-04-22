@@ -1,7 +1,4 @@
-local json = require('drift-mode/json')
-
 local Serializer = {}
-local Namespace = "driftmode__"
 
 function Serializer.serialize(data)
 
