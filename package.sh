@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 VERSION=$(git describe --tags)
 if [[ -z  "$VERSION" ]]; then
