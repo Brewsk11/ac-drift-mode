@@ -5,6 +5,9 @@ local user_cfg_path = os.getenv("USERPROFILE") .. "\\Documents\\Assetto Corsa\\c
 local DataBroker = require('drift-mode/databroker')
 local Serializer = require('drift-mode/serializer')
 local ConfigIO = require('drift-mode/configio')
+local EventSystem = require('drift-mode/eventsystem')
+
+local listener_id = EventSystem.registerListener("app")
 
 local car_cfg_path = user_cfg_path .. '\\' .. ac.getCarID(0) .. '.ini'
 local track_cfg_path = user_cfg_path .. '\\' .. ac.getTrackID() .. '.ini'
@@ -343,6 +346,11 @@ function WindowMain()
     os.openInExplorer(user_cfg_path)
   end
 
+  if ui.button("Test event") then
+    EventSystem.emit("reset", { message = "ABC" })
+  end
+
+
   if ac.getCar(0).extraD then
     physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
     ac.setExtraSwitch(5, false)
@@ -354,6 +362,11 @@ function WindowMain()
     if coroutine.status(running_task) == 'dead' then
       running_task = nil
     end
+  end
+
+  local responded, payload = EventSystem.listen(listener_id, "reset")
+  if responded then
+    ac.log("App recieving: " .. payload.message)
   end
 
   ac.debug("running_task", running_task)

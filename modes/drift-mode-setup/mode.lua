@@ -1,5 +1,6 @@
 local DataBroker = require('drift-mode/databroker')
 local Serializer = require('drift-mode/serializer')
+local EventSystem = require('drift-mode/eventsystem')
 local json = require('drift-mode/json')
 
 local track_data = nil
@@ -11,6 +12,8 @@ local hiTimerDuration = 0.02
 
 local loRefreshTimer = 0
 local loTimerDuration = 0.2
+
+local listener_id = EventSystem.registerListener("mode")
 
 function script.update(dt)
   hiRefreshTimer = hiRefreshTimer + dt
@@ -36,6 +39,11 @@ end
 function hiReloadData()
   car_data = DataBroker.read("car_data")
   cursor_data = DataBroker.read("cursor_data")
+
+  local changed, payload = EventSystem.listen(listener_id, "reset")
+  if changed then
+    ac.log("Mode recieving: " .. payload.message)
+  end
 end
 
 

@@ -13,6 +13,9 @@ end
 
 function DataBroker.read(name)
     local data = DataBroker.readRaw(name)
+    if data == nil then
+        return nil
+    end
     return Serializer.deserialize(data)
 end
 
