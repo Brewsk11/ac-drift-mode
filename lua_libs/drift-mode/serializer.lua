@@ -108,6 +108,7 @@ local function test()
         assert(a == b, "Serializing test failed: " .. tostring(a) .. ' vs. ' .. tostring(b))
     end
 
+    ---@diagnostic disable: undefined-field
     test_item(test_payload.a, deserialized.a)
     test_item(test_payload.b, deserialized.b)
     test_item(test_payload.c, deserialized.c)
