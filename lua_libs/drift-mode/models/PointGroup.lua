@@ -1,0 +1,131 @@
+local Point = require('drift-mode/models/Point')
+local Segment = require('drift-mode/models/Segment')
+
+---@class PointGroup Ordered group of points in world space
+---@field points Point[]
+local PointGroup = {}
+PointGroup.__index = PointGroup
+
+---@param points Point[]?
+---@return PointGroup
+function PointGroup.new(points)
+    local self = setmetatable({}, PointGroup)
+
+    local _points = points or {}
+    self.points = _points
+    return self
+end
+
+---Append a point to the end of the gropu
+---@param self PointGroup
+---@param point Point
+function PointGroup.append(self, point)
+    self.points[#self.points+1] = point
+end
+
+---Return number of points in the group
+---@param self PointGroup
+---@return integer
+function PointGroup.count(self)
+    return #self.points
+end
+
+---Get a point from the group
+---@param self PointGroup
+---@param idx integer Index of the point in the group
+---@return Point
+function PointGroup.get(self, idx)
+    assert(PointGroup:count() < idx, "Point index (" .. tostring(idx) .. ") out of range (" .. PointGroup:count() ")")
+    return self.points[idx]
+end
+
+---Get first point from the group
+---@param self PointGroup
+---@return Point
+function PointGroup.first(self)
+    assert(PointGroup:count() > 0, "Group is empty")
+    return self.points[1]
+end
+
+---Get Last point from the group
+function PointGroup.last(self)
+    assert(PointGroup:count() > 0, "Group is empty")
+    return self.points[#self.points]
+end
+
+---Segment the group
+---@param self PointGroup
+---@return Segment[]
+function PointGroup.segment(self)
+    assert(PointGroup:count() > 1, "Group has less than 2 points required to segment it")
+
+    ---@type Segment[]
+    local segments = {}
+    for idx = 1, self:count() - 1 do
+        segments[idx] = Segment.new(self.points[idx], self.points[idx + 1])
+    end
+    return segments
+end
+
+---Return an iterator like `ipairs()` iterating over point vec3 values
+---@param self PointGroup
+function PointGroup.iter(self)
+    local points = {}
+    for k, v in ipairs(self.points) do
+        points[k] = v.position
+    end
+    return ipairs(points)
+end
+
+---Return an iterator like `ipairs()` iterating over flatten vec2 point values
+---@param self PointGroup
+function PointGroup.iterFlat(self)
+    local flats = {}
+    for k, v in ipairs(self.points) do
+        flats[k] = v:flat()
+    end
+    return ipairs(flats)
+end
+
+---Return an iterator like `ipairs()` iterating over projected vec3 point values
+---@param self PointGroup
+function PointGroup.iterProjected(self)
+    local projects = {}
+    for k, v in ipairs(self.points) do
+        projects[k] = v:projected()
+    end
+    return ipairs(projects)
+end
+
+local Assert = require('drift-mode/assert')
+local function test()
+    local points = {}
+    points[1] = Point.new("point_001", vec3(1, 1, 1))
+    points[2] = Point.new("point_002", vec3(2, 2, 2))
+    points[3] = Point.new("point_003", vec3(3, 3, 3))
+
+    -- PointGroup.new()
+    local group = PointGroup.new()
+    Assert.NotEqual(group.points, nil, "Group did not correctly initialize, points table is nil")
+
+    -- PointGroup.new(points)
+    group = PointGroup.new(points)
+    Assert.NotEqual(group.points, nil, "Group did not correctly initialize, points table is nil")
+
+    -- PointGroup:count()
+    Assert.Equal(group:count(), 3, "Group did not correctly initialize, incorrect number of points returned")
+
+    -- PointGroup:append(point)
+    group:append(Point.new("point_appended_004", vec3(4, 4, 4)))
+    Assert.Equal(group:count(), 4, "Point did not append correctly to the group")
+
+    -- PointGroup:iter()
+    -- PointGroup:iterFlat()
+    -- PointGroup:iterProjected()
+    for k, v in group:iter()          do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
+    for k, v in group:iterFlat()      do Assert.Equal(v, vec2(k, k),    "Incorrect flat point value returned") end
+    for k, v in group:iterProjected() do Assert.Equal(v, vec3(k, 0, k), "Incorrect projected point value returned") end
+end
+test()
+
+return PointGroup

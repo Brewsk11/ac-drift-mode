@@ -1,0 +1,64 @@
+---@class Segment Class representing a line (two connected points) in world space
+---@field head Point World coordinate position of the point on the track
+---@field tail Point World coordinate position of the point on the track
+local Segment = {}
+Segment.__index = Segment
+
+---@param head Point Start of the segment
+---@param tail Point End of the segment
+---@return Segment
+function Segment.new(head, tail)
+    local self = setmetatable({}, Segment)
+    self.head = head
+    self.tail = tail
+    return self
+end
+
+---Return 2-item array with start and end point values
+---@param self Segment
+---@return vec3 head, vec3 tail Start and end points of the segment
+function Segment.get(self)
+    return self.head:get(), self.tail:get()
+end
+
+---Return the track point as vec2, projecting it on Y axis
+---@param self Segment
+---@return vec2 head, vec2 tail and finish points of the flatten segment
+function Segment.flat(self)
+    return self.head:flat(), self.tail:flat()
+end
+
+---Return the track point as vec2, projecting it on Y axis
+---@param self Segment
+---@return vec3 head, vec3 tail Start and finish points of the projected segment
+function Segment.projected(self)
+    return self.head:projected(), self.tail:projected()
+end
+
+local Assert = require('drift-mode/assert')
+local function test()
+    local points = {}
+    points[1] = Point.new("point_001", vec3(1, 1, 1))
+    points[2] = Point.new("point_002", vec3(2, 2, 2))
+
+    local segment = Segment.new(points[1], points[2])
+
+    -- Segment:get()
+    local a, b = segment:get()
+    Assert.Equal(a, points[1]:get(), "Incorrect returned segment head")
+    Assert.Equal(b, points[2]:get(), "Incorrect returned segment tail")
+
+    -- Segment:flat()
+    ---@diagnostic disable-next-line: cast-local-type
+    a, b = segment:flat()
+    Assert.Equal(a, points[1]:flat(), "Incorrect returned flat segment head")
+    Assert.Equal(b, points[2]:flat(), "Incorrect returned flat segment tail")
+
+    -- Segment:projected()
+    a, b = segment:projected()
+    Assert.Equal(a, points[1]:projected(), "Incorrect returned projected segment head")
+    Assert.Equal(b, points[2]:projected(), "Incorrect returned projected segment tail")
+end
+test()
+
+return Segment
