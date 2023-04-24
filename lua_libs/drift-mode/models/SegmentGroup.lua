@@ -1,3 +1,5 @@
+local Segment = require('drift-mode/models/Segment')
+
 ---@class SegmentGroup Ordered group of segments
 ---@field segments Segment[]
 local SegmentGroup = {}

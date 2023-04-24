@@ -1,3 +1,5 @@
+local Assert = require('drift-mode/assert')
+
 local Point = require('drift-mode/models/Point')
 local Segment = require('drift-mode/models/Segment')
 
@@ -55,14 +57,20 @@ end
 
 ---Segment the group
 ---@param self PointGroup
+---@param closed boolean? Whether to connect first with last point as last segment
 ---@return Segment[]
-function PointGroup.segment(self)
-    assert(PointGroup:count() > 1, "Group has less than 2 points required to segment it")
+function PointGroup.segment(self, closed)
+    Assert.LessThan(self:count(), 1, "Group has less than 2 points required to segment it")
 
-    ---@type Segment[]
+    local _closed = closed or false
+
     local segments = {}
-    for idx = 1, self:count() - 1 do
-        segments[idx] = Segment.new(self.points[idx], self.points[idx + 1])
+    for idx = 1, self:count() do
+        if idx < self:count() then
+            segments[idx] = Segment.new(self.points[idx], self.points[idx + 1])
+        elseif _closed then -- Connect last with first
+            segments[idx] = Segment.new(self.points[idx], self.points[1])
+        end
     end
     return segments
 end
@@ -97,7 +105,6 @@ function PointGroup.iterProjected(self)
     return ipairs(projects)
 end
 
-local Assert = require('drift-mode/assert')
 local function test()
     local points = {}
     points[1] = Point.new("point_001", vec3(1, 1, 1))
