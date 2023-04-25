@@ -53,7 +53,11 @@ function Segment.projected(self)
     return self.head:projected(), self.tail:projected()
 end
 
-local Assert = require('drift-mode/assert')
+
+function Segment.draw(self, color)
+    render.debugLine(self.head:get(), self.tail:get(), color)
+end
+
 local function test()
     local points = {}
     points[1] = Point.new("point_001", vec3(1, 1, 1))

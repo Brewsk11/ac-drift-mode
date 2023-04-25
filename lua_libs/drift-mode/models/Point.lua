@@ -61,7 +61,10 @@ function Point.projected(self)
     return vec3(self.position.x, 0, self.position.z)
 end
 
-local Assert = require('drift-mode/assert')
+function Point.draw(self, size, color)
+    render.debugPoint(self:get(), size, color)
+end
+
 local function test()
     -- Point.new()
     local point = Point.new("point_test", vec3(1, 2, 3))

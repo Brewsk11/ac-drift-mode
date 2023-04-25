@@ -132,6 +132,16 @@ function PointGroup.iterProjected(self)
     return ipairs(projects)
 end
 
+function PointGroup.draw(self, size, color, number)
+    local _number = number or false
+    for idx, point in ipairs(self.points) do
+        point:draw(size, color)
+        if _number then
+            render.debugText(point:get(), tostring(idx))
+        end
+    end
+end
+
 local function test()
     local points = {}
     points[1] = Point.new("point_001", vec3(1, 1, 1))

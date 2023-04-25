@@ -92,6 +92,13 @@ end
 function SegmentGroup.iter(self)
     return ipairs(self.segments)
 end
+
+function SegmentGroup.draw(self, color)
+    for _, segment in self:iter() do
+        segment:draw(color)
+    end
+end
+
 local function test()
     local points = {
         Point.new("a", vec3(1, 1, 1)),
