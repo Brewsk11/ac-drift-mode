@@ -1,6 +1,20 @@
+local Assert = require('drift-mode/assert')
+
 local Serializer = {}
 
+---Serialize custom objects so that they can be encoded as JSON.
+---
+---Custom classes should have an `Class:serialize(self)` method
+---and `Class.deserialize()` class function using `Serializer.serialize()`
+---and `Serializer.deserialize()` for primitive types.
+---@param data any
+---@return any
 function Serializer.serialize(data)
+
+    -- custom classes
+    if type(data) == "table" and data.serialize ~= nil then
+        return data:serialize()
+    end
 
     -- table
     if type(data) == 'table' then
@@ -59,7 +73,17 @@ function Serializer.serialize(data)
     return { __val = data }
 end
 
+---Use it to deserialize previously serialized data
+---@param data any
+---@return any
 function Serializer.deserialize(data)
+
+    -- custom classes
+    if data['__class'] ~= nil then
+        Assert.NotEqual(_G[data.__class], nil, "Deserializing class that is not in global namespace (_G[classname])")
+        return _G[data.__class].deserialize(data)
+    end
+
     -- table
     if data['__table'] ~= nil then
         local new_data = {}
