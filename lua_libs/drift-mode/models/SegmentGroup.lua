@@ -6,6 +6,31 @@ local Segment = require('drift-mode/models/Segment')
 local SegmentGroup = {}
 SegmentGroup.__index = SegmentGroup
 
+function SegmentGroup.serialize(self)
+    local data = {
+        __class = "SegmentGroup",
+        segments = {}
+    }
+
+    for idx, segment in self:iter() do
+        data.segments[idx] = segment:serialize()
+    end
+
+    return data
+end
+
+function SegmentGroup.deserialize(data)
+    Assert.Equal(data.__class, "SegmentGroup", "Tried to deserialize wrong class")
+
+    local segments = {}
+
+    for idx, segment in data.segments do
+        segments[idx] = Segment.deserialize(segment)
+    end
+
+    return SegmentGroup.new(segments)
+end
+
 ---@param segments Segment[]?
 ---@return SegmentGroup
 function SegmentGroup.new(segments)

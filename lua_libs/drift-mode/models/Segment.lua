@@ -1,8 +1,26 @@
+local Assert = require('drift-mode/assert')
+
 ---@class Segment Class representing a line (two connected points) in world space
 ---@field head Point World coordinate position of the point on the track
 ---@field tail Point World coordinate position of the point on the track
 local Segment = {}
 Segment.__index = Segment
+
+function Segment.serialize(self)
+    local data = {
+        __class = "Segment",
+        head = self.head:serialize(),
+        tail = self.tail:serialize()
+    }
+    return data
+end
+
+function Segment.deserialize(data)
+    Assert.Equal(data.__class, "Segment", "Tried to deserialize wrong class")
+    return Segment.new(
+        Point.deserialize(data.head),
+        Point.deserialize(data.tail))
+end
 
 ---@param head Point Start of the segment
 ---@param tail Point End of the segment

@@ -6,6 +6,7 @@
 ---@field rearOffset number Offset from car origin to the rear bumper
 ---@field rearSpan number Span between two endpoints of the rear bumper
 local CarAlignment = {}
+CarAlignment.__index = CarAlignment
 
 local Assert = require('drift-mode/assert')
 local function test()

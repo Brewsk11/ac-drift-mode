@@ -8,6 +8,33 @@ local Segment = require('drift-mode/models/Segment')
 local PointGroup = {}
 PointGroup.__index = PointGroup
 
+function PointGroup.serialize(self)
+    local data = {
+        __class = "PointGroup",
+        points = {}
+    }
+
+    for idx, point in ipairs(self.points) do
+        data.points[idx] = point:serialize()
+    end
+
+    return data
+end
+
+function PointGroup.deserialize(data)
+    Assert.Equal(data.__class, "PointGroup", "Tried to deserialize wrong class")
+
+    local obj = PointGroup.new()
+
+    local points = {}
+    for idx, point in ipairs(data.points) do
+        points[idx] = Point.deserialize(point)
+    end
+
+    obj.points = points
+    return obj
+end
+
 ---@param points Point[]?
 ---@return PointGroup
 function PointGroup.new(points)

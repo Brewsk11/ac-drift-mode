@@ -1,8 +1,27 @@
+local Assert = require('drift-mode/assert')
+local S = require('drift-mode/serializer')
+
 ---@class Point Class representing a point in the world space
 ---@field name string Name of the point
 ---@field position vec3 World coordinate position of the point on the track
 local Point = {}
 Point.__index = Point
+
+function Point.serialize(self)
+    local data = {
+        __class = "Point",
+        name = S.serialize(self.name),
+        position = S.serialize(self.position)
+    }
+    return data
+end
+
+function Point.deserialize(data)
+    Assert.Equal(data.__class, "Point", "Tried to deserialize wrong class")
+    return Point.new(
+        S.deserialize(data.name),
+        S.deserialize(data.position))
+end
 
 ---@param name string Point name
 ---@param position vec3 World poisition
