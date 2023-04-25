@@ -87,6 +87,11 @@ function SegmentGroup.closed(self)
         self.segments[self:count()].tail:get() == self.segments[1].head:get()
 end
 
+---Return an iterator like `ipairs()` iterating over segments
+---@param self SegmentGroup
+function SegmentGroup.iter(self)
+    return ipairs(self.segments)
+end
 local function test()
     local points = {
         Point.new("a", vec3(1, 1, 1)),
