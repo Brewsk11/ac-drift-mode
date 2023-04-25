@@ -82,13 +82,11 @@ function PointGroup.last(self)
     return self.points[#self.points]
 end
 
----Segment the group
+---Segment the group. For group with 1 points returns empty SegmentGroup.
 ---@param self PointGroup
 ---@param closed boolean? Whether to connect first with last point as last segment
----@return Segment[]
+---@return SegmentGroup
 function PointGroup.segment(self, closed)
-    Assert.LessThan(self:count(), 1, "Group has less than 2 points required to segment it")
-
     local _closed = closed or false
 
     local segments = {}
@@ -99,7 +97,7 @@ function PointGroup.segment(self, closed)
             segments[idx] = Segment.new(self.points[idx], self.points[1])
         end
     end
-    return segments
+    return SegmentGroup.new(segments)
 end
 
 ---Return an iterator like `ipairs()` iterating over point vec3 values
