@@ -7,6 +7,10 @@ EventSystem.Signal = {
     Finished = "Finished", ---Crossed finish line
     Started = "Started", ---Crossed start line
     Restart = "Restart", ---User requested game restart
+
+    CursorChanged = "CursorChanged", ---Signal for UI to update cursor data
+    TrackConfigChanged = "TrackConfigChanged", ---Signal for UI to update track data
+    CarConfigChanged = "CarConfigChanged", ---Signal for UI to update car data
 }
 
 
