@@ -130,6 +130,16 @@ function PointGroup.iterProjected(self)
     return ipairs(projects)
 end
 
+---Pop the last segment from the group
+---@param self PointGroup
+---@return Point
+function PointGroup.pop(self)
+    local point = self.points[self:count()]
+    self.points[self:count()] = nil
+    return point
+end
+
+
 function PointGroup.draw(self, size, color, number)
     local _number = number or false
     for idx, point in ipairs(self.points) do
