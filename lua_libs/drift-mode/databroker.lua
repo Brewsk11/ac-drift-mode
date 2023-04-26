@@ -11,6 +11,7 @@ function DataBroker.store(name, data)
     ac.store(Namespace .. name, json_repr)
 end
 
+---@return any
 function DataBroker.read(name)
     local data = DataBroker.readRaw(name)
     if data == nil then
