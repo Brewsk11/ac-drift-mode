@@ -1,4 +1,5 @@
 local Assert = require('drift-mode/assert')
+local json = require('drift-mode/json')
 
 local Serializer = {}
 
@@ -14,6 +15,15 @@ function Serializer.serialize(data)
     -- custom classes
     if type(data) == "table" and data.serialize ~= nil then
         return data:serialize()
+    end
+
+    -- array
+    if type(data) == 'table' and data[1] ~= nil then
+        local new_data = {}
+        for idx, val in ipairs(data) do
+            new_data[idx] = Serializer.serialize(val)
+        end
+        return new_data
     end
 
     -- table
@@ -78,6 +88,9 @@ end
 ---@return any
 function Serializer.deserialize(data)
 
+    -- nil
+    if data == nil then return nil end
+
     -- custom classes
     if data['__class'] ~= nil then
         Assert.NotEqual(_G[data.__class], nil, "Deserializing class that is not in global namespace (_G[classname])")
@@ -91,6 +104,16 @@ function Serializer.deserialize(data)
             if not string.startsWith(el, '__') then
                 new_data[el] = Serializer.deserialize(val)
             end
+        end
+        return new_data
+    end
+
+    -- array
+    if type(data) == 'table' and data[1] ~= nil then
+        local new_data = {}
+        data.__array = nil
+        for idx, val in ipairs(data) do
+            new_data[idx] = Serializer.deserialize(val)
         end
         return new_data
     end
@@ -112,6 +135,10 @@ function Serializer.deserialize(data)
     return data.__val
 end
 
+function Serializer.toJson(data)
+    return json.encode(Serializer.serialize(data))
+end
+
 local function test()
     local test_payload = {
         a = vec3(1, 2, 3),
@@ -122,7 +149,8 @@ local function test()
         f = {
             a = 1,
             b = '2'
-        }
+        },
+        g = { "a", "b" }
     }
 
     local serialized = Serializer.serialize(test_payload)
@@ -140,6 +168,8 @@ local function test()
     test_item(test_payload.e, deserialized.e)
     test_item(test_payload.f.a, deserialized.f.a)
     test_item(test_payload.f.b, deserialized.f.b)
+    test_item(test_payload.g[1], deserialized.g[1])
+    test_item(test_payload.g[2], deserialized.g[2])
 end
 
 test()
