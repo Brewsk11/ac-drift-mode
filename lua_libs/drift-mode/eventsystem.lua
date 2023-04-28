@@ -11,6 +11,7 @@ EventSystem.Signal = {
     CursorChanged = "CursorChanged", ---Signal for UI to update cursor data
     TrackConfigChanged = "TrackConfigChanged", ---Signal for UI to update track data
     CarConfigChanged = "CarConfigChanged", ---Signal for UI to update car data
+    GameStateChanged = "GameStateChanged" ---Signal for when game state changes
 }
 
 
@@ -65,8 +66,7 @@ function EventSystem.listen(listener_id, signal, callback)
     if listener_signals_log[signal] == nil then
         listener_signals_log[signal] = {
             last_responded = {
-                id = nil,
-                payload = nil
+                id = nil
             }
         }
     end
