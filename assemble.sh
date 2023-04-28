@@ -14,12 +14,12 @@ rm -rf output
 mkdir -p output/ac_gamedir/apps/lua
 mkdir -p output/ac_gamedir/lua
 mkdir -p output/ac_gamedir/extension/lua/new-modes
-mkdir -p output/ac_usercfg/cfg/extension
+mkdir -p output/ac_gamedir/extension/config/drift-mode
 
 cp -r apps/*     output/ac_gamedir/apps/lua
 cp -r lua_libs/* output/ac_gamedir/lua
 cp -r modes/*    output/ac_gamedir/extension/lua/new-modes
-cp -r config/*   output/ac_usercfg/cfg/extension
+cp -r config/*   output/ac_gamedir/extension/config/drift-mode
 
 cp ./INSTALL.md output/
 
