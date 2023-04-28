@@ -100,9 +100,15 @@ function PointGroup.segment(self, closed)
     return SegmentGroup.new(segments)
 end
 
----Return an iterator like `ipairs()` iterating over point vec3 values
+---Return an iterator like `ipairs()` iterating over points
 ---@param self PointGroup
 function PointGroup.iter(self)
+    return ipairs(self.points)
+end
+
+---Return an iterator like `ipairs()` iterating over point vec3 values
+---@param self PointGroup
+function PointGroup.iterVal(self)
     local points = {}
     for k, v in ipairs(self.points) do
         points[k] = v.position
@@ -171,10 +177,10 @@ local function test()
     group:append(Point.new("point_appended_004", vec3(4, 4, 4)))
     Assert.Equal(group:count(), 4, "Point did not append correctly to the group")
 
-    -- PointGroup:iter()
+    -- PointGroup:iterVal()
     -- PointGroup:iterFlat()
     -- PointGroup:iterProjected()
-    for k, v in group:iter()          do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
+    for k, v in group:iterVal()          do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
     for k, v in group:iterFlat()      do Assert.Equal(v, vec2(k, k),    "Incorrect flat point value returned") end
     for k, v in group:iterProjected() do Assert.Equal(v, vec3(k, 0, k), "Incorrect projected point value returned") end
 end
