@@ -81,8 +81,8 @@ end
 
 function Cursor.draw(self)
     if self.selector then
-        render.debugPoint(self.selector:get(), 0.3, self.color_selector)
-        render.debugSphere(self.selector:get(), 1, rgbm(self.color_selector.r, self.color_selector.g, self.color_selector.b, 0.7))
+        render.debugPoint(self.selector:value(), 0.3, self.color_selector)
+        render.debugSphere(self.selector:value(), 1, rgbm(self.color_selector.r, self.color_selector.g, self.color_selector.b, 0.7))
     end
 
     if self.point_group_a then

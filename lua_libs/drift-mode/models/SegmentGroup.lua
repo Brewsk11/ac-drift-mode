@@ -70,7 +70,7 @@ end
 function SegmentGroup.continuous(self)
     Assert.MoreThan(self:count(), 0, "Cannot calculate continous on empty set")
     for idx = 1, self:count() - 1 do
-        if self.segments[idx].tail:get() ~= self.segments[idx+1].head:get() then
+        if self.segments[idx].tail:value() ~= self.segments[idx+1].head:value() then
             return false
         end
     end
@@ -84,7 +84,7 @@ function SegmentGroup.closed(self)
     Assert.MoreThan(self:count(), 0, "Cannot calculate closed on empty set")
     return
         self:continuous() and
-        self.segments[self:count()].tail:get() == self.segments[1].head:get()
+        self.segments[self:count()].tail:value() == self.segments[1].head:value()
 end
 
 ---Return an iterator like `ipairs()` iterating over segments

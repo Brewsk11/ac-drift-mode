@@ -57,9 +57,9 @@ end
 
 function ClippingPoint.draw(self)
     self.origin:draw(0.6, color_origin)
-    render.debugArrow(self.origin:get(), self.origin:get() + self.direction * self.length, 0.1, color_arrow)
-    render.debugLine(self.origin:get(), self.origin:get() + vec3(0, 2, 0), color_pole)
-    render.debugText(self.origin:get() + vec3(0, 2, 0), self.name)
+    render.debugArrow(self.origin:value(), self.origin:value() + self.direction * self.length, 0.1, color_arrow)
+    render.debugLine(self.origin:value(), self.origin:value() + vec3(0, 2, 0), color_pole)
+    render.debugText(self.origin:value() + vec3(0, 2, 0), self.name)
 end
 
 local Assert = require('drift-mode/assert')

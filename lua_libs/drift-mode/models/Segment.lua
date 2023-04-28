@@ -36,7 +36,7 @@ end
 ---@param self Segment
 ---@return vec3 head, vec3 tail Start and end points of the segment
 function Segment.get(self)
-    return self.head:get(), self.tail:get()
+    return self.head:value(), self.tail:value()
 end
 
 ---Return the track point as vec2, projecting it on Y axis
@@ -55,7 +55,7 @@ end
 
 
 function Segment.draw(self, color)
-    render.debugLine(self.head:get(), self.tail:get(), color)
+    render.debugLine(self.head:value(), self.tail:value(), color)
 end
 
 local function test()
@@ -67,8 +67,8 @@ local function test()
 
     -- Segment:get()
     local a, b = segment:get()
-    Assert.Equal(a, points[1]:get(), "Incorrect returned segment head")
-    Assert.Equal(b, points[2]:get(), "Incorrect returned segment tail")
+    Assert.Equal(a, points[1]:value(), "Incorrect returned segment head")
+    Assert.Equal(b, points[2]:value(), "Incorrect returned segment tail")
 
     -- Segment:flat()
     ---@diagnostic disable-next-line: cast-local-type

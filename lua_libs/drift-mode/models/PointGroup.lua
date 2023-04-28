@@ -111,7 +111,7 @@ end
 function PointGroup.iterVal(self)
     local points = {}
     for k, v in ipairs(self.points) do
-        points[k] = v.position
+        points[k] = v:value()
     end
     return ipairs(points)
 end
@@ -151,7 +151,7 @@ function PointGroup.draw(self, size, color, number)
     for idx, point in ipairs(self.points) do
         point:draw(size, color)
         if _number then
-            render.debugText(point:get(), tostring(idx))
+            render.debugText(point:value(), tostring(idx))
         end
     end
 end
@@ -180,7 +180,7 @@ local function test()
     -- PointGroup:iterVal()
     -- PointGroup:iterFlat()
     -- PointGroup:iterProjected()
-    for k, v in group:iterVal()          do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
+    for k, v in group:iterVal()       do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
     for k, v in group:iterFlat()      do Assert.Equal(v, vec2(k, k),    "Incorrect flat point value returned") end
     for k, v in group:iterProjected() do Assert.Equal(v, vec3(k, 0, k), "Incorrect projected point value returned") end
 end
