@@ -92,6 +92,12 @@ function TrackConfig.draw(self)
     end
 end
 
+function TrackConfig.drawSetup(self)
+    for _, zone in ipairs(self.zones) do
+      zone:drawSetup()
+    end
+end
+
 function TrackConfig.getNextZoneName(self)
     return "zone_" .. string.format('%03d', #self.zones + 1)
 end
