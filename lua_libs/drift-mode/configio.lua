@@ -13,20 +13,21 @@ local sys_track_config_dir = sys_cfg_path .. "\\tracks\\" .. track_id
 
 local car_id = ac.getCarID(0)
 
-local usr_car_config_dir = usr_cfg_path .. "\\cars\\"
-local sys_car_config_dir = sys_cfg_path .. "\\cars\\"
+local usr_car_config_dir = usr_cfg_path .. "\\cars"
+local sys_car_config_dir = sys_cfg_path .. "\\cars"
 
 function ConfigIO.loadCarConfig()
-    local usr_cfg_path = usr_car_config_dir .. "\\" .. car_id .. '.json'
-    local sys_cfg_path = sys_car_config_dir .. "\\" .. car_id .. '.json'
+    local usr_car_cfg_path = usr_car_config_dir .. "\\" .. car_id .. '.json'
+    local sys_car_cfg_path = sys_car_config_dir .. "\\" .. car_id .. '.json'
 
-    if io.fileExists((usr_cfg_path)) then
-        return ConfigIO.loadConfig(usr_cfg_path)
+    if io.fileExists(usr_car_cfg_path) then
+        return ConfigIO.loadConfig(usr_car_cfg_path)
     end
 
-    if io.fileExists((sys_cfg_path)) then
-        return ConfigIO.loadConfig(sys_cfg_path)
+    if io.fileExists(sys_car_cfg_path) then
+        return ConfigIO.loadConfig(sys_car_cfg_path)
     end
+
     return nil
 end
 
@@ -50,7 +51,7 @@ end
 ---@param track_config TrackConfig
 function ConfigIO.saveTrackConfig(track_config)
     io.createDir(usr_track_config_dir)
-    ConfigIO.saveConfig(usr_track_config_dir .. "\\" .. track_config.name, track_config)
+    ConfigIO.saveConfig(usr_track_config_dir .. "\\" .. track_config.name .. '.json', track_config)
 end
 
 function ConfigIO.loadTrackConfig(name, dir)
