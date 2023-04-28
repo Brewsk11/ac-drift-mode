@@ -11,15 +11,39 @@ local track_id = ac.getTrackID()
 local usr_track_config_dir = usr_cfg_path .. "\\tracks\\" .. track_id
 local sys_track_config_dir = sys_cfg_path .. "\\tracks\\" .. track_id
 
+local car_id = ac.getCarID(0)
+
+local usr_car_config_dir = usr_cfg_path .. "\\cars\\"
+local sys_car_config_dir = sys_cfg_path .. "\\cars\\"
+
+function ConfigIO.loadCarConfig()
+    local usr_cfg_path = usr_car_config_dir .. "\\" .. car_id .. '.json'
+    local sys_cfg_path = sys_car_config_dir .. "\\" .. car_id .. '.json'
+
+    if io.fileExists((usr_cfg_path)) then
+        return ConfigIO.loadConfig(usr_cfg_path)
+    end
+
+    if io.fileExists((sys_cfg_path)) then
+        return ConfigIO.loadConfig(sys_cfg_path)
+    end
+    return nil
+end
+
+function ConfigIO.saveCarConfig(car_data)
+    io.createDir(usr_car_config_dir)
+    ConfigIO.saveConfig(usr_car_config_dir .. "\\" .. car_id  .. '.json', car_data)
+end
+
 function ConfigIO.listTrackConfigs()
-    local usr_configs = io.scanDir(usr_cfg_path .. "\\tracks\\" .. track_id)
-    local sys_configs = io.scanDir(sys_cfg_path .. "\\tracks\\" .. track_id)
+    local usr_configs = io.scanDir(usr_track_config_dir)
+    local sys_configs = io.scanDir(sys_track_config_dir)
     local track_configs = {
         user_configs = {},
         official_configs = {}
     }
-    for _, cfg_name in ipairs(usr_configs) do track_configs.user_configs[#track_configs.user_configs+1] = cfg_name end
-    for _, cfg_name in ipairs(sys_configs) do track_configs.official_configs[#track_configs.official_configs+1] = cfg_name end
+    for _, cfg_name in ipairs(usr_configs) do track_configs.user_configs[#track_configs.user_configs+1] = cfg_name:gsub(".json", "") end
+    for _, cfg_name in ipairs(sys_configs) do track_configs.official_configs[#track_configs.official_configs+1] = cfg_name:gsub(".json", "") end
     return track_configs
 end
 
@@ -31,9 +55,9 @@ end
 
 function ConfigIO.loadTrackConfig(name, dir)
     if dir == "official" then
-        return ConfigIO.loadConfig(sys_track_config_dir .. "\\" .. name)
+        return ConfigIO.loadConfig(sys_track_config_dir .. "\\" .. name .. '.json')
     else
-        return ConfigIO.loadConfig(usr_track_config_dir .. "\\" .. name)
+        return ConfigIO.loadConfig(usr_track_config_dir .. "\\" .. name .. '.json')
     end
 end
 
