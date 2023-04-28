@@ -13,7 +13,7 @@ function GameState.serialize(self)
     local data = {
         __class = "GameState",
         isCarSetup = S.serialize(self.isCarSetup),
-        isTrackSetup = S.serialize(self.isTrackSetup),
+        isTrackSetup = S.serialize(self.isTrackSetup)
     }
 
     return data
@@ -33,6 +33,10 @@ function GameState.new()
     self.isCarSetup = false
     self.isTrackSetup = false
     return self
+end
+
+function GameState.isPlaymode(self)
+    return not self.isTrackSetup and not self.isCarSetup
 end
 
 local function test()
