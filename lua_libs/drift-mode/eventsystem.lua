@@ -14,22 +14,24 @@ EventSystem.Signal = {
     GameStateChanged = "GameStateChanged" ---Signal for when game state changes
 }
 
+local payloads = nil
+local signal_log = nil
 
-local event_table = nil
-
-local function loadEventTable()
-    event_table = DataBroker.read("event_table")
-    if event_table == nil then
-        event_table = {
+local function loadSignals()
+    signal_log =
+        DataBroker.read("signal_log") or
+        {
             listeners = {},
             signals = {}
         }
-    end
 end
 
-local function storeEventTable()
-    DataBroker.store("event_table", event_table)
+local function loadPayloads()
+    payloads = DataBroker.read("payloads") or {}
 end
+
+local function storeSignals()  DataBroker.store("signal_log", signal_log) end
+local function storePayloads() DataBroker.store("payloads", payloads)   end
 
 local charset = "abcdefghijklmnopqrstuvwxyz1234567890"
 local function randomString(length)
@@ -43,13 +45,13 @@ end
 
 ---@param name string
 function EventSystem.registerListener(name)
-    loadEventTable()
+    loadSignals()
 
-    event_table.listeners[name] = {
+    signal_log.listeners[name] = {
         signals = {}
     }
 
-    storeEventTable()
+    storeSignals()
     return name
 end
 
@@ -57,25 +59,27 @@ end
 ---@param signal EventSystem.Signal
 ---@param callback fun(payload: table)
 function EventSystem.listen(listener_id, signal, callback)
-    loadEventTable()
+    loadSignals()
 
-    local signal_data = event_table.signals[signal]
+    local signal_data = signal_log.signals[signal]
     if signal_data == nil then return end
 
-    local listener_signals_log = event_table.listeners[listener_id].signals
+    local listener_signals_log = signal_log.listeners[listener_id].signals
     if listener_signals_log[signal] == nil then
         listener_signals_log[signal] = {
             last_responded = {
                 id = nil
             }
         }
+        storeSignals()
     end
     local listener_signal_log = listener_signals_log[signal]
 
     if listener_signal_log.last_responded.id ~= signal_data.last_sent.id then
-        callback(signal_data.last_sent.payload)
+        loadPayloads()
+        callback(payloads[signal])
         listener_signal_log.last_responded = signal_data.last_sent
-        storeEventTable()
+        storeSignals()
         return true
     end
 
@@ -85,14 +89,18 @@ end
 ---@param signal EventSystem.Signal
 ---@param payload table
 function EventSystem.emit(signal, payload)
-    event_table.signals[signal] = {
+    loadPayloads()
+    loadSignals()
+
+    signal_log.signals[signal] = {
         last_sent = {
-            id = randomString(8),
-            payload = payload
+            id = randomString(8)
         }
     }
+    payloads[signal] = payload
 
-    storeEventTable()
+    storePayloads()
+    storeSignals()
 end
 
 return EventSystem
