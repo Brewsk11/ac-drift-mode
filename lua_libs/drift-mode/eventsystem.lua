@@ -58,11 +58,11 @@ end
 ---@param listener_id string
 ---@param signal EventSystem.Signal
 ---@param callback fun(payload: table)
-function EventSystem.listen(listener_id, signal, callback)
-    loadSignals()
-
+function EventSystem.listenInGroup(listener_id, signal, callback)
     local signal_data = signal_log.signals[signal]
-    if signal_data == nil then return end
+    if signal_data == nil then return false end
+
+    local changed = false
 
     local listener_signals_log = signal_log.listeners[listener_id].signals
     if listener_signals_log[signal] == nil then
@@ -71,7 +71,7 @@ function EventSystem.listen(listener_id, signal, callback)
                 id = nil
             }
         }
-        storeSignals()
+        changed = true
     end
     local listener_signal_log = listener_signals_log[signal]
 
@@ -79,11 +79,27 @@ function EventSystem.listen(listener_id, signal, callback)
         loadPayloads()
         callback(payloads[signal])
         listener_signal_log.last_responded = signal_data.last_sent
-        storeSignals()
-        return true
+        changed = true
     end
 
-    return false
+    return changed
+end
+
+function EventSystem.startGroup()
+    loadSignals()
+end
+
+function EventSystem.endGroup(changed)
+    if changed then storeSignals() end
+end
+
+---@param listener_id string
+---@param signal EventSystem.Signal
+---@param callback fun(payload: table)
+function EventSystem.listen(listener_id, signal, callback)
+    EventSystem.startGroup()
+    local changed = EventSystem.listenInGroup(listener_id, signal, callback)
+    EventSystem.endGroup(changed)
 end
 
 ---@param signal EventSystem.Signal
