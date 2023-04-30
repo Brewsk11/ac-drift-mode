@@ -201,14 +201,17 @@ function script.drawUI()
   if not run_state or not game_state then return end
 
   if game_state:isPlaymode() then
-    local orig = vec2(15, 5)
+    local orig = vec2(15, 10)
 
     drawModifiers()
 
-    local window_height = 150 + #run_state.zoneStates * 20
+    local window_height = 165 + #run_state.zoneStates * 20
     ui.beginToolWindow('scoresWindow', vec2(150, 100), vec2(420, window_height), false)
-    ui.pushFont(ui.Font.Huge)
     ui.setCursor(orig)
+    ui.pushFont(ui.Font.Main)
+    ui.text(track_data.name)
+    ui.offsetCursorY(-10)
+    ui.pushFont(ui.Font.Huge)
     ui.text(string.format("Total score: %.0f", total_score))
     ui.pushFont(ui.Font.Main)
     ui.offsetCursorY(-10)
