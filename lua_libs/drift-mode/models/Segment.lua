@@ -53,9 +53,18 @@ function Segment.projected(self)
     return self.head:projected(), self.tail:projected()
 end
 
-
 function Segment.draw(self, color)
     render.debugLine(self.head:value(), self.tail:value(), color)
+end
+
+function Segment.drawWall(self, color, height)
+    render.quad(
+        self.head:value(),
+        self.tail:value(),
+        self.tail:value() + vec3(0, height, 0),
+        self.head:value() + vec3(0, height, 0),
+        color
+    )
 end
 
 local function test()

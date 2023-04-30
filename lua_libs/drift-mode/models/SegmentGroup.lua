@@ -99,6 +99,12 @@ function SegmentGroup.draw(self, color)
     end
 end
 
+function SegmentGroup.drawWall(self, height, color)
+    for _, segment in self:iter() do
+        segment:drawWall(color, height)
+    end
+end
+
 local function test()
     local points = {
         Point.new("a", vec3(1, 1, 1)),

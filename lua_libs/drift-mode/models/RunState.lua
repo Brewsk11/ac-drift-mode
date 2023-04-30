@@ -10,6 +10,10 @@ local S = require('drift-mode/serializer')
 local ZoneScoringPoint = {}
 ZoneScoringPoint.__index = ZoneScoringPoint
 
+local color_inactive = rgbm(1, 1, 1, 0.4)
+local color_active = rgbm(0, 3, 0, 0.4)
+local color_done = rgbm(0, 0, 3, 0.4)
+
 function ZoneScoringPoint.new(point, speed_mult, angle_mult, ratio_mult)
     local self = setmetatable({}, ZoneScoringPoint)
     self.point = point
@@ -106,6 +110,14 @@ function ZoneState:isFinished()
     return self.finished
 end
 
+function ZoneState:draw()
+    local color = color_inactive
+    if self:isActive() then color = color_active
+    elseif self:isFinished() then color = color_done end
+
+    self.zone:drawWall(color)
+end
+
 ---@class RunState
 ---@field trackConfig TrackConfig
 ---@field zoneStates ZoneState[]
@@ -134,6 +146,13 @@ function RunState:getScore()
         score = score + zone_state:getScore()
     end
     return score
+end
+
+
+function RunState:draw()
+    for _, zone_state in ipairs(self.zoneStates) do
+        zone_state:draw()
+    end
 end
 
 local function test()
