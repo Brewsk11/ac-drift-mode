@@ -58,12 +58,14 @@ function CarConfig.drawAlignment(self)
     local front_align_right_center = front_center + state.side * self.frontSpan
     local front_align_left_center =  front_center - state.side * self.frontSpan
 
-    -- Draw rear alignment planes
+    -- Draw rear alignment planes (and center, for now)
     for i = -2, 2, 1 do
       render.debugPlane(rear_center + state.side * i * 0.6, -state.look, rgb(3, 0, 0), 0.6)
     end
     render.debugPlane(rear_align_right_center, state.side, rgb(0, 3, 0), 0.6)
     render.debugPlane(rear_align_left_center, -state.side, rgb(0, 3, 0), 0.6)
+
+    render.debugPoint(rear_center, 1)
 
     -- Draw front alignment points
     render.debugSphere(front_align_right_center, 0.025)
