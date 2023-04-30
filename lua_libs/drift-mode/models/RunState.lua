@@ -73,6 +73,7 @@ function ZoneState:registerPosition(point, speed_mult, angle_mult)
     local ratio_mult = point_distance / cross_distance
 
     self.scores[#self.scores+1] = ZoneScoringPoint.new(point, speed_mult, angle_mult, ratio_mult)
+    return ratio_mult
 end
 
 ---@private
@@ -135,9 +136,12 @@ function RunState.new(track_config)
 end
 
 function RunState:registerPosition(point, speed_mult, angle_mult)
+    local ratio = nil
     for _, zone in ipairs(self.zoneStates) do
-        zone:registerPosition(point, speed_mult, angle_mult)
+        local res = zone:registerPosition(point, speed_mult, angle_mult)
+        if res ~= nil then ratio = res end
     end
+    return ratio
 end
 
 function RunState:getScore()
@@ -148,6 +152,19 @@ function RunState:getScore()
     return score
 end
 
+function RunState:getPerformance()
+    local mult = 0
+    local zones_finished = 0
+    for _, zone_state in ipairs(self.zoneStates) do
+        if zone_state:isFinished() then
+            mult = mult + zone_state:getMultiplier()
+            zones_finished = zones_finished + 1
+        end
+    end
+    if zones_finished == 0 then return 0 end
+    mult = mult / zones_finished
+    return mult
+end
 
 function RunState:draw()
     for _, zone_state in ipairs(self.zoneStates) do
