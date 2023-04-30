@@ -10,8 +10,8 @@ local S = require('drift-mode/serializer')
 local Zone = {}
 Zone.__index = Zone
 
-local color_outside_line = rgbm(0, 3, 0, 1)
-local color_inside_line =  rgbm(3, 0, 0, 1)
+local color_outside = rgbm(0, 3, 0, 0.4)
+local color_inside = rgbm(0, 0, 3, 0.4)
 
 function Zone.serialize(self)
     local data = {
@@ -211,17 +211,17 @@ function Zone.shortestCrossline(self, point)
     return shortest
 end
 
-function Zone.draw(self)
-    self.outsideLine:segment():draw(color_outside_line)
-    self.insideLine:segment():draw(color_inside_line)
+function Zone.drawWall(self, color)
+    self.outsideLine:segment():drawWall(1, color)
+    self.insideLine:segment():drawWall(0.1, color)
 end
 
 function Zone.drawSetup(self)
-    self.outsideLine:draw(0.2, color_outside_line, true)
-    self.outsideLine:segment():draw(color_outside_line)
+    self.outsideLine:draw(0.2, color_outside, true)
+    self.outsideLine:segment():draw(color_outside)
 
-    self.insideLine:draw(0.2, color_inside_line, true)
-    self.insideLine:segment():draw(color_inside_line)
+    self.insideLine:draw(0.2, color_inside, true)
+    self.insideLine:segment():draw(color_inside)
 end
 
 local Assert = require('drift-mode/assert')
