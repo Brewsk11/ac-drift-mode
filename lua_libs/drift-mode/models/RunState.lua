@@ -29,6 +29,10 @@ end
 local ZoneState = {}
 ZoneState.__index = ZoneState
 
+-- Threshold for which the score will be returned as 0
+-- With low samples it's most likely that the player only slightly touched the zone
+ZoneState.MIN_SCORING_SAMPLES = 10
+
 function ZoneState.new(zone)
     local self = setmetatable({}, ZoneState)
     self.zone = zone
@@ -90,6 +94,7 @@ function ZoneState:getMultiplier()
 end
 
 function ZoneState:getScore()
+    if #self.scores < ZoneState.MIN_SCORING_SAMPLES then return 0 end
     return self:getMultiplier() * self.zone.maxPoints
 end
 
