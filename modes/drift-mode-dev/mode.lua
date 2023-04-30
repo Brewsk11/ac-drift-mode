@@ -1,1 +1,0 @@
-require('drift-mode/models')
