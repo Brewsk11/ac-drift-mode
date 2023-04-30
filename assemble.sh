@@ -21,6 +21,9 @@ cp -r lua_libs/* output/ac_gamedir/lua
 cp -r modes/*    output/ac_gamedir/extension/lua/new-modes
 cp -r config/*   output/ac_gamedir/extension/config/drift-mode
 
+cp "res/logo white.png" output/ac_gamedir/apps/lua/drift-mode/icon.png
+cp "res/logo white.png" "output/ac_gamedir/extension/lua/new-modes/drift-mode/logo white.png"
+
 cp ./INSTALL.md output/
 
 find ./output -name *.ini -exec sed -i "s/VERSION = XXX/VERSION = $VERSION/"  {} \;

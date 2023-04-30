@@ -194,6 +194,10 @@ local function drawModifiers()
 end
 
 function script.drawUI()
+  ui.beginTransparentWindow('logo', vec2(510, 110), vec2(50, 50), true)
+  ui.image("logo white.png", vec2(50, 50), true)
+  ui.endTransparentWindow()
+
   if not run_state or not game_state then return end
 
   if game_state:isPlaymode() then
