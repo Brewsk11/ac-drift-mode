@@ -70,28 +70,6 @@ function TrackConfig.new(name, zones, clippingPoints, startLine, finishLine)
     return self
 end
 
-function TrackConfig.draw(self)
-    for _, zone in ipairs(self.zones) do
-      zone:draw()
-    end
-    for _, clipPoint in ipairs(self.clippingPoints) do
-      clipPoint:draw()
-    end
-
-    if self.startLine ~= nil then
-        local color = rgbm(0, 1, 0, 1)
-        self.startLine:draw(color)
-        self.startLine.head:draw(0.5, color)
-        self.startLine.tail:draw(0.5, color)
-    end
-    if self.finishLine ~= nil then
-        local color = rgbm(0, 0, 1, 1)
-        self.finishLine:draw(color)
-        self.finishLine.head:draw(0.5, color)
-        self.finishLine.tail:draw(0.5, color)
-    end
-end
-
 function TrackConfig.drawSetup(self)
     for _, zone in ipairs(self.zones) do
       zone:drawSetup()
