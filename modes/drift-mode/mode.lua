@@ -243,7 +243,7 @@ function script.drawUI()
     end
     ui.endToolWindow()
   else
-    ui.beginToolWindow('helpWindow', vec2(150, 100), vec2(420, 320), false)
+    ui.beginToolWindow('helpWindow', vec2(150, 100), vec2(420, 430), false)
     ui.pushFont(ui.Font.Huge)
     ui.text("Help")
     ui.pushFont(ui.Font.Title)
@@ -252,9 +252,12 @@ function script.drawUI()
     ui.offsetCursorY(-20)
     ui.text("\nS - place point\nQ - undo\nA - cancel\nF - confirm")
     ui.text("Clipping points and start/finish lines are not supported for now.")
-    ui.text("By default the game loads first user track config, and if not exists\nthen first \"official\" track config (shipped with the mod)")
+    ui.text("By default the game loads first found user track config,\nand if not exists then first \"official\" track config\n(shipped with the mod)")
     ui.text("To bind a key to restart a drift run bind \"Extra option F\"\nin Content Mananger controls menu.")
     ui.text("In some future release crossing the finish line\nwill also restart the run.")
+    ui.text("Car alignment: front settings and rear span do not matter\nfor now. In this release the scoring point is at the center\nof the rear bumper.")
+    ui.text("More features and improvements are planned.\nCheck out RaceDepartment and Github pages for updates.")
+    ui.text("Thanks for playing, enjoy!")
     ui.endToolWindow()
   end
 end
