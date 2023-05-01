@@ -27,7 +27,7 @@ local mult_speed = nil
 local max_angle = 60
 local min_angle = 5
 
-local max_speed = 100
+local max_speed = 50
 local min_speed = 15
 
 local total_score = 0
