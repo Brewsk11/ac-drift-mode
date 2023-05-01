@@ -106,8 +106,6 @@ end
 function script.draw3D()
   if car_data and game_state and game_state.isCarSetup then car_data:drawAlignment() end
 
-  local car = ac.getCar(0)
-
   if game_state and not game_state:isPlaymode() then
     if track_data then track_data:drawSetup() end
     if cursor_data then cursor_data:draw() end
@@ -223,11 +221,11 @@ function script.drawUI()
     ui.setCursor(header_orig + vec2(150, 0))
     ui.text("Score")
     ui.setCursor(header_orig + vec2(200, 0))
-    ui.text("Mult.")
-    ui.setCursor(header_orig + vec2(250, 0))
     ui.text("Max")
+    ui.setCursor(header_orig + vec2(250, 0))
+    ui.text("Perf.")
     ui.setCursor(header_orig + vec2(300, 0))
-    ui.text("Sampl.")
+    ui.text("Dist.")
     ui.setCursor(header_orig + vec2(350, 0))
     ui.text("Done")
     ui.offsetCursorY(10)
@@ -240,9 +238,13 @@ function script.drawUI()
       ui.setCursor(zone_orig + vec2(200, 0))
       ui.text(tostring(zone_state.zone.maxPoints))
       ui.setCursor(zone_orig + vec2(250, 0))
-      ui.text(string.format("%.2f%%", zone_state:getMultiplier() * 100))
+      ui.text(string.format("%.2f%%", zone_state:getPerformance() * 100))
       ui.setCursor(zone_orig + vec2(300, 0))
-      ui.text(string.format(#zone_state.scores))
+      local zone_distance = 0
+      if zone_state:isActive() or zone_state:isFinished() then
+        zone_distance = zone_state:getTimeInZone()
+      end
+      ui.text(string.format("%.2f%%", zone_distance * 100))
       ui.setCursor(zone_orig + vec2(350, 0))
       local done = "-"
       if zone_state:isFinished() then done = "X" end

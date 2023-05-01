@@ -137,10 +137,8 @@ end
 
 ---@param self Zone
 ---@param point Point
----@return Segment
+---@return table
 function Zone.shortestCrossline(self, point)
-    Assert.NotEqual(self.polygon, nil, "Cannot calculate crossline with no precalculated polygon")
-
     local direction_candidates = {}
     local ray_count = 180
 
@@ -148,15 +146,15 @@ function Zone.shortestCrossline(self, point)
         direction_candidates[i] = rotateVec2(vec2(0, 100), math.pi / ray_count * i)
     end
 
-    local shortest = nil
+    local shortest = { segment = nil, out_no = 0, in_no = 0 }
 
     for i = 1, ray_count do
         local dir = direction_candidates[i]
 
-        local out_hit = { hit = nil, distance = 999 }
-        local in_hit = { hit = nil, distance = 999 }
+        local out_hit = { hit = nil, distance = 999, segment_no = 0 }
+        local in_hit = { hit = nil, distance = 999, segment_no = 0 }
 
-        for _, segment in self.outsideLine:segment():iter() do
+        for idx, segment in self.outsideLine:segment():iter() do
             local segment_center = (segment.head:flat() + segment.tail:flat()) / 2
             local segment_distance = point:flat():distance(segment_center)
             if segment_distance < out_hit.distance then
@@ -167,12 +165,12 @@ function Zone.shortestCrossline(self, point)
                     segment.tail:flat()
                 )
                 if segment_hit ~= nil then
-                out_hit = { hit = segment_hit, distance = segment_distance }
+                out_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
                 end
             end
         end
 
-        for _, segment in self.insideLine:segment():iter() do
+        for idx, segment in self.insideLine:segment():iter() do
             local segment_center = (segment.head:flat() + segment.tail:flat()) / 2
             local segment_distance = point:flat():distance(segment_center)
             if segment_distance < in_hit.distance then
@@ -183,26 +181,32 @@ function Zone.shortestCrossline(self, point)
                     segment.tail:flat()
                 )
                 if segment_hit ~= nil then
-                in_hit = { hit = segment_hit, distance = segment_distance }
+                in_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
                 end
             end
         end
 
         if out_hit.hit ~= nil and in_hit.hit ~= nil then
-            if shortest == nil then
-                shortest = Segment.new(
+            if shortest.segment == nil then
+                shortest = {
+                    segment = Segment.new(
                     Point.new("out_hit", vec3(out_hit.hit.x, 0, out_hit.hit.y)),
-                    Point.new("in_hit", vec3(in_hit.hit.x, 0, in_hit.hit.y))
-                )
+                    Point.new("in_hit", vec3(in_hit.hit.x, 0, in_hit.hit.y))),
+                    out_no = out_hit.segment_no,
+                    in_no = in_hit.segment_no
+                }
             else
-                local shortest_lenght = shortest.head:flat():distance(shortest.tail:flat())
+                local shortest_lenght = shortest.segment.head:flat():distance(shortest.segment.tail:flat())
                 local new_lenght = out_hit.hit:distance(in_hit.hit)
 
                 if shortest_lenght > new_lenght then
-                    shortest = Segment.new(
+                    shortest = {
+                        segment = Segment.new(
                         Point.new("out_hit", vec3(out_hit.hit.x, 0, out_hit.hit.y)),
-                        Point.new("in_hit", vec3(in_hit.hit.x, 0, in_hit.hit.y))
-                    )
+                        Point.new("in_hit", vec3(in_hit.hit.x, 0, in_hit.hit.y))),
+                        out_no = out_hit.segment_no,
+                        in_no = in_hit.segment_no
+                    }
                 end
             end
         end
