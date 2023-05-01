@@ -26,9 +26,7 @@ function AsyncHelper.runTask(task)
 end
 
 local function waitForRelease(key_index)
-    ac.log("waitForRelease")
     AsyncHelper.runTask(function()
-        --ac.log("waitForRelease_inside")
         if ui.keyboardButtonReleased(key_index) then
             return true
         end
