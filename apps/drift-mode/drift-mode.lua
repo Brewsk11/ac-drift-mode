@@ -23,6 +23,8 @@ local track_data = nil
 
 local new_zone_name = nil
 local new_clip_name = nil
+local new_zone_points = "2000"
+local new_clip_points = "2000"
 local combo_selected = nil
 local combo_selected_type = nil
 
@@ -151,7 +153,7 @@ local createZone = function ()
   local insidePoints = AsyncUtils.runTask(AsyncUtils.taskGatherPointGroup); listenForData()
   if not insidePoints then cursorReset(); return end
 
-  local zone = Zone.new(new_zone_name, outsidePoints, insidePoints, 2000)
+  local zone = Zone.new(new_zone_name, outsidePoints, insidePoints, tonumber(new_zone_points))
   track_data.zones[#track_data.zones+1] = zone
   new_zone_name = track_data:getNextZoneName()
   DataBroker.store("track_data", track_data)
@@ -174,7 +176,7 @@ local createClippingPoint = function()
   local direction = (_end:value() - origin:value()):normalize()
   local length = _end:value():distance(origin:value())
 
-  local clippingPoint = ClippingPoint.new(new_clip_name, origin, direction, length, 1000)
+  local clippingPoint = ClippingPoint.new(new_clip_name, origin, direction, length, tonumber(new_clip_points))
   track_data.clippingPoints[#track_data.clippingPoints+1] = clippingPoint
   new_clip_name = track_data:getNextClipName()
   DataBroker.store("track_data", track_data)
@@ -418,17 +420,40 @@ local function drawAppUI()
   local text, changed = ui.inputText("##clipName", new_clip_name, track_inputs_flags)
   if changed then new_clip_name = text end
 
+  -- [INPUT] Zone points
+  ui.pushFont(ui.Font.Monospace)
+  ui.setNextItemWidth(120)
+  local text, changed = ui.inputText("##zonePoints", new_zone_points, track_inputs_flags + ui.InputTextFlags.CharsDecimal)
+  if changed then
+    if text == "" then new_zone_points = "0"
+    else new_zone_points = tostring(tonumber(text)) end
+  end
+
+  -- [INPUT] Clipping point points
+  ui.offsetCursor(vec2(140, -24))
+  ui.setNextItemWidth(120)
+  local text, changed = ui.inputText("##clipPoints", new_clip_points, track_inputs_flags + ui.InputTextFlags.CharsDecimal)
+  if changed then
+    if text == "" then new_clip_points = "0"
+    else new_clip_points = tostring(tonumber(text)) end
+  end
   ui.offsetCursorY(15)
 
-  -- [BUTTON] Create start line
+  -- [BUTTON] Create start point
   ui.pushFont(ui.Font.Main)
-  if ui.button("Create start line", vec2(120, 50), track_buttons_flags) then
+  if ui.button("Set\nstart pos.", vec2(80, 50), track_buttons_flags) then
+    running_task = coroutine.create(createStartingPoint)
+  end
+
+  -- [BUTTON] Create start line
+  ui.offsetCursor(vec2(90, -54))
+  if ui.button("Set\nstart line", vec2(80, 50), track_buttons_flags) then
     running_task = coroutine.create(createStartLine)
   end
 
   -- [BUTTON] Create finish line
-  ui.offsetCursor(vec2(140, -54))
-  if ui.button("Create finish line", vec2(120, 50), track_buttons_flags) then
+  ui.offsetCursor(vec2(180, -54))
+  if ui.button("Set\nfinish line", vec2(80, 50), track_buttons_flags) then
     running_task = coroutine.create(createFinishLine)
   end
 
@@ -481,12 +506,6 @@ local function drawAppUI()
     else
       PP.patch()
     end
-  end
-
-  -- [BUTTON] Create start point
-  ui.pushFont(ui.Font.Main)
-  if ui.button("Create start point", vec2(120, 50), track_buttons_flags) then
-    running_task = coroutine.create(createStartingPoint)
   end
 end
 
