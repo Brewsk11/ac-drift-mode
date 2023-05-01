@@ -11,6 +11,7 @@ local Zone = require('drift-mode/models/Zone')
 ---@field clippingPoints ClippingPoint[]
 ---@field startLine Segment
 ---@field finishLine Segment
+---@field startingPoint StartingPoint
 local TrackConfig = {}
 TrackConfig.__index = TrackConfig
 
@@ -21,7 +22,8 @@ function TrackConfig.serialize(self)
         zones = {},
         clippingPoints = {},
         startLine = S.serialize(self.startLine),
-        finishLine  = S.serialize(self.finishLine)
+        finishLine  = S.serialize(self.finishLine),
+        startingPoint = S.serialize(self.startingPoint)
     }
 
     for idx, zone in ipairs(self.zones) do
@@ -55,10 +57,11 @@ function TrackConfig.deserialize(data)
     obj.clippingPoints = clippingPoints
     obj.startLine = S.deserialize(data.startLine)
     obj.finishLine = S.deserialize(data.finishLine)
+    obj.startingPoint = S.deserialize(data.startingPoint)
     return obj
 end
 
-function TrackConfig.new(name, zones, clippingPoints, startLine, finishLine)
+function TrackConfig.new(name, zones, clippingPoints, startLine, finishLine, startingPoint)
     local self = setmetatable({}, TrackConfig)
     self.name = name or 'default'
     local _zones = zones or {}
@@ -67,6 +70,7 @@ function TrackConfig.new(name, zones, clippingPoints, startLine, finishLine)
     self.clippingPoints = _clippingPoints
     self.startLine = startLine
     self.finishLine = finishLine
+    self.startingPoint = startingPoint
     return self
 end
 
@@ -74,6 +78,8 @@ function TrackConfig.drawSetup(self)
     for _, zone in ipairs(self.zones) do
       zone:drawSetup()
     end
+
+    if self.startingPoint then self.startingPoint:drawSetup() end
 end
 
 function TrackConfig.getNextZoneName(self)
