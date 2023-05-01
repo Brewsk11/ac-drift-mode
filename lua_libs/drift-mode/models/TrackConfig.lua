@@ -80,6 +80,8 @@ function TrackConfig.drawSetup(self)
     end
 
     if self.startingPoint then self.startingPoint:drawSetup() end
+    if self.startLine then self.startLine:draw(rgbm(0, 3, 0, 1)) end
+    if self.finishLine then self.finishLine:draw(rgbm(0, 0, 3, 1)) end
 end
 
 function TrackConfig.getNextZoneName(self)

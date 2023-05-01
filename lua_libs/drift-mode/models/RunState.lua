@@ -11,7 +11,7 @@ local S = require('drift-mode/serializer')
 local ZoneScoringPoint = {}
 ZoneScoringPoint.__index = ZoneScoringPoint
 
-local color_inactive = rgbm(1, 1, 1, 0.4)
+local color_inactive = rgbm(0, 3, 2, 0.4)
 local color_active = rgbm(0, 3, 0, 0.4)
 local color_done = rgbm(0, 0, 3, 0.4)
 
@@ -232,8 +232,8 @@ function RunState:draw()
         zone_state:draw()
     end
 
-    if self.trackConfig.startLine then self.trackConfig.startLine:drawWall(rgbm(0, 3, 0, 1), 0.05) end
-    if self.trackConfig.finishLine then self.trackConfig.finishLine:drawWall(rgbm(0, 0, 3, 1), 0.05) end
+    if self.trackConfig.startLine then self.trackConfig.startLine:draw(rgbm(0, 3, 0, 1)) end
+    if self.trackConfig.finishLine then self.trackConfig.finishLine:draw(rgbm(0, 0, 3, 1)) end
 end
 
 local function test()
