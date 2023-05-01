@@ -57,7 +57,7 @@ local function calcMultipliers()
   return mult_speed, mult_angle
 end
 
-local function restartRun()
+local function resetScore()
   if track_data then run_state = RunState.new(track_data) end
   total_score = 0
 end
@@ -66,11 +66,18 @@ local function listenForSignals()
   local changed = false
   EventSystem.startGroup()
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,      function (payload) cursor_data = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged, function (payload) track_data = payload; run_state = RunState.new(track_data) end)  or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CarConfigChanged,   function (payload) car_data = payload end)    or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.GameStateChanged,   function (payload) game_state = payload end)  or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.Restart,            function (payload) restartRun() end)          or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged, function (payload) track_data = payload; run_state = RunState.new(track_data) end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CarConfigChanged,   function (payload) car_data = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.GameStateChanged,   function (payload) game_state = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.ResetScore,         function (payload) resetScore() end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedStart,       function (payload) run_state = RunState.new(track_data) end) or changed
   EventSystem.endGroup(changed)
+  local crossed_finish = false
+  EventSystem.listen(listener_id, EventSystem.Signal.CrossedFinish, function (payload) crossed_finish = true
+  end)
+  if crossed_finish then
+    EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
+  end
 end
 
 local function registerPosition()
@@ -85,6 +92,39 @@ local function registerPosition()
   end
 end
 
+local last_pos = nil
+local function monitorCrossingLines()
+  if not run_state or not track_data then return end
+
+  local current_pos = Point.new("", ac.getCar(0).position)
+  if last_pos == nil then
+    last_pos = current_pos
+    return
+  end
+
+  if track_data.startLine then
+    local res = vec2.intersect(
+      track_data.startLine.head:flat(),
+      track_data.startLine.tail:flat(),
+      last_pos:flat(),
+      current_pos:flat()
+    )
+    if res then ac.log("emitting start");  EventSystem.emit(EventSystem.Signal.CrossedStart, {}) end
+  end
+
+  if track_data.finishLine then
+    local res = vec2.intersect(
+      track_data.finishLine.head:flat(),
+      track_data.finishLine.tail:flat(),
+      last_pos:flat(),
+      current_pos:flat()
+    )
+    if res then ac.log("emitting finish"); EventSystem.emit(EventSystem.Signal.CrossedFinish, {}) end
+  end
+
+  last_pos = current_pos
+end
+
 local timers = {
   data_brokered = Timer.new(0.02, function () listenForSignals() end),
   scoring_player = Timer.new(0.1, function ()
@@ -92,6 +132,9 @@ local timers = {
       registerPosition()
       total_score = run_state:getScore()
     end
+  end),
+  monitor_crossing = Timer.new(0.1, function()
+    monitorCrossingLines()
   end)
 }
 

@@ -59,9 +59,25 @@ DataBroker.store("cursor_data", cursor_data)
 local data_listener_timer = 0
 local data_listener_period = 0.5
 
+local function teleportToStart()
+  if physics.allowed() and track_data and track_data.startingPoint then
+    physics.setCarPosition(
+      0,
+      track_data.startingPoint.origin:value(),
+      track_data.startingPoint.direction * -1
+    )
+  else
+    physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
+  end
+end
+
 local function listenForData()
-  EventSystem.listen(listener_id, EventSystem.Signal.CursorChanged,      function (payload) cursor_data = payload end)
-  EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function (payload) track_data = payload end)
+  local changed = false
+  EventSystem.startGroup()
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,      function (payload) cursor_data = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged, function (payload) track_data = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TeleportToStart,    function (payload) teleportToStart() end) or changed
+  EventSystem.endGroup(changed)
 end
 
 local running_task = nil
@@ -88,13 +104,9 @@ function script.update(dt)
   ac.debug("physics.allowed()", physics.allowed())
 
   if ac.getCar(0).extraF then
-    local restart_pos = track_data.startLine.head:value()
-    physics.setCarPosition(0, restart_pos, vec3(1, 0, 0))
-    physics.setCarPosition(1, restart_pos, vec3(1, 0, 0))
-    physics.setCarBodyDamage(0, vec4(1, 1, 1, 1))
     ac.setExtraSwitch(5, false)
-    EventSystem.emit(EventSystem.Signal.Restart, {})
-    ac.log("Restarted")
+    EventSystem.emit(EventSystem.Signal.ResetScore, {})
+    EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
 
   if helper_cam then
@@ -202,6 +214,28 @@ local createFinishLine = function()
 
   local startLine = Segment.new(origin, _end)
   track_data.finishLine = startLine
+  DataBroker.store("track_data", track_data)
+  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
+
+  cursorReset()
+end
+
+local createStartingPoint = function()
+  ---@type Point
+  local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
+  cursor_data.point_group_b = PointGroup.new({origin})
+  cursor_data.color_selector = rgbm(0, 2, 1, 1)
+  if not origin then cursorReset(); return else cursorUpdate() end
+
+  ---@type Point
+  local _end = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
+  if not origin then cursorReset(); return end
+
+  local direction = (_end:value() - origin:value()):normalize()
+
+  local startingPoint = StartingPoint.new(origin, direction)
+  track_data.startingPoint = startingPoint
+  new_clip_name = track_data:getNextClipName()
   DataBroker.store("track_data", track_data)
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
 
@@ -447,6 +481,12 @@ local function drawAppUI()
     else
       PP.patch()
     end
+  end
+
+  -- [BUTTON] Create start point
+  ui.pushFont(ui.Font.Main)
+  if ui.button("Create start point", vec2(120, 50), track_buttons_flags) then
+    running_task = coroutine.create(createStartingPoint)
   end
 end
 

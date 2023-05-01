@@ -4,9 +4,10 @@ local EventSystem = {}
 
 ---@enum EventSystem.Signal
 EventSystem.Signal = {
-    Finished = "Finished", ---Crossed finish line
-    Started = "Started", ---Crossed start line
-    Restart = "Restart", ---User requested game restart
+    CrossedFinish = "CrossedFinish", ---Crossed finish line
+    CrossedStart = "CrossedStart", ---Crossed start line
+    TeleportToStart = "TeleportToStart", ---Request to teleport to starting point
+    ResetScore = "ResetScore", ---Requested run reset run scoring
 
     CursorChanged = "CursorChanged", ---Signal for UI to update cursor data
     TrackConfigChanged = "TrackConfigChanged", ---Signal for UI to update track data
