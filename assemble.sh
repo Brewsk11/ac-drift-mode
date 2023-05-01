@@ -11,19 +11,21 @@ fi
 
 rm -rf output
 
-mkdir -p output/ac_gamedir/apps/lua
-mkdir -p output/ac_gamedir/lua
-mkdir -p output/ac_gamedir/extension/lua/new-modes
-mkdir -p output/ac_gamedir/extension/config/drift-mode
+mkdir -p output/assettocorsa/apps/lua
+mkdir -p output/assettocorsa/lua
+mkdir -p output/assettocorsa/extension/lua/new-modes
+mkdir -p output/assettocorsa/extension/config/drift-mode
 
-cp -r apps/*     output/ac_gamedir/apps/lua
-cp -r lua_libs/* output/ac_gamedir/lua
-cp -r modes/*    output/ac_gamedir/extension/lua/new-modes
-cp -r config/*   output/ac_gamedir/extension/config/drift-mode
+cp -r apps/*     output/assettocorsa/apps/lua
+cp -r lua_libs/* output/assettocorsa/lua
+cp -r modes/*    output/assettocorsa/extension/lua/new-modes
+cp -r config/*   output/assettocorsa/extension/config/drift-mode
 
-cp "res/logo white.png" output/ac_gamedir/apps/lua/drift-mode/icon.png
-cp "res/logo white.png" "output/ac_gamedir/extension/lua/new-modes/drift-mode/logo white.png"
+cp "res/logo white.png" output/assettocorsa/apps/lua/drift-mode/icon.png
+cp "res/logo white.png" "output/assettocorsa/extension/lua/new-modes/drift-mode/logo white.png"
 
 cp ./INSTALL.md output/
 
 find ./output -name *.ini -exec sed -i "s/VERSION = XXX/VERSION = $VERSION/"  {} \;
+
+echo "$VERSION" > ./output/VERSION.txt

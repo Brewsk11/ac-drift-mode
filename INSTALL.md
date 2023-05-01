@@ -2,4 +2,4 @@
 
 Install instructions for packaged mod:
 
-1. Copy contents of `ac_gamedir` to Assetto Corsa install directory.
+1. Copy contents of `assettocorsa` to Assetto Corsa install directory.
