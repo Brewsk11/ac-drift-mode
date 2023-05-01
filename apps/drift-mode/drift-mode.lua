@@ -4,6 +4,7 @@ local DataBroker = require('drift-mode/databroker')
 local EventSystem = require('drift-mode/eventsystem')
 local AsyncUtils = require('drift-mode/asynchelper')
 local ConfigIO = require('drift-mode/configio')
+local PP = require('drift-mode/physicspatcher')
 local S = require('drift-mode/serializer')
 require('drift-mode/models')
 
@@ -84,10 +85,16 @@ function script.update(dt)
     end
   end
 
+  ac.debug("physics.allowed()", physics.allowed())
+
   if ac.getCar(0).extraF then
-    physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
+    local restart_pos = track_data.startLine.head:value()
+    physics.setCarPosition(0, restart_pos, vec3(1, 0, 0))
+    physics.setCarPosition(1, restart_pos, vec3(1, 0, 0))
+    physics.setCarBodyDamage(0, vec4(1, 1, 1, 1))
     ac.setExtraSwitch(5, false)
     EventSystem.emit(EventSystem.Signal.Restart, {})
+    ac.log("Restarted")
   end
 
   if helper_cam then
@@ -167,7 +174,7 @@ end
 local createStartLine = function()
   ---@type Point
   local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_a = PointGroup.new({Point.new("", origin)})
+  cursor_data.point_group_a = PointGroup.new(origin)
   cursor_data.color_selector = rgbm(0, 2, 1, 1)
   if not origin then cursorReset(); return else cursorUpdate() end
 
@@ -179,14 +186,13 @@ local createStartLine = function()
   track_data.startLine = startLine
   DataBroker.store("track_data", track_data)
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
-
   cursorReset()
 end
 
 local createFinishLine = function()
   ---@type Point
   local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_a = PointGroup.new({Point.new("", origin)})
+  cursor_data.point_group_a = PointGroup.new(origin)
   cursor_data.color_selector = rgbm(0, 2, 1, 1)
   if not origin then cursorReset(); return else cursorUpdate() end
 
@@ -414,6 +420,33 @@ local function drawAppUI()
     local usr_cfg_path = ac.getFolder(ac.FolderID.ExtCfgUser)  .. "\\drift-mode"
     local usr_configs = usr_cfg_path .. "\\tracks\\" .. ac.getTrackID()
     os.openInExplorer(usr_configs)
+  end
+
+  ui.offsetCursorY(20)
+  ui.separator()
+  ui.offsetCursorY(20)
+
+  -- [DECORATIVE] Track patching section
+  ui.pushFont(ui.Font.Title)
+  ui.text("Track patcher")
+
+  -- [DECORATIVE] Track patching help text
+  ui.pushFont(ui.Font.Main)
+  ui.text("For teleportation functionality track data has\nto be patched to use extended physics.")
+  ui.text("After patching or restoring surfaces.ini\nrestart the game to apply changes.")
+  ui.pushFont(ui.Font.Italic)
+  ui.text("Note: this may lead to buggy collisions.")
+
+  -- [BUTTON] Track patch button
+  ui.pushFont(ui.Font.Main)
+  local patch_button_label = "Patch track"
+  if PP.isPatched() then patch_button_label = "Unpatch track" end
+  if ui.button(patch_button_label, vec2(260, 30)) then
+    if PP.isPatched() then
+      PP.restore()
+    else
+      PP.patch()
+    end
   end
 end
 
