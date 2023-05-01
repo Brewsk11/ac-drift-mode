@@ -231,6 +231,9 @@ function RunState:draw()
     for _, zone_state in ipairs(self.zoneStates) do
         zone_state:draw()
     end
+
+    if self.trackConfig.startLine then self.trackConfig.startLine:drawWall(rgbm(0, 3, 0, 1), 0.05) end
+    if self.trackConfig.finishLine then self.trackConfig.finishLine:drawWall(rgbm(0, 0, 3, 1), 0.05) end
 end
 
 local function test()
