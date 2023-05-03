@@ -519,9 +519,89 @@ local function drawAppUI()
   end
 end
 
-
 function WindowMain()
   drawAppUI()
+end
+
+function WindowScores()
+  -- ui.beginTransparentWindow('logo', vec2(510, 110), vec2(50, 50), true)
+  -- ui.image("logo white.png", vec2(50, 50), true)
+  -- ui.endTransparentWindow()
+
+  if not run_state_data or not game_state then return end
+
+  if game_state:isPlaymode() then
+    local window_height = 165 + #run_state_data.zoneStates * 20
+    ui.beginChild('scoresWindow', vec2(450, window_height), true)
+
+    ui.drawRectFilled(vec2(0, 0), vec2(450, window_height), rgbm(0.15, 0.15, 0.15, 0.4))
+
+    ui.pushFont(ui.Font.Main)
+    ui.text(track_data.name)
+    ui.offsetCursorY(-10)
+    ui.pushFont(ui.Font.Huge)
+    ui.text(string.format("Total score: %.0f", run_state_data.totalScore))
+    ui.pushFont(ui.Font.Main)
+    ui.offsetCursorY(-10)
+    ui.text(string.format("Total performance: %.2f%%", run_state_data.totalPerformance * 100))
+    ui.offsetCursorY(20)
+    local header_orig = ui.getCursor()
+    ui.pushFont(ui.Font.Main)
+    ui.text("Zone")
+    ui.setCursor(header_orig + vec2(150, 0))
+    ui.text("Score")
+    ui.setCursor(header_orig + vec2(200, 0))
+    ui.text("Max")
+    ui.setCursor(header_orig + vec2(250, 0))
+    ui.text("Perf.")
+    ui.setCursor(header_orig + vec2(300, 0))
+    ui.text("Dist.")
+    ui.setCursor(header_orig + vec2(350, 0))
+    ui.text("Done")
+    ui.offsetCursorY(10)
+    ui.pushFont(ui.Font.Monospace)
+    for _, zone_state in ipairs(run_state_data.zoneStates) do
+      local zone_orig = ui.getCursor()
+      ui.text(zone_state.zone)
+      ui.setCursor(zone_orig + vec2(150, 0))
+      ui.text(string.format("%.0f", zone_state.score))
+      ui.setCursor(zone_orig + vec2(200, 0))
+      ui.text(tostring(zone_state.maxPoints))
+      ui.setCursor(zone_orig + vec2(250, 0))
+      ui.text(string.format("%.2f%%", zone_state.performance * 100))
+      ui.setCursor(zone_orig + vec2(300, 0))
+      local zone_distance = 0
+      if zone_state.active or zone_state.finished then
+        zone_distance = zone_state.timeInZone
+      end
+      ui.text(string.format("%.2f%%", zone_distance * 100))
+      ui.setCursor(zone_orig + vec2(350, 0))
+      local done = "-"
+      if zone_state.finished then done = "X" end
+      ui.text(done)
+    end
+    ui.endChild()
+  else
+    ui.beginChild('helpWindow', vec2(150, 100), vec2(420, 600), false)
+    ui.pushFont(ui.Font.Huge)
+    ui.text("Help")
+    ui.pushFont(ui.Font.Main)
+    ui.text("By default the game loads first found user track config,\nand if not exists then first \"official\" track config\n(shipped with the mod)")
+    ui.text("To bind a key to restart a drift run bind \"Extra option F\"\nin Content Mananger controls menu.")
+    ui.pushFont(ui.Font.Title)
+    ui.text("Creating zones:")
+    ui.pushFont(ui.Font.Main)
+    ui.text("Trace the outside line first, then after confirming\ntrace the inside line IN THE SAME DIRECTION.\nThis is important to correctly calculate scoring.")
+    ui.text("S - place point\nQ - undo\nA - cancel\nF - confirm")
+    ui.pushFont(ui.Font.Title)
+    ui.text("Limitations:")
+    ui.pushFont(ui.Font.Main)
+    ui.text("Clipping points are not supported for now.")
+    ui.text("Car alignment: front settings and rear span do not matter\nfor now. In this release the scoring point is at the center\nof the rear bumper.")
+    ui.text("More features and improvements are planned.\nCheck out RaceDepartment and Github pages for updates.")
+    ui.text("Thanks for playing!")
+    ui.endChild()
+  end
 end
 
 gameStateUpdate()
