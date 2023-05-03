@@ -4,6 +4,7 @@ local DataBroker = require('drift-mode/databroker')
 local EventSystem = require('drift-mode/eventsystem')
 local AsyncUtils = require('drift-mode/asynchelper')
 local ConfigIO = require('drift-mode/configio')
+local Timer = require('drift-mode/timer')
 local PP = require('drift-mode/physicspatcher')
 local S = require('drift-mode/serializer')
 require('drift-mode/models')
@@ -20,6 +21,9 @@ local car_data = nil
 
 ---@type TrackConfig?
 local track_data = nil
+
+---@type RunStateData?
+local run_state_data = nil
 
 local new_zone_name = nil
 local new_clip_name = nil
@@ -58,9 +62,6 @@ DataBroker.store("track_data", track_data)
 local cursor_data = Cursor.new()
 DataBroker.store("cursor_data", cursor_data)
 
-local data_listener_timer = 0
-local data_listener_period = 0.5
-
 local function teleportToStart()
   if physics.allowed() and track_data and track_data.startingPoint then
     physics.setCarPosition(
@@ -82,6 +83,12 @@ local function listenForData()
   EventSystem.endGroup(changed)
 end
 
+local function refreshRunState()
+  ---@type RunStateData
+  run_state_data = DataBroker.read("run_state_data")
+  ac.debug("first_zone_dist", run_state_data.zoneStates[1].timeInZone)
+end
+
 local running_task = nil
 local is_helper_cam_active = false
 local helper_cam = nil
@@ -89,11 +96,14 @@ local helper_cam = nil
 local track_buttons_flags = ui.ButtonFlags.None
 local track_inputs_flags = ui.InputTextFlags.None
 
+local timers = {
+  listeners = Timer.new(0.5, listenForData),
+  run_state_refresher = Timer.new(0.1, refreshRunState)
+}
+
 function script.update(dt)
-  data_listener_timer = data_listener_timer + dt
-  if data_listener_timer > data_listener_period then
-    data_listener_timer = 0
-    listenForData()
+  for _, timer in pairs(timers) do
+    timer:tick(dt)
   end
 
   if running_task ~= nil then

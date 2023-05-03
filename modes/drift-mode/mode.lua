@@ -1,4 +1,5 @@
 local EventSystem = require('drift-mode/eventsystem')
+local DataBroker = require('drift-mode/databroker')
 local Timer = require('drift-mode/timer')
 local S = require('drift-mode/serializer')
 require('drift-mode/models')
@@ -135,6 +136,9 @@ local timers = {
   end),
   monitor_crossing = Timer.new(0.1, function()
     monitorCrossingLines()
+  end),
+  emit_run_state = Timer.new(0.1, function()
+    DataBroker.store("run_state_data", run_state)
   end)
 }
 
