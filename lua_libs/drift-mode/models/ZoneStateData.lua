@@ -2,6 +2,8 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
 ---@class ZoneStateData Lightweight dataclass for brokering run information to apps
+---@field zone string
+---@field maxPoints integer
 ---@field active boolean
 ---@field finished boolean
 ---@field score number
@@ -13,6 +15,8 @@ ZoneStateData.__index = ZoneStateData
 function ZoneStateData.serialize(self)
     local data = {
         __class = "ZoneStateData",
+        zone = S.serialize(self.zone),
+        maxPoints = S.serialize(self.maxPoints),
         active = S.serialize(self.active),
         finished = S.serialize(self.finished),
         score = S.serialize(self.score),
@@ -26,6 +30,8 @@ end
 function ZoneStateData.deserialize(data)
     Assert.Equal(data.__class, "ZoneStateData", "Tried to deserialize wrong class")
     local obj = setmetatable({}, ZoneStateData)
+    obj.zone = S.deserialize(data.zone)
+    obj.maxPoints = S.deserialize(data.maxPoints)
     obj.active = S.deserialize(data.active)
     obj.finished = S.deserialize(data.finished)
     obj.score = S.deserialize(data.score)

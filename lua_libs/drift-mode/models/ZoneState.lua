@@ -20,6 +20,8 @@ ZoneState.__index = ZoneState
 function ZoneState.serialize(self)
     local data = {
         __class = "ZoneStateData",
+        zone = S.serialize(self.zone.name),
+        maxPoints = S.serialize(self.zone.maxPoints),
         active = S.serialize(self:isActive()),
         finished = S.serialize(self:isFinished()),
         score = S.serialize(self:getScore()),
