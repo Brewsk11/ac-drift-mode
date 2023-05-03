@@ -24,7 +24,7 @@ local current_speed = nil
 local mult_angle = nil
 local mult_speed = nil
 
-local max_angle = 60
+local max_angle = 45
 local min_angle = 5
 
 local max_speed = 50
