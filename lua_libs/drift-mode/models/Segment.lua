@@ -53,6 +53,18 @@ function Segment.projected(self)
     return self.head:projected(), self.tail:projected()
 end
 
+function Segment:lenght()
+    return self.head:value():distance(self.tail:value())
+end
+
+function Segment:lengthFlat()
+    return self.head:flat():distance(self.tail:flat())
+end
+
+function Segment:lenghtProjected()
+    return self.head:projected():distance(self.tail:projected())
+end
+
 function Segment.draw(self, color)
     render.debugLine(self.head:value(), self.tail:value(), color)
 end
