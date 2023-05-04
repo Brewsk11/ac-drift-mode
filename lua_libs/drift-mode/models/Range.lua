@@ -2,14 +2,14 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
 ---@class Range Simple range of two numbers
----@field private start number
----@field private finish number
+---@field start number
+---@field finish number
 local Range = {}
 Range.__index = Range
 
 function Range.serialize(self)
     local data = {
-        __class = "ScoringRanges",
+        __class = "Range",
         start = S.serialize(self.start),
         finish = S.serialize(self.finish)
     }
@@ -17,7 +17,7 @@ function Range.serialize(self)
 end
 
 function Range.deserialize(data)
-    Assert.Equal(data.__class, "ScoringRanges", "Tried to deserialize wrong class")
+    Assert.Equal(data.__class, "Range", "Tried to deserialize wrong class")
 
     local obj = Range.new()
     obj.start = S.deserialize(data.start)
@@ -71,8 +71,8 @@ end
 ---@param value number
 ---@return number
 function Range:getFraction(value)
-    Assert.MoreThan(value, self.finish, "Getting fraction outside of range")
-    Assert.LessThan(value, self.start, "Getting fraction outside of range")
+    Assert.LessThan(value, self.finish, "Getting fraction outside of range")
+    Assert.MoreThan(value, self.start, "Getting fraction outside of range")
 
     local _val = value - self.start
     local width = self.finish - self.start
@@ -96,4 +96,4 @@ local function test()
 end
 test()
 
-return ScoringRanges
+return Range

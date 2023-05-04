@@ -51,9 +51,6 @@ function TrackConfig.deserialize(data)
 
     -- 2.1.0 compatibility transfer
     if data.clippingPoints ~= nil then data.clips = data.clippingPoints end
-    if data.scoringRanges == nil then
-        data.scoringRanges = ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
-    end
 
     local clips = {}
     for idx, clipPoint in ipairs(data.clips) do
@@ -66,7 +63,9 @@ function TrackConfig.deserialize(data)
     obj.startLine = S.deserialize(data.startLine)
     obj.finishLine = S.deserialize(data.finishLine)
     obj.startingPoint = S.deserialize(data.startingPoint)
-    obj.scoringRanges = S.deserialize(data.scoringRanges)
+
+    -- TODO: For some reason this doesn't want to deserialize well?
+    obj.scoringRanges = ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
     return obj
 end
 
@@ -80,7 +79,7 @@ function TrackConfig.new(name, zones, clips, startLine, finishLine, startingPoin
     self.startLine = startLine
     self.finishLine = finishLine
     self.startingPoint = startingPoint
-    self.scoringRanges = scoringRanges or ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
+    self.scoringRanges = ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
     return self
 end
 

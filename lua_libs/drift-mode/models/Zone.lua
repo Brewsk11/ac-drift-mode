@@ -139,9 +139,6 @@ function Zone.isSegmentInZone(self, segment, custom_origin)
     local is_head_in_zone = self:isInZone(segment.head, custom_origin)
     local is_tail_in_zone = self:isInZone(segment.tail, custom_origin)
 
-    ac.debug("head_in", is_head_in_zone)
-    ac.debug("tail_in", is_tail_in_zone)
-
     if not is_head_in_zone and not is_tail_in_zone then return 0.0 end
     if     is_head_in_zone and     is_tail_in_zone then return 1.0 end
 
