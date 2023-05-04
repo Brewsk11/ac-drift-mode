@@ -1,7 +1,4 @@
-function drawModifiers(min_speed, max_speed, min_angle, max_angle, current_ratio, mult_speed, mult_angle)
-    -- local mult_speed = cursor_data.dspeed
-    -- local mult_angle = cursor_data.dangle
-    -- local current_ratio = cursor_data.dratio
+function drawModifiers(min_speed, max_speed, min_angle, max_angle, mult_ratio, mult_speed, mult_angle, mult_final)
 
     local speedRect = {
       origin = vec2(0, 0),
@@ -39,12 +36,12 @@ function drawModifiers(min_speed, max_speed, min_angle, max_angle, current_ratio
       color = rgbm(180 / 255, 180 / 255, 180 / 255, 1)
     }
 
-    local windowWidth = ui.windowWidth()
-    local widgetSize = vec2(300, 130)
-    local widgetOrigin = vec2(windowWidth / 2 - widgetSize.x / 2, 200)
+    local widgetSize = vec2(340, 153)
 
     local function drawInfobar(rect, value)
       if value == nil then return end
+      rect.origin = rect.origin + vec2(21, 12)
+
       ui.drawRect(rect.origin, rect.origin +  rect.size, rect.color, 2)
 
       if value ~= nil then
@@ -61,16 +58,15 @@ function drawModifiers(min_speed, max_speed, min_angle, max_angle, current_ratio
       ui.dwriteTextAligned(rect.max, 10, ui.Alignment.End, ui.Alignment.End, rect.size)
     end
 
-    local ratio_nil = current_ratio
-    if current_ratio == nil then ratio_nil = 0 end
+    local ratio_nil = mult_ratio
+    if mult_ratio == nil then ratio_nil = 0 end
 
-    ui.beginTransparentWindow('modifiers', widgetOrigin, widgetSize, true)
+    ui.beginChild('infobars', widgetSize, true)
     ui.pushDWriteFont("ACRoboto700.ttf")
+    ui.drawRectFilled(vec2(0, 0), widgetSize, rgbm(0.3, 0.3, 0.3, 0.5))
     drawInfobar(speedRect, mult_speed)
     drawInfobar(angleRect, mult_angle)
     drawInfobar(ratioRect, ratio_nil)
-    if mult_angle and mult_speed then
-      drawInfobar(compoundRect, mult_speed * mult_angle * ratio_nil)
-    end
-    ui.endTransparentWindow()
+    drawInfobar(compoundRect, mult_final)
+    ui.endChild()
   end
