@@ -534,13 +534,8 @@ function WindowScores()
 end
 
 function WindowInfobars()
-  if drift_state then
-    drawModifiers(15, 50, 5, 45,
-      drift_state.ratio_mult,
-      drift_state.speed_mult,
-      drift_state.angle_mult,
-      drift_state:getFinalMult()
-    )
+  if drift_state and track_data then
+    drawModifiers(track_data.scoringRanges, drift_state)
   end
 end
 

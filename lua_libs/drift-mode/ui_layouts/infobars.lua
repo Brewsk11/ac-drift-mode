@@ -1,10 +1,10 @@
-function drawModifiers(min_speed, max_speed, min_angle, max_angle, mult_ratio, mult_speed, mult_angle, mult_final)
+function drawModifiers(ranges, drift_state)
 
     local speedRect = {
       origin = vec2(0, 0),
       size = vec2(300, 25),
-      min = min_speed,
-      max = max_speed,
+      min = ranges.speedRange.start,
+      max = ranges.speedRange.finish,
       name = "Speed",
       color = rgbm(230 / 255, 138 / 255, 46 / 255, 1)
     }
@@ -12,8 +12,8 @@ function drawModifiers(min_speed, max_speed, min_angle, max_angle, mult_ratio, m
     local angleRect = {
       origin = vec2(0, 30),
       size = vec2(300, 25),
-      min = min_angle,
-      max = max_angle,
+      min = ranges.angleRange.start,
+      max = ranges.angleRange.finish,
       name = "Angle",
       color = rgbm(20 / 255, 204 / 255, 112 / 255, 1)
     }
@@ -58,15 +58,15 @@ function drawModifiers(min_speed, max_speed, min_angle, max_angle, mult_ratio, m
       ui.dwriteTextAligned(rect.max, 10, ui.Alignment.End, ui.Alignment.End, rect.size)
     end
 
-    local ratio_nil = mult_ratio
-    if mult_ratio == nil then ratio_nil = 0 end
+    local ratio_nil = drift_state.ratio_mult
+    if drift_state.ratio_mult == nil then ratio_nil = 0 end
 
     ui.beginChild('infobars', widgetSize, true)
     ui.pushDWriteFont("ACRoboto700.ttf")
     ui.drawRectFilled(vec2(0, 0), widgetSize, rgbm(0.3, 0.3, 0.3, 0.5))
-    drawInfobar(speedRect, mult_speed)
-    drawInfobar(angleRect, mult_angle)
+    drawInfobar(speedRect, drift_state.speed_mult)
+    drawInfobar(angleRect, drift_state.angle_mult)
     drawInfobar(ratioRect, ratio_nil)
-    drawInfobar(compoundRect, mult_final)
+    drawInfobar(compoundRect, drift_state:getFinalMult())
     ui.endChild()
   end

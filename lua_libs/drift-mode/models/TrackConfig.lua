@@ -12,6 +12,7 @@ local Zone = require('drift-mode/models/Zone')
 ---@field startLine Segment
 ---@field finishLine Segment
 ---@field startingPoint StartingPoint
+---@field scoringRanges ScoringRanges
 local TrackConfig = {}
 TrackConfig.__index = TrackConfig
 
@@ -23,7 +24,8 @@ function TrackConfig.serialize(self)
         clips = {},
         startLine = S.serialize(self.startLine),
         finishLine  = S.serialize(self.finishLine),
-        startingPoint = S.serialize(self.startingPoint)
+        startingPoint = S.serialize(self.startingPoint),
+        scoringRanges = S.serialize(self.scoringRanges)
     }
 
     for idx, zone in ipairs(self.zones) do
@@ -49,6 +51,9 @@ function TrackConfig.deserialize(data)
 
     -- 2.1.0 compatibility transfer
     if data.clippingPoints ~= nil then data.clips = data.clippingPoints end
+    if data.scoringRanges == nil then
+        data.scoringRanges = ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
+    end
 
     local clips = {}
     for idx, clipPoint in ipairs(data.clips) do
@@ -61,10 +66,11 @@ function TrackConfig.deserialize(data)
     obj.startLine = S.deserialize(data.startLine)
     obj.finishLine = S.deserialize(data.finishLine)
     obj.startingPoint = S.deserialize(data.startingPoint)
+    obj.scoringRanges = S.deserialize(data.scoringRanges)
     return obj
 end
 
-function TrackConfig.new(name, zones, clips, startLine, finishLine, startingPoint)
+function TrackConfig.new(name, zones, clips, startLine, finishLine, startingPoint, scoringRanges)
     local self = setmetatable({}, TrackConfig)
     self.name = name or 'default'
     local _zones = zones or {}
@@ -74,6 +80,7 @@ function TrackConfig.new(name, zones, clips, startLine, finishLine, startingPoin
     self.startLine = startLine
     self.finishLine = finishLine
     self.startingPoint = startingPoint
+    self.scoringRanges = scoringRanges or ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
     return self
 end
 

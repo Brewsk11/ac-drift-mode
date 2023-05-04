@@ -25,33 +25,19 @@ local current_speed = nil
 local mult_angle = nil
 local mult_speed = nil
 
-local max_angle = 45
-local min_angle = 5
-
-local max_speed = 50
-local min_speed = 15
-
 local listener_id = EventSystem.registerListener("drift-mode-dev")
 
 local function calcMultipliers()
+  if not track_data then return end
+
   local car = ac.getCar(0)
   local car_direction = car.velocity:clone():normalize()
 
-  -- Speed
-  current_speed = car.speedKmh
-  local scoring_speed = math.clamp(current_speed, min_speed, max_speed)
-  mult_speed = (scoring_speed - min_speed) / (max_speed - min_speed)
+  mult_speed = track_data.scoringRanges.speedRange:getFractionClamped(car.speedKmh)
+  mult_angle = track_data.scoringRanges.angleRange:getFractionClamped(math.deg(math.acos(car_direction:dot(car.look))))
 
-  -- Angle
-  current_angle = math.deg(math.acos(car_direction:dot(car.look)))
-  local scoring_angle = math.clamp(current_angle, min_angle, max_angle)
-  mult_angle = (scoring_angle - min_angle) / (max_angle - min_angle)
-
-  if mult_speed == 0 then -- Clamp angle when stationary
-    mult_angle = 0
-  else
-    mult_angle = (scoring_angle - min_angle) / (max_angle - min_angle)
-  end
+  -- Ignore angle when min speed not reached, to avoid big fluctuations with low speed
+  if car.speedKmh < 30 then  mult_angle = 0 end
 
   return mult_speed, mult_angle
 end
