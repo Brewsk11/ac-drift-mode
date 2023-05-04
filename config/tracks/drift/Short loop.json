@@ -1760,7 +1760,7 @@
         "__val": "Short loop"
     },
     "__class": "TrackConfig",
-    "clippingPoints": [
+    "clips": [
         {
             "maxPoints": {
                 "__val": 1000
@@ -1768,7 +1768,7 @@
             "length": {
                 "__val": 13.316209034126
             },
-            "__class": "ClippingPoint",
+            "__class": "Clip",
             "name": {
                 "__val": "MyClip"
             },
@@ -1798,7 +1798,7 @@
             "length": {
                 "__val": 5.4758278402783
             },
-            "__class": "ClippingPoint",
+            "__class": "Clip",
             "name": {
                 "__val": "Entry"
             },
@@ -1828,7 +1828,7 @@
             "length": {
                 "__val": 5.2934813838432
             },
-            "__class": "ClippingPoint",
+            "__class": "Clip",
             "name": {
                 "__val": "Middle clip"
             },

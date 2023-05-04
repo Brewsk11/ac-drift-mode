@@ -179,7 +179,7 @@ local createZone = function ()
   cursorReset()
 end
 
-local createClippingPoint = function()
+local createClip = function()
   ---@type Point
   local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
   cursor_data.point_group_b = PointGroup.new({origin})
@@ -193,8 +193,8 @@ local createClippingPoint = function()
   local direction = (_end:value() - origin:value()):normalize()
   local length = _end:value():distance(origin:value())
 
-  local clippingPoint = ClippingPoint.new(new_clip_name, origin, direction, length, tonumber(new_clip_points))
-  track_data.clippingPoints[#track_data.clippingPoints+1] = clippingPoint
+  local clip = Clip.new(new_clip_name, origin, direction, length, tonumber(new_clip_points))
+  track_data.clips[#track_data.clips+1] = clip
   new_clip_name = track_data:getNextClipName()
   DataBroker.store("track_data", track_data)
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
@@ -418,10 +418,10 @@ local function drawAppUI()
     running_task = coroutine.create(createZone)
   end
 
-  -- [BUTTON] Create clipping point
+  -- [BUTTON] Create clip
   ui.offsetCursor(vec2(140, -54))
   if ui.button("Create clip", vec2(120, 50), track_buttons_flags) then
-    running_task = coroutine.create(createClippingPoint)
+    running_task = coroutine.create(createClip)
   end
 
   -- [INPUT] Zone name
@@ -430,7 +430,7 @@ local function drawAppUI()
   local text, changed = ui.inputText("##zoneName", new_zone_name, track_inputs_flags)
   if changed then new_zone_name = text end
 
-  -- [INPUT] Clipping point name
+  -- [INPUT] Clip name
   ui.offsetCursor(vec2(140, -24))
   ui.setNextItemWidth(120)
   local text, changed = ui.inputText("##clipName", new_clip_name, track_inputs_flags)
@@ -445,7 +445,7 @@ local function drawAppUI()
     else new_zone_points = tostring(tonumber(text)) end
   end
 
-  -- [INPUT] Clipping point points
+  -- [INPUT] Clip points
   ui.offsetCursor(vec2(140, -24))
   ui.setNextItemWidth(120)
   local text, changed = ui.inputText("##clipPoints", new_clip_points, track_inputs_flags + ui.InputTextFlags.CharsDecimal)

@@ -8,7 +8,7 @@ local Zone = require('drift-mode/models/Zone')
 ---@class TrackConfig
 ---@field name string Configuration name
 ---@field zones Zone[]
----@field clippingPoints ClippingPoint[]
+---@field clips Clip[]
 ---@field startLine Segment
 ---@field finishLine Segment
 ---@field startingPoint StartingPoint
@@ -20,7 +20,7 @@ function TrackConfig.serialize(self)
         __class = "TrackConfig",
         name = S.serialize(self.name),
         zones = {},
-        clippingPoints = {},
+        clips = {},
         startLine = S.serialize(self.startLine),
         finishLine  = S.serialize(self.finishLine),
         startingPoint = S.serialize(self.startingPoint)
@@ -30,8 +30,8 @@ function TrackConfig.serialize(self)
         data.zones[idx] = zone:serialize()
     end
 
-    for idx, clipPoint in ipairs(self.clippingPoints) do
-        data.clippingPoints[idx] = clipPoint:serialize()
+    for idx, clipPoint in ipairs(self.clips) do
+        data.clips[idx] = clipPoint:serialize()
     end
 
     return data
@@ -47,27 +47,30 @@ function TrackConfig.deserialize(data)
         zones[idx] = Zone.deserialize(zone)
     end
 
-    local clippingPoints = {}
-    for idx, clipPoint in ipairs(data.clippingPoints) do
-        clippingPoints[idx] = ClippingPoint.deserialize(clipPoint)
+    -- 2.1.0 compatibility transfer
+    if data.clippingPoints ~= nil then data.clips = data.clippingPoints end
+
+    local clips = {}
+    for idx, clipPoint in ipairs(data.clips) do
+        clips[idx] = Clip.deserialize(clipPoint)
     end
 
     obj.name = S.deserialize(data.name)
     obj.zones = zones
-    obj.clippingPoints = clippingPoints
+    obj.clips = clips
     obj.startLine = S.deserialize(data.startLine)
     obj.finishLine = S.deserialize(data.finishLine)
     obj.startingPoint = S.deserialize(data.startingPoint)
     return obj
 end
 
-function TrackConfig.new(name, zones, clippingPoints, startLine, finishLine, startingPoint)
+function TrackConfig.new(name, zones, clips, startLine, finishLine, startingPoint)
     local self = setmetatable({}, TrackConfig)
     self.name = name or 'default'
     local _zones = zones or {}
     self.zones = _zones
-    local _clippingPoints = clippingPoints or {}
-    self.clippingPoints = _clippingPoints
+    local _clips = clips or {}
+    self.clips = _clips
     self.startLine = startLine
     self.finishLine = finishLine
     self.startingPoint = startingPoint
@@ -76,7 +79,11 @@ end
 
 function TrackConfig.drawSetup(self)
     for _, zone in ipairs(self.zones) do
-      zone:drawSetup()
+        zone:drawSetup()
+    end
+
+    for _, clip in ipairs(self.clips) do
+        clip:drawSetup()
     end
 
     if self.startingPoint then self.startingPoint:drawSetup() end
@@ -89,7 +96,7 @@ function TrackConfig.getNextZoneName(self)
 end
 
 function TrackConfig.getNextClipName(self)
-    return "clip_" .. string.format('%03d', #self.clippingPoints + 1)
+    return "clip_" .. string.format('%03d', #self.clips + 1)
 end
 
 local function test()
