@@ -9,6 +9,7 @@ local PP = require('drift-mode/physicspatcher')
 local S = require('drift-mode/serializer')
 
 require('drift-mode/ui_layouts/scores')
+require('drift-mode/ui_layouts/infobars')
 require('drift-mode/models')
 
 local config_list = ConfigIO.listTrackConfigs()
@@ -530,6 +531,17 @@ end
 
 function WindowScores()
   appScoresLayout(run_state_data, game_state, track_data)
+end
+
+function WindowInfobars()
+  if drift_state then
+    drawModifiers(15, 50, 5, 45,
+      drift_state.ratio_mult,
+      drift_state.speed_mult,
+      drift_state.angle_mult,
+      drift_state:getFinalMult()
+    )
+  end
 end
 
 gameStateUpdate()

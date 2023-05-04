@@ -3,7 +3,6 @@ local DataBroker = require('drift-mode/databroker')
 local Timer = require('drift-mode/timer')
 local S = require('drift-mode/serializer')
 require('drift-mode/models')
-require('drift-mode/ui_layouts/infobars')
 
 ---@type TrackConfig?
 local track_data = nil
@@ -162,8 +161,4 @@ end
 
 function script.drawUI()
   if not run_state or not game_state then return end
-
-  if game_state:isPlaymode() then
-    drawModifiers(min_speed, max_speed, min_angle, max_angle, current_ratio, mult_speed, mult_angle)
-  end
 end
