@@ -74,7 +74,7 @@ function ClipState:registerPosition(point, speed_mult, angle_mult)
     local hit_segment_height =  point:flat().y - self.lastPoint:flat().y
     local hit_segment_ratio = self.lastPoint:flat():distance(res) / self.lastPoint:flat():distance(point:flat())
     local hit_height = hit_segment_height * hit_segment_ratio
-    self.hitPoint = Point.new("", vec3(res.x, hit_height, res.y))
+    self.hitPoint = Point.new(vec3(res.x, hit_height, res.y))
 
     self.finalPerformance = self.hitRatioMult * self.hitAngleMult * self.hitSpeedMult
     self.finalScore = self.finalPerformance * self.clip.maxPoints

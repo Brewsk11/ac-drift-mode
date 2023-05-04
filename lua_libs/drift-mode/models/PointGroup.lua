@@ -158,9 +158,9 @@ end
 
 local function test()
     local points = {}
-    points[1] = Point.new("point_001", vec3(1, 1, 1))
-    points[2] = Point.new("point_002", vec3(2, 2, 2))
-    points[3] = Point.new("point_003", vec3(3, 3, 3))
+    points[1] = Point.new(vec3(1, 1, 1))
+    points[2] = Point.new(vec3(2, 2, 2))
+    points[3] = Point.new(vec3(3, 3, 3))
 
     -- PointGroup.new()
     local group = PointGroup.new()
@@ -174,7 +174,7 @@ local function test()
     Assert.Equal(group:count(), 3, "Group did not correctly initialize, incorrect number of points returned")
 
     -- PointGroup:append(point)
-    group:append(Point.new("point_appended_004", vec3(4, 4, 4)))
+    group:append(Point.new(vec3(4, 4, 4)))
     Assert.Equal(group:count(), 4, "Point did not append correctly to the group")
 
     -- PointGroup:iterVal()

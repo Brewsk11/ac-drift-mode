@@ -107,10 +107,10 @@ end
 
 local function test()
     local points = {
-        Point.new("a", vec3(1, 1, 1)),
-        Point.new("b", vec3(2, 2, 2)),
-        Point.new("c", vec3(3, 3, 3)),
-        Point.new("d", vec3(4, 4, 4))
+        Point.new(vec3(1, 1, 1)),
+        Point.new(vec3(2, 2, 2)),
+        Point.new(vec3(3, 3, 3)),
+        Point.new(vec3(4, 4, 4))
     }
 
     local segments = {

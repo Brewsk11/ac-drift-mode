@@ -82,7 +82,7 @@ local function registerPosition()
   if not car_data or not run_state then return end
 
   local car = ac.getCar(0)
-  local car_scoring_point = Point.new("", car.position + (-car.look * car_data.rearOffset))
+  local car_scoring_point = Point.new(car.position + (-car.look * car_data.rearOffset))
 
   current_speed, current_angle = calcMultipliers()
   if run_state then
@@ -94,7 +94,7 @@ local last_pos = nil
 local function monitorCrossingLines()
   if not run_state or not track_data then return end
 
-  local current_pos = Point.new("", ac.getCar(0).position)
+  local current_pos = Point.new(ac.getCar(0).position)
   if last_pos == nil then
     last_pos = current_pos
     return

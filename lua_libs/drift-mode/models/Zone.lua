@@ -105,7 +105,7 @@ end
 ---@param custom_origin Point? Custom origin point, to check corretly it must be outside the zone
 ---@return boolean
 function Zone.isInZone(self, point, custom_origin)
-    local origin = custom_origin or Point.new("origin", vec3(0, 0, 0))
+    local origin = custom_origin or Point.new(vec3(0, 0, 0))
 
     --DEBUG local hits = {}
     local hit_no = 0
@@ -231,8 +231,8 @@ function Zone.shortestCrossline(self, point)
             if shortest.segment == nil then
                 shortest = {
                     segment = Segment.new(
-                    Point.new("out_hit", vec3(out_hit.hit.x, 0, out_hit.hit.y)),
-                    Point.new("in_hit", vec3(in_hit.hit.x, 0, in_hit.hit.y))),
+                    Point.new(vec3(out_hit.hit.x, 0, out_hit.hit.y)),
+                    Point.new(vec3(in_hit.hit.x, 0, in_hit.hit.y))),
                     out_no = out_hit.segment_no,
                     in_no = in_hit.segment_no
                 }
@@ -243,8 +243,8 @@ function Zone.shortestCrossline(self, point)
                 if shortest_lenght > new_lenght then
                     shortest = {
                         segment = Segment.new(
-                        Point.new("out_hit", vec3(out_hit.hit.x, 0, out_hit.hit.y)),
-                        Point.new("in_hit", vec3(in_hit.hit.x, 0, in_hit.hit.y))),
+                        Point.new(vec3(out_hit.hit.x, 0, out_hit.hit.y)),
+                        Point.new(vec3(in_hit.hit.x, 0, in_hit.hit.y))),
                         out_no = out_hit.segment_no,
                         in_no = in_hit.segment_no
                     }
@@ -274,43 +274,43 @@ local function test()
     -- Zone.isSegmentInZone
     --   For debugging these it'd be best to draw a coordinate plane (x, z) and check
     local inside = PointGroup.new{
-        Point.new("", vec3(0, 0, 0)),
-        Point.new("", vec3(1, 0, 0)) }
+        Point.new(vec3(0, 0, 0)),
+        Point.new(vec3(1, 0, 0)) }
     local outside = PointGroup.new{
-        Point.new("", vec3(0, 0, 1)),
-        Point.new("", vec3(1, 0, 1))}
+        Point.new(vec3(0, 0, 1)),
+        Point.new(vec3(1, 0, 1))}
 
     local zone = Zone.new("test", outside, inside, 0)
-    local custom_origin = Point.new("", vec3(23.45, 0, 51.23))
+    local custom_origin = Point.new(vec3(23.45, 0, 51.23))
 
     local segment = Segment.new(
-        Point.new("", vec3(2, 0, 0)),
-        Point.new("", vec3(2, 0, 2)))
+        Point.new(vec3(2, 0, 0)),
+        Point.new(vec3(2, 0, 2)))
     Assert.Equal(zone:isSegmentInZone(segment, custom_origin), 0.0, "Zone.isZoneInSegment() test failed")
 
     segment = Segment.new(
-        Point.new("", vec3(0.1, 0, 0.1)),
-        Point.new("", vec3(0.5, 0, 0.8)))
+        Point.new(vec3(0.1, 0, 0.1)),
+        Point.new(vec3(0.5, 0, 0.8)))
     Assert.Equal(zone:isSegmentInZone(segment, custom_origin), 1.0, "Zone.isZoneInSegment() test failed")
 
     segment = Segment.new(
-        Point.new("", vec3(0.5, 0, 0.5)),
-        Point.new("", vec3(0.5, 0, 2.5)))
+        Point.new(vec3(0.5, 0, 0.5)),
+        Point.new(vec3(0.5, 0, 2.5)))
     Assert.Equal(zone:isSegmentInZone(segment, custom_origin), 0.25, "Zone.isZoneInSegment() test failed")
 
     segment = Segment.new(
-        Point.new("", vec3(0.5, 0, 0.5)),
-        Point.new("", vec3(0.5, 0, 4.5)))
+        Point.new(vec3(0.5, 0, 0.5)),
+        Point.new(vec3(0.5, 0, 4.5)))
     Assert.Equal(zone:isSegmentInZone(segment, custom_origin), 0.125, "Zone.isZoneInSegment() test failed")
 
     segment = Segment.new(
-        Point.new("", vec3(0.5, 0, 4.5)),
-        Point.new("", vec3(0.5, 0, 0.5)))
+        Point.new(vec3(0.5, 0, 4.5)),
+        Point.new(vec3(0.5, 0, 0.5)))
     Assert.Equal(zone:isSegmentInZone(segment, custom_origin), 0.125, "Zone.isZoneInSegment() test failed")
 
     segment = Segment.new(
-        Point.new("", vec3(0.5, 0, 2.5)),
-        Point.new("", vec3(0.5, 0, 0.5)))
+        Point.new(vec3(0.5, 0, 2.5)),
+        Point.new(vec3(0.5, 0, 0.5)))
     Assert.Equal(zone:isSegmentInZone(segment, custom_origin), 0.25, "Zone.isZoneInSegment() test failed")
 end
 test()

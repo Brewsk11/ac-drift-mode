@@ -60,7 +60,7 @@ function Clip.new(name, origin, direction, length, maxPoints)
 end
 
 function Clip:getEnd()
-    return Point.new("", self.origin:value() + self.direction * self.length)
+    return Point.new(self.origin:value() + self.direction * self.length)
 end
 
 function Clip.drawSetup(self)
