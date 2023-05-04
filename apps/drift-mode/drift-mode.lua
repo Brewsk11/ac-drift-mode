@@ -27,6 +27,9 @@ local track_data = nil
 ---@type RunStateData?
 local run_state_data = nil
 
+---@type DriftState?
+local drift_state = nil
+
 local new_zone_name = nil
 local new_clip_name = nil
 local new_zone_points = "2000"
@@ -88,6 +91,8 @@ end
 local function refreshRunState()
   ---@type RunStateData
   run_state_data = DataBroker.read("run_state_data")
+  ---@type DriftState
+  drift_state = DataBroker.read("drift_state")
 end
 
 local running_task = nil
@@ -99,7 +104,7 @@ local track_inputs_flags = ui.InputTextFlags.None
 
 local timers = {
   listeners = Timer.new(0.5, listenForData),
-  run_state_refresher = Timer.new(0.1, refreshRunState)
+  run_state_refresher = Timer.new(0.05, refreshRunState)
 }
 
 function script.update(dt)

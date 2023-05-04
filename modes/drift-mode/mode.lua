@@ -135,8 +135,9 @@ local timers = {
   monitor_crossing = Timer.new(0.1, function()
     monitorCrossingLines()
   end),
-  emit_run_state = Timer.new(0.1, function()
+  emit_run_state = Timer.new(0.05, function()
     DataBroker.store("run_state_data", run_state)
+    DataBroker.store('drift_state', DriftState.new(mult_speed, mult_angle, current_ratio))
   end)
 }
 
