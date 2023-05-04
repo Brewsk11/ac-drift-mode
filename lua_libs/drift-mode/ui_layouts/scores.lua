@@ -7,7 +7,7 @@ function appScoresLayout(run_state_data, game_state, track_data)
     if not run_state_data or not game_state then return end
   
     if game_state:isPlaymode() then
-      local window_height = 165 + #run_state_data.zoneStates * 20
+      local window_height = 185 + #run_state_data.zoneStates * 20 + #run_state_data.clipStates * 20
       ui.beginChild('scoresWindow', vec2(450, window_height), true)
   
       ui.drawRectFilled(vec2(0, 0), vec2(450, window_height), rgbm(0.15, 0.15, 0.15, 0.4))
@@ -20,6 +20,8 @@ function appScoresLayout(run_state_data, game_state, track_data)
       ui.pushFont(ui.Font.Main)
       ui.offsetCursorY(-10)
       ui.text(string.format("Total performance: %.2f%%", run_state_data.totalPerformance * 100))
+
+      -- Zones
       ui.offsetCursorY(20)
       local header_orig = ui.getCursor()
       ui.pushFont(ui.Font.Main)
@@ -54,6 +56,36 @@ function appScoresLayout(run_state_data, game_state, track_data)
         ui.setCursor(zone_orig + vec2(350, 0))
         local done = "-"
         if zone_state.finished then done = "X" end
+        ui.text(done)
+      end
+
+      -- Clips
+      ui.offsetCursorY(20)
+      local header_orig = ui.getCursor()
+      ui.pushFont(ui.Font.Main)
+      ui.text("Clip")
+      ui.setCursor(header_orig + vec2(150, 0))
+      ui.text("Score")
+      ui.setCursor(header_orig + vec2(200, 0))
+      ui.text("Max")
+      ui.setCursor(header_orig + vec2(250, 0))
+      ui.text("Perf.")
+      ui.setCursor(header_orig + vec2(350, 0))
+      ui.text("Done")
+      ui.offsetCursorY(10)
+      ui.pushFont(ui.Font.Monospace)
+      for _, clip_state in ipairs(run_state_data.clipStates) do
+        local clip_orig = ui.getCursor()
+        ui.text(clip_state.clip)
+        ui.setCursor(clip_orig + vec2(150, 0))
+        ui.text(string.format("%.0f", clip_state.score))
+        ui.setCursor(clip_orig + vec2(200, 0))
+        ui.text(tostring(clip_state.maxPoints))
+        ui.setCursor(clip_orig + vec2(250, 0))
+        ui.text(string.format("%.2f%%", clip_state.performance * 100))
+        ui.setCursor(clip_orig + vec2(350, 0))
+        local done = "-"
+        if clip_state.crossed then done = "X" end
         ui.text(done)
       end
       ui.endChild()

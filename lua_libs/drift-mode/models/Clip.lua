@@ -6,7 +6,8 @@ local S = require('drift-mode/serializer')
 ---@field origin Point
 ---@field direction vec3
 ---@field length number
----@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
+---@field maxPoints integer Maximum points possible to score for the clip (in a perfect run)
+---@field private lastPoint Point To calculate where crossed
 local Clip = {}
 Clip.__index = Clip
 
@@ -56,6 +57,10 @@ function Clip.new(name, origin, direction, length, maxPoints)
     self.length = length
     self.maxPoints = maxPoints
     return self
+end
+
+function Clip:getEnd()
+    return Point.new("", self.origin:value() + self.direction * self.length)
 end
 
 function Clip.drawSetup(self)

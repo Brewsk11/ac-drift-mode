@@ -15,6 +15,7 @@ local ZoneState = {}
 ZoneState.__index = ZoneState
 
 ---Serializes to lightweight ZoneStateData as ZoneState should not be brokered.
+---due to volume of `self.zone: Zone`
 ---@param self ZoneState
 ---@return table
 function ZoneState.serialize(self)
