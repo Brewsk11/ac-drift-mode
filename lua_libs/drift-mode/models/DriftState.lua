@@ -1,19 +1,28 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+
 ---@class DriftState Lightweight class for passing information about drift state such as angle from a calculating module to UI
 ---@field speed_mult number
 ---@field angle_mult number
 ---@field ratio_mult number
 ---@field score_mult number
+---@field side_drifting DriftState.Side
 local DriftState = {}
 DriftState.__index = DriftState
 
-function DriftState.new(speed_mult, angle_mult, ratio_mult)
+---@enum DriftState.Side
+DriftState.Side = {
+    LeftLeads = 0,
+    RightLeads = 1
+}
+
+function DriftState.new(speed_mult, angle_mult, ratio_mult, side_drifting)
     local self = setmetatable({}, DriftState)
     self.speed_mult = speed_mult
     self.angle_mult = angle_mult
     self.ratio_mult = ratio_mult
+    self.side_drifting = side_drifting
     return self
 end
 
@@ -23,6 +32,7 @@ function DriftState.serialize(self)
         speed_mult = S.serialize(self.speed_mult),
         angle_mult = S.serialize(self.angle_mult),
         ratio_mult = S.serialize(self.ratio_mult),
+        side_drifting = S.serialize(self.side_drifting),
     }
 
     return data
@@ -34,6 +44,7 @@ function DriftState.deserialize(data)
     obj.speed_mult = S.deserialize(data.speed_mult)
     obj.angle_mult = S.deserialize(data.angle_mult)
     obj.ratio_mult = S.deserialize(data.ratio_mult)
+    obj.side_drifting = S.deserialize(data.side_drifting)
     return obj
 end
 
