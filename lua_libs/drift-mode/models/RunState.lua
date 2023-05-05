@@ -45,8 +45,7 @@ end
 function RunState:registerCar(car_config, car)
     self:calcDriftState(car)
 
-    local zone_scoring_point = Point.new(car.position - car.look * car_config.rearOffset)
-
+    self.driftState.ratio_mult = 0.0
     for _, zone in ipairs(self.zoneStates) do
         local res = zone:registerCar(car_config, car, self.driftState)
         if res ~= nil then
@@ -69,6 +68,8 @@ function RunState:calcDriftState(car)
     car.velocity:normalize(car_direction)
 
     self.driftState.speed_mult = self.trackConfig.scoringRanges.speedRange:getFractionClamped(car.speedKmh)
+
+    -- Somehow the dot sometimes is outside of the arccos domain, even though both v are normalized
     self.driftState.angle_mult = self.trackConfig.scoringRanges.angleRange:getFractionClamped(math.deg(math.acos(car_direction:dot(car.look))))
 
     -- Ignore angle when min speed not reached, to avoid big fluctuations with low speed

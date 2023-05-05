@@ -7,7 +7,7 @@ function appScoresLayout(run_state_data, game_state, track_data)
     if not run_state_data or not game_state then return end
 
     if game_state:isPlaymode() then
-      local window_height = 185 + #run_state_data.zoneStates * 20 + #run_state_data.clipStates * 20
+      local window_height = 195 + #run_state_data.zoneStates * 16 + #run_state_data.clipStates * 16
       ui.beginChild('scoresWindow', vec2(450, window_height), true)
 
       ui.drawRectFilled(vec2(0, 0), vec2(450, window_height), rgbm(0.15, 0.15, 0.15, 0.4))

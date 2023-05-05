@@ -118,7 +118,10 @@ function ClipState:draw()
     )
 
     if self.crossed then
-        local color_hit = color_bad * (1 - self:getMultiplier()) + color_good * self:getMultiplier()
+        -- Ignore ratio in visualization as the clip distance can be gauged by point position
+        local perf_without_ratio = self.hitAngleMult * self.hitSpeedMult
+
+        local color_hit = color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
         render.debugSphere(self.hitPoint:value(), 0.1, color_hit)
         render.debugLine(self.hitPoint:value(), self.hitPoint:value() + vec3(0, 1, 0), color_hit)
     end

@@ -44,31 +44,34 @@ end
 ---@param car ac.StateCar
 ---@param drift_state DriftState
 function ZoneState:registerCar(car_config, car, drift_state)
+    -- If zone has already been finished, ignore call
+    if self.finished then return nil end
+
     local zone_scoring_point = Point.new(car.position - car.look * car_config.rearOffset + car.side * drift_state.side_drifting * car_config.rearSpan)
 
-    local ratio = self:registerPosition(zone_scoring_point, drift_state)
-    drift_state.ratio_mult = ratio
+    -- Check if the registering point belongs to the zone
+    if not self.zone:isInZone(zone_scoring_point) then
+        -- If zone was started then end it
+        if self.started then self.finished = true end
+        return nil
+    else
+        self.started = true
+    end
+
+    return self:registerPosition(zone_scoring_point, drift_state)
 end
 
 ---@param point Point
 ---@param drift_state DriftState
 ---@return number
 function ZoneState:registerPosition(point, drift_state)
-    -- If zone has already been finished, ignore call
-    if self.finished then return 0.0 end
-
-    -- Check if the registering point belongs to the zone
-    if not self.zone:isInZone(point) then
-        -- If zone was started then end it
-        if self.started then self.finished = true end
-        return 0.0
-    else
-        self.started = true
-    end
-
     -- Calculate the ratio multiplier
     -- inhit and outhit are not always colinear due to imperfect logic in shortestCrossline()..
     local cross_line = self.zone:shortestCrossline(point)
+
+    -- In limited number of rays there may not be a hit for a valid point inside the zone
+    -- In such case for now unfortunatelly we'll assume the score did not happen
+    if cross_line == nil then ac.log("Didn't find a crossline for valid point!"); return end
 
     local cross_distance =
       cross_line.segment.tail:projected():distance(point:projected()) +
@@ -211,16 +214,19 @@ function ZoneState:draw()
         if next_idx > #self.scores then break end -- Skip last point
 
         if idx % nth == 0 then
+            -- Ignore ratio in visualization as the distance from outside line can be gauged by point position
+            local perf_without_ratio = scoring_point.speed_mult * scoring_point.angle_mult
+
             render.debugLine(
                 scoring_point.point:value(),
                 self.scores[next_idx].point:value(),
-                color_bad * (1 - scoring_point.score_mult) + color_good * scoring_point.score_mult
+                color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
             )
 
             render.debugSphere(
                 scoring_point.point:value(),
                 0.1,
-                color_bad * (1 - scoring_point.score_mult) + color_good * scoring_point.score_mult
+                color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
             )
         end
     end

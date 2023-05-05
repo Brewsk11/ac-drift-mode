@@ -178,7 +178,7 @@ end
 ---@return table
 function Zone.shortestCrossline(self, point)
     local direction_candidates = {}
-    local ray_count = 180
+    local ray_count = 45
 
     for i = 1, ray_count do
         direction_candidates[i] = rotateVec2(vec2(0, 100), math.pi / ray_count * i)

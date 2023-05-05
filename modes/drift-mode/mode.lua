@@ -113,6 +113,10 @@ function script.draw3D()
   else
     if run_state then run_state:draw() end
   end
+
+  -- if run_state then
+  --   run_state:drawDebug()
+  -- end
 end
 
 function script.drawUI()
