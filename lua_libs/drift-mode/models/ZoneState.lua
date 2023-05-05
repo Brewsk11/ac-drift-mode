@@ -1,10 +1,6 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
-local color_inactive = rgbm(0, 3, 2, 0.4)
-local color_active = rgbm(0, 3, 0, 0.4)
-local color_done = rgbm(0, 0, 3, 0.4)
-
 ---@class ZoneState
 ---@field zone Zone
 ---@field scores ZoneScoringPoint[]
@@ -179,6 +175,9 @@ function ZoneState:isFinished()
     return self.finished
 end
 
+local color_inactive = rgbm(0, 3, 2, 0.4)
+local color_active = rgbm(0, 3, 0, 0.4)
+local color_done = rgbm(0, 0, 3, 0.4)
 local color_bad = rgb(1.5, 0, 1.5)
 local color_good = rgb(0, 3, 0)
 
