@@ -26,7 +26,8 @@ function ClipState.serialize(self)
         crossed = S.serialize(self.crossed),
         score = S.serialize(self:getScore()),
         performance = S.serialize(self:getMultiplier()),
-        hitPoint = S.serialize(self.hitPoint)
+        hitPoint = S.serialize(self.hitPoint),
+        hitRatioMult = S.serialize(self:getRatio())
     }
     return data
 end
@@ -89,6 +90,11 @@ end
 function ClipState:getScore()
     if not self.crossed then return 0.0 end
     return self.finalScore
+end
+
+function ClipState:getRatio()
+    if not self.crossed then return 0.0 end
+    return self.hitRatioMult
 end
 
 local function test()

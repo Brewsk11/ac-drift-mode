@@ -8,6 +8,7 @@ local S = require('drift-mode/serializer')
 ---@field score number
 ---@field performance number
 ---@field hitPoint Point
+---@field hitRatioMult number
 local ClipStateData = {}
 ClipStateData.__index = ClipStateData
 
@@ -20,6 +21,7 @@ function ClipStateData.serialize(self)
         score = S.serialize(self.score),
         performance = S.serialize(self.performance),
         hitPoint = S.serialize(self.hitPoint),
+        hitRatioMult = S.serialize(self.hitRatioMult),
     }
 
     return data
@@ -34,6 +36,7 @@ function ClipStateData.deserialize(data)
     obj.score = S.deserialize(data.score)
     obj.performance = S.deserialize(data.performance)
     obj.hitPoint = S.deserialize(data.hitPoint)
+    obj.hitRatioMult = S.deserialize(data.hitRatioMult)
     return obj
 end
 

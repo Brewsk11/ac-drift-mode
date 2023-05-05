@@ -3,15 +3,15 @@ function appScoresLayout(run_state_data, game_state, track_data)
     -- ui.beginTransparentWindow('logo', vec2(510, 110), vec2(50, 50), true)
     -- ui.image("logo white.png", vec2(50, 50), true)
     -- ui.endTransparentWindow()
-  
+
     if not run_state_data or not game_state then return end
-  
+
     if game_state:isPlaymode() then
       local window_height = 185 + #run_state_data.zoneStates * 20 + #run_state_data.clipStates * 20
       ui.beginChild('scoresWindow', vec2(450, window_height), true)
-  
+
       ui.drawRectFilled(vec2(0, 0), vec2(450, window_height), rgbm(0.15, 0.15, 0.15, 0.4))
-  
+
       ui.pushFont(ui.Font.Main)
       ui.text(track_data.name)
       ui.offsetCursorY(-10)
@@ -70,6 +70,8 @@ function appScoresLayout(run_state_data, game_state, track_data)
       ui.text("Max")
       ui.setCursor(header_orig + vec2(250, 0))
       ui.text("Perf.")
+      ui.setCursor(header_orig + vec2(300, 0))
+      ui.text("Frac.")
       ui.setCursor(header_orig + vec2(350, 0))
       ui.text("Done")
       ui.offsetCursorY(10)
@@ -83,6 +85,8 @@ function appScoresLayout(run_state_data, game_state, track_data)
         ui.text(tostring(clip_state.maxPoints))
         ui.setCursor(clip_orig + vec2(250, 0))
         ui.text(string.format("%.2f%%", clip_state.performance * 100))
+        ui.setCursor(clip_orig + vec2(300, 0))
+        ui.text(string.format("%.2f%%", clip_state.hitRatioMult * 100))
         ui.setCursor(clip_orig + vec2(350, 0))
         local done = "-"
         if clip_state.crossed then done = "X" end
