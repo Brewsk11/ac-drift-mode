@@ -92,6 +92,10 @@ function RunState:draw()
     if self.trackConfig.finishLine then self.trackConfig.finishLine:draw(rgbm(0, 0, 3, 1)) end
 end
 
+function RunState:drawDebug()
+    self.driftState:drawDebug()
+end
+
 local function test()
 end
 test()

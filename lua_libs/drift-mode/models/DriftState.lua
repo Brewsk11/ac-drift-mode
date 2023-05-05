@@ -13,8 +13,8 @@ DriftState.__index = DriftState
 
 ---@enum DriftState.Side
 DriftState.Side = {
-    LeftLeads = 0,
-    RightLeads = 1
+    LeftLeads = 1,
+    RightLeads = -1
 }
 
 function DriftState.new(speed_mult, angle_mult, ratio_mult, side_drifting)
@@ -51,6 +51,14 @@ end
 function DriftState:getFinalMult()
     if not self.speed_mult or not self.angle_mult or not self.ratio_mult then return 0.0 end
     return self.speed_mult * self.angle_mult * self.ratio_mult
+end
+
+function DriftState:drawDebug()
+    local car = ac.getCar(0)
+    render.debugArrow(car.position, car.position + car.velocity, 0.1)
+    render.debugArrow(car.position, car.position + car.look, 0.1)
+
+    render.debugArrow(car.position, car.position + car.side * self.side_drifting, 0.1)
 end
 
 local function test()
