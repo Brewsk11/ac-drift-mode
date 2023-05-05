@@ -93,6 +93,20 @@ function Range:getFractionClamped(value)
 end
 
 local function test()
+    local range = Range.new(0, 100)
+    Assert.Equal(range:getFractionClamped(50), 0.5)
+    Assert.Equal(range:getFractionClamped(75), 0.75)
+    Assert.Equal(range:getFractionClamped(100), 1.0)
+    Assert.Equal(range:getFractionClamped(101), 1.0)
+
+    local range = Range.new(0, 50)
+    Assert.Equal(range:getFractionClamped(10), 0.2)
+    Assert.Equal(range:getFractionClamped(25), 0.5)
+
+    local range = Range.new(100, 150)
+    Assert.Equal(range:getFractionClamped(-100), 0.0)
+    Assert.Equal(range:getFractionClamped(110), 0.2)
+    Assert.Equal(range:getFractionClamped(125), 0.5)
 end
 test()
 
