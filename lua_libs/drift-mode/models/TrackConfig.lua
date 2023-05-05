@@ -50,7 +50,14 @@ function TrackConfig.deserialize(data)
     end
 
     -- 2.1.0 compatibility transfer
+    --   Changed `clippingPoints` field name to `clips`
     if data.clippingPoints ~= nil then data.clips = data.clippingPoints end
+    --   Added new field `scoringRanges`; if nil then fill default
+    if S.deserialize(data.scoringRanges) == nil then
+        data.scoringRanges = S.serialize(
+            ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
+        )
+    end
 
     local clips = {}
     for idx, clipPoint in ipairs(data.clips) do
@@ -63,9 +70,7 @@ function TrackConfig.deserialize(data)
     obj.startLine = S.deserialize(data.startLine)
     obj.finishLine = S.deserialize(data.finishLine)
     obj.startingPoint = S.deserialize(data.startingPoint)
-
-    -- TODO: For some reason this doesn't want to deserialize well?
-    obj.scoringRanges = ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
+    obj.scoringRanges = S.deserialize(data.scoringRanges)
     return obj
 end
 
