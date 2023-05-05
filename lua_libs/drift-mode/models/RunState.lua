@@ -52,7 +52,7 @@ function RunState:registerCar(car_config, car)
         if res ~= nil then
             self.driftState.ratio_mult = res
             break
-    end
+        end
     end
 
     local clip_scoring_point = Point.new(
@@ -118,6 +118,10 @@ end
 function RunState:draw()
     for _, zone_state in ipairs(self.zoneStates) do
         zone_state:draw()
+    end
+
+    for _, clip_state in ipairs(self.clipStates) do
+        clip_state:draw()
     end
 
     if self.trackConfig.startLine then self.trackConfig.startLine:draw(rgbm(0, 3, 0, 1)) end

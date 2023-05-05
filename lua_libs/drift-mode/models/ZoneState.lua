@@ -179,12 +179,41 @@ function ZoneState:isFinished()
     return self.finished
 end
 
+local color_bad = rgb(0.8, 0.8, 1.4)
+local color_good = rgb(0, 3, 0)
+
 function ZoneState:draw()
     local color = color_inactive
     if self:isActive() then color = color_active
     elseif self:isFinished() then color = color_done end
 
     self.zone:drawWall(color)
+
+    -- Draw at most N lines for performance reasons
+    local N = 50
+    local nth = 1
+    while #self.scores / nth > N do
+        nth = nth + 1
+    end
+
+    for idx, scoring_point in ipairs(self.scores) do
+        local next_idx = idx + nth
+        if next_idx > #self.scores then break end -- Skip last point
+
+        if idx % nth == 0 then
+            render.debugLine(
+                scoring_point.point:value(),
+                self.scores[next_idx].point:value(),
+                color_bad * (1 - scoring_point.score_mult) + color_good * scoring_point.score_mult
+            )
+
+            render.debugSphere(
+                scoring_point.point:value(),
+                0.1,
+                color_bad * (1 - scoring_point.score_mult) + color_good * scoring_point.score_mult
+            )
+        end
+    end
 end
 
 local function test()
