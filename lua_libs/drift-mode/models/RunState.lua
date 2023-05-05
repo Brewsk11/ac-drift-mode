@@ -48,7 +48,7 @@ function RunState:registerCar(car_config, car)
     local zone_scoring_point = Point.new(car.position - car.look * car_config.rearOffset)
 
     for _, zone in ipairs(self.zoneStates) do
-        local res = zone:registerPosition(zone_scoring_point, self.driftState)
+        local res = zone:registerCar(car_config, car, self.driftState)
         if res ~= nil then
             self.driftState.ratio_mult = res
             break

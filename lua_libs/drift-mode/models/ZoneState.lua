@@ -40,17 +40,28 @@ function ZoneState.new(zone)
     return self
 end
 
+---@param car_config CarConfig
+---@param car ac.StateCar
+---@param drift_state DriftState
+function ZoneState:registerCar(car_config, car, drift_state)
+    local zone_scoring_point = Point.new(car.position - car.look * car_config.rearOffset + car.side * drift_state.side_drifting * car_config.rearSpan)
+
+    local ratio = self:registerPosition(zone_scoring_point, drift_state)
+    drift_state.ratio_mult = ratio
+end
+
 ---@param point Point
 ---@param drift_state DriftState
+---@return number
 function ZoneState:registerPosition(point, drift_state)
     -- If zone has already been finished, ignore call
-    if self.finished then return end
+    if self.finished then return 0.0 end
 
     -- Check if the registering point belongs to the zone
     if not self.zone:isInZone(point) then
         -- If zone was started then end it
         if self.started then self.finished = true end
-        return
+        return 0.0
     else
         self.started = true
     end
