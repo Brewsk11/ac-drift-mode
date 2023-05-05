@@ -1,5 +1,5 @@
 # Drift mode for Assetto Corsa
 
-Install instructions for packaged mod:
+To install copy contents of `assettocorsa` to Assetto Corsa install directory.
 
-1. Copy contents of `assettocorsa` to Assetto Corsa install directory.
+Unfortunately Content Manager drag&drop does not work.
