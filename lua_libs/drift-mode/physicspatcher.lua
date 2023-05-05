@@ -15,11 +15,15 @@ ALLOW_APPS=1
 ]] .. PhysicsPatcher.PATCH_TAG_END
 
 local function getSurfacesPath()
-    return ac.getFolder(ac.FolderID.ContentTracks) .. "\\" .. ac.getTrackID() .. "\\data\\surfaces.ini"
+    local layout_subpath = ac.getTrackLayout()
+    if layout_subpath ~= "" then layout_subpath = "\\" .. layout_subpath end
+    return ac.getFolder(ac.FolderID.ContentTracks) .. "\\" .. ac.getTrackID() .. layout_subpath .. "\\data\\surfaces.ini"
 end
 
 local function getSurfacesBackupPath()
-    return ac.getFolder(ac.FolderID.ContentTracks) .. "\\" .. ac.getTrackID() .. "\\data\\surfaces.driftmode_patch_backup.ini"
+    local layout_subpath = ac.getTrackLayout()
+    if layout_subpath ~= "" then layout_subpath = "\\" .. layout_subpath end
+    return ac.getFolder(ac.FolderID.ContentTracks) .. "\\" .. ac.getTrackID() .. layout_subpath .. "\\data\\surfaces.driftmode_patch_backup.ini"
 end
 
 function PhysicsPatcher.backupExists()
