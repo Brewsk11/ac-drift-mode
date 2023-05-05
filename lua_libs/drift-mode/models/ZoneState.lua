@@ -179,7 +179,7 @@ function ZoneState:isFinished()
     return self.finished
 end
 
-local color_bad = rgb(0.8, 0.8, 1.4)
+local color_bad = rgb(1.5, 0, 1.5)
 local color_good = rgb(0, 3, 0)
 
 function ZoneState:draw()
