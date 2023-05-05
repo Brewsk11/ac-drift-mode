@@ -19,28 +19,7 @@ local game_state = nil
 ---@type RunState?
 local run_state = nil
 
-local current_ratio = nil
-local current_angle = nil
-local current_speed = nil
-local mult_angle = nil
-local mult_speed = nil
-
 local listener_id = EventSystem.registerListener("drift-mode-dev")
-
-local function calcMultipliers()
-  if not track_data then return end
-
-  local car = ac.getCar(0)
-  local car_direction = car.velocity:clone():normalize()
-
-  mult_speed = track_data.scoringRanges.speedRange:getFractionClamped(car.speedKmh)
-  mult_angle = track_data.scoringRanges.angleRange:getFractionClamped(math.deg(math.acos(car_direction:dot(car.look))))
-
-  -- Ignore angle when min speed not reached, to avoid big fluctuations with low speed
-  if mult_speed == 0 then  mult_angle = 0 end
-
-  return mult_speed, mult_angle
-end
 
 local function resetScore()
   if track_data then run_state = RunState.new(track_data) end
@@ -57,8 +36,7 @@ local function listenForSignals()
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedStart,       function (_      ) run_state = RunState.new(track_data) end) or changed
   EventSystem.endGroup(changed)
   local crossed_finish = false
-  EventSystem.listen(listener_id, EventSystem.Signal.CrossedFinish, function (_) crossed_finish = true
-  end)
+  EventSystem.listen(listener_id, EventSystem.Signal.CrossedFinish, function (_) crossed_finish = true end)
   if crossed_finish then
     EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
@@ -89,7 +67,7 @@ local function monitorCrossingLines()
       last_pos:flat(),
       current_pos:flat()
     )
-    if res then ac.log("emitting start");  EventSystem.emit(EventSystem.Signal.CrossedStart, {}) end
+    if res then EventSystem.emit(EventSystem.Signal.CrossedStart, {}) end
   end
 
   if track_data.finishLine then
@@ -99,39 +77,22 @@ local function monitorCrossingLines()
       last_pos:flat(),
       current_pos:flat()
     )
-    if res then ac.log("emitting finish"); EventSystem.emit(EventSystem.Signal.CrossedFinish, {}) end
+    if res then EventSystem.emit(EventSystem.Signal.CrossedFinish, {}) end
   end
 
   last_pos = current_pos
 end
 
-local function calcSide()
-  local vec = vec3()
-  local car = ac.getCar(0)
-
-  local dot = car.velocity:dot(car.side)
-
-  ac.debug("side", dot)
-  if dot > 0 then return DriftState.Side.LeftLeads
-  else return DriftState.Side.RightLeads end
-end
-
 local timers = {
   data_brokered = Timer.new(0.02, function () listenForSignals() end),
-  scoring_player = Timer.new(0.1, function ()
+  scoring_player = Timer.new(0.05, function ()
     if run_state and game_state and game_state:isPlaymode() then
       registerPosition()
-      total_score = run_state:getScore()
+      DataBroker.store("run_state_data", run_state)
     end
   end),
   monitor_crossing = Timer.new(0.1, function()
     monitorCrossingLines()
-  end),
-  emit_run_state = Timer.new(0.05, function()
-    DataBroker.store("run_state_data", run_state)
-    local side = calcSide()
-    ac.debug("side", side)
-    DataBroker.store('drift_state', DriftState.new(mult_speed, mult_angle, current_ratio, side))
   end)
 }
 
