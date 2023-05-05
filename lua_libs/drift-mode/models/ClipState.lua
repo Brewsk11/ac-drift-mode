@@ -1,10 +1,6 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
-local color_inactive = rgbm(0, 3, 2, 0.4)
-local color_done = rgbm(0, 0, 3, 0.4)
-local color_hit = rgbm(3, 1, 2, 0.8)
-
 ---@class ClipState
 ---@field clip Clip
 ---@field crossed boolean
@@ -103,6 +99,11 @@ function ClipState:getRatio()
     return self.hitRatioMult
 end
 
+local color_inactive = rgbm(0, 3, 2, 0.4)
+local color_done = rgbm(0, 0, 3, 0.4)
+local color_bad = rgb(1.5, 0, 1.5)
+local color_good = rgb(0, 3, 0)
+
 function ClipState:draw()
     local color = color_inactive
     if self.crossed then color = color_done end
@@ -117,6 +118,7 @@ function ClipState:draw()
     )
 
     if self.crossed then
+        local color_hit = color_bad * (1 - self:getMultiplier()) + color_good * self:getMultiplier()
         render.debugSphere(self.hitPoint:value(), 0.1, color_hit)
         render.debugLine(self.hitPoint:value(), self.hitPoint:value() + vec3(0, 1, 0), color_hit)
     end
