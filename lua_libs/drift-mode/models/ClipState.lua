@@ -1,6 +1,10 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local color_inactive = rgbm(0, 3, 2, 0.4)
+local color_done = rgbm(0, 0, 3, 0.4)
+local color_hit = rgbm(3, 1, 2, 0.8)
+
 ---@class ClipState
 ---@field clip Clip
 ---@field crossed boolean
@@ -74,9 +78,9 @@ function ClipState:registerPosition(point, drift_state)
     self.hitRatioMult = end_to_hit / self.clip.length
 
     -- Some magic to determine height of the hit
-    local hit_segment_height =  point:flat().y - self.lastPoint:flat().y
-    local hit_segment_ratio = self.lastPoint:flat():distance(res) / self.lastPoint:flat():distance(point:flat())
-    local hit_height = hit_segment_height * hit_segment_ratio
+    local hit_segment_height =  point:value().y - self.lastPoint:value().y
+    local hit_segment_ratio = point:flat():distance(res) / self.lastPoint:flat():distance(point:flat())
+    local hit_height = point:value().y + hit_segment_height * hit_segment_ratio
     self.hitPoint = Point.new(vec3(res.x, hit_height, res.y))
 
     self.finalPerformance = self.hitRatioMult * self.hitAngleMult * self.hitSpeedMult
@@ -97,6 +101,25 @@ end
 function ClipState:getRatio()
     if not self.crossed then return 0.0 end
     return self.hitRatioMult
+end
+
+function ClipState:draw()
+    local color = color_inactive
+    if self.crossed then color = color_done end
+
+    render.debugArrow(self.clip.origin:value(), self.clip:getEnd():value(), 0.1, color)
+    render.quad(
+        self.clip.origin:value(),
+        self.clip.origin:value() + vec3(0, 1, 0),
+        self.clip.origin:value() - self.clip.direction + vec3(0, 1, 0),
+        self.clip.origin:value() - self.clip.direction,
+        color
+    )
+
+    if self.crossed then
+        render.debugSphere(self.hitPoint:value(), 0.1, color_hit)
+        render.debugLine(self.hitPoint:value(), self.hitPoint:value() + vec3(0, 1, 0), color_hit)
+    end
 end
 
 local function test()
