@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class RunState
 ---@field trackConfig TrackConfig
+---@field driftState DriftState
 ---@field zoneStates ZoneState[]
 ---@field clipStates ClipState[]
 local RunState = {}
@@ -16,6 +17,7 @@ function RunState.serialize(self)
         __class = "RunStateData",
         zoneStates = S.serialize(self.zoneStates),
         clipStates = S.serialize(self.clipStates),
+        driftState = S.serialize(self.driftState),
         totalScore = S.serialize(self:getScore()),
         totalPerformance = S.serialize(self:getPerformance()),
     }
@@ -28,6 +30,7 @@ function RunState.new(track_config)
     self.trackConfig = track_config
     self.zoneStates = {}
     self.clipStates = {}
+    self.driftState = DriftState.new(0, 0, 0, 0)
     for _, zone in ipairs(self.trackConfig.zones) do
         self.zoneStates[#self.zoneStates+1] = ZoneState.new(zone)
     end

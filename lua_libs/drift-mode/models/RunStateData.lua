@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class RunStateData Lightweight dataclass for brokering run information to apps
 ---@field zoneStates ZoneStateData[]
 ---@field clipStates ClipStateData[]
+---@field driftState DriftState
 ---@field totalScore number
 ---@field totalPerformance number
 local RunStateData = {}
@@ -14,6 +15,7 @@ function RunStateData.serialize(self)
         __class = "RunStateData",
         zoneStates = S.serialize(self.zoneStates),
         clipStates = S.serialize(self.clipStates),
+        driftState = S.serialize(self.driftState),
         totalScore = S.serialize(self.totalScore),
         totalPerformance = S.serialize(self.totalPerformance),
     }
@@ -26,6 +28,7 @@ function RunStateData.deserialize(data)
     local obj = setmetatable({}, RunStateData)
     obj.zoneStates = S.deserialize(data.zoneStates)
     obj.clipStates = S.deserialize(data.clipStates)
+    obj.driftState = S.deserialize(data.driftState)
     obj.totalScore = S.deserialize(data.totalScore)
     obj.totalPerformance = S.deserialize(data.totalPerformance)
     return obj
