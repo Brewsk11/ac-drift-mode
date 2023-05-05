@@ -28,9 +28,6 @@ local track_data = nil
 ---@type RunStateData?
 local run_state_data = nil
 
----@type DriftState?
-local drift_state = nil
-
 local new_zone_name = nil
 local new_clip_name = nil
 local new_zone_points = "2000"
@@ -92,8 +89,6 @@ end
 local function refreshRunState()
   ---@type RunStateData
   run_state_data = DataBroker.read("run_state_data")
-  ---@type DriftState
-  drift_state = DataBroker.read("drift_state")
 end
 
 local running_task = nil
@@ -534,8 +529,8 @@ function WindowScores()
 end
 
 function WindowInfobars()
-  if drift_state and track_data then
-    drawModifiers(track_data.scoringRanges, drift_state)
+  if run_state_data and track_data then
+    drawModifiers(track_data.scoringRanges, run_state_data.driftState)
   end
 end
 

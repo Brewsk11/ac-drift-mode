@@ -40,16 +40,48 @@ function RunState.new(track_config)
     return self
 end
 
-function RunState:registerPosition(point, speed_mult, angle_mult)
-    local ratio = nil
+---@param car_config CarConfig
+---@param car ac.StateCar
+function RunState:registerCar(car_config, car)
+    self:calcDriftState(car)
+
+    local zone_scoring_point = Point.new(car.position - car.look * car_config.rearOffset)
+
     for _, zone in ipairs(self.zoneStates) do
-        local res = zone:registerPosition(point, speed_mult, angle_mult)
-        if res ~= nil then ratio = res end
+        local res = zone:registerPosition(zone_scoring_point, self.driftState)
+        if res ~= nil then
+            self.driftState.ratio_mult = res
+            break
     end
+    end
+
+    local clip_scoring_point = Point.new(
+        car.position + car.look * car_config.frontOffset + car.side * car_config.frontSpan * -self.driftState.side_drifting
+    )
     for _, clip in ipairs(self.clipStates) do
-        clip:registerPosition(point, speed_mult, angle_mult)
+        clip:registerPosition(clip_scoring_point, self.driftState)
     end
-    return ratio
+end
+
+---@param car ac.StateCar
+function RunState:calcDriftState(car)
+    local car_direction = vec3(0, 0, 0)
+    car.velocity:normalize(car_direction)
+
+    self.driftState.speed_mult = self.trackConfig.scoringRanges.speedRange:getFractionClamped(car.speedKmh)
+    self.driftState.angle_mult = self.trackConfig.scoringRanges.angleRange:getFractionClamped(math.deg(math.acos(car_direction:dot(car.look))))
+
+    -- Ignore angle when min speed not reached, to avoid big fluctuations with low speed
+    if self.driftState.speed_mult == 0 then
+        self.driftState.angle_mult = 0
+    end
+
+    local dot = car.velocity:dot(car.side)
+    if dot > 0 then
+        self.driftState.side_drifting = DriftState.Side.LeftLeads
+    else
+        self.driftState.side_drifting = DriftState.Side.RightLeads
+    end
 end
 
 function RunState:getScore()

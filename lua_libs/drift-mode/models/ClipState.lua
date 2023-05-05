@@ -46,7 +46,9 @@ function ClipState.new(clip)
     return self
 end
 
-function ClipState:registerPosition(point, speed_mult, angle_mult)
+---@param point Point
+---@param drift_state DriftState
+function ClipState:registerPosition(point, drift_state)
     -- If clip has been scored already, ignore
     if self.crossed then return end
 
@@ -65,8 +67,8 @@ function ClipState:registerPosition(point, speed_mult, angle_mult)
        return
     end
 
-    self.hitAngleMult = angle_mult
-    self.hitSpeedMult = speed_mult
+    self.hitAngleMult = drift_state.angle_mult
+    self.hitSpeedMult = drift_state.speed_mult
 
     local end_to_hit = self.clip:getEnd():flat():distance(res)
     self.hitRatioMult = end_to_hit / self.clip.length

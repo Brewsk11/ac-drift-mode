@@ -68,12 +68,8 @@ local function registerPosition()
   if not car_data or not run_state then return end
 
   local car = ac.getCar(0)
-  local car_scoring_point = Point.new(car.position + (-car.look * car_data.rearOffset))
 
-  current_speed, current_angle = calcMultipliers()
-  if run_state then
-    current_ratio = run_state:registerPosition(car_scoring_point, current_speed, current_angle)
-  end
+  run_state:registerCar(car_data, car)
 end
 
 local last_pos = nil

@@ -44,7 +44,9 @@ function ZoneState.new(zone)
     return self
 end
 
-function ZoneState:registerPosition(point, speed_mult, angle_mult)
+---@param point Point
+---@param drift_state DriftState
+function ZoneState:registerPosition(point, drift_state)
     -- If zone has already been finished, ignore call
     if self.finished then return end
 
@@ -82,7 +84,14 @@ function ZoneState:registerPosition(point, speed_mult, angle_mult)
     -- Setting the distance to 0 will allow to report 100% zone completion.
     if cross_line.in_no == 1 or cross_line.out_no == 1 then distance = 0 end
 
-    self.scores[#self.scores+1] = ZoneScoringPoint.new(point, speed_mult, angle_mult, ratio_mult, distance)
+    self.scores[#self.scores+1] = ZoneScoringPoint.new(
+        point,
+        drift_state.speed_mult,
+        drift_state.angle_mult,
+        ratio_mult,
+        distance
+    )
+
     return ratio_mult
 end
 
