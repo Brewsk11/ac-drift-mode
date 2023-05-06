@@ -60,6 +60,13 @@ local function monitorCrossingLines()
     return
   end
 
+  -- If the delta is large then it was probably a teleport.
+  -- Do not emit start/finish cross in such case.
+  if last_pos:flat():distance(current_pos:flat()) > 5 then
+    last_pos = current_pos
+    return
+  end
+
   if track_data.startLine then
     local res = vec2.intersect(
       track_data.startLine.head:flat(),
