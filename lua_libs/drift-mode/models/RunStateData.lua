@@ -6,7 +6,7 @@ local S = require('drift-mode/serializer')
 ---@field clipStates ClipStateData[]
 ---@field driftState DriftState
 ---@field totalScore number
----@field totalPerformance number
+---@field avgMultiplier number
 local RunStateData = {}
 RunStateData.__index = RunStateData
 
@@ -17,7 +17,7 @@ function RunStateData.serialize(self)
         clipStates = S.serialize(self.clipStates),
         driftState = S.serialize(self.driftState),
         totalScore = S.serialize(self.totalScore),
-        totalPerformance = S.serialize(self.totalPerformance),
+        avgMultiplier = S.serialize(self.avgMultiplier),
     }
 
     return data
@@ -30,7 +30,7 @@ function RunStateData.deserialize(data)
     obj.clipStates = S.deserialize(data.clipStates)
     obj.driftState = S.deserialize(data.driftState)
     obj.totalScore = S.deserialize(data.totalScore)
-    obj.totalPerformance = S.deserialize(data.totalPerformance)
+    obj.avgMultiplier = S.deserialize(data.avgMultiplier)
     return obj
 end
 

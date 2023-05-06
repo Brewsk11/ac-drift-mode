@@ -19,7 +19,7 @@ function appScoresLayout(run_state_data, game_state, track_data)
       ui.text(string.format("Total score: %.0f", run_state_data.totalScore))
       ui.pushFont(ui.Font.Main)
       ui.offsetCursorY(-10)
-      ui.text(string.format("Total performance: %.2f%%", run_state_data.totalPerformance * 100))
+      ui.text(string.format("Average run multiplier: %.2f%%", run_state_data.avgMultiplier * 100))
 
       -- Zones
       ui.offsetCursorY(20)

@@ -7,6 +7,7 @@ local S = require('drift-mode/serializer')
 ---@field crossed boolean
 ---@field score number
 ---@field performance number
+---@field multiplier number
 ---@field hitPoint Point
 ---@field hitRatioMult number
 local ClipStateData = {}
@@ -20,6 +21,7 @@ function ClipStateData.serialize(self)
         crossed = S.serialize(self.crossed),
         score = S.serialize(self.score),
         performance = S.serialize(self.performance),
+        multiplier = S.serialize(self.multiplier),
         hitPoint = S.serialize(self.hitPoint),
         hitRatioMult = S.serialize(self.hitRatioMult),
     }

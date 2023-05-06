@@ -19,7 +19,7 @@ function RunState.serialize(self)
         clipStates = S.serialize(self.clipStates),
         driftState = S.serialize(self.driftState),
         totalScore = S.serialize(self:getScore()),
-        totalPerformance = S.serialize(self:getPerformance()),
+        avgMultiplier = S.serialize(self:getAvgMultiplier()),
     }
 
     return data
@@ -96,7 +96,7 @@ function RunState:getScore()
     return score
 end
 
-function RunState:getPerformance()
+function RunState:getAvgMultiplier()
     local mult = 0
     local scoring_finished = 0
     for _, zone_state in ipairs(self.zoneStates) do

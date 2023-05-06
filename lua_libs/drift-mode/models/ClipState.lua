@@ -9,7 +9,7 @@ local S = require('drift-mode/serializer')
 ---@field private hitAngleMult number
 ---@field private hitRatioMult number
 ---@field private finalScore number Final score after multipliers `(maxScore * perf)`
----@field private finalPerformance number Final multiplier
+---@field private finalMultiplier number Final multiplier
 ---@field private lastPoint Point To calculate where crossed
 local ClipState = {}
 ClipState.__index = ClipState
@@ -25,7 +25,8 @@ function ClipState.serialize(self)
         maxPoints = S.serialize(self.clip.maxPoints),
         crossed = S.serialize(self.crossed),
         score = S.serialize(self:getScore()),
-        performance = S.serialize(self:getMultiplier()),
+        performance = S.serialize(self:getPerformance()),
+        multiplier = S.serialize(self:getMultiplier()),
         hitPoint = S.serialize(self.hitPoint),
         hitRatioMult = S.serialize(self:getRatio())
     }
@@ -41,7 +42,7 @@ function ClipState.new(clip)
     self.hitSpeedMult = nil
     self.hitRatioMult = nil
     self.finalScore = nil
-    self.finalPerformance = nil
+    self.finalMultiplier = nil
     self.lastPoint = nil
     return self
 end
@@ -79,14 +80,19 @@ function ClipState:registerPosition(point, drift_state)
     local hit_height = point:value().y + hit_segment_height * hit_segment_ratio
     self.hitPoint = Point.new(vec3(res.x, hit_height, res.y))
 
-    self.finalPerformance = self.hitRatioMult * self.hitAngleMult * self.hitSpeedMult
-    self.finalScore = self.finalPerformance * self.clip.maxPoints
+    self.finalMultiplier = self.hitRatioMult * self.hitAngleMult * self.hitSpeedMult
+    self.finalScore = self.finalMultiplier * self.clip.maxPoints
     self.crossed = true
+end
+
+function ClipState:getPerformance()
+    if not self.crossed then return 0.0 end
+    return self.hitSpeedMult * self.hitAngleMult
 end
 
 function ClipState:getMultiplier()
     if not self.crossed then return 0.0 end
-    return self.finalPerformance
+    return self.finalMultiplier
 end
 
 function ClipState:getScore()
