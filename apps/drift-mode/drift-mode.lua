@@ -119,7 +119,6 @@ function script.update(dt)
 
   if ac.getCar(0).extraF then
     ac.setExtraSwitch(5, false)
-    EventSystem.emit(EventSystem.Signal.ResetScore, {})
     EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
 
