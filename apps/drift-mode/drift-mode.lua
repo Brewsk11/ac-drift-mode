@@ -31,7 +31,7 @@ local run_state_data = nil
 local new_zone_name = nil
 local new_clip_name = nil
 local new_zone_points = "2000"
-local new_clip_points = "2000"
+local new_clip_points = "1000"
 local combo_selected = nil
 local combo_selected_type = nil
 
