@@ -24,7 +24,7 @@ cp -r config/*   output/assettocorsa/extension/config/drift-mode
 cp "res/logo white.png" output/assettocorsa/apps/lua/drift-mode/icon.png
 cp "res/logo white.png" "output/assettocorsa/extension/lua/new-modes/drift-mode/logo white.png"
 
-cp ./INSTALL.md output/
+cp ./INSTALL.md output/README.txt
 cp ./uninstall_driftmode.bat output/
 
 find ./output -name *.ini -exec sed -i "s/VERSION = XXX/VERSION = $VERSION/"  {} \;
