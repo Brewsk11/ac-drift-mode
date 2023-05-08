@@ -52,9 +52,11 @@ end
 
 local last_pos = nil
 local function monitorCrossingLines()
-  if not run_state or not track_data then return end
+  if not run_state or not track_data or not car_data then return end
 
-  local current_pos = Point.new(ac.getCar(0).position)
+  local car = ac.getCar(0)
+
+  local current_pos = Point.new(car.position + car.look * car_data.frontOffset)
   if last_pos == nil then
     last_pos = current_pos
     return
