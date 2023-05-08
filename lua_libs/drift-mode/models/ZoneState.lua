@@ -51,9 +51,19 @@ function ZoneState:registerCar(car_config, car, drift_state)
 
     -- Check if the registering point belongs to the zone
     if not self.zone:isInZone(zone_scoring_point) then
-        -- If zone was started then end it
-        if self.started then self.finished = true end
-        return nil
+        -- If zone was started then check if center point
+        -- is still in for small buffer
+        if self.started then
+            local rear_bumper_center = Point.new(car.position - car.look * car_config.rearOffset)
+            if not self.zone:isInZone(rear_bumper_center) then
+                self.finished = true
+                return nil
+            else
+                return self:registerPosition(zone_scoring_point, drift_state, false)
+            end
+        else
+            return nil
+        end
     else
         self.started = true
     end
@@ -71,14 +81,19 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
 
     -- In limited number of rays there may not be a hit for a valid point inside the zone
     -- In such case for now unfortunatelly we'll assume the score did not happen
-    if cross_line == nil then ac.log("Didn't find a crossline for valid point!"); return end
+    if cross_line == nil then ac.log("Didn't find a crossline for valid point!"); return 0.0 end
 
-    local cross_distance =
-      cross_line.segment.tail:projected():distance(point:projected()) +
-      cross_line.segment.head:projected():distance(point:projected())
-    local point_distance =
-      cross_line.segment.tail:projected():distance(point:projected())
-    local ratio_mult = point_distance / cross_distance
+    local ratio_mult = 0.0
+    -- In case of calculating for point in safety buffer (when player slightly ran outside
+    -- but we keep scoring 0 to allow coming back to the zone)
+    if is_inside then
+        local cross_distance =
+          cross_line.segment.tail:projected():distance(point:projected()) +
+          cross_line.segment.head:projected():distance(point:projected())
+        local point_distance =
+          cross_line.segment.tail:projected():distance(point:projected())
+        ratio_mult = point_distance / cross_distance
+    end
 
     -- Calculate how far the point is in the zone as a fraction
     -- dependent on which segments the shortest cross line has hit
@@ -190,11 +205,12 @@ function ZoneState:isFinished()
     return self.finished
 end
 
-local color_inactive = rgbm(0, 3, 2, 0.4)
+local color_inactive = rgbm(0, 2, 1, 0.4)
 local color_active = rgbm(0, 3, 0, 0.4)
 local color_done = rgbm(0, 0, 3, 0.4)
-local color_bad = rgb(1.5, 0, 1.5)
+local color_bad = rgb(2, 0, 1)
 local color_good = rgb(0, 3, 0)
+local color_outside = rgbm(3, 0, 0, 0.2)
 
 function ZoneState:draw()
     local color = color_inactive
@@ -215,19 +231,34 @@ function ZoneState:draw()
         if next_idx > #self.scores then break end -- Skip last point
 
         if idx % nth == 0 then
+            local color = nil
+
+            if not scoring_point.inside then
+                color = color_outside
+            else
+                -- Ignore ratio in visualization as the distance from outside line can be gauged by point position
+                local perf_without_ratio = scoring_point.speed_mult * scoring_point.angle_mult
+                color = color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
+            end
+
             -- Ignore ratio in visualization as the distance from outside line can be gauged by point position
             local perf_without_ratio = scoring_point.speed_mult * scoring_point.angle_mult
+
+            -- If outside assume worst color, ignoring speed and angle
+            if not scoring_point.inside then
+                perf_without_ratio = 0.0
+            end
 
             render.debugLine(
                 scoring_point.point:value(),
                 self.scores[next_idx].point:value(),
-                color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
+                color
             )
 
             render.debugSphere(
                 scoring_point.point:value(),
                 0.1,
-                color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
+                color
             )
         end
     end
