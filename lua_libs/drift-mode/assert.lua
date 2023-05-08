@@ -49,7 +49,7 @@ function Assert.Nil(a, message)
     _assert(a, nil, function (_a) return _a == nil end, "Value is not nil", message)
 end
 
-function Assert.NotNil(a, b, message)
+function Assert.NotNil(a, message)
     _assert(a, nil, function (_a) return _a ~= nil end, "Value is nil", message)
 end
 
