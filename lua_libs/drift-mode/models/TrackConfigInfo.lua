@@ -1,4 +1,6 @@
 local Assert = require('drift-mode/assert')
+local ConfigIO = require('drift-mode/configio')
+
 local S = require('drift-mode/serializer')
 
 ---@enum TrackConfigType
@@ -39,6 +41,12 @@ function TrackConfigInfo.new(name, path, type)
     self.path = path
     self.type = type
     return self
+end
+
+---@return TrackConfig
+function TrackConfigInfo:load()
+    Assert.NotNil(self.path, "Tried to load track from empty TrackConfigInfo")
+    return ConfigIO.loadTrackConfig(self)
 end
 
 local function test()
