@@ -58,13 +58,13 @@ function ZoneState:registerCar(car_config, car, drift_state)
         self.started = true
     end
 
-    return self:registerPosition(zone_scoring_point, drift_state)
+    return self:registerPosition(zone_scoring_point, drift_state, true)
 end
 
 ---@param point Point
 ---@param drift_state DriftState
 ---@return number
-function ZoneState:registerPosition(point, drift_state)
+function ZoneState:registerPosition(point, drift_state, is_inside)
     -- Calculate the ratio multiplier
     -- inhit and outhit are not always colinear due to imperfect logic in shortestCrossline()..
     local cross_line = self.zone:shortestCrossline(point)
@@ -99,7 +99,8 @@ function ZoneState:registerPosition(point, drift_state)
         drift_state.speed_mult,
         drift_state.angle_mult,
         ratio_mult,
-        distance
+        distance,
+        is_inside
     )
 
     return ratio_mult
