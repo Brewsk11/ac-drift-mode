@@ -11,6 +11,9 @@ local track_id = ac.getTrackID()
 local usr_track_config_dir = usr_cfg_path .. "\\tracks\\" .. track_id
 local sys_track_config_dir = sys_cfg_path .. "\\tracks\\" .. track_id
 
+local last_used_name = ".last.json"
+local last_used_track_config_path = usr_track_config_dir .. "\\" .. last_used_name
+
 local car_id = ac.getCarID(0)
 
 local usr_car_config_dir = usr_cfg_path .. "\\cars"
@@ -36,30 +39,64 @@ function ConfigIO.saveCarConfig(car_data)
     ConfigIO.saveConfig(usr_car_config_dir .. "\\" .. car_id  .. '.json', car_data)
 end
 
+---@return TrackConfigInfo|nil
+function ConfigIO.getLastUsedTrackConfigInfo()
+    if io.fileExists(last_used_track_config_path) then
+        return ConfigIO.loadConfig(last_used_track_config_path)
+    end
+    return nil
+end
+
+function ConfigIO.setLastUsedTrackConfigInfo(track_cfg_info)
+    ConfigIO.saveConfig(last_used_track_config_path, track_cfg_info)
+end
+
+---@return TrackConfigInfo[]
 function ConfigIO.listTrackConfigs()
     local usr_configs = io.scanDir(usr_track_config_dir)
     local sys_configs = io.scanDir(sys_track_config_dir)
-    local track_configs = {
-        user_configs = {},
-        official_configs = {}
-    }
-    for _, cfg_name in ipairs(usr_configs) do track_configs.user_configs[#track_configs.user_configs+1] = cfg_name:gsub(".json", "") end
-    for _, cfg_name in ipairs(sys_configs) do track_configs.official_configs[#track_configs.official_configs+1] = cfg_name:gsub(".json", "") end
+    local track_configs = {}
+
+    for _, cfg_name in ipairs(usr_configs) do
+        if cfg_name ~= last_used_name then
+            track_configs[#track_configs+1] = TrackConfigInfo.new(
+                cfg_name:gsub(".json", ""),
+                usr_track_config_dir .. "\\" .. cfg_name,
+                TrackConfigType.User
+            )
+        end
+    end
+
+    for _, cfg_name in ipairs(sys_configs) do
+        track_configs[#track_configs+1] = TrackConfigInfo.new(
+            cfg_name:gsub(".json", ""),
+            sys_track_config_dir .. "\\" .. cfg_name,
+            TrackConfigType.Official
+        )
+    end
+
     return track_configs
 end
 
----@param track_config TrackConfig
+---@param track_config TrackConfigInfo
 function ConfigIO.saveTrackConfig(track_config)
     io.createDir(usr_track_config_dir)
-    ConfigIO.saveConfig(usr_track_config_dir .. "\\" .. track_config.name .. '.json', track_config)
+    local track_cfg_info = TrackConfigInfo.new(
+        track_config.name,
+        usr_track_config_dir .. "\\" .. track_config.name .. '.json',
+        TrackConfigType.User
+    )
+    ConfigIO.saveConfig(track_cfg_info.path, track_config)
+    ConfigIO.setLastUsedTrackConfigInfo(track_cfg_info)
+    return track_cfg_info
 end
 
-function ConfigIO.loadTrackConfig(name, dir)
-    if dir == "official" then
-        return ConfigIO.loadConfig(sys_track_config_dir .. "\\" .. name .. '.json')
-    else
-        return ConfigIO.loadConfig(usr_track_config_dir .. "\\" .. name .. '.json')
-    end
+---comment
+---@param track_cfg_info TrackConfigInfo
+---@return unknown|nil
+function ConfigIO.loadTrackConfig(track_cfg_info)
+    ConfigIO.setLastUsedTrackConfigInfo(track_cfg_info)
+    return ConfigIO.loadConfig(track_cfg_info.path)
 end
 
 function ConfigIO.loadConfig(path)

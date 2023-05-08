@@ -1,5 +1,3 @@
-local user_cfg_path = os.getenv("USERPROFILE") .. "\\Documents\\Assetto Corsa\\cfg\\extension\\drift-mode"
-
 local DataBroker = require('drift-mode/databroker')
 local EventSystem = require('drift-mode/eventsystem')
 local AsyncUtils = require('drift-mode/asynchelper')
@@ -22,6 +20,9 @@ local game_state = GameState.new()
 ---@type CarConfig
 local car_data = nil
 
+---@type TrackConfigInfo?
+local track_config_info = nil
+
 ---@type TrackConfig?
 local track_data = nil
 
@@ -32,8 +33,6 @@ local new_zone_name = nil
 local new_clip_name = nil
 local new_zone_points = "2000"
 local new_clip_points = "1000"
-local combo_selected = nil
-local combo_selected_type = nil
 
 local function loadCar()
   car_data = ConfigIO.loadCarConfig()
@@ -42,18 +41,20 @@ local function loadCar()
 end
 loadCar()
 
-local function loadTrack(track_cfg_name, dir)
-  track_data = ConfigIO.loadTrackConfig(track_cfg_name, dir)
+---@param track_cfg_info TrackConfigInfo
+local function loadTrack(track_cfg_info)
+  track_config_info = track_cfg_info
+  track_data = track_config_info:load()
   new_zone_name = track_data:getNextZoneName()
   new_clip_name = track_data:getNextClipName()
-  combo_selected = track_data.name
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
 end
 
-if #config_list.user_configs > 0 then
-  loadTrack(config_list.user_configs[1])
-elseif #config_list.official_configs > 0 then
-  loadTrack(config_list.official_configs[1], "official")
+track_config_info = ConfigIO.getLastUsedTrackConfigInfo()
+if track_config_info then
+  loadTrack(track_config_info)
+elseif #config_list > 0 then
+  loadTrack(config_list[1])
 else
   track_data = TrackConfig.new()
   new_zone_name = track_data:getNextZoneName()
@@ -369,18 +370,14 @@ local function drawAppUI()
 
   -- [COMBO] Track config combo box
   ui.setNextItemWidth(175)
-  ui.combo("##configDropdown", combo_selected, function ()
-    config_list = ConfigIO.listTrackConfigs(ac.getTrackID())
-    for _, cfg in ipairs(config_list.user_configs) do
-      if ui.selectable("    [User] " .. cfg, cfg) then
-        combo_selected = cfg
-        combo_selected_type = nil
-      end
-    end
-    for _, cfg in ipairs(config_list.official_configs) do
-      if ui.selectable("[Official] " .. cfg, cfg) then
-        combo_selected = cfg
-        combo_selected_type = "official"
+  local combo_item_name = "None"
+  if track_config_info then combo_item_name = string.format("[%.1s] %s", track_config_info.type, track_config_info.name) end
+  ui.combo("##configDropdown", combo_item_name, function ()
+    config_list = ConfigIO.listTrackConfigs()
+    for _, cfg in ipairs(config_list) do
+      local label = string.format("%10s %s", "[" .. cfg.type .. "]", cfg.name)
+      if ui.selectable(label) then
+        track_config_info = cfg
       end
     end
   end)
@@ -388,18 +385,15 @@ local function drawAppUI()
   -- [BUTTON] Save track config button
   ui.pushFont(ui.Font.Small)
   ui.offsetCursor(vec2(200, -48))
-  if ui.button("Save ##saveTrack", vec2(60, 20), track_buttons_flags) then
-    ConfigIO.saveTrackConfig(track_data)
-    combo_selected = track_data.name
-    config_list = ConfigIO.listTrackConfigs()
+  if ui.button("Save ##saveTrack", vec2(60, 20), track_buttons_flags) and track_data then
+    track_config_info = ConfigIO.saveTrackConfig(track_data)
   end
 
   -- [BUTTON] Load track config button
   ui.offsetCursor(vec2(200, 0))
-  if ui.button("Load", vec2(60, 20), track_buttons_flags) then
-    if combo_selected == nil then return end
-    track_data = ConfigIO.loadTrackConfig(combo_selected, combo_selected_type)
-    EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
+  if ui.button("Load", vec2(60, 20), track_buttons_flags) and track_config_info then
+    loadTrack(track_config_info)
+    EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
 
   ui.offsetCursorY(15)
