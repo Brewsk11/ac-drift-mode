@@ -15,6 +15,8 @@ ECHO:
 @ECHO ON
 RMDIR /S /Q apps\lua\drift-mode 2>NUL
 RMDIR /S /Q apps\lua\drift-mode-dev 2>NUL
+RMDIR /S /Q apps\lua\drift-mode-dev 2>NUL
+RMDIR /S /Q apps\lua\drift-mode-editor 2>NUL
 RMDIR /S /Q lua\drift-mode 2>NUL
 RMDIR /S /Q extension\lua\new-modes\drift-mode 2>NUL
 RMDIR /S /Q extension\lua\new-modes\drift-mode-setup 2>NUL
