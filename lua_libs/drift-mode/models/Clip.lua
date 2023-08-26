@@ -63,6 +63,11 @@ function Clip:getEnd()
     return Point.new(self.origin:value() + self.direction * self.length)
 end
 
+function Clip:setEnd(new_end_point)
+  self.direction = (new_end_point:value() - self.origin:value()):normalize()
+  self.length = new_end_point:value():distance(self.origin:value())
+end
+
 function Clip.drawSetup(self)
     self.origin:draw(0.6, color_origin)
     render.debugArrow(self.origin:value(), self.origin:value() + self.direction * self.length, 0.1, color_arrow)

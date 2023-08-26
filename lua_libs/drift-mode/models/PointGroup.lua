@@ -64,7 +64,7 @@ end
 ---@param idx integer Index of the point in the group
 ---@return Point
 function PointGroup.get(self, idx)
-    assert(PointGroup:count() < idx, "Point index (" .. tostring(idx) .. ") out of range (" .. PointGroup:count() ")")
+    assert(self:count() >= idx, "Point index (" .. tostring(idx) .. ") out of range (" .. self:count() .. ")")
     return self.points[idx]
 end
 
@@ -72,13 +72,13 @@ end
 ---@param self PointGroup
 ---@return Point
 function PointGroup.first(self)
-    assert(PointGroup:count() > 0, "Group is empty")
+    assert(self:count() > 0, "Group is empty")
     return self.points[1]
 end
 
 ---Get Last point from the group
 function PointGroup.last(self)
-    assert(PointGroup:count() > 0, "Group is empty")
+    assert(self:count() > 0, "Group is empty")
     return self.points[#self.points]
 end
 
@@ -145,6 +145,24 @@ function PointGroup.pop(self)
     return point
 end
 
+---Remove point at index
+---@param self PointGroup
+---@param idx integer
+---@return Point
+function PointGroup.remove(self, idx)
+    Assert.LessOrEqual(idx, self:count(), "Out-of-bounds error")
+    local point = self.points[idx]
+    table.remove(self.points, idx)
+    return point
+end
+
+---Remove allow points with equal value
+---@param self PointGroup
+---@param point Point
+---@return boolean -- True if deleted any point
+function PointGroup.delete(self, point)
+    return table.removeItem(self.points, point)
+end
 
 function PointGroup.draw(self, size, color, number)
     local _number = number or false
@@ -177,12 +195,21 @@ local function test()
     group:append(Point.new(vec3(4, 4, 4)))
     Assert.Equal(group:count(), 4, "Point did not append correctly to the group")
 
+    -- PointGroup:last()
+    -- PointGroup:first()
+    Assert.Equal(Point.new(vec3(4, 4, 4)):value(), group:last():value())
+    Assert.Equal(Point.new(vec3(1, 1, 1)):value(), group:first():value())
+
     -- PointGroup:iterVal()
     -- PointGroup:iterFlat()
     -- PointGroup:iterProjected()
     for k, v in group:iterVal()       do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
     for k, v in group:iterFlat()      do Assert.Equal(v, vec2(k, k),    "Incorrect flat point value returned") end
     for k, v in group:iterProjected() do Assert.Equal(v, vec3(k, 0, k), "Incorrect projected point value returned") end
+
+    -- PointGroup:remove(idx)
+    group:remove(1)
+    Assert.Equal(group:get(1):value(), vec3(2, 2, 2))
 end
 test()
 

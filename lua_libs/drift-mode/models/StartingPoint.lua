@@ -36,6 +36,10 @@ function StartingPoint.new(origin, direction)
     return self
 end
 
+function StartingPoint:setEnd(new_end_point)
+    self.direction = (new_end_point:value() - self.origin:value()):normalize()
+end
+
 function StartingPoint.drawSetup(self)
     self.origin:draw(0.6)
     render.debugArrow(self.origin:value(), self.origin:value() + self.direction, 0.1)

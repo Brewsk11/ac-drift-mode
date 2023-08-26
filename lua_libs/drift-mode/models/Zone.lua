@@ -45,8 +45,8 @@ function Zone.new(name, outsideLine, insideLine, maxPoints)
     local self = setmetatable({}, Zone)
 
     self.name = name
-    self:setOutsideLine(outsideLine)
-    self:setInsideLine(insideLine)
+    self:setOutsideLine(outsideLine or PointGroup.new())
+    self:setInsideLine(insideLine or PointGroup.new())
     self.maxPoints = maxPoints
 
     return self
@@ -72,6 +72,10 @@ function Zone.calculatePolygon(self)
     end
 
     self.polygon = PointGroup.new(points)
+end
+
+function Zone.setDirty(self)
+    self:calculatePolygon()
 end
 
 function Zone.getOutsideLine(self)

@@ -28,10 +28,10 @@ function GameState.deserialize(data)
     return obj
 end
 
-function GameState.new()
+function GameState.new(is_car_setup, is_track_setup)
     local self = setmetatable({}, GameState)
-    self.isCarSetup = false
-    self.isTrackSetup = false
+    self.isCarSetup = is_car_setup or false
+    self.isTrackSetup = is_track_setup or false
     return self
 end
 

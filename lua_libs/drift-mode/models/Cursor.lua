@@ -2,12 +2,12 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
 ---@class Cursor Data class containing various objects you may want to draw on the track, that are not related to track configuration
----@field selector Point
----@field color_selector rgbm
----@field point_group_a PointGroup
----@field point_group_b PointGroup
----@field color_a rgbm
----@field color_b rgbm
+---@field selector Point?
+---@field color_selector rgbm?
+---@field point_group_a PointGroup?
+---@field point_group_b PointGroup?
+---@field color_a rgbm?
+---@field color_b rgbm?
 local Cursor = {}
 Cursor.__index = Cursor
 

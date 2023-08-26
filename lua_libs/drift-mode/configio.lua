@@ -51,6 +51,10 @@ function ConfigIO.setLastUsedTrackConfigInfo(track_cfg_info)
     ConfigIO.saveConfig(last_used_track_config_path, track_cfg_info)
 end
 
+function ConfigIO.getUserCoursesDirectory()
+    return usr_track_config_dir
+end
+
 ---@return TrackConfigInfo[]
 function ConfigIO.listTrackConfigs()
     local usr_configs = io.scanDir(usr_track_config_dir)
@@ -78,7 +82,8 @@ function ConfigIO.listTrackConfigs()
     return track_configs
 end
 
----@param track_config TrackConfigInfo
+---@param track_config TrackConfig
+---@return TrackConfigInfo
 function ConfigIO.saveTrackConfig(track_config)
     io.createDir(usr_track_config_dir)
     local track_cfg_info = TrackConfigInfo.new(
