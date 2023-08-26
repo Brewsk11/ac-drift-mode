@@ -8,7 +8,7 @@ local listener_id = EventSystem.registerListener('editor-app')
 local game_state = GameState.new()
 
 local course_editor = CourseEditor()
-local course_editor_enabled = true
+local course_editor_enabled = false
 
 function WindowMain(dt)
 
@@ -22,4 +22,3 @@ function WindowMain(dt)
     course_editor:drawUI(dt)
   end
 end
-
