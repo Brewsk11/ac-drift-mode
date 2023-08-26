@@ -22,6 +22,9 @@ cp -r modes/*    output/assettocorsa/extension/lua/new-modes
 cp -r config/*   output/assettocorsa/extension/config/drift-mode
 
 cp "res/logo white.png" output/assettocorsa/apps/lua/drift-mode/icon.png
+cp "res/logo white tool.png" output/assettocorsa/apps/lua/drift-mode-editor/icon_tool.png
+cp "res/logo white info.png" output/assettocorsa/apps/lua/drift-mode/icon_info.png
+cp "res/logo white score.png" output/assettocorsa/apps/lua/drift-mode/icon_score.png
 cp "res/logo white.png" "output/assettocorsa/extension/lua/new-modes/drift-mode/logo white.png"
 
 cp ./INSTALL.md output/README.txt
