@@ -668,7 +668,7 @@ This won't save the course - if clicked by mistake load the course again before 
   ui.textAligned("User courses directory", vec2(0, 1.5), vec2(ui.availableSpaceX() - 124, 20))
   ui.sameLine(0, 4)
   if ui.button("Open explorer", vec2(120, 30), button_global_flags) then
-    os.showInExplorer(ConfigIO.getLastUsedTrackConfigInfo().path)
+    os.openInExplorer(ConfigIO.getUserCoursesDirectory())
   end
   if ui.itemHovered() then
     ui.setTooltip(ConfigIO.getUserCoursesDirectory())
