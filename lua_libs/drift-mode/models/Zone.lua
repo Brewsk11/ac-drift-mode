@@ -257,6 +257,18 @@ function Zone.shortestCrossline(self, point)
     return shortest
 end
 
+---Return a segment that is the entry gate of the zone, ie. segment between first
+---inside line point and first outside line point.
+---@param self Zone
+---@return Segment?
+function Zone.getStartGate(self)
+    if self:getInsideLine():count() == 0 or self:getOutsideLine():count() == 0 then
+        return nil
+    end
+
+    return Segment.new(self:getInsideLine():get(1), self:getOutsideLine():get(1))
+end
+
 function Zone.drawWall(self, color)
     self.outsideLine:segment():drawWall(1, color)
     self.insideLine:segment():drawWall(0.1, color)

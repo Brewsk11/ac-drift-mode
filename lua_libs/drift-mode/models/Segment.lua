@@ -65,6 +65,10 @@ function Segment:lenghtProjected()
     return self.head:projected():distance(self.tail:projected())
 end
 
+function Segment:getCenter()
+    return (self.head:value() + self.tail:value()) / 2
+end
+
 function Segment.draw(self, color)
     render.debugLine(self.head:value(), self.tail:value(), color)
 end
