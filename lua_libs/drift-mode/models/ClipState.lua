@@ -114,7 +114,10 @@ function ClipState:draw()
     local color = color_inactive
     if self.crossed then color = color_done end
 
-    render.debugArrow(self.clip.origin:value(), self.clip:getEnd():value(), 0.1, color)
+    --- Rise the clip's arrow a little so it's not clipping
+    local height_adjustment = vec3(0, 0.05, 0)
+
+    render.debugArrow(self.clip.origin:value() + height_adjustment, self.clip:getEnd():value() + height_adjustment, 0.1, color)
     render.quad(
         self.clip.origin:value(),
         self.clip.origin:value() + vec3(0, 1, 0),
