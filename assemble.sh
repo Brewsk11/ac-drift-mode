@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# Run autogeneration
+./generate_models.sh
+
 # Assemble directories for release/installation
 
 VERSION=$(git describe --tags)
