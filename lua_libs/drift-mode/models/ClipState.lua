@@ -118,7 +118,7 @@ function ClipState:draw()
     render.quad(
         self.clip.origin:value(),
         self.clip.origin:value() + vec3(0, 1, 0),
-        self.clip.origin:value() - self.clip.direction + vec3(0, 1, 0),
+        self.clip.origin:value() - self.clip.direction * 0.4 + vec3(0, 1, 0),
         self.clip.origin:value() - self.clip.direction,
         color
     )
