@@ -7,14 +7,22 @@ local S = require('drift-mode/serializer')
 ---@field started boolean
 ---@field finished boolean
 ---@field private finalPerformance number
-local ZoneState = {}
-ZoneState.__index = ZoneState
+local ZoneState = class("ZoneState")
+
+function ZoneState:initialize(zone)
+    self.zone = zone
+    self.scoring_points = {}
+    self.scores = {}
+    self.started = false
+    self.finished = false
+    self.finalPerformance = nil
+end
 
 ---Serializes to lightweight ZoneStateData as ZoneState should not be brokered.
 ---due to volume of `self.zone: Zone`
 ---@param self ZoneState
 ---@return table
-function ZoneState.serialize(self)
+function ZoneState:serialize()
     local data = {
         __class = "ZoneStateData",
         zone = S.serialize(self.zone.name),
@@ -27,17 +35,6 @@ function ZoneState.serialize(self)
     }
 
     return data
-end
-
-function ZoneState.new(zone)
-    local self = setmetatable({}, ZoneState)
-    self.zone = zone
-    self.scoring_points = {}
-    self.scores = {}
-    self.started = false
-    self.finished = false
-    self.finalPerformance = nil
-    return self
 end
 
 ---@param car_config CarConfig

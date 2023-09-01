@@ -63,7 +63,7 @@ function ConfigIO.listTrackConfigs()
 
     for _, cfg_name in ipairs(usr_configs) do
         if cfg_name ~= last_used_name then
-            track_configs[#track_configs+1] = TrackConfigInfo.new(
+            track_configs[#track_configs+1] = TrackConfigInfo(
                 cfg_name:gsub(".json", ""),
                 usr_track_config_dir .. "\\" .. cfg_name,
                 TrackConfigType.User
@@ -72,7 +72,7 @@ function ConfigIO.listTrackConfigs()
     end
 
     for _, cfg_name in ipairs(sys_configs) do
-        track_configs[#track_configs+1] = TrackConfigInfo.new(
+        track_configs[#track_configs+1] = TrackConfigInfo(
             cfg_name:gsub(".json", ""),
             sys_track_config_dir .. "\\" .. cfg_name,
             TrackConfigType.Official
@@ -86,7 +86,7 @@ end
 ---@return TrackConfigInfo
 function ConfigIO.saveTrackConfig(track_config)
     io.createDir(usr_track_config_dir)
-    local track_cfg_info = TrackConfigInfo.new(
+    local track_cfg_info = TrackConfigInfo(
         track_config.name,
         usr_track_config_dir .. "\\" .. track_config.name .. '.json',
         TrackConfigType.User

@@ -1,18 +1,30 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class RunState
+---@class RunState : ClassBase
 ---@field trackConfig TrackConfig
 ---@field driftState DriftState
 ---@field zoneStates ZoneState[]
 ---@field clipStates ClipState[]
-local RunState = {}
-RunState.__index = RunState
+local RunState = class("RunState")
+
+function RunState:initialize(track_config)
+    self.trackConfig = track_config
+    self.zoneStates = {}
+    self.clipStates = {}
+    self.driftState = DriftState(0, 0, 0, 0)
+    for _, zone in ipairs(self.trackConfig.zones) do
+        self.zoneStates[#self.zoneStates+1] = ZoneState(zone)
+    end
+    for _, clip in ipairs(self.trackConfig.clips) do
+        self.clipStates[#self.clipStates+1] = ClipState(clip)
+    end
+end
 
 ---Serializes to lightweight RunStateData as RunState should not be brokered.
 ---@param self RunState
 ---@return table
-function RunState.serialize(self)
+function RunState:serialize()
     local data = {
         __class = "RunStateData",
         zoneStates = S.serialize(self.zoneStates),
@@ -23,21 +35,6 @@ function RunState.serialize(self)
     }
 
     return data
-end
-
-function RunState.new(track_config)
-    local self = setmetatable({}, RunState)
-    self.trackConfig = track_config
-    self.zoneStates = {}
-    self.clipStates = {}
-    self.driftState = DriftState.new(0, 0, 0, 0)
-    for _, zone in ipairs(self.trackConfig.zones) do
-        self.zoneStates[#self.zoneStates+1] = ZoneState.new(zone)
-    end
-    for _, clip in ipairs(self.trackConfig.clips) do
-        self.clipStates[#self.clipStates+1] = ClipState(clip)
-    end
-    return self
 end
 
 ---@param car_config CarConfig

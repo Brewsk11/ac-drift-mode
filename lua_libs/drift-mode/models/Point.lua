@@ -84,4 +84,4 @@ local function test()
 end
 test()
 
-return class.emmy(Point, Point.initialize)
+return Point

@@ -1,13 +1,18 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class ScoringRanges
+---@class ScoringRanges : ClassBase
 ---@field speedRange Range
 ---@field angleRange Range
-local ScoringRanges = {}
-ScoringRanges.__index = ScoringRanges
+local ScoringRanges = class("ScoringRanges")
 
-function ScoringRanges.serialize(self)
+function ScoringRanges:initialize(speedRange, angleRange)
+    -- TODO: Move defaults here from TrackConfig init
+    self.speedRange = speedRange
+    self.angleRange = angleRange
+end
+
+function ScoringRanges:serialize()
     local data = {
         __class = "ScoringRanges",
         speedRange = S.serialize(self.speedRange),
@@ -20,17 +25,10 @@ end
 function ScoringRanges.deserialize(data)
     Assert.Equal(data.__class, "ScoringRanges", "Tried to deserialize wrong class")
 
-    local obj = ScoringRanges.new()
+    local obj = ScoringRanges()
     obj.speedRange = S.deserialize(data.speedRange)
     obj.angleRange = S.deserialize(data.angleRange)
     return obj
-end
-
-function ScoringRanges.new(speedRange, angleRange)
-    local self = setmetatable({}, ScoringRanges)
-    self.speedRange = speedRange
-    self.angleRange = angleRange
-    return self
 end
 
 local function test()

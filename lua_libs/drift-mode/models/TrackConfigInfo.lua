@@ -9,14 +9,19 @@ TrackConfigType = {
     Official = "Official"
 }
 
----@class TrackConfigInfo
+---@class TrackConfigInfo : ClassBase
 ---@field name string
 ---@field path string
 ---@field type TrackConfigType
-local TrackConfigInfo = {}
-TrackConfigInfo.__index = TrackConfigInfo
+local TrackConfigInfo = class("TrackConfigInfo")
 
-function TrackConfigInfo.serialize(self)
+function TrackConfigInfo:initialize(name, path, type)
+    self.name = name
+    self.path = path
+    self.type = type
+end
+
+function TrackConfigInfo:serialize()
     local data = {
         __class = "TrackConfigInfo",
         name = S.serialize(self.name),
@@ -28,22 +33,14 @@ end
 
 function TrackConfigInfo.deserialize(data)
     Assert.Equal(data.__class, "TrackConfigInfo", "Tried to deserialize wrong class")
-    local obj = TrackConfigInfo.new()
+    local obj = TrackConfigInfo()
     obj.name = S.deserialize(data.name)
     obj.path = S.deserialize(data.path)
     obj.type = S.deserialize(data.type)
     return obj
 end
 
-function TrackConfigInfo.new(name, path, type)
-    local self = setmetatable({}, TrackConfigInfo)
-    self.name = name
-    self.path = path
-    self.type = type
-    return self
-end
-
----@return TrackConfig
+---@return TrackConfig?
 function TrackConfigInfo:load()
     Assert.NotNil(self.path, "Tried to load track from empty TrackConfigInfo")
     return ConfigIO.loadTrackConfig(self)

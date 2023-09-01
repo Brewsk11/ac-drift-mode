@@ -20,7 +20,7 @@ local listener_id = EventSystem.registerListener('app-editor-courses')
 local new_clip_points = "1000"
 
 ---Cursor
-local cursor_data = Cursor.new() ---@type Cursor
+local cursor_data = Cursor() ---@type Cursor
 
 local closest_point = nil
 local currently_editing = false
@@ -45,7 +45,7 @@ local unsaved_changes = false
 
 -- #region CourseEditor
 
----@class CourseEditor
+---@class CourseEditor : ClassBase
 local CourseEditor = class('CourseEditor')
 
 function CourseEditor:initialize()
@@ -265,7 +265,7 @@ function CourseEditor:drawUIZones(dt)
     ui.offsetCursorY(ui.availableSpaceY() - 65)
   end
   if ui.button("Create new zone", vec2(200, 60), button_global_flags) then
-    zones[#zones + 1] = Zone.new(course:getNextZoneName(), nil, nil, tonumber(new_clip_points))
+    zones[#zones + 1] = Zone(course:getNextZoneName(), nil, nil, tonumber(new_clip_points))
     self:onCourseEdited()
   end
 
@@ -344,7 +344,7 @@ function CourseEditor:drawUIZones(dt)
     local hit_point = Point(hit)
     cursor_data.selector = hit_point
     if currently_extending.point_group_ref:count() > 0 then
-      cursor_data.point_group_b = PointGroup.new({ currently_extending.point_group_ref:last(), hit_point })
+      cursor_data.point_group_b = PointGroup({ currently_extending.point_group_ref:last(), hit_point })
     end
 
     if ui.mouseClicked() then
@@ -353,7 +353,7 @@ function CourseEditor:drawUIZones(dt)
     end
 
     if ui.mouseClicked(ui.MouseButton.Right) then
-      cursor_data = Cursor.new()
+      cursor_data = Cursor()
 
       -- Set dirty to recalculate polygon
       course.zones[currently_extending.zone_idx]:setDirty()
@@ -499,19 +499,19 @@ function CourseEditor:drawUIClips(dt)
         closest_type = 'end'
       end
     else
-      cursor_data.point_group_b = PointGroup.new({ clip_start, Point(hit) })
+      cursor_data.point_group_b = PointGroup({ clip_start, Point(hit) })
       if ui.mouseClicked() then
         course.clips[#course.clips+1] = Clip(course:getNextClipName(), clip_start, vec3(0, 0, 0), 0, new_clip_points)
         course.clips[#course.clips]:setEnd(Point(hit))
         currently_extending = false
-        cursor_data = Cursor.new()
+        cursor_data = Cursor()
         self:onCourseEdited()
       end
     end
 
     if ui.mouseClicked(ui.MouseButton.Right) then
       currently_extending = false
-      cursor_data = Cursor.new()
+      cursor_data = Cursor()
     end
   end
 
@@ -729,7 +729,7 @@ This won't save the course - if clicked by mistake load the course again before 
         other_creating_context.head_position = Point(hit)
       end
     else
-      cursor_data.point_group_b = PointGroup.new({ other_creating_context.head_position, Point(hit) })
+      cursor_data.point_group_b = PointGroup({ other_creating_context.head_position, Point(hit) })
 
       if ui.mouseClicked() then
         if other_creating_context.type_creating == 'startingPoint' then
@@ -745,14 +745,14 @@ This won't save the course - if clicked by mistake load the course again before 
         end
 
         other_creating_context = nil
-        cursor_data = Cursor.new()
+        cursor_data = Cursor()
         self:onCourseEdited()
       end
     end
 
     if ui.mouseClicked(ui.MouseButton.Right) then
       other_creating_context = nil
-      cursor_data = Cursor.new()
+      cursor_data = Cursor()
     end
   end
 
@@ -783,6 +783,6 @@ function CourseEditor:drawUIHelp(dt)
   ui.popFont()
 end
 
-return class.emmy(CourseEditor, CourseEditor.initialize)
+return CourseEditor
 
 -- #endregion

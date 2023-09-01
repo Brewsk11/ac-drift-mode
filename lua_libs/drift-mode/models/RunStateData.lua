@@ -1,16 +1,15 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class RunStateData Lightweight dataclass for brokering run information to apps
+---@class RunStateData : ClassBase Lightweight dataclass for brokering run information to apps
 ---@field zoneStates ZoneStateData[]
 ---@field clipStates ClipStateData[]
 ---@field driftState DriftState
 ---@field totalScore number
 ---@field avgMultiplier number
-local RunStateData = {}
-RunStateData.__index = RunStateData
+local RunStateData = class("RunStateData")
 
-function RunStateData.serialize(self)
+function RunStateData:serialize()
     local data = {
         __class = "RunStateData",
         zoneStates = S.serialize(self.zoneStates),

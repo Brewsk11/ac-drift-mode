@@ -1,13 +1,17 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class Range Simple range of two numbers
+---@class Range : ClassBase Simple range of two numbers
 ---@field start number
 ---@field finish number
-local Range = {}
-Range.__index = Range
+local Range = class("Range")
 
-function Range.serialize(self)
+function Range:initialize(start, finish)
+    self:setStart(start)
+    self:setFinish(finish)
+end
+
+function Range:serialize()
     local data = {
         __class = "Range",
         start = S.serialize(self.start),
@@ -19,17 +23,10 @@ end
 function Range.deserialize(data)
     Assert.Equal(data.__class, "Range", "Tried to deserialize wrong class")
 
-    local obj = Range.new()
+    local obj = Range()
     obj.start = S.deserialize(data.start)
     obj.finish = S.deserialize(data.finish)
     return obj
-end
-
-function Range.new(start, finish)
-    local self = setmetatable({}, Range)
-    self:setStart(start)
-    self:setFinish(finish)
-    return self
 end
 
 ---@private
@@ -93,17 +90,17 @@ function Range:getFractionClamped(value)
 end
 
 local function test()
-    local range = Range.new(0, 100)
+    local range = Range(0, 100)
     Assert.Equal(range:getFractionClamped(50), 0.5)
     Assert.Equal(range:getFractionClamped(75), 0.75)
     Assert.Equal(range:getFractionClamped(100), 1.0)
     Assert.Equal(range:getFractionClamped(101), 1.0)
 
-    local range = Range.new(0, 50)
+    local range = Range(0, 50)
     Assert.Equal(range:getFractionClamped(10), 0.2)
     Assert.Equal(range:getFractionClamped(25), 0.5)
 
-    local range = Range.new(100, 150)
+    local range = Range(100, 150)
     Assert.Equal(range:getFractionClamped(-100), 0.0)
     Assert.Equal(range:getFractionClamped(110), 0.2)
     Assert.Equal(range:getFractionClamped(125), 0.5)

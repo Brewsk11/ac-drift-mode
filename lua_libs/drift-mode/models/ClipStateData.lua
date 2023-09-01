@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class ClipStateData Lightweight dataclass for brokering run information to apps
+---@class ClipStateData : ClassBase Lightweight dataclass for brokering run information to apps
 ---@field clip string
 ---@field maxPoints integer
 ---@field crossed boolean
@@ -10,10 +10,12 @@ local S = require('drift-mode/serializer')
 ---@field multiplier number
 ---@field hitPoint Point
 ---@field hitRatioMult number
-local ClipStateData = {}
-ClipStateData.__index = ClipStateData
+local ClipStateData = class("ClipStateData")
 
-function ClipStateData.serialize(self)
+function ClipStateData:initialize()
+end
+
+function ClipStateData:serialize()
     local data = {
         __class = "ClipStateData",
         clip = S.serialize(self.clip),

@@ -105,4 +105,4 @@ local function test()
 end
 test()
 
-return class.emmy(Segment, Segment.initialize)
+return Segment

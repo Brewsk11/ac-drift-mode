@@ -3,13 +3,17 @@ local S = require('drift-mode/serializer')
 
 -- Game state information
 
----@class GameState
+---@class GameState : ClassBase
 ---@field isTrackSetup boolean Is the car setup mode enabled
 ---@field isCarSetup boolean Is the track setup mode enabled
-local GameState = {}
-GameState.__index = GameState
+local GameState = class("GameState")
 
-function GameState.serialize(self)
+function GameState:initialize(is_car_setup, is_track_setup)
+    self.isCarSetup = is_car_setup or false
+    self.isTrackSetup = is_track_setup or false
+end
+
+function GameState:serialize()
     local data = {
         __class = "GameState",
         isCarSetup = S.serialize(self.isCarSetup),
@@ -22,20 +26,13 @@ end
 function GameState.deserialize(data)
     Assert.Equal(data.__class, "GameState", "Tried to deserialize wrong class")
 
-    local obj = GameState.new()
+    local obj = GameState()
     obj.isCarSetup = S.deserialize(data.isCarSetup)
     obj.isTrackSetup = S.deserialize(data.isTrackSetup)
     return obj
 end
 
-function GameState.new(is_car_setup, is_track_setup)
-    local self = setmetatable({}, GameState)
-    self.isCarSetup = is_car_setup or false
-    self.isTrackSetup = is_track_setup or false
-    return self
-end
-
-function GameState.isPlaymode(self)
+function GameState:isPlaymode()
     return not self.isTrackSetup and not self.isCarSetup
 end
 

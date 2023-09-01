@@ -75,4 +75,4 @@ local function test()
 end
 test()
 
-return class.emmy(Clip, Clip.initialize)
+return Clip

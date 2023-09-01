@@ -5,7 +5,7 @@ require('drift-mode/models')
 local listener_id = EventSystem.registerListener('editor-app')
 
 ---@type GameState
-local game_state = GameState.new()
+local game_state = GameState()
 
 local course_editor = CourseEditor()
 local course_editor_enabled = false

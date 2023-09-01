@@ -1,12 +1,16 @@
 local Assert = require('drift-mode/assert')
 local Segment = require('drift-mode/models/Segment')
 
----@class SegmentGroup Ordered group of segments
+---@class SegmentGroup : ClassBase Ordered group of segments
 ---@field segments Segment[]
-local SegmentGroup = {}
-SegmentGroup.__index = SegmentGroup
+local SegmentGroup = class("SegmentGroup")
 
-function SegmentGroup.serialize(self)
+---@param segments Segment[]?
+function SegmentGroup:initialize(segments)
+    self.segments = segments or {}
+end
+
+function SegmentGroup:serialize()
     local data = {
         __class = "SegmentGroup",
         segments = {}
@@ -28,37 +32,27 @@ function SegmentGroup.deserialize(data)
         segments[idx] = Segment.deserialize(segment)
     end
 
-    return SegmentGroup.new(segments)
-end
-
----@param segments Segment[]?
----@return SegmentGroup
-function SegmentGroup.new(segments)
-    local self = setmetatable({}, SegmentGroup)
-
-    local _segments = segments or {}
-    self.segments = _segments
-    return self
+    return SegmentGroup(segments)
 end
 
 ---Get count of the segments in group
 ---@param self SegmentGroup
 ---@return integer
-function SegmentGroup.count(self)
+function SegmentGroup:count()
     return #self.segments
 end
 
 ---Append a segment at the end of the group
 ---@param self SegmentGroup
 ---@param segment Segment
-function SegmentGroup.append(self, segment)
+function SegmentGroup:append(segment)
     self.segments[#self.segments+1] = segment
 end
 
 ---Pop the last segment from the group
 ---@param self SegmentGroup
 ---@return Segment
-function SegmentGroup.pop(self)
+function SegmentGroup:pop()
     local segment = self.segments[self:count()]
     self.segments[self:count()] = nil
     return segment
@@ -67,7 +61,7 @@ end
 ---Is every segment's tail at the same point as next's segment head
 ---@param self SegmentGroup
 ---@return boolean
-function SegmentGroup.continuous(self)
+function SegmentGroup:continuous()
     Assert.MoreThan(self:count(), 0, "Cannot calculate continous on empty set")
     for idx = 1, self:count() - 1 do
         if self.segments[idx].tail:value() ~= self.segments[idx+1].head:value() then
@@ -80,7 +74,7 @@ end
 ---Is the group continous and is last segment connected to the first
 ---@param self SegmentGroup
 ---@return boolean
-function SegmentGroup.closed(self)
+function SegmentGroup:closed()
     Assert.MoreThan(self:count(), 0, "Cannot calculate closed on empty set")
     return
         self:continuous() and
@@ -89,17 +83,17 @@ end
 
 ---Return an iterator like `ipairs()` iterating over segments
 ---@param self SegmentGroup
-function SegmentGroup.iter(self)
+function SegmentGroup:iter()
     return ipairs(self.segments)
 end
 
-function SegmentGroup.draw(self, color)
+function SegmentGroup:draw(color)
     for _, segment in self:iter() do
         segment:draw(color)
     end
 end
 
-function SegmentGroup.drawWall(self, height, color)
+function SegmentGroup:drawWall(height, color)
     for _, segment in self:iter() do
         segment:drawWall(color, height)
     end
@@ -118,14 +112,14 @@ local function test()
         Segment(points[2], points[3])
     }
 
-    -- SegmentGroup.new()
-    local grp = SegmentGroup.new()
+    -- SegmentGroup()
+    local grp = SegmentGroup()
     Assert.NotEqual(grp.segments, nil, "Empty constructor did not initialize segment table")
     Assert.Equal(#grp.segments, 0, "Segment table length not zero")
 
-    -- SegmentGroup.new(segments)
+    -- SegmentGroup(segments)
     -- SegmentGroup:length()
-    local grp = SegmentGroup.new(segments)
+    local grp = SegmentGroup(segments)
     Assert.NotEqual(grp.segments, nil, "Empty constructor did not initialize segment table")
     Assert.Equal(grp:count(), 2, "Incorrect segment count when initializing SegmentGroup from table")
 

@@ -1,19 +1,29 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class Zone Class representing a drift scoring zone
+---@class Zone : ClassBase Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field private outsideLine PointGroup Outside zone line definition
 ---@field private insideLine PointGroup Inside zone line definition
 ---@field private polygon PointGroup Polygon created from inside and outside lines
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
-local Zone = {}
-Zone.__index = Zone
+local Zone = class("Zone")
+
+---@param name string
+---@param outsideLine PointGroup
+---@param insideLine PointGroup
+---@param maxPoints integer
+function Zone:initialize(name, outsideLine, insideLine, maxPoints)
+    self.name = name
+    self:setOutsideLine(outsideLine or PointGroup())
+    self:setInsideLine(insideLine or PointGroup())
+    self.maxPoints = maxPoints
+end
 
 local color_outside = rgbm(0, 3, 0, 0.4)
 local color_inside = rgbm(0, 0, 3, 0.4)
 
-function Zone.serialize(self)
+function Zone:serialize()
     local data = {
         __class = "Zone",
         name = S.serialize(self.name),
@@ -27,7 +37,7 @@ end
 function Zone.deserialize(data)
     Assert.Equal(data.__class, "Zone", "Tried to deserialize wrong class")
 
-    local obj = Zone.new(
+    local obj = Zone(
         S.deserialize(data.name),
         PointGroup.deserialize(data.outsideLine),
         PointGroup.deserialize(data.insideLine),
@@ -36,24 +46,8 @@ function Zone.deserialize(data)
     return obj
 end
 
----@param name string
----@param outsideLine PointGroup
----@param insideLine PointGroup
----@param maxPoints integer
----@return Zone
-function Zone.new(name, outsideLine, insideLine, maxPoints)
-    local self = setmetatable({}, Zone)
-
-    self.name = name
-    self:setOutsideLine(outsideLine or PointGroup.new())
-    self:setInsideLine(insideLine or PointGroup.new())
-    self.maxPoints = maxPoints
-
-    return self
-end
-
 ---@private
-function Zone.calculatePolygon(self)
+function Zone:calculatePolygon()
     if not self.outsideLine or not self.insideLine then
         self.polygon = nil
         return
@@ -71,27 +65,27 @@ function Zone.calculatePolygon(self)
         rev_idx = rev_idx + 1
     end
 
-    self.polygon = PointGroup.new(points)
+    self.polygon = PointGroup(points)
 end
 
-function Zone.setDirty(self)
+function Zone:setDirty()
     self:calculatePolygon()
 end
 
-function Zone.getOutsideLine(self)
+function Zone:getOutsideLine()
     return self.outsideLine
 end
 
-function Zone.getInsideLine(self)
+function Zone:getInsideLine()
     return self.insideLine
 end
 
-function Zone.setOutsideLine(self, outside_line)
+function Zone:setOutsideLine(outside_line)
     self.outsideLine = outside_line
     self:calculatePolygon()
 end
 
-function Zone.setInsideLine(self, inside_line)
+function Zone:setInsideLine(inside_line)
     self.insideLine = inside_line
     self:calculatePolygon()
 end
@@ -99,7 +93,7 @@ end
 ---Joins outside and inside lines to form a closed polygon
 ---@param self Zone
 ---@return PointGroup?
-function Zone.getPolygon(self)
+function Zone:getPolygon()
     return self.polygon
 end
 
@@ -108,7 +102,7 @@ end
 ---@param point Point
 ---@param custom_origin Point? Custom origin point, to check corretly it must be outside the zone
 ---@return boolean
-function Zone.isInZone(self, point, custom_origin)
+function Zone:isInZone(point, custom_origin)
     local origin = custom_origin or Point(vec3(0, 0, 0))
 
     --DEBUG local hits = {}
@@ -139,7 +133,7 @@ end
 ---@param segment Segment
 ---@param custom_origin Point? Custom origin point, to check corretly it must be outside the zone
 ---@return number fraction Fraction of the segment inside the zone: `1.0` fully inside, `0.0` fully outside
-function Zone.isSegmentInZone(self, segment, custom_origin)
+function Zone:isSegmentInZone(segment, custom_origin)
     local is_head_in_zone = self:isInZone(segment.head, custom_origin)
     local is_tail_in_zone = self:isInZone(segment.tail, custom_origin)
 
@@ -180,7 +174,7 @@ end
 ---@param self Zone
 ---@param point Point
 ---@return table
-function Zone.shortestCrossline(self, point)
+function Zone:shortestCrossline(point)
     local direction_candidates = {}
     local ray_count = 45
 
@@ -261,7 +255,7 @@ end
 ---inside line point and first outside line point.
 ---@param self Zone
 ---@return Segment?
-function Zone.getStartGate(self)
+function Zone:getStartGate()
     if self:getInsideLine():count() == 0 or self:getOutsideLine():count() == 0 then
         return nil
     end
@@ -269,12 +263,12 @@ function Zone.getStartGate(self)
     return Segment(self:getInsideLine():get(1), self:getOutsideLine():get(1))
 end
 
-function Zone.drawWall(self, color)
+function Zone:drawWall(color)
     self.outsideLine:segment():drawWall(1, color)
     self.insideLine:segment():drawWall(0.1, color)
 end
 
-function Zone.drawSetup(self)
+function Zone:drawSetup()
     self.outsideLine:draw(0.2, color_outside, true)
     self.outsideLine:segment():draw(color_outside)
 
@@ -293,7 +287,7 @@ local function test()
         Point(vec3(0, 0, 1)),
         Point(vec3(1, 0, 1))}
 
-    local zone = Zone.new("test", outside, inside, 0)
+    local zone = Zone("test", outside, inside, 0)
     local custom_origin = Point(vec3(23.45, 0, 51.23))
 
     local segment = Segment(

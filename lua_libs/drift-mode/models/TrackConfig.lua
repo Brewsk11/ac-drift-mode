@@ -22,10 +22,10 @@ function TrackConfig:initialize(name, zones, clips, startLine, finishLine, start
     self.startLine = startLine
     self.finishLine = finishLine
     self.startingPoint = startingPoint
-    self.scoringRanges = scoringRanges or ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
+    self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
 end
 
-function TrackConfig.serialize(self)
+function TrackConfig:serialize()
     local data = {
         __class = "TrackConfig",
         name = S.serialize(self.name),
@@ -64,7 +64,7 @@ function TrackConfig.deserialize(data)
     --   Added new field `scoringRanges`; if nil then fill default
     if S.deserialize(data.scoringRanges) == nil then
         data.scoringRanges = S.serialize(
-            ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
+            ScoringRanges(Range(15, 50), Range(5, 45))
         )
     end
 
@@ -109,4 +109,4 @@ local function test()
 end
 test()
 
-return class.emmy(TrackConfig, TrackConfig.initialize)
+return TrackConfig

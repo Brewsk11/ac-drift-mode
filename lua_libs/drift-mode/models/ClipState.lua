@@ -29,7 +29,7 @@ end
 ---due to volume of `self.clip: Clip`
 ---@param self ClipState
 ---@return table
-function ClipState.serialize(self)
+function ClipState:serialize()
     local data = {
         __class = "ClipStateData",
         clip = S.serialize(self.clip.name),
@@ -137,4 +137,4 @@ local function test()
 end
 test()
 
-return class.emmy(ClipState, ClipState.initialize)
+return ClipState

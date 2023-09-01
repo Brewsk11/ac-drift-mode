@@ -17,7 +17,7 @@ function CarConfig:initialize(frontOffset, frontSpan, rearOffset, rearSpan)
     self.rearSpan = rearSpan or 1
 end
 
-function CarConfig.serialize(self)
+function CarConfig:serialize()
     local data = {
         __class = "CarConfig",
         frontOffset = S.serialize(self.frontOffset),
@@ -68,4 +68,4 @@ local function test()
 end
 test()
 
-return class.emmy(CarConfig, CarConfig.initialize)
+return CarConfig

@@ -9,10 +9,9 @@ local S = require('drift-mode/serializer')
 ---@field score number
 ---@field performance number
 ---@field timeInZone number
-local ZoneStateData = {}
-ZoneStateData.__index = ZoneStateData
+local ZoneStateData = class("ZoneStateData")
 
-function ZoneStateData.serialize(self)
+function ZoneStateData:serialize()
     local data = {
         __class = "ZoneStateData",
         zone = S.serialize(self.zone),

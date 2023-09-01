@@ -15,7 +15,7 @@ local config_list = ConfigIO.listTrackConfigs()
 local listener_id = EventSystem.registerListener('dev-app')
 
 ---@type GameState
-local game_state = GameState.new()
+local game_state = GameState()
 
 ---@type CarConfig
 local car_data = nil
@@ -63,7 +63,7 @@ end
 DataBroker.store("track_data", track_data)
 
 ---@type Cursor
-local cursor_data = Cursor.new()
+local cursor_data = Cursor()
 DataBroker.store("cursor_data", cursor_data)
 
 local function teleportToStart()
@@ -100,8 +100,8 @@ local track_buttons_flags = ui.ButtonFlags.None
 local track_inputs_flags = ui.InputTextFlags.None
 
 local timers = {
-  listeners = Timer.new(0.5, listenForData),
-  run_state_refresher = Timer.new(0.05, refreshRunState)
+  listeners = Timer(0.5, listenForData),
+  run_state_refresher = Timer(0.05, refreshRunState)
 }
 
 function script.update(dt)
@@ -165,7 +165,7 @@ local createZone = function ()
   local insidePoints = AsyncUtils.runTask(AsyncUtils.taskGatherPointGroup); listenForData()
   if not insidePoints then cursorReset(); return end
 
-  local zone = Zone.new(new_zone_name, outsidePoints, insidePoints, tonumber(new_zone_points))
+  local zone = Zone(new_zone_name, outsidePoints, insidePoints, tonumber(new_zone_points))
   track_data.zones[#track_data.zones+1] = zone
   new_zone_name = track_data:getNextZoneName()
   DataBroker.store("track_data", track_data)
@@ -177,7 +177,7 @@ end
 local createClip = function()
   ---@type Point
   local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_b = PointGroup.new({origin})
+  cursor_data.point_group_b = PointGroup({origin})
   cursor_data.color_selector = rgbm(0, 2, 1, 1)
   if not origin then cursorReset(); return else cursorUpdate() end
 
@@ -200,7 +200,7 @@ end
 local createStartLine = function()
   ---@type Point
   local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_a = PointGroup.new(origin)
+  cursor_data.point_group_a = PointGroup(origin)
   cursor_data.color_selector = rgbm(0, 2, 1, 1)
   if not origin then cursorReset(); return else cursorUpdate() end
 
@@ -218,7 +218,7 @@ end
 local createFinishLine = function()
   ---@type Point
   local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_a = PointGroup.new(origin)
+  cursor_data.point_group_a = PointGroup(origin)
   cursor_data.color_selector = rgbm(0, 2, 1, 1)
   if not origin then cursorReset(); return else cursorUpdate() end
 
@@ -237,7 +237,7 @@ end
 local createStartingPoint = function()
   ---@type Point
   local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_b = PointGroup.new({origin})
+  cursor_data.point_group_b = PointGroup({origin})
   cursor_data.color_selector = rgbm(0, 2, 1, 1)
   if not origin then cursorReset(); return else cursorUpdate() end
 

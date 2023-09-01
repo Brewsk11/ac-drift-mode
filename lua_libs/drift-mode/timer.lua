@@ -4,15 +4,12 @@ local Assert = require('drift-mode/assert')
 ---@field period number
 ---@field private timer number
 ---@field task function
-local Timer = {}
-Timer.__index = Timer
+local Timer = class("Timer")
 
-function Timer.new(period, task)
-    local self = setmetatable({}, Timer)
+function Timer:initialize(period, task)
     self.period = period
     self.timer = 0
     self.task = task
-    return self
 end
 
 function Timer:tick(dt)

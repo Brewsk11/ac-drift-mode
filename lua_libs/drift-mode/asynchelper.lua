@@ -67,7 +67,7 @@ function AsyncHelper.taskTrackRayHit()
 end
 
 function AsyncHelper.taskGatherPointGroup()
-    local group = PointGroup.new()
+    local group = PointGroup()
 
     local c = loadCursor()
     c.point_group_a = group
