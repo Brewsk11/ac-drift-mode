@@ -95,7 +95,7 @@ function CourseEditor:drawUI(dt)
 
   ui.sameLine(0, 4)
   if ui.button("New", vec2(60), button_global_flags) then
-    course = TrackConfig.new("NewCourse")
+    course = TrackConfig("NewCourse")
     self:onCourseEdited()
   end
   if ui.itemHovered() then
@@ -649,7 +649,7 @@ function CourseEditor:drawUIOther(dt)
   ui.textAligned("Reset the course", vec2(0, 1.5), vec2(ui.availableSpaceX() - 124, 20))
   ui.sameLine(0, 4)
   if ui.imageButton(nil, vec2(120, 30), rgbm(0, 0, 0, 0), rgbm(0.3, 0, 0, 1), vec2(1, -1), vec2(1, 1), 0) then
-    course = TrackConfig.new(course.name)
+    course = TrackConfig(course.name)
     self:onCourseEdited()
   end
   if ui.itemHovered() then

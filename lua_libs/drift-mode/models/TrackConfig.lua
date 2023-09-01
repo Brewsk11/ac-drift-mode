@@ -5,7 +5,7 @@ local Zone = require('drift-mode/models/Zone')
 
 -- Track configration data
 
----@class TrackConfig
+---@class TrackConfig : ClassBase
 ---@field name string Configuration name
 ---@field zones Zone[]
 ---@field clips Clip[]
@@ -13,8 +13,17 @@ local Zone = require('drift-mode/models/Zone')
 ---@field finishLine Segment
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
-local TrackConfig = {}
-TrackConfig.__index = TrackConfig
+local TrackConfig = class("TrackConfig")
+
+function TrackConfig:initialize(name, zones, clips, startLine, finishLine, startingPoint, scoringRanges)
+    self.name = name or 'default'
+    self.zones = zones or {}
+    self.clips = clips or {}
+    self.startLine = startLine
+    self.finishLine = finishLine
+    self.startingPoint = startingPoint
+    self.scoringRanges = scoringRanges or ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
+end
 
 function TrackConfig.serialize(self)
     local data = {
@@ -42,7 +51,7 @@ end
 function TrackConfig.deserialize(data)
     Assert.Equal(data.__class, "TrackConfig", "Tried to deserialize wrong class")
 
-    local obj = TrackConfig.new()
+    local obj = TrackConfig()
 
     local zones = {}
     for idx, zone in ipairs(data.zones) do
@@ -74,21 +83,7 @@ function TrackConfig.deserialize(data)
     return obj
 end
 
-function TrackConfig.new(name, zones, clips, startLine, finishLine, startingPoint, scoringRanges)
-    local self = setmetatable({}, TrackConfig)
-    self.name = name or 'default'
-    local _zones = zones or {}
-    self.zones = _zones
-    local _clips = clips or {}
-    self.clips = _clips
-    self.startLine = startLine
-    self.finishLine = finishLine
-    self.startingPoint = startingPoint
-    self.scoringRanges = ScoringRanges.new(Range.new(15, 50), Range.new(5, 45))
-    return self
-end
-
-function TrackConfig.drawSetup(self)
+function TrackConfig:drawSetup()
     for _, zone in ipairs(self.zones) do
         zone:drawSetup()
     end
@@ -102,11 +97,11 @@ function TrackConfig.drawSetup(self)
     if self.finishLine then self.finishLine:draw(rgbm(0, 0, 3, 1)) end
 end
 
-function TrackConfig.getNextZoneName(self)
+function TrackConfig:getNextZoneName()
     return "zone_" .. string.format('%03d', #self.zones + 1)
 end
 
-function TrackConfig.getNextClipName(self)
+function TrackConfig:getNextClipName()
     return "clip_" .. string.format('%03d', #self.clips + 1)
 end
 
@@ -114,4 +109,4 @@ local function test()
 end
 test()
 
-return TrackConfig
+return class.emmy(TrackConfig, TrackConfig.initialize)

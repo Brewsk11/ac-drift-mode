@@ -56,7 +56,7 @@ if track_config_info then
 elseif #config_list > 0 then
   loadTrack(config_list[1])
 else
-  track_data = TrackConfig.new()
+  track_data = TrackConfig()
   new_zone_name = track_data:getNextZoneName()
   new_clip_name = track_data:getNextClipName()
 end
