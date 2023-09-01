@@ -737,9 +737,9 @@ This won't save the course - if clicked by mistake load the course again before 
           course.startingPoint:setEnd(Point.new(hit))
           self:onCourseEdited()
         elseif other_creating_context.type_creating == 'startLine' then
-          course.startLine = Segment.new(other_creating_context.head_position, Point.new(hit))
+          course.startLine = Segment(other_creating_context.head_position, Point.new(hit))
         elseif other_creating_context.type_creating == 'finishLine' then
-          course.finishLine = Segment.new(other_creating_context.head_position, Point.new(hit))
+          course.finishLine = Segment(other_creating_context.head_position, Point.new(hit))
         else
           Assert.Error("Skipped all if-tree conditions")
         end

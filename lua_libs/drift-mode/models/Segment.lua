@@ -1,12 +1,19 @@
 local Assert = require('drift-mode/assert')
+local S = require('drift-mode/serializer')
 
 ---@class Segment Class representing a line (two connected points) in world space
 ---@field head Point World coordinate position of the point on the track
 ---@field tail Point World coordinate position of the point on the track
-local Segment = {}
-Segment.__index = Segment
+local Segment = class('Segment')
 
-function Segment.serialize(self)
+---@param head Point
+---@param tail Point
+function Segment:initialize(head, tail)
+    self.head = head
+    self.tail = tail
+end
+
+function Segment:serialize()
     local data = {
         __class = "Segment",
         head = self.head:serialize(),
@@ -17,39 +24,29 @@ end
 
 function Segment.deserialize(data)
     Assert.Equal(data.__class, "Segment", "Tried to deserialize wrong class")
-    return Segment.new(
+    return Segment(
         Point.deserialize(data.head),
         Point.deserialize(data.tail))
-end
-
----@param head Point Start of the segment
----@param tail Point End of the segment
----@return Segment
-function Segment.new(head, tail)
-    local self = setmetatable({}, Segment)
-    self.head = head
-    self.tail = tail
-    return self
 end
 
 ---Return 2-item array with start and end point values
 ---@param self Segment
 ---@return vec3 head, vec3 tail Start and end points of the segment
-function Segment.get(self)
+function Segment:get()
     return self.head:value(), self.tail:value()
 end
 
 ---Return the track point as vec2, projecting it on Y axis
 ---@param self Segment
 ---@return vec2 head, vec2 tail and finish points of the flatten segment
-function Segment.flat(self)
+function Segment:flat()
     return self.head:flat(), self.tail:flat()
 end
 
 ---Return the track point as vec2, projecting it on Y axis
 ---@param self Segment
 ---@return vec3 head, vec3 tail Start and finish points of the projected segment
-function Segment.projected(self)
+function Segment:projected()
     return self.head:projected(), self.tail:projected()
 end
 
@@ -69,11 +66,11 @@ function Segment:getCenter()
     return (self.head:value() + self.tail:value()) / 2
 end
 
-function Segment.draw(self, color)
+function Segment:draw(color)
     render.debugLine(self.head:value(), self.tail:value(), color)
 end
 
-function Segment.drawWall(self, color, height)
+function Segment:drawWall(color, height)
     render.quad(
         self.head:value(),
         self.tail:value(),
@@ -88,7 +85,7 @@ local function test()
     points[1] = Point.new(vec3(1, 1, 1))
     points[2] = Point.new(vec3(2, 2, 2))
 
-    local segment = Segment.new(points[1], points[2])
+    local segment = Segment(points[1], points[2])
 
     -- Segment:get()
     local a, b = segment:get()
@@ -108,4 +105,4 @@ local function test()
 end
 test()
 
-return Segment
+return class.emmy(Segment, Segment.initialize)

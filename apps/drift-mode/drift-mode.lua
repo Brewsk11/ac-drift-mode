@@ -208,7 +208,7 @@ local createStartLine = function()
   local _end = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
   if not _end then cursorReset(); return end
 
-  local startLine = Segment.new(origin, _end)
+  local startLine = Segment(origin, _end)
   track_data.startLine = startLine
   DataBroker.store("track_data", track_data)
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
@@ -226,7 +226,7 @@ local createFinishLine = function()
   local _end = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
   if not _end then cursorReset(); return end
 
-  local startLine = Segment.new(origin, _end)
+  local startLine = Segment(origin, _end)
   track_data.finishLine = startLine
   DataBroker.store("track_data", track_data)
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)

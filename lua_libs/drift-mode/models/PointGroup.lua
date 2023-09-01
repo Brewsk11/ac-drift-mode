@@ -92,9 +92,9 @@ function PointGroup.segment(self, closed)
     local segments = {}
     for idx = 1, self:count() do
         if idx < self:count() then
-            segments[idx] = Segment.new(self.points[idx], self.points[idx + 1])
+            segments[idx] = Segment(self.points[idx], self.points[idx + 1])
         elseif _closed then -- Connect last with first
-            segments[idx] = Segment.new(self.points[idx], self.points[1])
+            segments[idx] = Segment(self.points[idx], self.points[1])
         end
     end
     return SegmentGroup.new(segments)

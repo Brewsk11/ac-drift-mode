@@ -114,8 +114,8 @@ local function test()
     }
 
     local segments = {
-        Segment.new(points[1], points[2]),
-        Segment.new(points[2], points[3])
+        Segment(points[1], points[2]),
+        Segment(points[2], points[3])
     }
 
     -- SegmentGroup.new()
@@ -130,12 +130,12 @@ local function test()
     Assert.Equal(grp:count(), 2, "Incorrect segment count when initializing SegmentGroup from table")
 
     -- SegmentGroup:append()
-    grp:append(Segment.new(points[3], points[4]))
+    grp:append(Segment(points[3], points[4]))
     Assert.Equal(grp:count(), 3, "Incorrect segment count after appending a segment")
 
     -- SegmentGroup:continous()
     Assert.Equal(grp:continuous(), true, "The segment group does not seem to be continous, whereas it should be")
-    local seg_test_a = Segment.new(points[3], points[1])
+    local seg_test_a = Segment(points[3], points[1])
     grp:append(seg_test_a)
     Assert.Equal(grp:continuous(), false, "The segment group does seem to be continous, whereas it should not be")
 
@@ -147,9 +147,9 @@ local function test()
     Assert.Equal(a_tail, b_tail, "The popped segment is incorrect")
 
     -- Segment:closed()
-    grp:append(Segment.new(points[4], points[1]))
+    grp:append(Segment(points[4], points[1]))
     Assert.Equal(grp:closed(), true, "The segment group does not seem to be closed, whereas it should be")
-    grp:append(Segment.new(points[1], points[2]))
+    grp:append(Segment(points[1], points[2]))
     Assert.Equal(grp:closed(), false, "The segment group does seem to be closed, whereas it should not be")
 end
 test()
