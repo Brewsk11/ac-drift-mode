@@ -3,15 +3,19 @@ local S = require('drift-mode/serializer')
 
 -- Car configuration
 
----@class CarConfig Data class describing key car points positions for scoring purposes
+---@class CarConfig : ClassBase Data class describing key car points positions for scoring purposes
 ---@field frontOffset number Offset from car origin to the front bumper
 ---@field frontSpan number Span between two endpoints of the front bumper
 ---@field rearOffset number Offset from car origin to the rear bumper
 ---@field rearSpan number Span between two endpoints of the rear bumper
-local CarConfig = {}
-CarConfig.__index = CarConfig
+local CarConfig = class("CarConfig")
 
-
+function CarConfig:initialize(frontOffset, frontSpan, rearOffset, rearSpan)
+    self.frontOffset = frontOffset or 2.3
+    self.frontSpan = frontSpan or 1
+    self.rearOffset = rearOffset or 2.4
+    self.rearSpan = rearSpan or 1
+end
 
 function CarConfig.serialize(self)
     local data = {
@@ -28,7 +32,7 @@ end
 function CarConfig.deserialize(data)
     Assert.Equal(data.__class, "CarConfig", "Tried to deserialize wrong class")
 
-    local obj = CarConfig.new()
+    local obj = CarConfig()
 
     obj.frontOffset = S.deserialize(data.frontOffset)
     obj.frontSpan = S.deserialize(data.frontSpan)
@@ -37,16 +41,7 @@ function CarConfig.deserialize(data)
     return obj
 end
 
-function CarConfig.new(frontOffset, frontSpan, rearOffset, rearSpan)
-    local self = setmetatable({}, CarConfig)
-    self.frontOffset = frontOffset or 2.3
-    self.frontSpan = frontSpan or 1
-    self.rearOffset = rearOffset or 2.4
-    self.rearSpan = rearSpan or 1
-    return self
-end
-
-function CarConfig.drawAlignment(self)
+function CarConfig:drawAlignment()
     local state = ac.getCar(0)
 
     local rear_center = state.position - state.look * self.rearOffset + state.up / 3
@@ -73,4 +68,4 @@ local function test()
 end
 test()
 
-return CarConfig
+return class.emmy(CarConfig, CarConfig.initialize)

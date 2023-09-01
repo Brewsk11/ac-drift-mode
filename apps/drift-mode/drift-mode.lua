@@ -36,7 +36,7 @@ local new_clip_points = "1000"
 
 local function loadCar()
   car_data = ConfigIO.loadCarConfig()
-  if car_data == nil then car_data = CarConfig.new() end
+  if car_data == nil then car_data = CarConfig() end
   EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
 end
 loadCar()
