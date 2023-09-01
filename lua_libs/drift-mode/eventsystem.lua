@@ -104,7 +104,7 @@ function EventSystem.listen(listener_id, signal, callback)
 end
 
 ---@param signal EventSystem.Signal
----@param payload table
+---@param payload any
 function EventSystem.emit(signal, payload)
     loadPayloads()
     loadSignals()

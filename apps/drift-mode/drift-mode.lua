@@ -17,7 +17,7 @@ local listener_id = EventSystem.registerListener('dev-app')
 ---@type GameState
 local game_state = GameState()
 
----@type CarConfig
+---@type CarConfig?
 local car_data = nil
 
 ---@type TrackConfigInfo?
@@ -28,11 +28,6 @@ local track_data = nil
 
 ---@type RunStateData?
 local run_state_data = nil
-
-local new_zone_name = nil
-local new_clip_name = nil
-local new_zone_points = "2000"
-local new_clip_points = "1000"
 
 local function loadCar()
   car_data = ConfigIO.loadCarConfig()
@@ -45,8 +40,6 @@ loadCar()
 local function loadTrack(track_cfg_info)
   track_config_info = track_cfg_info
   track_data = track_config_info:load()
-  new_zone_name = track_data:getNextZoneName()
-  new_clip_name = track_data:getNextClipName()
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
 end
 
@@ -57,8 +50,6 @@ elseif #config_list > 0 then
   loadTrack(config_list[1])
 else
   track_data = TrackConfig()
-  new_zone_name = track_data:getNextZoneName()
-  new_clip_name = track_data:getNextClipName()
 end
 DataBroker.store("track_data", track_data)
 
@@ -96,14 +87,12 @@ local running_task = nil
 local is_helper_cam_active = false
 local helper_cam = nil
 
-local track_buttons_flags = ui.ButtonFlags.None
-local track_inputs_flags = ui.InputTextFlags.None
-
 local timers = {
   listeners = Timer(0.5, listenForData),
   run_state_refresher = Timer(0.05, refreshRunState)
 }
 
+---@diagnostic disable-next-line: duplicate-set-field
 function script.update(dt)
   for _, timer in pairs(timers) do
     timer:tick(dt)
@@ -131,129 +120,11 @@ function script.update(dt)
     helper_cam.transform.look:set(vec3(0, -1, 0))
     helper_cam.fov = 5
   end
-
-  if not game_state.isTrackSetup or running_task then
-    track_buttons_flags = ui.ButtonFlags.Disabled
-    track_inputs_flags = ui.InputTextFlags.ReadOnly
-  else
-    track_buttons_flags = ui.ButtonFlags.None
-    track_inputs_flags = ui.InputTextFlags.None
-  end
-end
-
-local function cursorReset()
-  cursor_data:reset()
-  DataBroker.store("cursor_data", cursor_data)
-  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
-end
-
-local function cursorUpdate()
-  DataBroker.store("cursor_data", cursor_data)
-  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
 end
 
 local function gameStateUpdate()
   DataBroker.store("game_state", game_state)
   EventSystem.emit(EventSystem.Signal.GameStateChanged, game_state)
-end
-
-local createZone = function ()
-  local outsidePoints = AsyncUtils.runTask(AsyncUtils.taskGatherPointGroup); listenForData()
-  cursor_data.point_group_b = outsidePoints
-  if not outsidePoints then cursorReset(); return else cursorUpdate() end
-
-  local insidePoints = AsyncUtils.runTask(AsyncUtils.taskGatherPointGroup); listenForData()
-  if not insidePoints then cursorReset(); return end
-
-  local zone = Zone(new_zone_name, outsidePoints, insidePoints, tonumber(new_zone_points))
-  track_data.zones[#track_data.zones+1] = zone
-  new_zone_name = track_data:getNextZoneName()
-  DataBroker.store("track_data", track_data)
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
-
-  cursorReset()
-end
-
-local createClip = function()
-  ---@type Point
-  local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_b = PointGroup({origin})
-  cursor_data.color_selector = rgbm(0, 2, 1, 1)
-  if not origin then cursorReset(); return else cursorUpdate() end
-
-  ---@type Point
-  local _end = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  if not origin then cursorReset(); return end
-
-  local direction = (_end:value() - origin:value()):normalize()
-  local length = _end:value():distance(origin:value())
-
-  local clip = Clip(new_clip_name, origin, direction, length, tonumber(new_clip_points))
-  track_data.clips[#track_data.clips+1] = clip
-  new_clip_name = track_data:getNextClipName()
-  DataBroker.store("track_data", track_data)
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
-
-  cursorReset()
-end
-
-local createStartLine = function()
-  ---@type Point
-  local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_a = PointGroup(origin)
-  cursor_data.color_selector = rgbm(0, 2, 1, 1)
-  if not origin then cursorReset(); return else cursorUpdate() end
-
-  ---@type Point
-  local _end = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  if not _end then cursorReset(); return end
-
-  local startLine = Segment(origin, _end)
-  track_data.startLine = startLine
-  DataBroker.store("track_data", track_data)
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
-  cursorReset()
-end
-
-local createFinishLine = function()
-  ---@type Point
-  local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_a = PointGroup(origin)
-  cursor_data.color_selector = rgbm(0, 2, 1, 1)
-  if not origin then cursorReset(); return else cursorUpdate() end
-
-  ---@type Point
-  local _end = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  if not _end then cursorReset(); return end
-
-  local startLine = Segment(origin, _end)
-  track_data.finishLine = startLine
-  DataBroker.store("track_data", track_data)
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
-
-  cursorReset()
-end
-
-local createStartingPoint = function()
-  ---@type Point
-  local origin = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  cursor_data.point_group_b = PointGroup({origin})
-  cursor_data.color_selector = rgbm(0, 2, 1, 1)
-  if not origin then cursorReset(); return else cursorUpdate() end
-
-  ---@type Point
-  local _end = AsyncUtils.runTask(AsyncUtils.taskGatherPoint); listenForData()
-  if not origin then cursorReset(); return end
-
-  local direction = (_end:value() - origin:value()):normalize()
-
-  local startingPoint = StartingPoint(origin, direction)
-  track_data.startingPoint = startingPoint
-  new_clip_name = track_data:getNextClipName()
-  DataBroker.store("track_data", track_data)
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
-
-  cursorReset()
 end
 
 local function drawAppUI()

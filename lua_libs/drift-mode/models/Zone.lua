@@ -160,7 +160,9 @@ function Zone:isSegmentInZone(segment, custom_origin)
 
     Assert.Error([[
         Calculated that either head or tail are in zone,
-        while the segment does not intersect with any of the zone's polygon sides]])
+        while the segment does not intersect with any of the zone's polygon sides]]
+        ---@diagnostic disable-next-line: missing-return
+    )
 end
 
 
@@ -182,7 +184,11 @@ function Zone:shortestCrossline(point)
         direction_candidates[i] = rotateVec2(vec2(0, 100), math.pi / ray_count * i)
     end
 
-    local shortest = { segment = nil, out_no = 0, in_no = 0 }
+    local shortest = {
+        segment = nil, ---@type Segment
+        out_no = 0,
+        in_no = 0
+    }
 
     for i = 1, ray_count do
         local dir = direction_candidates[i]
@@ -280,12 +286,12 @@ local Assert = require('drift-mode/assert')
 local function test()
     -- Zone.isSegmentInZone
     --   For debugging these it'd be best to draw a coordinate plane (x, z) and check
-    local inside = PointGroup.new{
+    local inside = PointGroup({
         Point(vec3(0, 0, 0)),
-        Point(vec3(1, 0, 0)) }
-    local outside = PointGroup.new{
+        Point(vec3(1, 0, 0)) })
+    local outside = PointGroup({
         Point(vec3(0, 0, 1)),
-        Point(vec3(1, 0, 1))}
+        Point(vec3(1, 0, 1))})
 
     local zone = Zone("test", outside, inside, 0)
     local custom_origin = Point(vec3(23.45, 0, 51.23))
