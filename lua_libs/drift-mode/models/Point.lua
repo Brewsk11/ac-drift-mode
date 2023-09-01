@@ -1,14 +1,18 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class Point Class representing a point in the world space
+---@class Point : ClassBase Class representing a point in the world space
 ---@field private _value vec3 World coordinate position of the point on the track
 ---@field private _flat vec2
 ---@field private _projected vec3
-local Point = {}
-Point.__index = Point
+local Point = class("Point")
 
-function Point.serialize(self)
+---@param value vec3 World position
+function Point:initialize(value)
+    self:set(value)
+end
+
+function Point:serialize()
     local data = {
         __class = "Point",
         _value = S.serialize(self:value())
@@ -18,19 +22,11 @@ end
 
 function Point.deserialize(data)
     Assert.Equal(data.__class, "Point", "Tried to deserialize wrong class")
-    return Point.new(S.deserialize(data._value))
-end
-
----@param value vec3 World poisition
----@return Point
-function Point.new(value)
-    local self = setmetatable({}, Point)
-    self:set(value)
-    return self
+    return Point(S.deserialize(data._value))
 end
 
 ---@private
-function Point.generateVariants(self)
+function Point:generateVariants()
     self._flat = vec2(self:value().x, self:value().z)
     self._projected = vec3(self:value().x, 0, self:value().z)
 end
@@ -38,7 +34,7 @@ end
 ---Set the point value
 ---@param self Point
 ---@param value vec3 New point position
-function Point.set(self, value)
+function Point:set(value)
     self._value = value
     self:generateVariants()
 end
@@ -46,7 +42,7 @@ end
 ---Return the point value
 ---@param self Point
 ---@return vec3
-function Point.value(self)
+function Point:value()
     return self._value
 end
 
@@ -54,30 +50,30 @@ end
 ---Return the track point as vec2, projecting it on Y axis
 ---@param self Point
 ---@return vec2
-function Point.flat(self)
+function Point:flat()
     return self._flat
 end
 
 ---Return 2D projected track point in 3D world space
 ---@param self Point
 ---@return vec3
-function Point.projected(self)
+function Point:projected()
     return self._projected
 end
 
-function Point.draw(self, size, color)
+function Point:draw(size, color)
     render.debugPoint(self:value(), size, color)
 end
 
 local function test()
-    -- Point.new()
-    local point = Point.new(vec3(1, 2, 3))
+    -- Point()
+    local point = Point(vec3(1, 2, 3))
     assert(point:value() == vec3(1, 2, 3), tostring(point:value()) .. " vs. " .. tostring(vec3(1, 2, 3)))
 
     -- Point:value()
     -- Point:flat()
     -- Point:projected()
-    local point = Point.new(vec3(1, 2, 3))
+    local point = Point(vec3(1, 2, 3))
     assert(point:value() == vec3(1, 2, 3))
     assert(point:flat() == vec2(1, 3))
     assert(point:projected() == vec3(1, 0, 3))
@@ -88,4 +84,4 @@ local function test()
 end
 test()
 
-return Point
+return class.emmy(Point, Point.initialize)

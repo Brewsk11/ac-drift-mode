@@ -56,7 +56,7 @@ local function monitorCrossingLines()
 
   local car = ac.getCar(0)
 
-  local current_pos = Point.new(car.position + car.look * car_data.frontOffset)
+  local current_pos = Point(car.position + car.look * car_data.frontOffset)
   if last_pos == nil then
     last_pos = current_pos
     return

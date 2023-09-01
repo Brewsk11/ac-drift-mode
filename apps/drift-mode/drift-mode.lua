@@ -247,7 +247,7 @@ local createStartingPoint = function()
 
   local direction = (_end:value() - origin:value()):normalize()
 
-  local startingPoint = StartingPoint.new(origin, direction)
+  local startingPoint = StartingPoint(origin, direction)
   track_data.startingPoint = startingPoint
   new_clip_name = track_data:getNextClipName()
   DataBroker.store("track_data", track_data)

@@ -47,14 +47,14 @@ function ZoneState:registerCar(car_config, car, drift_state)
     -- If zone has already been finished, ignore call
     if self.finished then return nil end
 
-    local zone_scoring_point = Point.new(car.position - car.look * car_config.rearOffset + car.side * drift_state.side_drifting * car_config.rearSpan)
+    local zone_scoring_point = Point(car.position - car.look * car_config.rearOffset + car.side * drift_state.side_drifting * car_config.rearSpan)
 
     -- Check if the registering point belongs to the zone
     if not self.zone:isInZone(zone_scoring_point) then
         -- If zone was started then check if center point
         -- is still in for small buffer
         if self.started then
-            local rear_bumper_center = Point.new(car.position - car.look * car_config.rearOffset)
+            local rear_bumper_center = Point(car.position - car.look * car_config.rearOffset)
             if not self.zone:isInZone(rear_bumper_center) then
                 self.finished = true
                 return nil
@@ -109,7 +109,7 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
     -- Setting the distance to 0 will allow to report 100% zone completion.
     if cross_line.in_no == 1 or cross_line.out_no == 1 then distance = 0 end
 
-    self.scores[#self.scores+1] = ZoneScoringPoint.new(
+    self.scores[#self.scores+1] = ZoneScoringPoint(
         point,
         drift_state.speed_mult,
         drift_state.angle_mult,

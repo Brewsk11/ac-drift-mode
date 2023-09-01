@@ -333,7 +333,7 @@ function CourseEditor:drawUIZones(dt)
 
   if currently_editing and hit then
     closest_point:set(hit + initial_offset)
-    cursor_data.selector = Point.new(hit + initial_offset)
+    cursor_data.selector = Point(hit + initial_offset)
     EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
 
     self:onCourseEdited()
@@ -341,7 +341,7 @@ function CourseEditor:drawUIZones(dt)
   end
 
   if currently_extending and hit then
-    local hit_point = Point.new(hit)
+    local hit_point = Point(hit)
     cursor_data.selector = hit_point
     if currently_extending.point_group_ref:count() > 0 then
       cursor_data.point_group_b = PointGroup.new({ currently_extending.point_group_ref:last(), hit_point })
@@ -478,11 +478,11 @@ function CourseEditor:drawUIClips(dt)
   end
 
   if currently_editing and hit then
-    cursor_data.selector = Point.new(hit + initial_offset)
+    cursor_data.selector = Point(hit + initial_offset)
     if closest_type == 'origin' then
       closest_point:set(hit + initial_offset)
     else -- == 'end'
-      clip_ref:setEnd(Point.new(hit + initial_offset))
+      clip_ref:setEnd(Point(hit + initial_offset))
     end
 
     self:onCourseEdited()
@@ -491,18 +491,18 @@ function CourseEditor:drawUIClips(dt)
 
 
   if currently_extending and hit then
-    cursor_data.selector = Point.new(hit)
+    cursor_data.selector = Point(hit)
 
     if closest_type == 'origin' then
       if ui.mouseClicked() then
-        clip_start = Point.new(hit)
+        clip_start = Point(hit)
         closest_type = 'end'
       end
     else
-      cursor_data.point_group_b = PointGroup.new({ clip_start, Point.new(hit) })
+      cursor_data.point_group_b = PointGroup.new({ clip_start, Point(hit) })
       if ui.mouseClicked() then
         course.clips[#course.clips+1] = Clip.new(course:getNextClipName(), clip_start, vec3(0, 0, 0), 0, new_clip_points)
-        course.clips[#course.clips]:setEnd(Point.new(hit))
+        course.clips[#course.clips]:setEnd(Point(hit))
         currently_extending = false
         cursor_data = Cursor.new()
         self:onCourseEdited()
@@ -713,7 +713,7 @@ This won't save the course - if clicked by mistake load the course again before 
   end
 
   if currently_editing and hit then
-    cursor_data.selector = Point.new(hit + initial_offset)
+    cursor_data.selector = Point(hit + initial_offset)
     closest_point:set(hit + initial_offset)
 
     self:onCourseEdited()
@@ -722,24 +722,24 @@ This won't save the course - if clicked by mistake load the course again before 
 
 
   if other_creating_context and hit then
-    cursor_data.selector = Point.new(hit)
+    cursor_data.selector = Point(hit)
 
     if other_creating_context.head_position == nil then
       if ui.mouseClicked() then
-        other_creating_context.head_position = Point.new(hit)
+        other_creating_context.head_position = Point(hit)
       end
     else
-      cursor_data.point_group_b = PointGroup.new({ other_creating_context.head_position, Point.new(hit) })
+      cursor_data.point_group_b = PointGroup.new({ other_creating_context.head_position, Point(hit) })
 
       if ui.mouseClicked() then
         if other_creating_context.type_creating == 'startingPoint' then
-          course.startingPoint = StartingPoint.new(other_creating_context.head_position, vec3(0, 0, 0))
-          course.startingPoint:setEnd(Point.new(hit))
+          course.startingPoint = StartingPoint(other_creating_context.head_position, vec3(0, 0, 0))
+          course.startingPoint:setEnd(Point(hit))
           self:onCourseEdited()
         elseif other_creating_context.type_creating == 'startLine' then
-          course.startLine = Segment(other_creating_context.head_position, Point.new(hit))
+          course.startLine = Segment(other_creating_context.head_position, Point(hit))
         elseif other_creating_context.type_creating == 'finishLine' then
-          course.finishLine = Segment(other_creating_context.head_position, Point.new(hit))
+          course.finishLine = Segment(other_creating_context.head_position, Point(hit))
         else
           Assert.Error("Skipped all if-tree conditions")
         end

@@ -54,7 +54,7 @@ function RunState:registerCar(car_config, car)
         end
     end
 
-    local clip_scoring_point = Point.new(
+    local clip_scoring_point = Point(
         car.position + car.look * car_config.frontOffset + car.side * car_config.frontSpan * -self.driftState.side_drifting
     )
     for _, clip in ipairs(self.clipStates) do

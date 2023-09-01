@@ -12,7 +12,7 @@ local S = require('drift-mode/serializer')
 local ZoneScoringPoint = {}
 ZoneScoringPoint.__index = ZoneScoringPoint
 
-function ZoneScoringPoint.new(point, speed_mult, angle_mult, ratio_mult, location, inside)
+function ZoneScoringPoint(point, speed_mult, angle_mult, ratio_mult, location, inside)
     local self = setmetatable({}, ZoneScoringPoint)
     self.point = point
     self.speed_mult = speed_mult

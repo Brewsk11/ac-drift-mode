@@ -77,7 +77,7 @@ function AsyncHelper.taskGatherPointGroup()
     while true do
         local hit = AsyncHelper.runTask(AsyncHelper.taskTrackRayHit)
 
-        if select() then group:append(Point.new(hit)) end
+        if select() then group:append(Point(hit)) end
         if finish() then retval = group; break end
         if cancel() then retval = false; break end
         if back() and group:count() > 0 then
@@ -86,7 +86,7 @@ function AsyncHelper.taskGatherPointGroup()
 
         local c = loadCursor()
         c.point_group_a = group
-        c.selector = Point.new(hit)
+        c.selector = Point(hit)
         updateCursor(c)
 
         coroutine.yield()
@@ -104,14 +104,14 @@ function AsyncHelper.taskGatherPoint()
     local hit = AsyncHelper.runTask(AsyncHelper.taskTrackRayHit)
 
     local c = loadCursor()
-    c.selector = Point.new(hit)
+    c.selector = Point(hit)
     updateCursor(c)
 
     if select() then
         local c = loadCursor()
         c.selector = nil
         updateCursor(c)
-        return Point.new(hit)
+        return Point(hit)
     end
 
     if cancel() then return false end
