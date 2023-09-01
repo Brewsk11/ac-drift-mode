@@ -35,7 +35,7 @@ function RunState.new(track_config)
         self.zoneStates[#self.zoneStates+1] = ZoneState.new(zone)
     end
     for _, clip in ipairs(self.trackConfig.clips) do
-        self.clipStates[#self.clipStates+1] = ClipState.new(clip)
+        self.clipStates[#self.clipStates+1] = ClipState(clip)
     end
     return self
 end

@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class ClipState
+---@class ClipState : ClassBase
 ---@field clip Clip
 ---@field crossed boolean
 ---@field private hitPoint Point Point at which the clip was crossed
@@ -11,8 +11,19 @@ local S = require('drift-mode/serializer')
 ---@field private finalScore number Final score after multipliers `(maxScore * perf)`
 ---@field private finalMultiplier number Final multiplier
 ---@field private lastPoint Point To calculate where crossed
-local ClipState = {}
-ClipState.__index = ClipState
+local ClipState = class("ClipState")
+
+function ClipState:initialize(clip)
+    self.clip = clip
+    self.crossed = false
+    self.hitPoint = nil
+    self.hitAngleMult = nil
+    self.hitSpeedMult = nil
+    self.hitRatioMult = nil
+    self.finalScore = nil
+    self.finalMultiplier = nil
+    self.lastPoint = nil
+end
 
 ---Serializes to lightweight ClipStateData as ClipState should not be brokered.
 ---due to volume of `self.clip: Clip`
@@ -31,20 +42,6 @@ function ClipState.serialize(self)
         hitRatioMult = S.serialize(self:getRatio())
     }
     return data
-end
-
-function ClipState.new(clip)
-    local self = setmetatable({}, ClipState)
-    self.clip = clip
-    self.crossed = false
-    self.hitPoint = nil
-    self.hitAngleMult = nil
-    self.hitSpeedMult = nil
-    self.hitRatioMult = nil
-    self.finalScore = nil
-    self.finalMultiplier = nil
-    self.lastPoint = nil
-    return self
 end
 
 ---@param point Point
@@ -140,4 +137,4 @@ local function test()
 end
 test()
 
-return ClipState
+return class.emmy(ClipState, ClipState.initialize)
