@@ -87,15 +87,17 @@ function SegmentGroup:iter()
     return ipairs(self.segments)
 end
 
+-- TODO: Dependency injection
+-- Migrate *Group classes to something more OOP
 function SegmentGroup:draw(color)
     for _, segment in self:iter() do
-        segment:draw(color)
+        segment:draw()
     end
 end
 
 function SegmentGroup:drawWall(height, color)
     for _, segment in self:iter() do
-        segment:drawWall(color, height)
+        --segment:drawWall(color, height)
     end
 end
 

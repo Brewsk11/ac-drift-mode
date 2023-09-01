@@ -25,6 +25,9 @@ local function resetScore()
   if track_data then run_state = RunState(track_data) end
 end
 
+local drawerSetup = DrawerCourseSetup() ---@type DrawerCourseSetup
+local drawerRun = DrawerRunStatePlay() ---@type DrawerRunStatePlay
+
 local function listenForSignals()
   local changed = false
   EventSystem.startGroup()
@@ -117,17 +120,12 @@ function script.draw3D()
   if car_data and game_state and game_state.isCarSetup then car_data:drawAlignment() end
 
   if game_state and not game_state:isPlaymode() then
-    if track_data then track_data:drawSetup() end
+    if track_data then drawerSetup:draw(track_data) end
     if cursor_data then cursor_data:draw() end
   else
-    if run_state then run_state:draw() end
+    if run_state then drawerRun:draw(run_state) end
   end
-
-  -- if run_state then
-  --   run_state:drawDebug()
-  -- end
 end
 
 function script.drawUI()
-  if not run_state or not game_state then return end
 end

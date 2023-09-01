@@ -102,37 +102,6 @@ function ClipState:getRatio()
     return self.hitRatioMult
 end
 
-local color_inactive = rgbm(0, 3, 2, 0.4)
-local color_done = rgbm(0, 0, 3, 0.4)
-local color_bad = rgb(1.5, 0, 1.5)
-local color_good = rgb(0, 3, 0)
-
-function ClipState:draw()
-    local color = color_inactive
-    if self.crossed then color = color_done end
-
-    --- Rise the clip's arrow a little so it's not clipping
-    local height_adjustment = vec3(0, 0.05, 0)
-
-    render.debugArrow(self.clip.origin:value() + height_adjustment, self.clip:getEnd():value() + height_adjustment, 0.1, color)
-    render.quad(
-        self.clip.origin:value(),
-        self.clip.origin:value() + vec3(0, 1, 0),
-        self.clip.origin:value() - self.clip.direction * 0.4 + vec3(0, 1, 0),
-        self.clip.origin:value() - self.clip.direction,
-        color
-    )
-
-    if self.crossed then
-        -- Ignore ratio in visualization as the clip distance can be gauged by point position
-        local perf_without_ratio = self.hitAngleMult * self.hitSpeedMult
-
-        local color_hit = color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
-        render.debugSphere(self.hitPoint:value(), 0.1, color_hit)
-        render.debugLine(self.hitPoint:value(), self.hitPoint:value() + vec3(0, 1, 0), color_hit)
-    end
-end
-
 local function test()
 end
 test()

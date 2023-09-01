@@ -23,10 +23,6 @@ function Clip:initialize(name, origin, direction, length, maxPoints)
     self.maxPoints = maxPoints
 end
 
-local color_origin = rgbm(3, 0, 0, 1)
-local color_pole = rgbm(0, 0, 3, 0.4)
-local color_arrow = rgbm(0, 0, 3, 1)
-
 function Clip:serialize()
     local data = {
         __class = "Clip",
@@ -62,13 +58,6 @@ end
 function Clip:setEnd(new_end_point)
   self.direction = (new_end_point:value() - self.origin:value()):normalize()
   self.length = new_end_point:value():distance(self.origin:value())
-end
-
-function Clip:drawSetup()
-    self.origin:draw(0.6, color_origin)
-    render.debugArrow(self.origin:value(), self.origin:value() + self.direction * self.length, 0.1, color_arrow)
-    render.debugLine(self.origin:value(), self.origin:value() + vec3(0, 2, 0), color_pole)
-    render.debugText(self.origin:value() + vec3(0, 2, 0), self.name)
 end
 
 local function test()

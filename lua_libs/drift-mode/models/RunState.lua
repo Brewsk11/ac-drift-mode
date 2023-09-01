@@ -113,21 +113,6 @@ function RunState:getAvgMultiplier()
     return mult
 end
 
-function RunState:draw()
-    render.setDepthMode(render.DepthMode.Normal)
-
-    for _, zone_state in ipairs(self.zoneStates) do
-        zone_state:draw()
-    end
-
-    for _, clip_state in ipairs(self.clipStates) do
-        clip_state:draw()
-    end
-
-    if self.trackConfig.startLine then self.trackConfig.startLine:draw(rgbm(0, 3, 0, 1)) end
-    if self.trackConfig.finishLine then self.trackConfig.finishLine:draw(rgbm(0, 0, 3, 1)) end
-end
-
 function RunState:drawDebug()
     self.driftState:drawDebug()
 end

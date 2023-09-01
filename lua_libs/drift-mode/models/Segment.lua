@@ -1,10 +1,12 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class Segment Class representing a line (two connected points) in world space
+local WorldObject = require('drift-mode/models/WorldObject')
+
+---@class Segment : WorldObject Class representing a line (two connected points) in world space
 ---@field head Point World coordinate position of the point on the track
 ---@field tail Point World coordinate position of the point on the track
-local Segment = class('Segment')
+local Segment = class('Segment', WorldObject)
 
 ---@param head Point
 ---@param tail Point
@@ -64,20 +66,6 @@ end
 
 function Segment:getCenter()
     return (self.head:value() + self.tail:value()) / 2
-end
-
-function Segment:draw(color)
-    render.debugLine(self.head:value(), self.tail:value(), color)
-end
-
-function Segment:drawWall(color, height)
-    render.quad(
-        self.head:value(),
-        self.tail:value(),
-        self.tail:value() + vec3(0, height, 0),
-        self.head:value() + vec3(0, height, 0),
-        color
-    )
 end
 
 local function test()

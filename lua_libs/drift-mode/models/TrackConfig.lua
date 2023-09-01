@@ -2,10 +2,11 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
 local Zone = require('drift-mode/models/Zone')
+local WorldObject = require('drift-mode/models/WorldObject')
 
 -- Track configration data
 
----@class TrackConfig : ClassBase
+---@class TrackConfig : WorldObject
 ---@field name string Configuration name
 ---@field zones Zone[]
 ---@field clips Clip[]
@@ -13,7 +14,7 @@ local Zone = require('drift-mode/models/Zone')
 ---@field finishLine Segment
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
-local TrackConfig = class("TrackConfig")
+local TrackConfig = class("TrackConfig", WorldObject)
 
 function TrackConfig:initialize(name, zones, clips, startLine, finishLine, startingPoint, scoringRanges)
     self.name = name or 'default'
@@ -23,6 +24,7 @@ function TrackConfig:initialize(name, zones, clips, startLine, finishLine, start
     self.finishLine = finishLine
     self.startingPoint = startingPoint
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
+    self:setDrawer(DrawerCourseSetup())
 end
 
 function TrackConfig:serialize()
@@ -81,20 +83,6 @@ function TrackConfig.deserialize(data)
     obj.startingPoint = S.deserialize(data.startingPoint)
     obj.scoringRanges = S.deserialize(data.scoringRanges)
     return obj
-end
-
-function TrackConfig:drawSetup()
-    for _, zone in ipairs(self.zones) do
-        zone:drawSetup()
-    end
-
-    for _, clip in ipairs(self.clips) do
-        clip:drawSetup()
-    end
-
-    if self.startingPoint then self.startingPoint:drawSetup() end
-    if self.startLine then self.startLine:draw(rgbm(0, 3, 0, 1)) end
-    if self.finishLine then self.finishLine:draw(rgbm(0, 0, 3, 1)) end
 end
 
 function TrackConfig:getNextZoneName()

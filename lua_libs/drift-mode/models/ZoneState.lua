@@ -202,65 +202,6 @@ function ZoneState:isFinished()
     return self.finished
 end
 
-local color_inactive = rgbm(0, 2, 1, 0.4)
-local color_active = rgbm(0, 3, 0, 0.4)
-local color_done = rgbm(0, 0, 3, 0.4)
-local color_bad = rgb(2, 0, 1)
-local color_good = rgb(0, 3, 0)
-local color_outside = rgbm(3, 0, 0, 0.2)
-
-function ZoneState:draw()
-    local color = color_inactive
-    if self:isActive() then color = color_active
-    elseif self:isFinished() then color = color_done end
-
-    self.zone:drawWall(color)
-
-    -- Draw at most N lines for performance reasons
-    local N = 50
-    local nth = 1
-    while #self.scores / nth > N do
-        nth = nth + 1
-    end
-
-    for idx, scoring_point in ipairs(self.scores) do
-        local next_idx = idx + nth
-        if next_idx > #self.scores then break end -- Skip last point
-
-        if idx % nth == 0 then
-            local color = nil
-
-            if not scoring_point.inside then
-                color = color_outside
-            else
-                -- Ignore ratio in visualization as the distance from outside line can be gauged by point position
-                local perf_without_ratio = scoring_point.speed_mult * scoring_point.angle_mult
-                color = color_bad * (1 - perf_without_ratio) + color_good * perf_without_ratio
-            end
-
-            -- Ignore ratio in visualization as the distance from outside line can be gauged by point position
-            local perf_without_ratio = scoring_point.speed_mult * scoring_point.angle_mult
-
-            -- If outside assume worst color, ignoring speed and angle
-            if not scoring_point.inside then
-                perf_without_ratio = 0.0
-            end
-
-            render.debugLine(
-                scoring_point.point:value(),
-                self.scores[next_idx].point:value(),
-                color
-            )
-
-            render.debugSphere(
-                scoring_point.point:value(),
-                0.1,
-                color
-            )
-        end
-    end
-end
-
 local function test()
 end
 test()
