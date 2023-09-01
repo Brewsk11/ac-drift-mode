@@ -501,7 +501,7 @@ function CourseEditor:drawUIClips(dt)
     else
       cursor_data.point_group_b = PointGroup.new({ clip_start, Point(hit) })
       if ui.mouseClicked() then
-        course.clips[#course.clips+1] = Clip.new(course:getNextClipName(), clip_start, vec3(0, 0, 0), 0, new_clip_points)
+        course.clips[#course.clips+1] = Clip(course:getNextClipName(), clip_start, vec3(0, 0, 0), 0, new_clip_points)
         course.clips[#course.clips]:setEnd(Point(hit))
         currently_extending = false
         cursor_data = Cursor.new()

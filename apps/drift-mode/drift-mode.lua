@@ -188,7 +188,7 @@ local createClip = function()
   local direction = (_end:value() - origin:value()):normalize()
   local length = _end:value():distance(origin:value())
 
-  local clip = Clip.new(new_clip_name, origin, direction, length, tonumber(new_clip_points))
+  local clip = Clip(new_clip_name, origin, direction, length, tonumber(new_clip_points))
   track_data.clips[#track_data.clips+1] = clip
   new_clip_name = track_data:getNextClipName()
   DataBroker.store("track_data", track_data)

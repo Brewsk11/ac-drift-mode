@@ -1,21 +1,33 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class Clip Class representing a drift scoring zone
+---@class Clip : ClassBase Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field origin Point
 ---@field direction vec3
 ---@field length number
 ---@field maxPoints integer Maximum points possible to score for the clip (in a perfect run)
 ---@field private lastPoint Point To calculate where crossed
-local Clip = {}
-Clip.__index = Clip
+local Clip = class("Clip")
+
+---@param name string
+---@param origin Point
+---@param direction vec3
+---@param length number
+---@param maxPoints integer
+function Clip:initialize(name, origin, direction, length, maxPoints)
+    self.name = name
+    self.origin = origin
+    self.direction = direction
+    self.length = length
+    self.maxPoints = maxPoints
+end
 
 local color_origin = rgbm(3, 0, 0, 1)
 local color_pole = rgbm(0, 0, 3, 0.4)
 local color_arrow = rgbm(0, 0, 3, 1)
 
-function Clip.serialize(self)
+function Clip:serialize()
     local data = {
         __class = "Clip",
         name = S.serialize(self.name),
@@ -33,7 +45,7 @@ function Clip.deserialize(data)
 
     Assert.Equal(data.__class, "Clip", "Tried to deserialize wrong class")
 
-    local obj = Clip.new(
+    local obj = Clip(
         S.deserialize(data.name),
         Point.deserialize(data.origin),
         S.deserialize(data.direction),
@@ -41,22 +53,6 @@ function Clip.deserialize(data)
         S.deserialize(data.maxPoints)
     )
     return obj
-end
-
----@param name string
----@param origin Point
----@param direction vec3
----@param length number
----@param maxPoints integer
----@return Clip
-function Clip.new(name, origin, direction, length, maxPoints)
-    local self = setmetatable({}, Clip)
-    self.name = name
-    self.origin = origin
-    self.direction = direction
-    self.length = length
-    self.maxPoints = maxPoints
-    return self
 end
 
 function Clip:getEnd()
@@ -68,7 +64,7 @@ function Clip:setEnd(new_end_point)
   self.length = new_end_point:value():distance(self.origin:value())
 end
 
-function Clip.drawSetup(self)
+function Clip:drawSetup()
     self.origin:draw(0.6, color_origin)
     render.debugArrow(self.origin:value(), self.origin:value() + self.direction * self.length, 0.1, color_arrow)
     render.debugLine(self.origin:value(), self.origin:value() + vec3(0, 2, 0), color_pole)
@@ -79,4 +75,4 @@ local function test()
 end
 test()
 
-return Clip
+return class.emmy(Clip, Clip.initialize)
