@@ -117,6 +117,8 @@ function RunState:getAvgMultiplier()
 end
 
 function RunState:draw()
+    render.setDepthMode(render.DepthMode.Normal)
+
     for _, zone_state in ipairs(self.zoneStates) do
         zone_state:draw()
     end
