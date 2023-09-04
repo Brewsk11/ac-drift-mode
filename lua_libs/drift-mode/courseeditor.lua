@@ -105,7 +105,6 @@ function CourseEditor:drawUI(dt)
   if course == nil then
     ui.text("<No course selected>"); return
   end
-  course:drawSetup()
 
   ui.setNextItemWidth(ui.availableSpaceX() - 132)
   course.name = ui.inputText("Course name", course.name, ui.InputTextFlags.Placeholder + input_global_flags)
