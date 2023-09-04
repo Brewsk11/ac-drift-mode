@@ -3,4 +3,4 @@ set -ex
 
 ./assemble.sh
 
-cp -R ./output/assettocorsa/* "$(cat assetto_directory.txt)"
+cp -R ./output/assettocorsa/* "$(cat .assetto_directory)"

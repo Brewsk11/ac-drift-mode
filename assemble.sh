@@ -1,8 +1,16 @@
 #!/bin/bash
 set -ex
 
-# Run autogeneration
-./generate_models.sh
+
+# Run model autogeneration
+#   Run only if directory structure changed (cached tree hash)
+function hashModels { find lua_libs/drift-mode/models | md5sum; }
+MODELS_GEN_CACHE=".generate_models.cache"
+
+if [[ ! -f ${MODELS_GEN_CACHE} || "$(hashModels)" != "$(cat ${MODELS_GEN_CACHE})" ]]; then
+    ./generate_models.sh
+    hashModels > ${MODELS_GEN_CACHE}
+fi
 
 # Assemble directories for release/installation
 

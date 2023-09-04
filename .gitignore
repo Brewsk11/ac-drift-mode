@@ -1,3 +1,5 @@
 output/
 packaged/
-assetto_directory.txt
+
+.assetto_directory
+.generate_models.cache
