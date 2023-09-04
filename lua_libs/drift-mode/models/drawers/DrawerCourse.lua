@@ -14,12 +14,14 @@ end
 
 ---@param course TrackConfig
 function DrawerCourse:draw(course)
-    for _, zone in ipairs(course.zones) do
-        if self.drawerZone then self.drawerZone:draw(zone) end
-    end
-
-    for _, clip in ipairs(course.clips) do
-        if self.drawerClip then self.drawerClip:draw(clip) end
+    for _, obj in ipairs(course.scoringObjects) do
+        if obj.isInstanceOf(Zone) and self.drawerZone then
+            self.drawerZone:draw(obj)
+        elseif obj.isInstanceOf(Clip) and self.drawerClip then
+             self.drawerClip:draw(obj)
+        else
+            Assert.Error("")
+        end
     end
 
     if course.startLine and self.drawerStartLine then

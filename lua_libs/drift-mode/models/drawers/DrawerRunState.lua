@@ -15,15 +15,13 @@ end
 function DrawerRunState:draw(run_state)
     if self.drawerCourse and run_state.trackConfig then self.drawerCourse:draw(run_state.trackConfig) end
     -- if self.drawerDriftState and run_state.drift_state then self.drawerDriftState:draw(run_State.drift_state) end
-    if self.drawerZoneState then
-        for _, zone_state in ipairs(run_state.zoneStates) do
-            self.drawerZoneState:draw(zone_state)
-        end
-    end
-
-    if self.drawerClipState then
-        for _, clip_state in ipairs(run_state.clipStates) do
-            self.drawerClipState:draw(clip_state)
+    for _, scoring_object_state in ipairs(run_state.scoringObjectStates) do
+        if scoring_object_state.isInstanceOf(ZoneState) then
+            self.drawerZoneState:draw(scoring_object_state)
+        elseif scoring_object_state.isInstanceOf(ClipState) then
+            self.drawerClipState:draw(scoring_object_state)
+        else
+            Assert.Error("")
         end
     end
 end

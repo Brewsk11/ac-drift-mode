@@ -8,18 +8,16 @@ local WorldObject = require('drift-mode/models/WorldObject')
 
 ---@class TrackConfig : WorldObject
 ---@field name string Configuration name
----@field zones Zone[]
----@field clips Clip[]
+---@field scoringObjects ScoringObject[]
 ---@field startLine Segment
 ---@field finishLine Segment
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
 local TrackConfig = class("TrackConfig", WorldObject)
 
-function TrackConfig:initialize(name, zones, clips, startLine, finishLine, startingPoint, scoringRanges)
+function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, startingPoint, scoringRanges)
     self.name = name or 'default'
-    self.zones = zones or {}
-    self.clips = clips or {}
+    self.scoringObjects = scoringObjects or {}
     self.startLine = startLine
     self.finishLine = finishLine
     self.startingPoint = startingPoint
@@ -31,20 +29,19 @@ function TrackConfig:serialize()
     local data = {
         __class = "TrackConfig",
         name = S.serialize(self.name),
-        zones = {},
-        clips = {},
+        scoringObjects = {},
         startLine = S.serialize(self.startLine),
         finishLine  = S.serialize(self.finishLine),
         startingPoint = S.serialize(self.startingPoint),
         scoringRanges = S.serialize(self.scoringRanges)
     }
 
-    for idx, zone in ipairs(self.zones) do
-        data.zones[idx] = zone:serialize()
-    end
-
-    for idx, clipPoint in ipairs(self.clips) do
-        data.clips[idx] = clipPoint:serialize()
+    for idx, scoringObject in ipairs(self.scoringObjects) do
+        if Zone.isInstanceOf(scoringObject) then
+            data.scoringObjects[idx] = Zone.serialize(scoringObject)
+        elseif Clip.isInstanceOf(scoringObject) then
+            data.scoringObjects[idx] = Clip.serialize(scoringObject)
+        end
     end
 
     return data
@@ -54,11 +51,6 @@ function TrackConfig.deserialize(data)
     Assert.Equal(data.__class, "TrackConfig", "Tried to deserialize wrong class")
 
     local obj = TrackConfig()
-
-    local zones = {}
-    for idx, zone in ipairs(data.zones) do
-        zones[idx] = Zone.deserialize(zone)
-    end
 
     -- 2.1.0 compatibility transfer
     --   Changed `clippingPoints` field name to `clips`
@@ -70,14 +62,32 @@ function TrackConfig.deserialize(data)
         )
     end
 
-    local clips = {}
-    for idx, clipPoint in ipairs(data.clips) do
-        clips[idx] = Clip.deserialize(clipPoint)
+    -- 2.3.1 compatibility transfer
+    --   Migrated zones and clips to ScoringObjects
+    if data.zones or data.clips then
+        local scoringObjects = {}
+        for _, zone in ipairs(data.zones) do
+            scoringObjects[#scoringObjects+1] = zone
+        end
+        for _, clip in ipairs(data.clips) do
+            scoringObjects[#scoringObjects+1] = clip
+        end
+        data.scoringObjects = scoringObjects
     end
 
+    local scoringObjects = {}
+    for idx, scoringObject in ipairs(data.scoringObjects) do
+        if scoringObject.__class == Zone.__name then
+            scoringObjects[idx] = Zone.deserialize(scoringObject)
+        elseif scoringObject.__class == Clip.__name then
+            scoringObjects[idx] = Clip.deserialize(scoringObject)
+        else
+            Assert.Error("Some ScoringObject was neither Zone or Clip")
+        end
+    end
+    obj.scoringObjects = scoringObjects
+
     obj.name = S.deserialize(data.name)
-    obj.zones = zones
-    obj.clips = clips
     obj.startLine = S.deserialize(data.startLine)
     obj.finishLine = S.deserialize(data.finishLine)
     obj.startingPoint = S.deserialize(data.startingPoint)
@@ -86,11 +96,11 @@ function TrackConfig.deserialize(data)
 end
 
 function TrackConfig:getNextZoneName()
-    return "zone_" .. string.format('%03d', #self.zones + 1)
+    return "zone_" .. string.format('%03d', #self.scoringObjects + 1)
 end
 
 function TrackConfig:getNextClipName()
-    return "clip_" .. string.format('%03d', #self.clips + 1)
+    return "clip_" .. string.format('%03d', #self.scoringObjects + 1)
 end
 
 local function test()

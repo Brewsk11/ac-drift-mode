@@ -4,20 +4,21 @@ local S = require('drift-mode/serializer')
 ---@class RunState : ClassBase
 ---@field trackConfig TrackConfig
 ---@field driftState DriftState
----@field zoneStates ZoneState[]
----@field clipStates ClipState[]
+---@field scoringObjectStates ScoringObjectState[]
 local RunState = class("RunState")
 
 function RunState:initialize(track_config)
     self.trackConfig = track_config
-    self.zoneStates = {}
-    self.clipStates = {}
+    self.scoringObjectStates = {}
     self.driftState = DriftState(0, 0, 0, 0)
-    for _, zone in ipairs(self.trackConfig.zones) do
-        self.zoneStates[#self.zoneStates+1] = ZoneState(zone)
-    end
-    for _, clip in ipairs(self.trackConfig.clips) do
-        self.clipStates[#self.clipStates+1] = ClipState(clip)
+    for idx, obj in ipairs(self.trackConfig.scoringObjects) do
+        if obj.isInstanceOf(Zone) then
+            self.scoringObjectStates[idx] = ZoneState(obj)
+        elseif obj.isInstanceOf(Clip) then
+            self.scoringObjectStates[idx] = ClipState(obj)
+        else
+            Assert.Error("")
+        end
     end
 end
 
@@ -27,12 +28,21 @@ end
 function RunState:serialize()
     local data = {
         __class = "RunStateData",
-        zoneStates = S.serialize(self.zoneStates),
-        clipStates = S.serialize(self.clipStates),
+        scoringObjectStates = {},
         driftState = S.serialize(self.driftState),
         totalScore = S.serialize(self:getScore()),
         avgMultiplier = S.serialize(self:getAvgMultiplier()),
     }
+
+    for idx, obj in ipairs(self.scoringObjectStates) do
+        if obj.isInstanceOf(ZoneState) then
+            data.scoringObjectStates[idx] = ZoneState.serialize(obj)
+        elseif obj.isInstanceOf(ClipState) then
+            data.scoringObjectStates[idx] = ClipState.serialize(obj)
+        else
+            Assert.Error("")
+        end
+    end
 
     return data
 end
@@ -43,19 +53,22 @@ function RunState:registerCar(car_config, car)
     self:calcDriftState(car)
 
     self.driftState.ratio_mult = 0.0
-    for _, zone in ipairs(self.zoneStates) do
-        local res = zone:registerCar(car_config, car, self.driftState)
-        if res ~= nil then
-            self.driftState.ratio_mult = res
-            break
-        end
-    end
 
-    local clip_scoring_point = Point(
-        car.position + car.look * car_config.frontOffset + car.side * car_config.frontSpan * -self.driftState.side_drifting
-    )
-    for _, clip in ipairs(self.clipStates) do
-        clip:registerPosition(clip_scoring_point, self.driftState)
+    for _, scoring_object in ipairs(self.scoringObjectStates) do
+        if scoring_object.isInstanceOf(ZoneState) then
+            local res = scoring_object:registerCar(car_config, car, self.driftState)
+            if res ~= nil then
+                self.driftState.ratio_mult = res
+                break
+            end
+        elseif scoring_object.isInstanceOf(ClipState) then
+            local clip_scoring_point = Point(
+                car.position + car.look * car_config.frontOffset + car.side * car_config.frontSpan * -self.driftState.side_drifting
+            )
+            scoring_object:registerPosition(clip_scoring_point, self.driftState)
+        else
+            Assert.Error("")
+        end
     end
 end
 
@@ -84,11 +97,8 @@ end
 
 function RunState:getScore()
     local score = 0
-    for _, zone_state in ipairs(self.zoneStates) do
-        score = score + zone_state:getScore()
-    end
-    for _, clip_state in ipairs(self.clipStates) do
-        score = score + clip_state:getScore()
+    for _, scoring_object in ipairs(self.scoringObjectStates) do
+        score = score + scoring_object:getScore()
     end
     return score
 end
@@ -96,15 +106,9 @@ end
 function RunState:getAvgMultiplier()
     local mult = 0
     local scoring_finished = 0
-    for _, zone_state in ipairs(self.zoneStates) do
-        if zone_state:isFinished() then
-            mult = mult + zone_state:getMultiplier()
-            scoring_finished = scoring_finished + 1
-        end
-    end
-    for _, clip_state in ipairs(self.clipStates) do
-        if clip_state.crossed then
-            mult = mult + clip_state:getMultiplier()
+    for _, scoring_object_state in ipairs(self.scoringObjectStates) do
+        if scoring_object_state:isDone() then
+            mult = mult + scoring_object_state:getMultiplier()
             scoring_finished = scoring_finished + 1
         end
     end
