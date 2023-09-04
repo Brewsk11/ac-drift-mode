@@ -25,16 +25,16 @@ end
 
 ---@param zone_state ZoneState
 function DrawerZoneStatePlay:draw(zone_state)
-    render.setDepthMode(render.DepthMode.Normal)
-    DrawerZoneState.draw(self, zone_state)
-
     if zone_state:isActive() then
         self.drawerZone = self.drawerActive
-    elseif zone_state:isFinished() then
+    elseif zone_state:isDone() then
         self.drawerZone = self.drawerDone
     else
         self.drawerZone = self.drawerInactive
     end
+
+    render.setDepthMode(render.DepthMode.Normal)
+    DrawerZoneState.draw(self, zone_state)
 
     -- Draw at most N lines for performance reasons
     local N = 50
