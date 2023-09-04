@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class ZoneStateData Lightweight dataclass for brokering run information to apps
+---@class ZoneStateData : ScoringObjectStateData Lightweight dataclass for brokering run information to apps
 ---@field zone string
 ---@field maxPoints integer
 ---@field active boolean
@@ -9,7 +9,7 @@ local S = require('drift-mode/serializer')
 ---@field score number
 ---@field performance number
 ---@field timeInZone number
-local ZoneStateData = class("ZoneStateData")
+local ZoneStateData = class("ZoneStateData", ScoringObjectStateData)
 
 function ZoneStateData:serialize()
     local data = {

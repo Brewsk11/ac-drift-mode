@@ -1,13 +1,13 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class ZoneState
+---@class ZoneState : ScoringObjectState
 ---@field zone Zone
 ---@field scores ZoneScoringPoint[]
 ---@field started boolean
 ---@field finished boolean
 ---@field private finalPerformance number
-local ZoneState = class("ZoneState")
+local ZoneState = class("ZoneState", ScoringObjectState)
 
 function ZoneState:initialize(zone)
     self.zone = zone
@@ -28,7 +28,7 @@ function ZoneState:serialize()
         zone = S.serialize(self.zone.name),
         maxPoints = S.serialize(self.zone.maxPoints),
         active = S.serialize(self:isActive()),
-        finished = S.serialize(self:isFinished()),
+        finished = S.serialize(self:isDone()),
         score = S.serialize(self:getScore()),
         performance = S.serialize(self:getPerformance()),
         timeInZone = S.serialize(self:getTimeInZone()),
@@ -134,7 +134,7 @@ end
 ---This leaves out the time spent in zone. For final multiplier try `getMultiplier()`
 ---@return number
 function ZoneState:getPerformance()
-    if self:isFinished() then
+    if self:isDone() then
         if self.finalPerformance == nil then
             self.finalPerformance = self:calcPerformance()
         end
@@ -198,7 +198,7 @@ function ZoneState:isActive()
     return self.started and not self.finished
 end
 
-function ZoneState:isFinished()
+function ZoneState:isDone()
     return self.finished
 end
 

@@ -1,13 +1,13 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class Zone : ClassBase Class representing a drift scoring zone
+---@class Zone : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field private outsideLine PointGroup Outside zone line definition
 ---@field private insideLine PointGroup Inside zone line definition
 ---@field private polygon PointGroup Polygon created from inside and outside lines
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
-local Zone = class("Zone")
+local Zone = class("Zone", ScoringObject)
 
 ---@param name string
 ---@param outsideLine PointGroup

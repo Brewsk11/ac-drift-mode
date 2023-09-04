@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class ClipState : ClassBase
+---@class ClipState : ScoringObjectState
 ---@field clip Clip
 ---@field crossed boolean
 ---@field private hitPoint Point Point at which the clip was crossed
@@ -11,7 +11,7 @@ local S = require('drift-mode/serializer')
 ---@field private finalScore number Final score after multipliers `(maxScore * perf)`
 ---@field private finalMultiplier number Final multiplier
 ---@field private lastPoint Point To calculate where crossed
-local ClipState = class("ClipState")
+local ClipState = class("ClipState", ScoringObjectState)
 
 function ClipState:initialize(clip)
     self.clip = clip
@@ -100,6 +100,10 @@ end
 function ClipState:getRatio()
     if not self.crossed then return 0.0 end
     return self.hitRatioMult
+end
+
+function ClipState:isDone()
+    return self.crossed
 end
 
 local function test()

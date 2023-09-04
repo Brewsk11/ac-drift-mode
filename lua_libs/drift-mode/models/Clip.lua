@@ -1,14 +1,14 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class Clip : ClassBase Class representing a drift scoring zone
+---@class Clip : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field origin Point
 ---@field direction vec3
 ---@field length number
 ---@field maxPoints integer Maximum points possible to score for the clip (in a perfect run)
 ---@field private lastPoint Point To calculate where crossed
-local Clip = class("Clip")
+local Clip = class("Clip", ScoringObject)
 
 ---@param name string
 ---@param origin Point
