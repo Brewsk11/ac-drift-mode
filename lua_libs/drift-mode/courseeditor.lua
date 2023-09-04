@@ -50,8 +50,7 @@ local CourseEditor = class('CourseEditor')
 
 function CourseEditor:initialize()
   self.__tabs = {
-    { 'Zones',           self.drawUIZones },
-    { 'Clipping points', self.drawUIClips },
+    { 'Scoring objects', self.drawUIScoringObjects },
     { 'Other',           self.drawUIOther },
     { 'Help',            self.drawUIHelp },
   }
@@ -157,6 +156,179 @@ function CourseEditor:onCourseEdited()
   Assert.NotNil(course, "Course was edited but simultaneously was nil")
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
   unsaved_changes = true
+end
+
+function CourseEditor:drawUIScoringObjects(dt)
+  local objects = course.scoringObjects
+  ui.pushFont(ui.Font.Small)
+
+  ui.offsetCursorY(8)
+
+  local toRemove = nil
+
+  for i = 1, #objects do
+    ui.pushID(i)
+
+    ui.pushFont(ui.Font.Main)
+
+    local up_flags = (i == 1 or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
+    if ui.button("↑", vec2(24, 0), up_flags) then
+      local tmp_zone = objects[i - 1]
+      objects[i - 1] = objects[i]
+      objects[i] = tmp_zone
+      self:onCourseEdited()
+    end
+
+    ui.sameLine(0, 4)
+
+    if Zone.isInstanceOf(objects[i]) then
+      ui.setNextItemWidth(ui.availableSpaceX() - 32)
+      objects[i].name = ui.inputText("Zone #" .. tostring(i), objects[i].name, ui.InputTextFlags.Placeholder + input_global_flags)
+      if ui.itemHovered() then
+        ui.setTooltip("Zone #" .. tostring(i))
+      end
+
+      ui.sameLine(0, 4)
+      local down_flags = (i == #objects or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
+      if ui.button("↓", vec2(24, 0), down_flags) then
+        local tmp_zone = objects[i + 1]
+        objects[i + 1] = objects[i]
+        objects[i] = tmp_zone
+        self:onCourseEdited()
+      end
+      ui.popFont()
+
+      ui.pushFont(ui.Font.Monospace)
+      ui.setNextItemWidth(42)
+      local text, changed = ui.inputText("Points", tostring(objects[i].maxPoints),
+        (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
+      ui.popFont()
+
+      if ui.itemHovered() then
+        ui.setTooltip("Max points")
+      end
+      if changed then
+        if text == "" then
+          new_clip_points = "0"
+        else
+          new_clip_points = tostring(tonumber(text))
+        end
+        objects[i].maxPoints = tonumber(new_clip_points)
+        self:onCourseEdited()
+      end
+
+      ui.sameLine(0, 8)
+      if ui.button(")  Inner", vec2(60, 0), button_global_flags) then
+        currently_extending = {
+          zone_idx = i,
+          line = "in",
+          point_group_ref = objects[i]:getInsideLine()
+        }
+      end
+      if ui.itemHovered() then
+        ui.setTooltip("Enable pointer to extend the inner line")
+      end
+
+      ui.sameLine(0, 2)
+      if ui.button("Outer   )", vec2(60, 0), button_global_flags) then
+        currently_extending = {
+          zone_idx = i,
+          line = "out",
+          point_group_ref = objects[i]:getOutsideLine()
+        }
+      end
+      if ui.itemHovered() then
+        ui.setTooltip("Enable pointer to extend the outer line")
+      end
+    elseif Clip.isInstanceOf(objects[i]) then
+      ui.sameLine(0, 4)
+      ui.setNextItemWidth(ui.availableSpaceX() - 32)
+      objects[i].name = ui.inputText("Clip #" .. tostring(i), objects[i].name, ui.InputTextFlags.Placeholder + input_global_flags)
+      if ui.itemHovered() then
+        ui.setTooltip("Clip #" .. tostring(i))
+      end
+
+      ui.sameLine(0, 4)
+      local down_flags = (i == #objects or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
+      if ui.button("↓", vec2(24, 0), down_flags) then
+        local tmp_zone = objects[i + 1]
+        objects[i + 1] = objects[i]
+        objects[i] = tmp_zone
+        self:onCourseEdited()
+      end
+      ui.popFont()
+
+      ui.pushFont(ui.Font.Monospace)
+      ui.setNextItemWidth(42)
+      local text, changed = ui.inputText("Points", tostring(objects[i].maxPoints),
+        (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
+      ui.popFont()
+
+      if ui.itemHovered() then
+        ui.setTooltip("Max points")
+      end
+      if changed then
+        if text == "" then
+          new_clip_points = "0"
+        else
+          new_clip_points = tostring(tonumber(text))
+        end
+        objects[i].maxPoints = tonumber(new_clip_points)
+        self:onCourseEdited()
+      end
+    else
+      Assert.Error("")
+    end
+
+    ui.sameLine(0, 0)
+    ui.offsetCursorX(ui.availableSpaceX() - 64)
+    if ui.button("Remove", vec2(60, 0), button_global_flags) then
+      toRemove = i
+    end
+
+    ui.separator()
+    ui.offsetCursorY(8)
+
+    ui.popID()
+  end
+
+  ui.popFont()
+
+  if toRemove then
+    table.remove(objects, toRemove)
+    self:onCourseEdited()
+  end
+
+  ui.offsetCursorX((ui.availableSpaceX() - 200) / 2)
+  if ui.availableSpaceY() > 0 + 65 then
+    ui.offsetCursorY(ui.availableSpaceY() - 65)
+  end
+  if ui.button("Create new zone", vec2(200, 60), button_global_flags) then
+    objects[#objects + 1] = Zone(course:getNextZoneName(), nil, nil, tonumber(new_clip_points))
+    self:onCourseEdited()
+  end
+
+  --[[
+  Editor algorithm:
+
+  - Raycast track and save `hit`
+
+  - If not currently editing and not extending:
+    - Find closest point of interest (zone, clip, start/finish line, start point) in given radius
+    - If `closest_point` found:
+      - If     delete modifier and mouse pressed - start editing
+      - If not delete modifier and mouse pressed - delete point
+
+  - If currently editing:
+    - Set current cursor position to new point value
+
+  - If currently extending:
+    - If mouse pressed - append a new point
+
+  ]]
+     --
+
+  -- TODO: FIGURE THIS OUT
 end
 
 function CourseEditor:drawUIZones(dt)
