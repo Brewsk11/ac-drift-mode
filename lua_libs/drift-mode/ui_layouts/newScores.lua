@@ -1,0 +1,108 @@
+-- local Timer = require('drift-mode/timer')
+
+function appScoresLayout(run_state_data, game_state, track_data, scale)
+--     -- ui.beginTransparentWindow('logo', vec2(510, 110), vec2(50, 50), true)
+--     -- ui.image("logo white.png", vec2(50, 50), true)
+--     -- ui.endTransparentWindow()
+
+--     if not run_state_data or not game_state or not game_state:isPlaymode() then return end
+
+
+--     local window_height = 195 + #run_state_data.zoneStates * 16 + #run_state_data.clipStates * 16
+--     --ui.beginChild('scoresWindow', vec2(450, window_height), true)
+
+--     -- ui.drawRectFilled(vec2(0, 0), vec2(450, window_height), rgbm(0.15, 0.15, 0.15, 0.4))
+
+--     --ui.beginScale()
+--     ui.pushFont(ui.Font.Main)
+--     ui.text(track_data.name)
+--     ui.offsetCursorY(-10)
+--     ui.pushFont(ui.Font.Huge)
+--     ui.text(string.format("Total score: %.0f", run_state_data.totalScore))
+--     ui.pushFont(ui.Font.Main)
+--     ui.offsetCursorY(-10)
+--     ui.text(string.format("Average run multiplier: %.2f%%", run_state_data.avgMultiplier * 100))
+
+--     -- Zones
+--     ui.offsetCursorY(20)
+--     local header_orig = ui.getCursor()
+--     ui.pushFont(ui.Font.Main)
+--     ui.text("Zone")
+--     ui.setCursor(header_orig + vec2(150, 0))
+--     ui.text("Score")
+--     ui.setCursor(header_orig + vec2(200, 0))
+--     ui.text("Max")
+--     ui.setCursor(header_orig + vec2(250, 0))
+--     ui.text("Perf.")
+--     ui.setCursor(header_orig + vec2(300, 0))
+--     ui.text("Dist.")
+--     if ui.itemHovered() then
+--       ui.pushFont(ui.Font.Huge)
+--       ui.setTooltip("This is something")
+--       ui.popFont()
+--     end
+--     ui.setCursor(header_orig + vec2(350, 0))
+--     ui.text("Done")
+--     ui.offsetCursorY(10)
+--     ui.pushFont(ui.Font.Monospace)
+--     for _, zone_state in ipairs(run_state_data.zoneStates) do
+--       local zone_orig = ui.getCursor()
+--       ui.text(zone_state.zone)
+--       ui.setCursor(zone_orig + vec2(150, 0))
+--       ui.text(string.format("%.0f", zone_state.score))
+--       ui.setCursor(zone_orig + vec2(200, 0))
+--       ui.text(tostring(zone_state.maxPoints))
+--       ui.setCursor(zone_orig + vec2(250, 0))
+--       ui.text(string.format("%.2f%%", zone_state.performance * 100))
+--       ui.setCursor(zone_orig + vec2(300, 0))
+--       local zone_distance = 0
+--       if zone_state.active or zone_state.finished then
+--         zone_distance = zone_state.timeInZone
+--       end
+--       ui.text(string.format("%.2f%%", zone_distance * 100))
+--       ui.setCursor(zone_orig + vec2(350, 0))
+--       local done = "-"
+--       if zone_state.finished then done = "X" end
+--       ui.text(done)
+--     end
+
+--     -- Clips
+--     ui.offsetCursorY(20)
+--     local header_orig = ui.getCursor()
+--     ui.pushFont(ui.Font.Main)
+--     ui.text("Clip")
+--     ui.setCursor(header_orig + vec2(150, 0))
+--     ui.text("Score")
+--     ui.setCursor(header_orig + vec2(200, 0))
+--     ui.text("Max")
+--     ui.setCursor(header_orig + vec2(250, 0))
+--     ui.text("Perf.")
+--     ui.setCursor(header_orig + vec2(300, 0))
+--     ui.text("Frac.")
+--     ui.setCursor(header_orig + vec2(350, 0))
+--     ui.text("Done")
+--     ui.offsetCursorY(10)
+--     ui.pushFont(ui.Font.Monospace)
+--     for _, clip_state in ipairs(run_state_data.clipStates) do
+--       local clip_orig = ui.getCursor()
+--       ui.text(clip_state.clip)
+--       ui.setCursor(clip_orig + vec2(150, 0))
+--       ui.text(string.format("%.0f", clip_state.score))
+--       ui.setCursor(clip_orig + vec2(200, 0))
+--       ui.text(tostring(clip_state.maxPoints))
+--       ui.setCursor(clip_orig + vec2(250, 0))
+--       ui.text(string.format("%.2f%%", clip_state.performance * 100))
+--       ui.setCursor(clip_orig + vec2(300, 0))
+--       ui.text(string.format("%.2f%%", clip_state.hitRatioMult * 100))
+--       ui.setCursor(clip_orig + vec2(350, 0))
+--       local done = "-"
+--       if clip_state.crossed then done = "X" end
+--       ui.text(done)
+--     end
+
+--     --ui.endPivotScale(scale, vec2(0, 0))
+
+--     --ui.endChild()
+
+--     --ui.endScale(scale)
+end

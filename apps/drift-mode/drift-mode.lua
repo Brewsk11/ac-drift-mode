@@ -6,7 +6,7 @@ local Timer = require('drift-mode/timer')
 local PP = require('drift-mode/physicspatcher')
 local S = require('drift-mode/serializer')
 
-require('drift-mode/ui_layouts/scores')
+require('drift-mode/ui_layouts/newScores')
 require('drift-mode/ui_layouts/infobars')
 require('drift-mode/models')
 
@@ -250,7 +250,7 @@ function WindowMain()
 end
 
 function WindowScores()
-  appScoresLayout(run_state_data, game_state, track_data)
+  appScoresLayout(run_state_data, game_state, track_data, scores_scale)
 end
 
 function WindowInfobars()
