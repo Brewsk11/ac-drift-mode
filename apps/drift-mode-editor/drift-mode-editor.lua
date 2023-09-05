@@ -20,5 +20,6 @@ function WindowMain(dt)
 
   if course_editor_enabled then
     course_editor:drawUI(dt)
+    course_editor:runEditor(dt)
   end
 end

@@ -2,6 +2,7 @@ local EventSystem = require('drift-mode/eventsystem')
 local ConfigIO = require('drift-mode/configio')
 local Assert = require('drift-mode/assert')
 local AsyncUtils = require('drift-mode/asynchelper')
+local Resources = require('drift-mode/Resources')
 require('drift-mode/models')
 
 -- #region Pre-script definitions
@@ -22,26 +23,450 @@ local new_clip_points = "1000"
 ---Cursor
 local cursor_data = Cursor() ---@type Cursor
 
-local closest_point = nil
-local currently_editing = false
-local initial_offset = nil
-local closest_type = nil
-local clip_ref = nil
-local clip_start = nil
+local closest_poi = nil
 
 local is_user_editing = false
 local button_global_flags = ui.ButtonFlags.None
 local input_global_flags = ui.ButtonFlags.None
 
----@alias OtherCreatingContext { head_position: Point?, type_creating: string }
-local other_creating_context = nil ---@type OtherCreatingContext?
-
----@alias LineExtendingInfo { zone_idx: integer, line: string, point_group_ref: PointGroup }
-local currently_extending = nil ---@type LineExtendingInfo?
-
 local unsaved_changes = false
 
+local pois = {} ---@type ObjectEditorPoi[]
+
+local current_routine = nil ---@type EditorRoutine?
+
 -- #endregion
+
+
+---@enum PoiType
+local PoiType = {
+  Zone = "Zone",
+  Clip = "Clip",
+  Segment = "Segment",
+  StartingPoint = "StartingPoint"
+}
+
+---@class ObjectEditorPoi : ClassBase
+---@field point Point
+---@field poi_type PoiType
+local ObjectEditorPoi = class("ObjectEditorPoi")
+
+function ObjectEditorPoi:initialize(point, poi_type)
+  self.point = point
+  self.poi_type = poi_type
+end
+
+function ObjectEditorPoi:set(new_pos)
+  Assert.Error("Abstract method called")
+end
+
+
+
+---@enum PoiZonePointType
+local PoiZonePointType = {
+  FromInsideLine = "FromInsideLine",
+  FromOutsideLine = "FromOutsideLine"
+}
+
+---@class PoiZone : ObjectEditorPoi
+---@field zone Zone
+---@field point_type PoiZonePointType
+---@field point_index integer
+local PoiZone = class("PoiZone", ObjectEditorPoi)
+
+function PoiZone:initialize(point, zone, zone_obj_type, point_index)
+  ObjectEditorPoi.initialize(self, point, PoiType.Zone)
+  self.zone = zone
+  self.point_type = zone_obj_type
+  self.point_index = point_index
+end
+
+function PoiZone:set(new_pos)
+  self.point:set(new_pos)
+end
+
+
+
+---@enum PoiClipPointType
+local PoiClipPointType = {
+  Origin = "Origin",
+  Ending = "Ending"
+}
+
+---@class PoiClip : ObjectEditorPoi
+---@field clip Clip
+---@field point_type PoiClipPointType
+local PoiClip = class("PoiClip", ObjectEditorPoi)
+
+function PoiClip:initialize(point, clip, clip_obj_type)
+  ObjectEditorPoi.initialize(self, point, PoiType.Clip)
+  self.clip = clip
+  self.point_type = clip_obj_type
+end
+
+function PoiClip:set(new_pos)
+  if self.point_type == PoiClipPointType.Origin then
+    self.clip.origin:set(new_pos)
+  elseif self.point_type == PoiClipPointType.Ending then
+    self.clip:setEnd(Point(new_pos))
+  end
+end
+
+
+
+---@enum PoiSegmentType
+local PoiSegmentType = {
+  StartLine = "StartLine",
+  FinishLine = "FinishLine"
+}
+
+---@enum PoiSegmentPointType
+local PoiSegmentPointType = {
+  Head = "Head",
+  Tail = "Tail"
+}
+
+---@class PoiSegment : ObjectEditorPoi
+---@field segment Segment
+---@field segment_type PoiSegmentType
+---@field segment_point_type PoiSegmentPointType
+local PoiSegment = class("PoiSegment", ObjectEditorPoi)
+
+function PoiSegment:initialize(point, segment, segment_type, segment_point_type)
+  ObjectEditorPoi.initialize(self, point, PoiType.Segment)
+  self.segment = segment
+  self.segment_type = segment_type
+  self.segment_point_type = segment_point_type
+end
+
+function PoiSegment:set(new_pos)
+  if self.segment_point_type == PoiSegmentPointType.Head then
+    self.segment.head:set(new_pos)
+  elseif self.segment_point_type == PoiSegmentPointType.Tail then
+    self.segment.tail:set(new_pos)
+  end
+end
+
+
+
+---@class PoiStartingPoint : ObjectEditorPoi
+---@field starting_point StartingPoint
+local PoiStartingPoint = class("PoiStartingPoint", ObjectEditorPoi)
+
+function PoiStartingPoint:initialize(point, starting_point)
+  ObjectEditorPoi.initialize(self, point, PoiType.StartingPoint)
+  self.starting_point = starting_point
+end
+
+function PoiStartingPoint:set(new_pos)
+  self.starting_point.origin:set(new_pos)
+end
+
+---@param origin vec3
+---@param radius number
+---@return ObjectEditorPoi?
+local function findClosestPoi(origin, radius)
+  local closest_dist = radius
+  closest_poi = nil ---@type ObjectEditorPoi?
+  if origin then
+    for _, poi in ipairs(pois) do
+      local distance = origin:distance(poi.point:value())
+      if distance < closest_dist then
+        closest_poi = poi
+        closest_dist = distance
+      end
+    end
+  end
+  return closest_poi
+end
+
+
+---@return ObjectEditorPoi[]
+local function gatherPois()
+  local _pois = {} ---@type ObjectEditorPoi[]
+
+  if not course then return _pois end
+
+  for _, obj in ipairs(course.scoringObjects) do
+    if obj.isInstanceOf(Zone) then
+      local zone_obj = obj ---@type Zone
+      for idx, inside_point in zone_obj:getInsideLine():iter() do
+        _pois[#_pois+1] = PoiZone(
+          inside_point,
+          zone_obj,
+          PoiZonePointType.FromInsideLine,
+          idx
+        )
+      end
+      for idx, outside_point in zone_obj:getOutsideLine():iter() do
+        _pois[#_pois+1] = PoiZone(
+          outside_point,
+          zone_obj,
+          PoiZonePointType.FromOutsideLine,
+          idx
+        )
+      end
+    elseif obj.isInstanceOf(Clip) then
+      local clip_obj = obj ---@type Clip
+      _pois[#_pois+1] = PoiClip(
+        clip_obj.origin,
+        clip_obj,
+        PoiClipPointType.Origin
+      )
+      _pois[#_pois+1] = PoiClip(
+        clip_obj:getEnd(),
+        clip_obj,
+        PoiClipPointType.Ending
+      )
+    end
+  end
+
+  if course.startLine then
+    _pois[#_pois+1] = PoiSegment(
+      course.startLine.head,
+      course.startLine,
+      PoiSegmentType.StartLine,
+      PoiSegmentPointType.Head
+    )
+
+    _pois[#_pois+1] = PoiSegment(
+      course.startLine.tail,
+      course.startLine,
+      PoiSegmentType.StartLine,
+      PoiSegmentPointType.Tail
+    )
+  end
+
+  if course.finishLine then
+    _pois[#_pois+1] = PoiSegment(
+      course.finishLine.head,
+      course.finishLine,
+      PoiSegmentType.FinishLine,
+      PoiSegmentPointType.Head
+    )
+
+    _pois[#_pois+1] = PoiSegment(
+      course.finishLine.tail,
+      course.finishLine,
+      PoiSegmentType.FinishLine,
+      PoiSegmentPointType.Tail
+    )
+  end
+
+  if course.startingPoint then
+    _pois[#_pois+1] = PoiStartingPoint(
+      course.startingPoint.origin,
+      course.startingPoint
+    )
+  end
+
+  return _pois
+end
+
+---Called when editor changes the course in any way
+---@param new_course TrackConfigInfo
+local function onCourseEdited()
+  Assert.NotNil(course, "Course was edited but simultaneously was nil")
+  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
+  pois = gatherPois()
+  unsaved_changes = true
+end
+
+
+---@class EditorRoutine : ClassBase
+---@field callback fun(payload: any)?
+local EditorRoutine = class("EditorRoutine")
+function EditorRoutine:initialize(callback)
+  self.callback = callback
+end
+
+function EditorRoutine:run()
+  Assert.Error("Abstract method called")
+end
+
+function EditorRoutine:attachCondition()
+  Assert.Error("Abstract method called")
+end
+
+function EditorRoutine:detachCondition()
+  Assert.Error("Abstract method called")
+end
+
+---@class RoutineMovePoi : EditorRoutine
+---@field poi ObjectEditorPoi?
+---@field offset vec3?
+local RoutineMovePoi = class("RoutineMovePoi", EditorRoutine)
+function RoutineMovePoi:initialize()
+  EditorRoutine.initialize(self)
+  self.poi = nil
+  self.offset = nil
+end
+
+function RoutineMovePoi:run()
+  ---@type vec3?
+  local hit = AsyncUtils.taskTrackRayHit()
+  if not hit then return end
+
+  self.poi:set(hit + self.offset)
+
+  cursor_data.selector = Point(hit + self.offset)
+  cursor_data.color_selector = rgbm(1.5, 3, 0, 3)
+
+  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
+
+  if self.poi.isInstanceOf(PoiZone) then
+    local poi_zone = self.poi ---@type PoiZone
+    poi_zone.zone:setDirty()
+  end
+end
+
+---@param poi ObjectEditorPoi
+function RoutineMovePoi:deletePoi(poi)
+  if poi.poi_type == PoiType.Zone then
+    local poi_zone = poi ---@type PoiZone
+    if poi_zone.point_type == PoiZonePointType.FromInsideLine then
+      poi_zone.zone:getInsideLine():remove(poi_zone.point_index)
+    elseif poi_zone.point_type == PoiZonePointType.FromOutsideLine then
+      poi_zone.zone:getOutsideLine():remove(poi_zone.point_index)
+    end
+  elseif poi.poi_type == PoiType.Clip then
+    local poi_clip = poi ---@type PoiClip
+    table.removeItem(course.scoringObjects, poi_clip.clip)
+  elseif poi.poi_type == PoiType.StartingPoint then
+    course.startingPoint = nil
+  elseif poi.poi_type == PoiType.Segment then
+    local poi_segment = poi ---@type PoiSegment
+    if poi_segment.segment_type == PoiSegmentType.StartLine then
+      course.startLine = nil
+    elseif poi_segment.segment_type == PoiSegmentType.FinishLine then
+      course.finishLine = nil
+    end
+  end
+  onCourseEdited()
+end
+
+function RoutineMovePoi:attachCondition()
+  cursor_data:reset()
+
+  ---@type vec3?
+  local hit = AsyncUtils.taskTrackRayHit()
+  if not hit then return false end
+
+  ---@type ObjectEditorPoi?
+  local poi = findClosestPoi(hit, 1)
+  if not poi then return false end
+
+  cursor_data.selector = poi.point
+
+  if ui.keyboardButtonDown(ui.KeyIndex.Control) then
+    cursor_data.color_selector = rgbm(3, 0, 1.5, 3)
+  else
+    cursor_data.color_selector = rgbm(0, 3, 1.5, 3)
+  end
+
+  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
+
+  self.poi = poi
+  self.offset = poi.point:value() - hit
+
+  -- Handle removing POIs
+  if ui.keyboardButtonDown(ui.KeyIndex.Control) and ui.mouseClicked() then
+    self:deletePoi(self.poi)
+    return false
+  end
+
+  return ui.mouseClicked()
+end
+
+function RoutineMovePoi.detachCondition()
+  return ui.mouseReleased()
+end
+
+
+
+---@class RoutineExtendPointGroup : EditorRoutine
+---@field point_group PointGroup
+local RoutineExtendPointGroup = class("RoutineExtendPointGroup", EditorRoutine)
+function RoutineExtendPointGroup:initialize(point_group)
+  EditorRoutine.initialize(self)
+  self.point_group = point_group
+end
+
+function RoutineExtendPointGroup:run()
+  ---@type vec3?
+  local hit = AsyncUtils.taskTrackRayHit()
+  if not hit then return end
+
+  cursor_data.selector = Point(hit)
+  cursor_data.color_selector = rgbm(1.5, 3, 0, 3)
+
+  if self.point_group:count() > 0 then
+    cursor_data.point_group_b = PointGroup({ self.point_group:last(), Point(hit) })
+    cursor_data.color_b = rgbm(0, 3, 0, 3)
+  end
+
+  if ui.mouseClicked() then
+    self.point_group:append(Point(hit))
+  end
+
+  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
+end
+
+function RoutineExtendPointGroup:attachCondition()
+  Assert.Error("Manually attachable")
+end
+
+function RoutineExtendPointGroup:detachCondition()
+  return ui.mouseClicked(ui.MouseButton.Right)
+end
+
+
+
+---@class RoutineSelectSegment : EditorRoutine
+---@field private segment Segment
+local RoutineSelectSegment = class("RoutineSelectSegment", EditorRoutine)
+
+function RoutineSelectSegment:initialize(callback)
+  EditorRoutine.initialize(self, callback)
+  self.segment = Segment()
+end
+
+function RoutineSelectSegment:run()
+  ---@type vec3?
+  local hit = AsyncUtils.taskTrackRayHit()
+  if not hit then return end
+
+  cursor_data.selector = Point(hit)
+  cursor_data.color_selector = rgbm(1.5, 3, 0, 3)
+
+  -- When head has already been set
+  if self.segment.head then
+    if ui.mouseClicked() then
+      self.segment.tail = Point(hit)
+    end
+    cursor_data.point_group_b = PointGroup({ self.segment.head, Point(hit) })
+  end
+
+  -- To set the head
+  if self.segment.head == nil and ui.mouseClicked() then
+    self.segment.head = Point(hit)
+  end
+
+  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
+end
+
+function RoutineSelectSegment:attachCondition()
+  Assert.Error("Manually attachable")
+end
+
+function RoutineSelectSegment:detachCondition()
+  if self.segment.tail then
+    if self.callback then self.callback(self.segment) end
+    return true
+  end
+  return false
+end
+
 
 -- #region CourseEditor
 
@@ -54,18 +479,17 @@ function CourseEditor:initialize()
     { 'Other',           self.drawUIOther },
     { 'Help',            self.drawUIHelp },
   }
+  pois = gatherPois()
 end
 
 ---Main function drawing app UI
 ---@param dt integer
 function CourseEditor:drawUI(dt)
 
-  if currently_editing or currently_extending or other_creating_context then
-    is_user_editing = true
+  if current_routine then
     button_global_flags = ui.ButtonFlags.Disabled
     input_global_flags = ui.InputTextFlags.ReadOnly
   else
-    is_user_editing = false
     button_global_flags = ui.ButtonFlags.None
     input_global_flags = ui.InputTextFlags.None
   end
@@ -85,7 +509,10 @@ function CourseEditor:drawUI(dt)
   end)
 
   ui.sameLine(0, 8)
-  if ui.button("Reload", vec2(60), button_global_flags) then
+
+  local reload_button_flags = button_global_flags
+  if not selected_course_info then reload_button_flags = ui.ButtonFlags.Disabled end
+  if ui.button("Reload", vec2(60), reload_button_flags) then
     self:onSelectedCourseChange(selected_course_info)
   end
   if ui.itemHovered() then
@@ -95,7 +522,7 @@ function CourseEditor:drawUI(dt)
   ui.sameLine(0, 4)
   if ui.button("New", vec2(60), button_global_flags) then
     course = TrackConfig("NewCourse")
-    self:onCourseEdited()
+    onCourseEdited()
   end
   if ui.itemHovered() then
     ui.setTooltip("This will discard any changes made.")
@@ -146,21 +573,21 @@ end
 function CourseEditor:onSelectedCourseChange(new_course)
   loaded_course_info = new_course
   course = loaded_course_info:load()
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
+  onCourseEdited()
   unsaved_changes = false
 end
 
----Called when editor changes the course in any way
----@param new_course TrackConfigInfo
-function CourseEditor:onCourseEdited()
-  Assert.NotNil(course, "Course was edited but simultaneously was nil")
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
-  unsaved_changes = true
-end
 
 function CourseEditor:drawUIScoringObjects(dt)
   local objects = course.scoringObjects
   ui.pushFont(ui.Font.Small)
+
+  ui.beginChild(
+    "scoring_object_scrolling_pane",
+    vec2(ui.availableSpaceX(), ui.availableSpaceY() - 60),
+    true,
+    ui.WindowFlags.AlwaysVerticalScrollbar
+  )
 
   ui.offsetCursorY(8)
 
@@ -168,7 +595,6 @@ function CourseEditor:drawUIScoringObjects(dt)
 
   for i = 1, #objects do
     ui.pushID(i)
-
     ui.pushFont(ui.Font.Main)
 
     local up_flags = (i == 1 or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
@@ -176,14 +602,28 @@ function CourseEditor:drawUIScoringObjects(dt)
       local tmp_zone = objects[i - 1]
       objects[i - 1] = objects[i]
       objects[i] = tmp_zone
-      self:onCourseEdited()
+      onCourseEdited()
     end
 
     ui.sameLine(0, 4)
+    if objects[i].isInstanceOf(Zone) then
+      ui.image(Resources.IconZoneWhite, vec2(24, 24), rgbm(1, 1, 1, 0.7))
+      if ui.itemHovered() then
+        ui.setTooltip("Zone")
+      end
+    elseif objects[i].isInstanceOf(Clip) then
+      ui.image(Resources.IconClipWhite, vec2(24, 24), rgbm(1, 1, 1, 0.7))
+      if ui.itemHovered() then
+        ui.setTooltip("Clip")
+      end
+    end
+    ui.sameLine(0, 4)
 
     if Zone.isInstanceOf(objects[i]) then
+      local zone = objects[i] ---@type Zone
+
       ui.setNextItemWidth(ui.availableSpaceX() - 32)
-      objects[i].name = ui.inputText("Zone #" .. tostring(i), objects[i].name, ui.InputTextFlags.Placeholder + input_global_flags)
+      zone.name = ui.inputText("Zone #" .. tostring(i), zone.name, ui.InputTextFlags.Placeholder + input_global_flags)
       if ui.itemHovered() then
         ui.setTooltip("Zone #" .. tostring(i))
       end
@@ -194,13 +634,13 @@ function CourseEditor:drawUIScoringObjects(dt)
         local tmp_zone = objects[i + 1]
         objects[i + 1] = objects[i]
         objects[i] = tmp_zone
-        self:onCourseEdited()
+        onCourseEdited()
       end
       ui.popFont()
 
       ui.pushFont(ui.Font.Monospace)
       ui.setNextItemWidth(42)
-      local text, changed = ui.inputText("Points", tostring(objects[i].maxPoints),
+      local text, changed = ui.inputText("Points", tostring(zone.maxPoints),
         (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
       ui.popFont()
 
@@ -213,17 +653,13 @@ function CourseEditor:drawUIScoringObjects(dt)
         else
           new_clip_points = tostring(tonumber(text))
         end
-        objects[i].maxPoints = tonumber(new_clip_points)
-        self:onCourseEdited()
+        zone.maxPoints = tonumber(new_clip_points)
+        onCourseEdited()
       end
 
       ui.sameLine(0, 8)
       if ui.button(")  Inner", vec2(60, 0), button_global_flags) then
-        currently_extending = {
-          zone_idx = i,
-          line = "in",
-          point_group_ref = objects[i]:getInsideLine()
-        }
+        current_routine = RoutineExtendPointGroup(zone:getInsideLine())
       end
       if ui.itemHovered() then
         ui.setTooltip("Enable pointer to extend the inner line")
@@ -231,19 +667,17 @@ function CourseEditor:drawUIScoringObjects(dt)
 
       ui.sameLine(0, 2)
       if ui.button("Outer   )", vec2(60, 0), button_global_flags) then
-        currently_extending = {
-          zone_idx = i,
-          line = "out",
-          point_group_ref = objects[i]:getOutsideLine()
-        }
+        current_routine = RoutineExtendPointGroup(zone:getOutsideLine())
       end
       if ui.itemHovered() then
         ui.setTooltip("Enable pointer to extend the outer line")
       end
     elseif Clip.isInstanceOf(objects[i]) then
+      local clip = objects[i] ---@type Clip
+
       ui.sameLine(0, 4)
       ui.setNextItemWidth(ui.availableSpaceX() - 32)
-      objects[i].name = ui.inputText("Clip #" .. tostring(i), objects[i].name, ui.InputTextFlags.Placeholder + input_global_flags)
+      objects[i].name = ui.inputText("Clip #" .. tostring(i), clip.name, ui.InputTextFlags.Placeholder + input_global_flags)
       if ui.itemHovered() then
         ui.setTooltip("Clip #" .. tostring(i))
       end
@@ -254,13 +688,13 @@ function CourseEditor:drawUIScoringObjects(dt)
         local tmp_zone = objects[i + 1]
         objects[i + 1] = objects[i]
         objects[i] = tmp_zone
-        self:onCourseEdited()
+        onCourseEdited()
       end
       ui.popFont()
 
       ui.pushFont(ui.Font.Monospace)
       ui.setNextItemWidth(42)
-      local text, changed = ui.inputText("Points", tostring(objects[i].maxPoints),
+      local text, changed = ui.inputText("Points", tostring(clip.maxPoints),
         (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
       ui.popFont()
 
@@ -273,8 +707,8 @@ function CourseEditor:drawUIScoringObjects(dt)
         else
           new_clip_points = tostring(tonumber(text))
         end
-        objects[i].maxPoints = tonumber(new_clip_points)
-        self:onCourseEdited()
+        clip.maxPoints = tonumber(new_clip_points)
+        onCourseEdited()
       end
     else
       Assert.Error("")
@@ -286,407 +720,47 @@ function CourseEditor:drawUIScoringObjects(dt)
       toRemove = i
     end
 
+    ui.offsetCursorY(8)
     ui.separator()
     ui.offsetCursorY(8)
 
     ui.popID()
   end
 
-  ui.popFont()
+  ui.offsetCursorY(ui.windowHeight() - 100)
 
   if toRemove then
     table.remove(objects, toRemove)
-    self:onCourseEdited()
+    onCourseEdited()
   end
 
-  ui.offsetCursorX((ui.availableSpaceX() - 200) / 2)
+  ui.popFont()
+  ui.endChild()
+
+  ui.offsetCursorY(10)
+
+  local button_width = 130
+  local button_gap = 10
+
+  ui.offsetCursorX((ui.availableSpaceX() - (button_width * 2 + button_gap)) / 2)
   if ui.availableSpaceY() > 0 + 65 then
     ui.offsetCursorY(ui.availableSpaceY() - 65)
   end
-  if ui.button("Create new zone", vec2(200, 60), button_global_flags) then
+
+  if ui.button("Create new zone", vec2(button_width, 40), button_global_flags) then
     objects[#objects + 1] = Zone(course:getNextZoneName(), nil, nil, tonumber(new_clip_points))
-    self:onCourseEdited()
+    onCourseEdited()
   end
 
-  --[[
-  Editor algorithm:
+  ui.sameLine(0, button_gap)
 
-  - Raycast track and save `hit`
-
-  - If not currently editing and not extending:
-    - Find closest point of interest (zone, clip, start/finish line, start point) in given radius
-    - If `closest_point` found:
-      - If     delete modifier and mouse pressed - start editing
-      - If not delete modifier and mouse pressed - delete point
-
-  - If currently editing:
-    - Set current cursor position to new point value
-
-  - If currently extending:
-    - If mouse pressed - append a new point
-
-  ]]
-     --
-
-  -- TODO: FIGURE THIS OUT
-end
-
-function CourseEditor:drawUIZones(dt)
-  local zones = course.zones
-  ui.pushFont(ui.Font.Small)
-
-  ui.offsetCursorY(8)
-
-  local toRemove = nil
-
-  for i = 1, #zones do
-    ui.pushID(i)
-
-    ui.pushFont(ui.Font.Main)
-
-    local up_flags = (i == 1 or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-    if ui.button("↑", vec2(24, 0), up_flags) then
-      local tmp_zone = zones[i - 1]
-      zones[i - 1] = zones[i]
-      zones[i] = tmp_zone
-      self:onCourseEdited()
-    end
-
-    ui.sameLine(0, 4)
-    ui.setNextItemWidth(ui.availableSpaceX() - 32)
-    zones[i].name = ui.inputText("Zone #" .. tostring(i), zones[i].name, ui.InputTextFlags.Placeholder + input_global_flags)
-    if ui.itemHovered() then
-      ui.setTooltip("Zone #" .. tostring(i))
-    end
-
-    ui.sameLine(0, 4)
-    local down_flags = (i == #zones or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-    if ui.button("↓", vec2(24, 0), down_flags) then
-      local tmp_zone = zones[i + 1]
-      zones[i + 1] = zones[i]
-      zones[i] = tmp_zone
-      self:onCourseEdited()
-    end
-    ui.popFont()
-
-    ui.pushFont(ui.Font.Monospace)
-    ui.setNextItemWidth(42)
-    local text, changed = ui.inputText("Points", tostring(zones[i].maxPoints),
-      (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
-    ui.popFont()
-
-    if ui.itemHovered() then
-      ui.setTooltip("Max points")
-    end
-    if changed then
-      if text == "" then
-        new_clip_points = "0"
-      else
-        new_clip_points = tostring(tonumber(text))
-      end
-      zones[i].maxPoints = tonumber(new_clip_points)
-      self:onCourseEdited()
-    end
-
-    ui.sameLine(0, 8)
-    if ui.button(")  Inner", vec2(60, 0), button_global_flags) then
-      currently_extending = {
-        zone_idx = i,
-        line = "in",
-        point_group_ref = zones[i]:getInsideLine()
-      }
-    end
-    if ui.itemHovered() then
-      ui.setTooltip("Enable pointer to extend the inner line")
-    end
-
-    ui.sameLine(0, 2)
-    if ui.button("Outer   )", vec2(60, 0), button_global_flags) then
-      currently_extending = {
-        zone_idx = i,
-        line = "out",
-        point_group_ref = zones[i]:getOutsideLine()
-      }
-    end
-    if ui.itemHovered() then
-      ui.setTooltip("Enable pointer to extend the outer line")
-    end
-
-    ui.sameLine(0, 0)
-    ui.offsetCursorX(ui.availableSpaceX() - 64)
-    if ui.button("Remove", vec2(60, 0), button_global_flags) then
-      toRemove = i
-    end
-
-    ui.separator()
-    ui.offsetCursorY(8)
-
-    ui.popID()
+  if ui.button("Create new clip", vec2(button_width, 40), button_global_flags) then
+    current_routine = RoutineSelectSegment(function (segment)
+      local new_clip = Clip(course:getNextClipName(), segment.head, nil, nil, 1000)
+      new_clip:setEnd(segment.tail)
+      course.scoringObjects[#course.scoringObjects+1] = new_clip
+    end)
   end
-
-  ui.popFont()
-
-  if toRemove then
-    table.remove(zones, toRemove)
-    self:onCourseEdited()
-  end
-
-  ui.offsetCursorX((ui.availableSpaceX() - 200) / 2)
-  if ui.availableSpaceY() > 0 + 65 then
-    ui.offsetCursorY(ui.availableSpaceY() - 65)
-  end
-  if ui.button("Create new zone", vec2(200, 60), button_global_flags) then
-    zones[#zones + 1] = Zone(course:getNextZoneName(), nil, nil, tonumber(new_clip_points))
-    self:onCourseEdited()
-  end
-
-  --[[
-  Editor algorithm:
-
-  - Raycast track and save `hit`
-
-  - If not currently editing and not extending:
-    - Find closest point of interest (zone, clip, start/finish line, start point) in given radius
-    - If `closest_point` found:
-      - If     delete modifier and mouse pressed - start editing
-      - If not delete modifier and mouse pressed - delete point
-
-  - If currently editing:
-    - Set current cursor position to new point value
-
-  - If currently extending:
-    - If mouse pressed - append a new point
-
-  ]]
-     --
-
-  local hit = AsyncUtils.taskTrackRayHit()
-  if not currently_editing and not currently_extending then
-    local closest_dist = 1
-    closest_point = nil
-    if hit then
-      for _, zone in ipairs(course.zones) do
-        for _, point in zone:getPolygon():iter() do
-          local distance = hit:distance(point:value())
-          if distance < closest_dist then
-            closest_point = point
-            closest_dist = distance
-          end
-        end
-      end
-    end
-
-    cursor_data.selector = closest_point
-    cursor_data.color_selector = rgbm(0, 2, 1, 3)
-  end
-
-  if closest_point then
-    if ui.keyboardButtonDown(ui.KeyIndex.Control) then
-      cursor_data.color_selector = rgbm(3, 0, 0, 3)
-      ui.setMouseCursor(ui.MouseCursor.Hand)
-      if ui.mouseClicked() then
-        for _, zone in ipairs(course.zones) do
-          local changed = false
-          changed = zone:getInsideLine():delete(closest_point)
-          changed = zone:getOutsideLine():delete(closest_point) or changed
-          if changed then zone:setDirty() end
-        end
-        self:onCourseEdited()
-        cursor_data.selector = nil
-      end
-    else
-      if ui.mouseClicked() then
-        currently_editing = true
-        initial_offset = closest_point:value() - hit
-      end
-    end
-  end
-
-  if currently_editing and hit then
-    closest_point:set(hit + initial_offset)
-    cursor_data.selector = Point(hit + initial_offset)
-    EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
-
-    self:onCourseEdited()
-    if ui.mouseReleased() then currently_editing = false end
-  end
-
-  if currently_extending and hit then
-    local hit_point = Point(hit)
-    cursor_data.selector = hit_point
-    if currently_extending.point_group_ref:count() > 0 then
-      cursor_data.point_group_b = PointGroup({ currently_extending.point_group_ref:last(), hit_point })
-    end
-
-    if ui.mouseClicked() then
-      currently_extending.point_group_ref:append(hit_point)
-      self:onCourseEdited()
-    end
-
-    if ui.mouseClicked(ui.MouseButton.Right) then
-      cursor_data = Cursor()
-
-      -- Set dirty to recalculate polygon
-      course.zones[currently_extending.zone_idx]:setDirty()
-
-      currently_extending = nil
-    end
-  end
-
-  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
-end
-
-function CourseEditor:drawUIClips(dt)
-  local clips = course.clips
-  ui.pushFont(ui.Font.Small)
-
-  ui.offsetCursorY(8)
-
-  local toRemove = nil
-
-  for i = 1, #clips do
-    ui.pushID(i)
-
-    ui.pushFont(ui.Font.Main)
-
-    local up_flags = (i == 1 or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-    if ui.button("↑", vec2(24, 0), up_flags) then
-      local tmp_zone = clips[i - 1]
-      clips[i - 1] = clips[i]
-      clips[i] = tmp_zone
-      self:onCourseEdited()
-    end
-
-    ui.sameLine(0, 4)
-    ui.setNextItemWidth(ui.availableSpaceX() - 32)
-    clips[i].name = ui.inputText("Clip #" .. tostring(i), clips[i].name, ui.InputTextFlags.Placeholder + input_global_flags)
-    if ui.itemHovered() then
-      ui.setTooltip("Clip #" .. tostring(i))
-    end
-
-    ui.sameLine(0, 4)
-    local down_flags = (i == #clips or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-    if ui.button("↓", vec2(24, 0), down_flags) then
-      local tmp_zone = clips[i + 1]
-      clips[i + 1] = clips[i]
-      clips[i] = tmp_zone
-      self:onCourseEdited()
-    end
-    ui.popFont()
-
-    ui.pushFont(ui.Font.Monospace)
-    ui.setNextItemWidth(42)
-    local text, changed = ui.inputText("Points", tostring(clips[i].maxPoints),
-      (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
-    ui.popFont()
-
-    if ui.itemHovered() then
-      ui.setTooltip("Max points")
-    end
-    if changed then
-      if text == "" then
-        new_clip_points = "0"
-      else
-        new_clip_points = tostring(tonumber(text))
-      end
-      clips[i].maxPoints = tonumber(new_clip_points)
-      self:onCourseEdited()
-    end
-
-    ui.sameLine(0, 0)
-    ui.offsetCursorX(ui.availableSpaceX() - 64)
-    if ui.button("Remove", vec2(60, 0), button_global_flags) then
-      toRemove = i
-    end
-
-    ui.separator()
-    ui.offsetCursorY(8)
-
-    ui.popID()
-  end
-
-  ui.popFont()
-
-  ui.offsetCursorX((ui.availableSpaceX() - 200) / 2)
-  if ui.availableSpaceY() > 0 + 65 then
-    ui.offsetCursorY(ui.availableSpaceY() - 65)
-  end
-  if ui.button("Create new clipping point", vec2(200, 60), button_global_flags) then
-    currently_extending = true
-    closest_type = 'origin'
-  end
-
-  if toRemove then
-    table.remove(clips, toRemove)
-    self:onCourseEdited()
-  end
-
-  local hit = AsyncUtils.taskTrackRayHit()
-  if not currently_editing and not currently_extending then
-    local closest_dist = 1
-    closest_point = nil
-    if hit then
-      for _, clip in ipairs(course.clips) do
-        for idx, point in ipairs({ clip.origin, clip:getEnd() }) do
-          local distance = hit:distance(point:value())
-          if distance < closest_dist then
-            closest_point = point
-            closest_dist = distance
-            clip_ref = clip
-            if idx == 1 then closest_type = 'origin' else closest_type = 'end' end
-          end
-        end
-      end
-    end
-
-    cursor_data.selector = closest_point
-    cursor_data.color_selector = rgbm(0, 2, 1, 3)
-  end
-
-  if closest_point and ui.mouseClicked() then
-    currently_editing = true
-    initial_offset = closest_point:value() - hit
-  end
-
-  if currently_editing and hit then
-    cursor_data.selector = Point(hit + initial_offset)
-    if closest_type == 'origin' then
-      closest_point:set(hit + initial_offset)
-    else -- == 'end'
-      clip_ref:setEnd(Point(hit + initial_offset))
-    end
-
-    self:onCourseEdited()
-    if ui.mouseReleased() then currently_editing = false end
-  end
-
-
-  if currently_extending and hit then
-    cursor_data.selector = Point(hit)
-
-    if closest_type == 'origin' then
-      if ui.mouseClicked() then
-        clip_start = Point(hit)
-        closest_type = 'end'
-      end
-    else
-      cursor_data.point_group_b = PointGroup({ clip_start, Point(hit) })
-      if ui.mouseClicked() then
-        course.clips[#course.clips+1] = Clip(course:getNextClipName(), clip_start, vec3(0, 0, 0), 0, new_clip_points)
-        course.clips[#course.clips]:setEnd(Point(hit))
-        currently_extending = false
-        cursor_data = Cursor()
-        self:onCourseEdited()
-      end
-    end
-
-    if ui.mouseClicked(ui.MouseButton.Right) then
-      currently_extending = false
-      cursor_data = Cursor()
-    end
-  end
-
-  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
 end
 
 function CourseEditor:drawUIOther(dt)
@@ -703,14 +777,13 @@ function CourseEditor:drawUIOther(dt)
     if ui.button("Clear###startline", vec2(120, 30), button_global_flags) then
       course.startLine = nil
       is_start_defined = false
-      self:onCourseEdited()
+      onCourseEdited()
     end
   else
     if ui.button("Define###startline", vec2(120, 30), button_global_flags) then
-      other_creating_context = {
-        head_position = nil,
-        type_creating = 'startLine'
-      }
+      current_routine = RoutineSelectSegment(function (segment)
+        course.startLine = segment
+      end)
     end
   end
 
@@ -720,14 +793,13 @@ function CourseEditor:drawUIOther(dt)
     if ui.button("Clear###finishline", vec2(120, 30), button_global_flags) then
       course.finishLine = nil
       is_finish_defined = false
-      self:onCourseEdited()
+      onCourseEdited()
     end
   else
     if ui.button("Define###finishline", vec2(120, 30), button_global_flags) then
-      other_creating_context = {
-        head_position = nil,
-        type_creating = 'finishLine'
-      }
+      current_routine = RoutineSelectSegment(function (segment)
+        course.finishLine = segment
+      end)
     end
   end
 
@@ -739,14 +811,14 @@ function CourseEditor:drawUIOther(dt)
     if ui.button("Clear###startingpoint", vec2(120, 30), button_global_flags) then
       course.startingPoint = nil
       is_starting_point_defined = false
-      self:onCourseEdited()
+      onCourseEdited()
     end
   else
     if ui.button("Define###startingpoint", vec2(120, 30), button_global_flags) then
-      other_creating_context = {
-        head_position = nil,
-        type_creating = 'startingPoint'
-      }
+      current_routine = RoutineSelectSegment(function (segment)
+        course.startingPoint = StartingPoint(segment.head, nil)
+        course.startingPoint:setEnd(segment.tail)
+      end)
     end
   end
 
@@ -766,7 +838,7 @@ function CourseEditor:drawUIOther(dt)
     if text == "" then text = "0" end
     if tonumber(text) > course.scoringRanges.speedRange.finish then course.scoringRanges.speedRange.finish = tonumber(text) end
     course.scoringRanges.speedRange.start = tonumber(text)
-    self:onCourseEdited()
+    onCourseEdited()
   end
 
   ui.sameLine(0, 4)
@@ -781,7 +853,7 @@ function CourseEditor:drawUIOther(dt)
     if text == "" then text = "0" end
     if tonumber(text) < course.scoringRanges.speedRange.start then course.scoringRanges.speedRange.start = tonumber(text) end
     course.scoringRanges.speedRange.finish = tonumber(text)
-    self:onCourseEdited()
+    onCourseEdited()
   end
 
   ui.textAligned("Angle scoring range", vec2(0, 0.5), vec2(ui.availableSpaceX() - 124, 20))
@@ -798,7 +870,7 @@ function CourseEditor:drawUIOther(dt)
     if text == "" then text = "0" end
     if tonumber(text) > course.scoringRanges.angleRange.finish then course.scoringRanges.angleRange.finish = tonumber(text) end
     course.scoringRanges.angleRange.start = tonumber(text)
-    self:onCourseEdited()
+    onCourseEdited()
   end
 
   ui.sameLine(0, 4)
@@ -813,7 +885,7 @@ function CourseEditor:drawUIOther(dt)
     if text == "" then text = "0" end
     if tonumber(text) < course.scoringRanges.angleRange.start then course.scoringRanges.angleRange.start = tonumber(text) end
     course.scoringRanges.angleRange.finish = tonumber(text)
-    self:onCourseEdited()
+    onCourseEdited()
   end
 
   ui.offsetCursorY(32)
@@ -821,7 +893,7 @@ function CourseEditor:drawUIOther(dt)
   ui.sameLine(0, 4)
   if ui.imageButton(nil, vec2(120, 30), rgbm(0, 0, 0, 0), rgbm(0.3, 0, 0, 1), vec2(1, -1), vec2(1, 1), 0) then
     course = TrackConfig(course.name)
-    self:onCourseEdited()
+    onCourseEdited()
   end
   if ui.itemHovered() then
     ui.setTooltip("This will remove all zones and clipping points, and restore all settings to default values.\n\
@@ -845,89 +917,7 @@ This won't save the course - if clicked by mistake load the course again before 
     ui.setTooltip(ConfigIO.getUserCoursesDirectory())
   end
 
-
   ui.popFont()
-
-  local hit = AsyncUtils.taskTrackRayHit()
-  if not currently_editing and not currently_extending then
-    local closest_dist = 1
-    closest_point = nil
-    if hit then
-      local pois = {}
-      if is_start_defined then
-        pois[#pois+1] = course.startLine.head
-        pois[#pois+1] = course.startLine.tail
-      end
-      if is_finish_defined then
-        pois[#pois+1] = course.finishLine.head
-        pois[#pois+1] = course.finishLine.tail
-      end
-      if is_starting_point_defined then
-        pois[#pois+1] = course.startingPoint.origin
-      end
-      for _, point in ipairs(pois) do
-        local distance = hit:distance(point:value())
-        if distance < closest_dist then
-          closest_point = point
-          closest_dist = distance
-        end
-      end
-    end
-
-    cursor_data.selector = closest_point
-    cursor_data.color_selector = rgbm(0, 2, 1, 3)
-  end
-
-  if closest_point and ui.mouseClicked() then
-    currently_editing = true
-    initial_offset = closest_point:value() - hit
-  end
-
-  if currently_editing and hit then
-    cursor_data.selector = Point(hit + initial_offset)
-    closest_point:set(hit + initial_offset)
-
-    self:onCourseEdited()
-    if ui.mouseReleased() then currently_editing = false end
-  end
-
-
-  if other_creating_context and hit then
-    cursor_data.selector = Point(hit)
-
-    if other_creating_context.head_position == nil then
-      if ui.mouseClicked() then
-        other_creating_context.head_position = Point(hit)
-      end
-    else
-      cursor_data.point_group_b = PointGroup({ other_creating_context.head_position, Point(hit) })
-
-      if ui.mouseClicked() then
-        if other_creating_context.type_creating == 'startingPoint' then
-          course.startingPoint = StartingPoint(other_creating_context.head_position, vec3(0, 0, 0))
-          course.startingPoint:setEnd(Point(hit))
-          self:onCourseEdited()
-        elseif other_creating_context.type_creating == 'startLine' then
-          course.startLine = Segment(other_creating_context.head_position, Point(hit))
-        elseif other_creating_context.type_creating == 'finishLine' then
-          course.finishLine = Segment(other_creating_context.head_position, Point(hit))
-        else
-          Assert.Error("Skipped all if-tree conditions")
-        end
-
-        other_creating_context = nil
-        cursor_data = Cursor()
-        self:onCourseEdited()
-      end
-    end
-
-    if ui.mouseClicked(ui.MouseButton.Right) then
-      other_creating_context = nil
-      cursor_data = Cursor()
-    end
-  end
-
-  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
 end
 
 function CourseEditor:drawUIHelp(dt)
@@ -952,6 +942,27 @@ function CourseEditor:drawUIHelp(dt)
     os.openURL("https://github.com/Brewsk11/ac-drift-mode")
   end
   ui.popFont()
+end
+
+
+function CourseEditor:runEditor(dt)
+  if current_routine then
+    if current_routine:detachCondition() then
+      current_routine = nil
+      cursor_data:reset()
+    else
+      current_routine:run()
+    end
+    onCourseEdited()
+  else
+    for _, routine_class in ipairs({ RoutineMovePoi }) do
+      local routine = routine_class()
+      if routine:attachCondition() then
+        current_routine = routine
+        break
+      end
+    end
+  end
 end
 
 return CourseEditor
