@@ -82,7 +82,7 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
 
     -- In limited number of rays there may not be a hit for a valid point inside the zone
     -- In such case for now unfortunatelly we'll assume the score did not happen
-    if cross_line == nil then ac.log("Didn't find a crossline for valid point!"); return 0.0 end
+    if cross_line.segment == nil then ac.log("Didn't find a crossline for valid point!"); return 0.0 end
 
     local ratio_mult = 0.0
     -- In case of calculating for point in safety buffer (when player slightly ran outside
