@@ -1,114 +1,156 @@
+local Resources = require('drift-mode/Resources')
 
-function appScoresLayout(run_state_data, game_state, track_data)
-    -- ui.beginTransparentWindow('logo', vec2(510, 110), vec2(50, 50), true)
-    -- ui.image("logo white.png", vec2(50, 50), true)
-    -- ui.endTransparentWindow()
+---@param run_state_data RunStateData
+local function compactObjectList(run_state_data)
+    local entry_height = 18
+    local entry_gap = 8
 
-    if not run_state_data or not game_state then return end
+    local column_width = 54
+    local min_object_name_width = 90
+    local max_columns = 3
 
-    if game_state:isPlaymode() then
-      local window_height = 195 + #run_state_data.zoneStates * 16 + #run_state_data.clipStates * 16
-      ui.beginChild('scoresWindow', vec2(450, window_height), true)
+    local info_columns_count = math.min(math.floor((ui.windowWidth() - min_object_name_width) / column_width), max_columns)
 
-      ui.drawRectFilled(vec2(0, 0), vec2(450, window_height), rgbm(0.15, 0.15, 0.15, 0.4))
-
-      ui.pushFont(ui.Font.Main)
-      ui.text(track_data.name)
-      ui.offsetCursorY(-10)
-      ui.pushFont(ui.Font.Huge)
-      ui.text(string.format("Total score: %.0f", run_state_data.totalScore))
-      ui.pushFont(ui.Font.Main)
-      ui.offsetCursorY(-10)
-      ui.text(string.format("Average run multiplier: %.2f%%", run_state_data.avgMultiplier * 100))
-
-      -- Zones
-      ui.offsetCursorY(20)
-      local header_orig = ui.getCursor()
-      ui.pushFont(ui.Font.Main)
-      ui.text("Zone")
-      ui.setCursor(header_orig + vec2(150, 0))
-      ui.text("Score")
-      ui.setCursor(header_orig + vec2(200, 0))
-      ui.text("Max")
-      ui.setCursor(header_orig + vec2(250, 0))
-      ui.text("Perf.")
-      ui.setCursor(header_orig + vec2(300, 0))
-      ui.text("Dist.")
-      ui.setCursor(header_orig + vec2(350, 0))
-      ui.text("Done")
-      ui.offsetCursorY(10)
-      ui.pushFont(ui.Font.Monospace)
-      for _, zone_state in ipairs(run_state_data.zoneStates) do
-        local zone_orig = ui.getCursor()
-        ui.text(zone_state.zone)
-        ui.setCursor(zone_orig + vec2(150, 0))
-        ui.text(string.format("%.0f", zone_state.score))
-        ui.setCursor(zone_orig + vec2(200, 0))
-        ui.text(tostring(zone_state.maxPoints))
-        ui.setCursor(zone_orig + vec2(250, 0))
-        ui.text(string.format("%.2f%%", zone_state.performance * 100))
-        ui.setCursor(zone_orig + vec2(300, 0))
-        local zone_distance = 0
-        if zone_state.active or zone_state.finished then
-          zone_distance = zone_state.timeInZone
+    for _, object_state in ipairs(run_state_data.scoringObjectStates) do
+        local icon = nil
+        if object_state.isInstanceOf(ZoneStateData) then
+            icon = Resources.IconZoneWhite
+        elseif object_state.isInstanceOf(ClipStateData) then
+            icon = Resources.IconClipWhite
+        else
+            Assert.Error("")
         end
-        ui.text(string.format("%.2f%%", zone_distance * 100))
-        ui.setCursor(zone_orig + vec2(350, 0))
-        local done = "-"
-        if zone_state.finished then done = "X" end
-        ui.text(done)
-      end
 
-      -- Clips
-      ui.offsetCursorY(20)
-      local header_orig = ui.getCursor()
-      ui.pushFont(ui.Font.Main)
-      ui.text("Clip")
-      ui.setCursor(header_orig + vec2(150, 0))
-      ui.text("Score")
-      ui.setCursor(header_orig + vec2(200, 0))
-      ui.text("Max")
-      ui.setCursor(header_orig + vec2(250, 0))
-      ui.text("Perf.")
-      ui.setCursor(header_orig + vec2(300, 0))
-      ui.text("Frac.")
-      ui.setCursor(header_orig + vec2(350, 0))
-      ui.text("Done")
-      ui.offsetCursorY(10)
-      ui.pushFont(ui.Font.Monospace)
-      for _, clip_state in ipairs(run_state_data.clipStates) do
-        local clip_orig = ui.getCursor()
-        ui.text(clip_state.clip)
-        ui.setCursor(clip_orig + vec2(150, 0))
-        ui.text(string.format("%.0f", clip_state.score))
-        ui.setCursor(clip_orig + vec2(200, 0))
-        ui.text(tostring(clip_state.maxPoints))
-        ui.setCursor(clip_orig + vec2(250, 0))
-        ui.text(string.format("%.2f%%", clip_state.performance * 100))
-        ui.setCursor(clip_orig + vec2(300, 0))
-        ui.text(string.format("%.2f%%", clip_state.hitRatioMult * 100))
-        ui.setCursor(clip_orig + vec2(350, 0))
-        local done = "-"
-        if clip_state.crossed then done = "X" end
-        ui.text(done)
-      end
-      ui.endChild()
-    else
-      ui.beginChild('helpWindow', vec2(420, 600), true)
-      ui.pushFont(ui.Font.Huge)
-      ui.text("Help")
-      ui.pushFont(ui.Font.Main)
-      ui.text("By default the game loads first found user track config,\nand if not exists then first \"official\" track config\n(shipped with the mod)")
-      ui.text("To bind a key to restart a drift run bind \"Extra option F\"\nin Content Mananger controls menu.")
-      ui.pushFont(ui.Font.Title)
-      ui.text("Creating zones:")
-      ui.pushFont(ui.Font.Main)
-      ui.text("Trace the outside line first, then after confirming\ntrace the inside line IN THE SAME DIRECTION.\nThis is important to correctly calculate scoring.")
-      ui.text("S - place point\nQ - undo\nA - cancel\nF - confirm")
-      ui.offsetCursorY(30)
-      ui.pushFont(ui.Font.Main)
-      ui.text("More features and improvements are planned.\nCheck out RaceDepartment and Github pages for updates.")
-      ui.text("Thanks for playing!")
-      ui.endChild()
+        local color = rgbm(1, 1, 1, 0.15)
+        if object_state.done then color = rgbm(1, 1, 1, 0.7) end
+        ui.image(icon, vec2(entry_height, entry_height), color)
+        ui.sameLine(0, 4)
+        ui.textAligned(object_state.name, vec2(0, 0), vec2(ui.availableSpaceX() - info_columns_count * column_width, entry_height))
+        ui.pushFont(ui.Font.Monospace)
+        ui.sameLine(0, 0)
+        ui.textAligned(string.format("%d", object_state.score), vec2(1, 0.5), vec2(column_width, entry_height), true)
+
+        if info_columns_count > 1 then
+            ui.sameLine(0, 0)
+            ui.textAligned(string.format("%d", object_state.max_score), vec2(1, 0.5), vec2(column_width, entry_height))
+        end
+        ui.popFont()
+
+        if info_columns_count == 3 then
+            ui.sameLine(0, 0)
+            ui.offsetCursorX(10)
+
+            local multiinfo_column_width = column_width - 10
+
+            local start_speed = ui.getCursor() + vec2(0, 0)
+            local start_angle = ui.getCursor() + vec2(0, entry_height / 3 + 0.5)
+            local start_depth = ui.getCursor() + vec2(0, entry_height / 3 * 2 + 0.5)
+
+            local end_speed = ui.getCursor() + vec2(multiinfo_column_width * object_state.speed, entry_height / 3)
+            local end_angle = ui.getCursor() + vec2(multiinfo_column_width * object_state.angle, entry_height / 3 * 2)
+            local end_depth = ui.getCursor() + vec2(multiinfo_column_width * object_state.depth, entry_height)
+
+            ui.drawRectFilled(start_speed, end_speed, Resources.ColorNeutralSpeed, 1)
+            ui.drawRectFilled(start_angle, end_angle, Resources.ColorNeutralAngle, 1)
+            ui.drawRectFilled(start_depth, end_depth, Resources.ColorNeutralRatio, 1)
+
+            ui.offsetCursorX(-10)
+
+            ui.beginGroup()
+            ui.textAligned(string.format(""), vec2(1, 1), vec2(column_width, entry_height))
+            ui.endGroup()
+            if ui.itemHovered() then
+                ui.tooltip(function ()
+                    local function formattedLabel(label, value)
+                        ui.textAligned(label, vec2(0, 0), vec2(120, 16))
+                        ui.sameLine(0, 0)
+                        ui.pushFont(ui.Font.Monospace)
+                        ui.textAligned(string.format("%.2f%%", value * 100), vec2(1, 1), vec2(50, 16))
+                        ui.popFont()
+                    end
+
+                    formattedLabel("Speed multiplier", object_state.speed)
+                    formattedLabel("Angle multiplier", object_state.angle)
+                    formattedLabel("Depth multiplier", object_state.depth)
+                    if object_state.isInstanceOf(ZoneStateData) then
+                        formattedLabel("Distance multiplier", object_state.timeInZone or 0)
+                    end
+                    ui.text("")
+                    if object_state.isInstanceOf(ZoneStateData) then
+                        formattedLabel("Average multiplier", object_state.speed * object_state.angle * object_state.depth * (object_state.timeInZone or 1.0))
+                        formattedLabel("Final multiplier", object_state.performance * (object_state.timeInZone or 0))
+                    elseif object_state.isInstanceOf(ClipStateData) then
+                        formattedLabel("Final multiplier", object_state.multiplier or 0)
+                    end
+                    ui.text("")
+                    if object_state.isInstanceOf(ZoneStateData) then
+                        ui.text("Averages may not necessarily produce the final total multiplier as\nthe score is calculated for every point separately, then averaged.")
+                        ui.text("Depth means closeness to zone outside line as a ratio of zone width.")
+                        ui.text("Distance is the lenght of zone driven through.")
+                    elseif object_state.isInstanceOf(ClipStateData) then
+                        ui.text("Depth means closeness to clips origin as a ratio of clips lenght.")
+                    end
+                end)
+            end
+        end
+
+        ui.offsetCursorY(entry_gap)
+    end
+end
+
+---comment
+---@param run_state_data RunStateData
+---@param game_state GameState
+---@param track_data TrackConfig
+function appScoresLayout(run_state_data, game_state, track_data)
+
+    if not run_state_data or not game_state or not game_state:isPlaymode() then return end
+
+    if ui.windowHeight() > 120 then
+        -- COURSE NAME
+        ui.pushFont(ui.Font.Main)
+        ui.image(Resources.LogoWhite, vec2(16, 16))
+        ui.sameLine()
+        ui.text(track_data.name)
+        if ui.itemHovered() then
+            ui.setTooltip(string.format("Max course score: %d", run_state_data.maxScore))
+        end
+        ui.popFont()
+
+        ui.separator()
+    end
+
+    -- TOTAL SCORE
+    ui.sameLine(0, 0)
+    ui.pushFont(ui.Font.Huge)
+    ui.beginGroup()
+    ui.beginGroup()
+    ui.textAligned(string.format("%d", run_state_data.totalScore), vec2(1, 0), vec2(ui.availableSpaceX(), 60), true)
+    ui.popFont()
+    ui.endGroup()
+    if ui.itemHovered() then
+        ui.setTooltip("Current score")
+    end
+
+    if ui.windowHeight() > 100 then
+        -- AVERAGE SCORE
+        ui.beginGroup()
+        ui.textAligned(string.format("%.2f%%", run_state_data.avgMultiplier * 100), vec2(1, 0), vec2(ui.availableSpaceX(), 20), true)
+        ui.endGroup()
+        if ui.itemHovered() then
+            ui.setTooltip("Average score percentage from all zones & clips that have been already scored on.\n\
+This is a very good score-independent run quality metric.")
+        end
+    end
+    ui.endGroup()
+
+    if ui.windowHeight() > 160 then
+        ui.offsetCursorY(10)
+        ui.separator()
+        ui.offsetCursorY(10)
+
+        ui.beginChild("scores_app_objects_list_pane", ui.availableSpace(), false, ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoBackground)
+        compactObjectList(run_state_data)
+        ui.endChild()
     end
 end
