@@ -1,4 +1,5 @@
 local Assert = require('drift-mode/assert')
+local EventSystem = require('drift-mode/eventsystem')
 local S = require('drift-mode/serializer')
 
 ---@class Cursor : ClassBase Data class containing various objects you may want to draw on the track, that are not related to track configuration
@@ -25,6 +26,10 @@ function Cursor:initialize(
     self.point_group_b = point_group_b
     self.color_a = color_a or rgbm(0, 3, 0, 1)
     self.color_b = color_b or rgbm(0, 0, 3, 1)
+
+    -- TODO: Cleanup
+    ---@type DrawerSegment
+    self.drawer_segment = DrawerSegmentLine(rgbm(1, 3, 1, 3))
 end
 
 function Cursor:serialize()
@@ -74,6 +79,7 @@ function Cursor:reset()
     self.point_group_b = nil
     self.color_a = rgbm(0, 3, 0, 1)
     self.color_b = rgbm(0, 0, 3, 1)
+    EventSystem.emit(EventSystem.Signal.CursorChanged, self)
 end
 
 function Cursor:draw()
@@ -88,8 +94,9 @@ function Cursor:draw()
     end
 
     if self.point_group_b then
-        self.point_group_b:draw(0.3, self.color_b, false)
-        self.point_group_b:segment():draw(self.color_b)
+        for _, segment in self.point_group_b:segment():iter() do
+            self.drawer_segment:draw(segment)
+        end
     end
 end
 
