@@ -3,7 +3,6 @@ local S = require('drift-mode/serializer')
 
 ---@class ClipState : ScoringObjectState
 ---@field clip Clip
----@field crossed boolean
 ---@field private hitPoint Point Point at which the clip was crossed
 ---@field private hitSpeedMult number
 ---@field private hitAngleMult number
@@ -32,10 +31,14 @@ end
 function ClipState:serialize()
     local data = {
         __class = "ClipStateData",
-        clip = S.serialize(self.clip.name),
-        maxPoints = S.serialize(self.clip.maxPoints),
-        crossed = S.serialize(self.crossed),
+        name = S.serialize(self.clip.name),
+        done = S.serialize(self:isDone()),
         score = S.serialize(self:getScore()),
+        max_score = S.serialize(self.clip.maxPoints),
+        speed = S.serialize(self:getSpeed()),
+        angle = S.serialize(self:getAngle()),
+        depth = S.serialize(self:getDepth()),
+
         performance = S.serialize(self:getPerformance()),
         multiplier = S.serialize(self:getMultiplier()),
         hitPoint = S.serialize(self.hitPoint),
@@ -95,6 +98,25 @@ end
 function ClipState:getScore()
     if not self.crossed then return 0.0 end
     return self.finalScore
+end
+
+function ClipState:getSpeed()
+    if not self.crossed then return 0.0 end
+    return self.hitSpeedMult
+end
+
+function ClipState:getAngle()
+    if not self.crossed then return 0.0 end
+    return self.hitAngleMult
+end
+
+function ClipState:getDepth()
+    if not self.crossed then return 0.0 end
+    return self.hitRatioMult
+end
+
+function ClipState:getMaxScore()
+    return self.clip.maxPoints
 end
 
 function ClipState:getRatio()

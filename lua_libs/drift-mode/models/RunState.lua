@@ -31,6 +31,7 @@ function RunState:serialize()
         scoringObjectStates = {},
         driftState = S.serialize(self.driftState),
         totalScore = S.serialize(self:getScore()),
+        maxScore = S.serialize(self:getMaxScore()),
         avgMultiplier = S.serialize(self:getAvgMultiplier()),
     }
 
@@ -99,6 +100,14 @@ function RunState:getScore()
     local score = 0
     for _, scoring_object in ipairs(self.scoringObjectStates) do
         score = score + scoring_object:getScore()
+    end
+    return score
+end
+
+function RunState:getMaxScore()
+    local score = 0
+    for _, scoring_object in ipairs(self.scoringObjectStates) do
+        score = score + scoring_object:getMaxScore()
     end
     return score
 end

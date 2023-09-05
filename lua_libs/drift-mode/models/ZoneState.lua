@@ -25,11 +25,15 @@ end
 function ZoneState:serialize()
     local data = {
         __class = "ZoneStateData",
-        zone = S.serialize(self.zone.name),
-        maxPoints = S.serialize(self.zone.maxPoints),
-        active = S.serialize(self:isActive()),
-        finished = S.serialize(self:isDone()),
+        name = S.serialize(self.zone.name),
+        done = S.serialize(self:isDone()),
         score = S.serialize(self:getScore()),
+        max_score = S.serialize(self:getMaxScore()),
+        speed = S.serialize(self:getSpeed()),
+        angle = S.serialize(self:getAngle()),
+        depth = S.serialize(self:getDepth()),
+
+        active = S.serialize(self:isActive()),
         performance = S.serialize(self:getPerformance()),
         timeInZone = S.serialize(self:getTimeInZone()),
     }
@@ -192,6 +196,34 @@ end
 
 function ZoneState:getScore()
     return self:getMultiplier() * self.zone.maxPoints
+end
+
+function ZoneState:getSpeed()
+    if not self.started then return 0.0 end
+    local avg_speed = 0
+    for _, scorePoint in ipairs(self.scores) do avg_speed = avg_speed + scorePoint.speed_mult end
+    avg_speed = avg_speed / #self.scores
+    return avg_speed
+end
+
+function ZoneState:getAngle()
+    if not self.started then return 0.0 end
+    local avg_angle = 0
+    for _, scorePoint in ipairs(self.scores) do avg_angle = avg_angle + scorePoint.angle_mult end
+    avg_angle = avg_angle / #self.scores
+    return avg_angle
+end
+
+function ZoneState:getDepth()
+    if not self.started then return 0.0 end
+    local avg_mult = 0
+    for _, scorePoint in ipairs(self.scores) do avg_mult = avg_mult + scorePoint.ratio_mult end
+    avg_mult = avg_mult / #self.scores
+    return avg_mult
+end
+
+function ZoneState:getMaxScore()
+    return self.zone.maxPoints
 end
 
 function ZoneState:isActive()

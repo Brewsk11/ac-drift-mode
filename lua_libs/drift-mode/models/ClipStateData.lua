@@ -2,9 +2,7 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
 ---@class ClipStateData : ScoringObjectStateData Lightweight dataclass for brokering run information to apps
----@field clip string
 ---@field maxPoints integer
----@field crossed boolean
 ---@field score number
 ---@field performance number
 ---@field multiplier number
@@ -18,10 +16,14 @@ end
 function ClipStateData:serialize()
     local data = {
         __class = "ClipStateData",
-        clip = S.serialize(self.clip),
-        maxPoints = S.serialize(self.maxPoints),
-        crossed = S.serialize(self.crossed),
+        name = S.serialize(self.name),
+        done = S.serialize(self.done),
         score = S.serialize(self.score),
+        max_score = S.serialize(self.max_score),
+        speed = S.serialize(self.speed),
+        angle = S.serialize(self.angle),
+        depth = S.serialize(self.depth),
+
         performance = S.serialize(self.performance),
         multiplier = S.serialize(self.multiplier),
         hitPoint = S.serialize(self.hitPoint),
@@ -34,11 +36,16 @@ end
 function ClipStateData.deserialize(data)
     Assert.Equal(data.__class, "ClipStateData", "Tried to deserialize wrong class")
     local obj = setmetatable({}, ClipStateData)
-    obj.clip = S.deserialize(data.clip)
-    obj.maxPoints = S.deserialize(data.maxPoints)
-    obj.crossed = S.deserialize(data.crossed)
+    obj.name = S.deserialize(data.name)
+    obj.done = S.deserialize(data.done)
     obj.score = S.deserialize(data.score)
+    obj.max_score = S.deserialize(data.max_score)
+    obj.speed = S.deserialize(data.speed)
+    obj.angle = S.deserialize(data.angle)
+    obj.depth = S.deserialize(data.depth)
+
     obj.performance = S.deserialize(data.performance)
+    obj.multiplier = S.deserialize(data.multiplier)
     obj.hitPoint = S.deserialize(data.hitPoint)
     obj.hitRatioMult = S.deserialize(data.hitRatioMult)
     return obj
