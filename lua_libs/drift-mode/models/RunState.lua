@@ -28,22 +28,12 @@ end
 function RunState:serialize()
     local data = {
         __class = "RunStateData",
-        scoringObjectStates = {},
+        scoringObjectStates = S.serialize(self.scoringObjectStates),
         driftState = S.serialize(self.driftState),
         totalScore = S.serialize(self:getScore()),
         maxScore = S.serialize(self:getMaxScore()),
         avgMultiplier = S.serialize(self:getAvgMultiplier()),
     }
-
-    for idx, obj in ipairs(self.scoringObjectStates) do
-        if obj.isInstanceOf(ZoneState) then
-            data.scoringObjectStates[idx] = ZoneState.serialize(obj)
-        elseif obj.isInstanceOf(ClipState) then
-            data.scoringObjectStates[idx] = ClipState.serialize(obj)
-        else
-            Assert.Error("")
-        end
-    end
 
     return data
 end

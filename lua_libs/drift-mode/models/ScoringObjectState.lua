@@ -15,6 +15,16 @@ function ScoringObjectState:getMaxScore()
     Assert.Error("Abstract method called")
 end
 
+function ScoringObjectState:serialize()
+    if self.isInstanceOf(ZoneState) then
+        return ZoneState.serialize(self)
+    elseif self.isInstanceOf(ClipState) then
+        return ClipState.serialize(self)
+    else
+        Assert.Error("")
+    end
+end
+
 local function test()
 end
 test()
