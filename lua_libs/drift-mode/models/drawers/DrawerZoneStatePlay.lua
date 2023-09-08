@@ -12,8 +12,8 @@ function DrawerZoneStatePlay:initialize(showZoneScorePoints)
     self.color_inactive = rgbm(0, 2, 1, 0.4)
     self.color_active = rgbm(0, 3, 0, 0.4)
     self.color_done = rgbm(0, 0, 3, 0.4)
-    self.color_bad = rgbm(2, 0, 1, 1)
-    self.color_good = rgbm(0, 3, 0, 1)
+    self.color_bad = rgbm(2, 0, 1, 3)
+    self.color_good = rgbm(0, 3, 0, 3)
     self.color_outside = rgbm(3, 0, 0, 0.2)
 
     self.showZoneScorePoints = showZoneScorePoints or false
@@ -64,15 +64,23 @@ function DrawerZoneStatePlay:draw(zone_state)
                 color = self.color_bad * (1 - perf_without_ratio) + self.color_good * perf_without_ratio
             end
 
-            render.debugLine(
-                scoring_point.point:value(),
-                zone_state.scores[next_idx].point:value(),
+            local dir = (zone_state.scores[next_idx].point:value() - scoring_point.point:value()):normalize()
+            local normal = dir:clone():cross(vec3(0, 1, 0)):normalize()
+            local width = 0.08
+
+            render.setBlendMode(render.BlendMode.BlendAdd)
+            render.quad(
+                scoring_point.point:value() + vec3(0, 0.1, 0) + (normal * width / 2),
+                zone_state.scores[next_idx].point:value() + vec3(0, 0.1, 0) + (normal * width / 2),
+                zone_state.scores[next_idx].point:value() + vec3(0, 0.1, 0) - (normal * width / 2),
+                scoring_point.point:value() + vec3(0, 0.1, 0) - (normal * width / 2),
                 color
             )
 
-            render.debugSphere(
-                scoring_point.point:value(),
-                0.1,
+            render.circle(
+                scoring_point.point:value() + vec3(0, 0.1, 0),
+                vec3(0, 1, 0),
+                width,
                 color
             )
         end
