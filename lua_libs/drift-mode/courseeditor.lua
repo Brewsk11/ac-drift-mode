@@ -117,7 +117,8 @@ end
 ---@enum PoiSegmentType
 local PoiSegmentType = {
   StartLine = "StartLine",
-  FinishLine = "FinishLine"
+  FinishLine = "FinishLine",
+  RespawnLine = "RespawnLine"
 }
 
 ---@enum PoiSegmentPointType
@@ -249,6 +250,22 @@ local function gatherPois()
       course.finishLine.tail,
       course.finishLine,
       PoiSegmentType.FinishLine,
+      PoiSegmentPointType.Tail
+    )
+  end
+
+  if course.respawnLine then
+    _pois[#_pois+1] = PoiSegment(
+      course.respawnLine.head,
+      course.respawnLine,
+      PoiSegmentType.RespawnLine,
+      PoiSegmentPointType.Head
+    )
+
+    _pois[#_pois+1] = PoiSegment(
+      course.respawnLine.tail,
+      course.respawnLine,
+      PoiSegmentType.RespawnLine,
       PoiSegmentPointType.Tail
     )
   end
@@ -769,6 +786,7 @@ function CourseEditor:drawUIOther(dt)
 
   local is_start_defined = course.startLine ~= nil
   local is_finish_defined = course.finishLine ~= nil
+  local is_respawn_defined = course.respawnLine ~= nil
   local is_starting_point_defined = course.startingPoint ~= nil
 
   ui.textAligned("Start line", vec2(0, 1.5), vec2(ui.availableSpaceX() - 124, 20))
@@ -799,6 +817,22 @@ function CourseEditor:drawUIOther(dt)
     if ui.button("Define###finishline", vec2(120, 30), button_global_flags) then
       current_routine = RoutineSelectSegment(function (segment)
         course.finishLine = segment
+      end)
+    end
+  end
+
+  ui.textAligned("Respawn line", vec2(0, 1.5), vec2(ui.availableSpaceX() - 124, 20))
+  ui.sameLine(0, 4)
+  if is_respawn_defined then
+    if ui.button("Clear###respawnLine", vec2(120, 30), button_global_flags) then
+      course.respawnLine = nil
+      is_respawn_defined = false
+      onCourseEdited()
+    end
+  else
+    if ui.button("Define###respawnLine", vec2(120, 30), button_global_flags) then
+      current_routine = RoutineSelectSegment(function (segment)
+        course.respawnLine = segment
       end)
     end
   end

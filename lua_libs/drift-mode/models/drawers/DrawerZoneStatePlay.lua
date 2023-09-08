@@ -8,13 +8,15 @@ local S = require('drift-mode/serializer')
 ---@field protected drawerDone DrawerZone
 local DrawerZoneStatePlay = class("DrawerZoneStatePlay", DrawerZoneState)
 
-function DrawerZoneStatePlay:initialize()
+function DrawerZoneStatePlay:initialize(showZoneScorePoints)
     self.color_inactive = rgbm(0, 2, 1, 0.4)
     self.color_active = rgbm(0, 3, 0, 0.4)
     self.color_done = rgbm(0, 0, 3, 0.4)
     self.color_bad = rgbm(2, 0, 1, 1)
     self.color_good = rgbm(0, 3, 0, 1)
     self.color_outside = rgbm(3, 0, 0, 0.2)
+
+    self.showZoneScorePoints = showZoneScorePoints or false
 
     self.drawerInactive = DrawerZonePlay(self.color_inactive)
     self.drawerActive = DrawerZonePlay(self.color_active)
@@ -35,6 +37,10 @@ function DrawerZoneStatePlay:draw(zone_state)
 
     render.setDepthMode(render.DepthMode.Normal)
     DrawerZoneState.draw(self, zone_state)
+
+    if not self.showZoneScorePoints then
+        return
+    end
 
     -- Draw at most N lines for performance reasons
     local N = 50
@@ -71,6 +77,10 @@ function DrawerZoneStatePlay:draw(zone_state)
             )
         end
     end
+end
+
+function DrawerZoneStatePlay:setShowZoneScorePoints(value)
+    self.showZoneScorePoints = value
 end
 
 return DrawerZoneStatePlay

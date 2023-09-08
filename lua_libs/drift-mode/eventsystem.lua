@@ -6,6 +6,7 @@ local EventSystem = {}
 EventSystem.Signal = {
     CrossedFinish = "CrossedFinish", ---Crossed finish line
     CrossedStart = "CrossedStart", ---Crossed start line
+    CrossedRespawn = "CrossedRespawn", ---Crossed respawn line
     TeleportToStart = "TeleportToStart", ---Request to teleport to starting point
     ResetScore = "ResetScore", ---Requested run reset run scoring
 

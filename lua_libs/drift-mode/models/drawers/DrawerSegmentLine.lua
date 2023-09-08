@@ -8,7 +8,7 @@ local DrawerSegmentLine = class("DrawerSegmentLine", DrawerSegment)
 function DrawerSegmentLine:initialize(color, label)
     DrawerSegment.initialize(self)
     self.color = color or rgbm(1, 1, 1, 3)
-    self.label = label
+    self.label = label or ""
 end
 
 ---@param segment Segment

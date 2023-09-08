@@ -5,12 +5,14 @@ local S = require('drift-mode/serializer')
 ---@field trackConfig TrackConfig
 ---@field driftState DriftState
 ---@field scoringObjectStates ScoringObjectState[]
+---@field private finished boolean
 local RunState = class("RunState")
 
 function RunState:initialize(track_config)
     self.trackConfig = track_config
     self.scoringObjectStates = {}
     self.driftState = DriftState(0, 0, 0, 0)
+    self.finished = false
     for idx, obj in ipairs(self.trackConfig.scoringObjects) do
         if obj.isInstanceOf(Zone) then
             self.scoringObjectStates[idx] = ZoneState(obj)
@@ -116,8 +118,12 @@ function RunState:getAvgMultiplier()
     return mult
 end
 
-function RunState:drawDebug()
-    self.driftState:drawDebug()
+function RunState:setFinished(value)
+    self.finished = value
+end
+
+function RunState:getFinished()
+    return self.finished
 end
 
 local function test()

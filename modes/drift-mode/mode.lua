@@ -37,10 +37,11 @@ local function listenForSignals()
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.GameStateChanged,   function (payload) game_state = payload end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.ResetScore,         function (_      ) resetScore() end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedStart,       function (_      ) run_state = RunState(track_data) end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedFinish,      function (_      ) if run_state then run_state:setFinished(true) end end) or changed
   EventSystem.endGroup(changed)
-  local crossed_finish = false
-  EventSystem.listen(listener_id, EventSystem.Signal.CrossedFinish, function (_) crossed_finish = true end)
-  if crossed_finish then
+  local crossed_respawn = false
+  EventSystem.listen(listener_id, EventSystem.Signal.CrossedRespawn, function (_) crossed_respawn = true end)
+  if crossed_respawn then
     EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
 end
@@ -92,6 +93,16 @@ local function monitorCrossingLines()
     if res then EventSystem.emit(EventSystem.Signal.CrossedFinish, {}) end
   end
 
+  if track_data.respawnLine then
+    local res = vec2.intersect(
+      track_data.respawnLine.head:flat(),
+      track_data.respawnLine.tail:flat(),
+      last_pos:flat(),
+      current_pos:flat()
+    )
+    if res then EventSystem.emit(EventSystem.Signal.CrossedRespawn, {}) end
+  end
+
   last_pos = current_pos
 end
 
@@ -107,6 +118,7 @@ local timers = {
     monitorCrossingLines()
   end)
 }
+
 
 function script.update(dt)
   for _, timer in pairs(timers) do

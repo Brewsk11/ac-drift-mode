@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class DrawerCourse : Drawer
 ---@field drawerStartLine DrawerSegment?
 ---@field drawerFinishLine DrawerSegment?
+---@field drawerRespawnLine DrawerSegment?
 ---@field drawerClip DrawerClip?
 ---@field drawerZone DrawerZone?
 ---@field drawerStartingPoint DrawerStartingPoint?
@@ -19,8 +20,6 @@ function DrawerCourse:draw(course)
             self.drawerZone:draw(obj)
         elseif obj.isInstanceOf(Clip) and self.drawerClip then
              self.drawerClip:draw(obj)
-        else
-            Assert.Error("")
         end
     end
 
@@ -30,6 +29,10 @@ function DrawerCourse:draw(course)
 
     if course.finishLine and self.drawerFinishLine then
         self.drawerFinishLine:draw(course.finishLine)
+    end
+
+    if course.respawnLine and self.drawerRespawnLine then
+        self.drawerRespawnLine:draw(course.respawnLine)
     end
 
     if course.startingPoint and self.drawerStartingPoint then

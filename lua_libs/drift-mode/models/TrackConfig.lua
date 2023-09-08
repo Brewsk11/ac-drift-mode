@@ -10,16 +10,18 @@ local WorldObject = require('drift-mode/models/WorldObject')
 ---@field name string Configuration name
 ---@field scoringObjects ScoringObject[]
 ---@field startLine Segment
+---@field respawnLine Segment
 ---@field finishLine Segment
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
 local TrackConfig = class("TrackConfig", WorldObject)
 
-function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, startingPoint, scoringRanges)
+function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
     self.name = name or 'default'
     self.scoringObjects = scoringObjects or {}
     self.startLine = startLine
     self.finishLine = finishLine
+    self.respawnLine = respawnLine
     self.startingPoint = startingPoint
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
     self:setDrawer(DrawerCourseSetup())
@@ -32,6 +34,7 @@ function TrackConfig:serialize()
         scoringObjects = {},
         startLine = S.serialize(self.startLine),
         finishLine  = S.serialize(self.finishLine),
+        respawnLine  = S.serialize(self.respawnLine),
         startingPoint = S.serialize(self.startingPoint),
         scoringRanges = S.serialize(self.scoringRanges)
     }
@@ -90,6 +93,7 @@ function TrackConfig.deserialize(data)
     obj.name = S.deserialize(data.name)
     obj.startLine = S.deserialize(data.startLine)
     obj.finishLine = S.deserialize(data.finishLine)
+    obj.respawnLine = S.deserialize(data.respawnLine)
     obj.startingPoint = S.deserialize(data.startingPoint)
     obj.scoringRanges = S.deserialize(data.scoringRanges)
     return obj
