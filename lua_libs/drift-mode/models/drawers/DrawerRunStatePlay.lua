@@ -2,10 +2,6 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
 ---@class DrawerRunStatePlay : DrawerRunState
----@field drawerCourse DrawerCourse
--- ---@field drawerDriftState DrawerDriftState
----@field drawerZoneState DrawerZoneState
--- ---@field drawerClipState DrawerClipState
 local DrawerRunStatePlay = class("DrawerRunStatePlay", DrawerRunState)
 
 function DrawerRunStatePlay:initialize()

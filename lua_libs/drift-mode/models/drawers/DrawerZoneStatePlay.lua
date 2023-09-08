@@ -35,6 +35,12 @@ function DrawerZoneStatePlay:draw(zone_state)
         self.drawerZone = self.drawerInactive
     end
 
+    if zone_state.zone:getCollide() then
+        self.drawerZone:setOutsideWallHeight(1.2)
+    else
+        self.drawerZone:setOutsideWallHeight(0.6)
+    end
+
     render.setDepthMode(render.DepthMode.Normal)
     DrawerZoneState.draw(self, zone_state)
 
