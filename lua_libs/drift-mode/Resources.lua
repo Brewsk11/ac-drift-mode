@@ -13,6 +13,7 @@ local Resources = {
     ColorNeutralSpeed = rgbm(148 / 255, 132 / 255, 122 / 255, 1),
     ColorNeutralAngle = rgbm(120 / 255, 142 / 255, 125 / 255, 1),
     ColorNeutralRatio = rgbm(102 / 255, 82 / 255, 106 / 255, 1),
+    ColorFaintBg = rgbm(1, 1, 1, 0.2)
 }
 
 
