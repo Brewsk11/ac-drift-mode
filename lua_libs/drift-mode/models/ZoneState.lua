@@ -6,7 +6,7 @@ local S = require('drift-mode/serializer')
 ---@field scores ZoneScoringPoint[]
 ---@field started boolean
 ---@field finished boolean
----@field private finalPerformance number
+---@field private performace number
 local ZoneState = class("ZoneState", ScoringObjectState)
 
 function ZoneState:initialize(zone)
@@ -15,7 +15,8 @@ function ZoneState:initialize(zone)
     self.scores = {}
     self.started = false
     self.finished = false
-    self.finalPerformance = nil
+    self.performace = nil
+    self:calculateFields()
 end
 
 ---Serializes to lightweight ZoneStateData as ZoneState should not be brokered.
@@ -119,33 +120,39 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
         is_inside
     )
 
+    self:calculateFields()
     return ratio_mult
 end
 
 ---@private
----@return number
-function ZoneState:calcPerformance()
-    if #self.scores == 0 then return 0 end
-
-    local mult = 0
-    for _, scorePoint in ipairs(self.scores) do mult = mult + scorePoint.score_mult end
-    mult = mult / #self.scores
-
-    return mult
+function ZoneState:calculateFields()
+    local score_mult = 0
+    local speed_mult = 0
+    local angle_mult = 0
+    local depth_mult = 0
+    if #self.scores ~= 0 then
+        for _, scorePoint in ipairs(self.scores) do
+            score_mult = score_mult + scorePoint.score_mult
+            speed_mult = speed_mult + scorePoint.speed_mult
+            angle_mult = angle_mult + scorePoint.angle_mult
+            depth_mult = depth_mult + scorePoint.ratio_mult
+        end
+        score_mult = score_mult / #self.scores
+        speed_mult = speed_mult / #self.scores
+        angle_mult = angle_mult / #self.scores
+        depth_mult = depth_mult / #self.scores
+    end
+    self.performace = score_mult
+    self.speed = speed_mult
+    self.angle = angle_mult
+    self.depth = depth_mult
 end
 
 ---Get zone performance, i.e. a multiplier of speed, angle and distance to outside line.
 ---This leaves out the time spent in zone. For final multiplier try `getMultiplier()`
 ---@return number
 function ZoneState:getPerformance()
-    if self:isDone() then
-        if self.finalPerformance == nil then
-            self.finalPerformance = self:calcPerformance()
-        end
-        return self.finalPerformance
-    end
-
-    return self:calcPerformance()
+    return self.performace
 end
 
 function ZoneState:getMultiplier()
@@ -199,27 +206,15 @@ function ZoneState:getScore()
 end
 
 function ZoneState:getSpeed()
-    if not self.started then return 0.0 end
-    local avg_speed = 0
-    for _, scorePoint in ipairs(self.scores) do avg_speed = avg_speed + scorePoint.speed_mult end
-    avg_speed = avg_speed / #self.scores
-    return avg_speed
+    return self.speed
 end
 
 function ZoneState:getAngle()
-    if not self.started then return 0.0 end
-    local avg_angle = 0
-    for _, scorePoint in ipairs(self.scores) do avg_angle = avg_angle + scorePoint.angle_mult end
-    avg_angle = avg_angle / #self.scores
-    return avg_angle
+    return self.angle
 end
 
 function ZoneState:getDepth()
-    if not self.started then return 0.0 end
-    local avg_mult = 0
-    for _, scorePoint in ipairs(self.scores) do avg_mult = avg_mult + scorePoint.ratio_mult end
-    avg_mult = avg_mult / #self.scores
-    return avg_mult
+    return self.depth
 end
 
 function ZoneState:getMaxScore()
