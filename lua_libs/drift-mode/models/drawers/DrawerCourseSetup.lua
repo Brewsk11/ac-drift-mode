@@ -16,6 +16,8 @@ end
 
 ---@param course TrackConfig
 function DrawerCourseSetup:draw(course)
+    render.setDepthMode(render.DepthMode.Normal)
+
     DrawerCourse.draw(self, course)
 end
 

@@ -14,13 +14,14 @@ end
 
 ---@param run_state RunState
 function DrawerRunStatePlay:draw(run_state)
+    render.setDepthMode(render.DepthMode.Normal)
+
     if run_state:getFinished() then
         self.drawerZoneState:setShowZoneScorePoints(true)
     else
         self.drawerZoneState:setShowZoneScorePoints(false)
     end
 
-    render.setDepthMode(render.DepthMode.Normal)
     DrawerRunState.draw(self, run_state)
 end
 

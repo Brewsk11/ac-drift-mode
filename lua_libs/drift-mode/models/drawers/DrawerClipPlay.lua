@@ -11,6 +11,8 @@ end
 
 ---@param clip Clip
 function DrawerClipPlay:draw(clip)
+    render.setDepthMode(render.DepthMode.Normal)
+
     --- Rise the clip's arrow a little so it's not clipping
     local height_adjustment = vec3(0, 0.05, 0)
 

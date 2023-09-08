@@ -690,12 +690,12 @@ function CourseEditor:drawUIScoringObjects(dt)
       end
 
       ui.sameLine(0, 8)
-      if ui.checkbox("Collide", zone:getCollide()) then
+      if ui.checkbox("Collide", zone:getCollide(), ui.Flags) then
         zone:setCollide(not zone:getCollide())
         onCourseEdited()
       end
       if ui.itemHovered() then
-        ui.setTooltip("Enable collisions with the outside zone line")
+        ui.setTooltip("Enable collisions with the outside zone line\n\nWorks only with patched tracks!")
       end
     elseif Clip.isInstanceOf(objects[i]) then
       local clip = objects[i] ---@type Clip

@@ -20,6 +20,7 @@ end
 
 ---@param clip_state ClipState
 function DrawerClipStatePlay:draw(clip_state)
+    render.setDepthMode(render.DepthMode.Normal)
 
     if clip_state.crossed then
         self.drawerClip = self.drawerDone
@@ -27,7 +28,6 @@ function DrawerClipStatePlay:draw(clip_state)
         self.drawerClip = self.drawerInactive
     end
 
-    render.setDepthMode(render.DepthMode.Normal)
     DrawerClipState.draw(self, clip_state)
 
     if clip_state.crossed then

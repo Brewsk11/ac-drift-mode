@@ -19,6 +19,8 @@ end
 
 ---@param clip Clip
 function DrawerClipSetup:draw(clip)
+    render.setDepthMode(render.DepthMode.Normal)
+
     clip.origin:draw(0.6, self.color_origin)
     render.debugArrow(clip.origin:value(), clip.origin:value() + clip.direction * clip.length, 0.1, self.color_arrow)
     render.debugLine(clip.origin:value(), clip.origin:value() + vec3(0, 0.2, 0), self.color_pole)

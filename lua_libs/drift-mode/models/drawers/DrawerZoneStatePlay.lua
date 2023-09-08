@@ -27,6 +27,8 @@ end
 
 ---@param zone_state ZoneState
 function DrawerZoneStatePlay:draw(zone_state)
+    render.setDepthMode(render.DepthMode.Normal)
+
     if zone_state:isActive() then
         self.drawerZone = self.drawerActive
     elseif zone_state:isDone() then
@@ -41,7 +43,6 @@ function DrawerZoneStatePlay:draw(zone_state)
         self.drawerZone:setOutsideWallHeight(0.6)
     end
 
-    render.setDepthMode(render.DepthMode.Normal)
     DrawerZoneState.draw(self, zone_state)
 
     if not self.showZoneScorePoints then
@@ -74,7 +75,6 @@ function DrawerZoneStatePlay:draw(zone_state)
             local normal = dir:clone():cross(vec3(0, 1, 0)):normalize()
             local width = 0.08
 
-            render.setBlendMode(render.BlendMode.BlendAdd)
             render.quad(
                 scoring_point.point:value() + vec3(0, 0.1, 0) + (normal * width / 2),
                 zone_state.scores[next_idx].point:value() + vec3(0, 0.1, 0) + (normal * width / 2),
