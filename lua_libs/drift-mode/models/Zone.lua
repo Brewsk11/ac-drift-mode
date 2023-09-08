@@ -6,6 +6,7 @@ local S = require('drift-mode/serializer')
 ---@field private outsideLine PointGroup Outside zone line definition
 ---@field private insideLine PointGroup Inside zone line definition
 ---@field private polygon PointGroup Polygon created from inside and outside lines
+---@field private collide boolean Whether to enable colliders for this zone
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
 local Zone = class("Zone", ScoringObject)
 
@@ -13,11 +14,12 @@ local Zone = class("Zone", ScoringObject)
 ---@param outsideLine PointGroup
 ---@param insideLine PointGroup
 ---@param maxPoints integer
-function Zone:initialize(name, outsideLine, insideLine, maxPoints)
+function Zone:initialize(name, outsideLine, insideLine, maxPoints, collide)
     self.name = name
+    self.maxPoints = maxPoints
+    self.collide = collide or false
     self:setOutsideLine(outsideLine or PointGroup())
     self:setInsideLine(insideLine or PointGroup())
-    self.maxPoints = maxPoints
 end
 
 local color_outside = rgbm(0, 3, 0, 0.4)
@@ -29,7 +31,8 @@ function Zone:serialize()
         name = S.serialize(self.name),
         outsideLine = self.outsideLine:serialize(),
         insideLine = self.insideLine:serialize(),
-        maxPoints = S.serialize(self.maxPoints)
+        maxPoints = S.serialize(self.maxPoints),
+        collide = S.serialize(self.collide),
     }
     return data
 end
@@ -41,13 +44,14 @@ function Zone.deserialize(data)
         S.deserialize(data.name),
         PointGroup.deserialize(data.outsideLine),
         PointGroup.deserialize(data.insideLine),
-        S.deserialize(data.maxPoints)
+        S.deserialize(data.maxPoints),
+        S.deserialize(data.collide)
     )
     return obj
 end
 
 ---@private
-function Zone:calculatePolygon()
+function Zone:recalculatePolygon()
     if not self.outsideLine or not self.insideLine then
         self.polygon = nil
         return
@@ -68,8 +72,39 @@ function Zone:calculatePolygon()
     self.polygon = PointGroup(points)
 end
 
+function Zone:gatherColliders()
+    if not self.collide then return {} end
+
+    local colliders = {}
+
+    for idx, segment in self:getOutsideLine():segment():iter() do
+        local parallel = (segment.tail:value() - segment.head:value()):normalize()
+        local look = parallel:clone():cross(vec3(0, 1, 0))
+        local up = parallel:clone():cross(look)
+
+        local collider = physics.Collider.Box(
+            vec3(segment:lenght(), 1, 0.5),
+            segment:getCenter() + vec3(0, 0.5) - look * 0.25,
+            look,
+            up,
+            true
+        )
+        colliders[idx] = collider
+    end
+
+    return colliders
+end
+
 function Zone:setDirty()
-    self:calculatePolygon()
+    self:recalculatePolygon()
+end
+
+function Zone:setCollide(value)
+    self.collide = value
+end
+
+function Zone:getCollide()
+    return self.collide
 end
 
 function Zone:getOutsideLine()
@@ -82,12 +117,12 @@ end
 
 function Zone:setOutsideLine(outside_line)
     self.outsideLine = outside_line
-    self:calculatePolygon()
+    self:setDirty()
 end
 
 function Zone:setInsideLine(inside_line)
     self.insideLine = inside_line
-    self:calculatePolygon()
+    self:setDirty()
 end
 
 ---Joins outside and inside lines to form a closed polygon

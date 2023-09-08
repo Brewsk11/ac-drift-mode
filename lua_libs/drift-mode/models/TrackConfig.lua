@@ -107,6 +107,16 @@ function TrackConfig:getNextClipName()
     return "clip_" .. string.format('%03d', #self.scoringObjects + 1)
 end
 
+function TrackConfig:gatherColliders()
+    local colliders = {}
+    for _, obj in ipairs(self.scoringObjects) do
+        if obj.isInstanceOf(Zone) then
+            colliders = table.chain(colliders, obj:gatherColliders())
+        end
+    end
+    return colliders
+end
+
 local function test()
 end
 test()

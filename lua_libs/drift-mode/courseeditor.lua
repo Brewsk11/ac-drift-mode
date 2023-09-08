@@ -281,12 +281,11 @@ local function gatherPois()
 end
 
 ---Called when editor changes the course in any way
----@param new_course TrackConfigInfo
 local function onCourseEdited()
   Assert.NotNil(course, "Course was edited but simultaneously was nil")
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
   pois = gatherPois()
   unsaved_changes = true
+  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
 end
 
 
@@ -688,6 +687,15 @@ function CourseEditor:drawUIScoringObjects(dt)
       end
       if ui.itemHovered() then
         ui.setTooltip("Enable pointer to extend the outer line")
+      end
+
+      ui.sameLine(0, 8)
+      if ui.checkbox("Collide", zone:getCollide()) then
+        zone:setCollide(not zone:getCollide())
+        onCourseEdited()
+      end
+      if ui.itemHovered() then
+        ui.setTooltip("Enable collisions with the outside zone line")
       end
     elseif Clip.isInstanceOf(objects[i]) then
       local clip = objects[i] ---@type Clip

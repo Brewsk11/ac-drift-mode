@@ -69,11 +69,24 @@ local function teleportToStart()
   end
 end
 
+local collider_body = nil
+
+local function reactivateColliders()
+  --Needs to be in the application code as mode scripts do not allow creating RigidBody objects
+  --Moreover, these would be hard to serialize, so the app script asks TrackConfig to list all
+  --needed colliders, and the app scripts spawns and disposes of them.
+  if collider_body then
+    collider_body:setInWorld(false):dispose()
+  end
+  local colliders = track_data:gatherColliders()
+  collider_body = physics.RigidBody(colliders, 1):setSemiDynamic(true, false)
+end
+
 local function listenForData()
   local changed = false
   EventSystem.startGroup()
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,      function (payload) cursor_data = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged, function (payload) track_data = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged, function (payload) track_data = payload; reactivateColliders() end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TeleportToStart,    function (payload) teleportToStart() end) or changed
   EventSystem.endGroup(changed)
 end
