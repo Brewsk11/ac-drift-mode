@@ -5,9 +5,9 @@ local function compactObjectList(run_state_data)
     local entry_height = 18
     local entry_gap = 8
 
-    local column_width = 54
-    local min_object_name_width = 90
-    local max_columns = 3
+    local column_width = 60
+    local min_object_name_width = 100
+    local max_columns = 2
 
     local info_columns_count = math.min(math.floor((ui.windowWidth() - min_object_name_width) / column_width), max_columns)
 
@@ -28,15 +28,34 @@ local function compactObjectList(run_state_data)
         ui.textAligned(object_state.name, vec2(0, 0), vec2(ui.availableSpaceX() - info_columns_count * column_width, entry_height))
         ui.pushFont(ui.Font.Monospace)
         ui.sameLine(0, 0)
-        ui.textAligned(string.format("%d", object_state.score), vec2(1, 0.5), vec2(column_width, entry_height), true)
 
-        if info_columns_count > 1 then
-            ui.sameLine(0, 0)
-            ui.textAligned(string.format("%d", object_state.max_score), vec2(1, 0.5), vec2(column_width, entry_height))
+        ui.drawRect(ui.getCursor(), ui.getCursor() + vec2(column_width, entry_height), Resources.ColorFaintBg, 2)
+        if object_state.score > 0 then
+            ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(column_width * object_state.score / object_state.max_score, entry_height), Resources.ColorFaintBg, 2)
         end
+
+        ui.dwriteTextAligned(string.format("%d", object_state.score), 12, ui.Alignment.Center, ui.Alignment.Center, vec2(column_width, entry_height), false, rgbm(1, 1, 1, 1))
+        if ui.itemHovered() then
+            ui.tooltip(function ()
+                local function formattedLabel(label, format, value)
+                    ui.pushFont(ui.Font.Main)
+                    ui.textAligned(label, vec2(0, 0), vec2(60, 16))
+                    ui.sameLine(0, 0)
+                    ui.pushFont(ui.Font.Monospace)
+                    ui.textAligned(string.format(format, value), vec2(1, 1), vec2(50, 16))
+                    ui.popFont()
+                    ui.popFont()
+                end
+
+                formattedLabel("Score", "%d", object_state.score)
+                formattedLabel("Max score", "%d", object_state.max_score)
+                formattedLabel("%", "%.2f%%", object_state.score / object_state.max_score * 100)
+            end)
+        end
+
         ui.popFont()
 
-        if info_columns_count == 3 then
+        if info_columns_count == 2 then
             ui.sameLine(0, 0)
             ui.offsetCursorX(10)
 
