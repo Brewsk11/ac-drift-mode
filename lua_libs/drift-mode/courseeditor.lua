@@ -623,6 +623,7 @@ function CourseEditor:drawUIScoringObjects(dt)
 
     ui.sameLine(0, 4)
     if objects[i].isInstanceOf(Zone) then
+      ac.debug("img", Resources.IconZoneWhite)
       ui.image(Resources.IconZoneWhite, vec2(24, 24), rgbm(1, 1, 1, 0.7))
       if ui.itemHovered() then
         ui.setTooltip("Zone")
@@ -963,27 +964,15 @@ This won't save the course - if clicked by mistake load the course again before 
 end
 
 function CourseEditor:drawUIHelp(dt)
-  ui.pushFont(ui.Font.Main)
-  ui.offsetCursorY(8)
-  ui.text("When editing objects left click places\nmarkers and right click cancells the action.")
-  ui.offsetCursorY(8)
-  ui.text("Clicking on objects while holding CTRL\nwill delete them.")
-  ui.offsetCursorY(8)
-  ui.text("Zones are scored with the rear.\nClips are scored with the front.")
-  ui.offsetCursorY(16)
-  ui.separator()
-  ui.offsetCursorY(16)
-  ui.text("Visit project pages:")
-  if ui.textHyperlink("RaceDepartment") then
-    os.openURL("https://www.racedepartment.com/downloads/driftmode-competition-drift-gamemode.59863/")
-  end
-  if ui.textHyperlink("YouTube") then
-    os.openURL("https://www.youtube.com/channel/UCzdi8sI1KxO7VXNlo_WaSAA")
-  end
-  if ui.textHyperlink("GitHub") then
-    os.openURL("https://github.com/Brewsk11/ac-drift-mode")
-  end
-  ui.popFont()
+  ui.offsetCursorY(15)
+  local help_text = [[
+When editing objects left click places markers and right click cancels the action.
+
+Clicking on objects while holding CTRL will delete them.
+
+Zones are scored with the rear.
+Clips are scored with the front.]]
+  ui.dwriteTextAligned(help_text, 14, -1, -1, vec2(ui.availableSpaceX(), 0), true)
 end
 
 

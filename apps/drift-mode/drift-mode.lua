@@ -5,6 +5,8 @@ local ConfigIO = require('drift-mode/configio')
 local Timer = require('drift-mode/timer')
 local PP = require('drift-mode/physicspatcher')
 local S = require('drift-mode/serializer')
+local CourseEditor = require('drift-mode/courseeditor')
+local Resources = require('drift-mode/Resources')
 
 require('drift-mode/ui_layouts/scores')
 require('drift-mode/ui_layouts/infobars')
@@ -140,22 +142,32 @@ local function gameStateUpdate()
   EventSystem.emit(EventSystem.Signal.GameStateChanged, game_state)
 end
 
-local function drawAppUI()
-  -- [DECORATIVE] Car setup title text
-  ui.pushFont(ui.Font.Title)
-  ui.text("Car configuration")
+local course_editor = CourseEditor()
+local course_editor_enabled = false
 
-  ui.offsetCursorY(5)
+local function drawUIEditor()
+  if ui.checkbox("Enable course editor", course_editor_enabled) then
+    course_editor_enabled = not course_editor_enabled
+    game_state.isTrackSetup = course_editor_enabled
+    EventSystem.emit("GameStateChanged", game_state)
+  end
 
+  if course_editor_enabled then
+    course_editor:drawUI()
+    course_editor:runEditor()
+  end
+end
+
+
+local function drawUICarSetup()
   -- [CHECKBOX] Enable configuration
-  ui.pushFont(ui.Font.Main)
   if ui.checkbox("Show guides", game_state.isCarSetup) then
     game_state.isCarSetup = not game_state.isCarSetup
     gameStateUpdate()
   end
 
   -- [CHECKBOX] Enable helper camera
-  ui.offsetCursor(vec2(120, -26))
+  ui.sameLine(0, 32)
   if ui.checkbox("Helper camera", is_helper_cam_active) then
     is_helper_cam_active = not is_helper_cam_active
     if is_helper_cam_active then helper_cam = ac.grabCamera("For car alignment") else helper_cam:dispose(); helper_cam = nil end
@@ -166,10 +178,12 @@ local function drawAppUI()
   -- [DECORATIVE] Front
   ui.pushFont(ui.Font.Title)
   ui.text("Front")
+  ui.popFont()
 
   -- [SLIDER] Front offset
-  ui.pushFont(ui.Font.Monospace)
   ui.offsetCursor(vec2(65, -35))
+  ui.pushFont(ui.Font.Monospace)
+  ui.pushItemWidth(ui.availableSpaceX())
   local value, changed = ui.slider("##foffset", car_data.frontOffset, 0.5, 3, 'Offset: %.2f')
   if changed then
     car_data.frontOffset = tonumber(string.format("%.3f", value))
@@ -185,15 +199,19 @@ local function drawAppUI()
     DataBroker.store("car_data", car_data)
     EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
   end
+  ui.popFont()
+  ui.popItemWidth()
 
   -- [DECORATIVE] Front
   ui.offsetCursorY(15)
   ui.pushFont(ui.Font.Title)
   ui.text("Rear")
+  ui.popFont()
 
   -- [SLIDER] Rear offset
-  ui.pushFont(ui.Font.Monospace)
   ui.offsetCursor(vec2(65, -35))
+  ui.pushFont(ui.Font.Monospace)
+  ui.pushItemWidth(ui.availableSpaceX())
   local value, changed = ui.slider("##roffset", car_data.rearOffset, 0.5, 3, 'Offset: %.2f')
   if changed then
     car_data.rearOffset =  tonumber(string.format("%.3f", value))
@@ -209,53 +227,114 @@ local function drawAppUI()
     DataBroker.store("car_data", car_data)
     EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
   end
+  ui.popFont()
+  ui.popItemWidth()
 
   ui.offsetCursorY(15)
 
+  local button_width = 140
+  local button_height = 40
+  local button_gap = 12
+
+  local initial_gap = (ui.windowWidth() - (2 * button_width + button_gap)) / 2
+  ui.offsetCursorX(initial_gap)
+
   -- [BUTTON] Save car config
-  ui.pushFont(ui.Font.Main)
-  if ui.button("Save ##saveCar", vec2(80, 30)) then
+  if ui.button("Save ##saveCar", vec2(button_width, button_height)) then
     ConfigIO.saveCarConfig(car_data)
   end
 
   -- [BUTTON] Reset car config
-  ui.offsetCursor(vec2(90, -34))
-  if ui.button("Reset ##resetCar", vec2(80, 30)) then
+  ui.sameLine(0, button_gap)
+  if ui.button("Reset ##resetCar", vec2(button_width, button_height)) then
     loadCar()
   end
 
-  -- [BUTTON] Reset car config
-  ui.offsetCursor(vec2(180, -34))
-  if ui.button("Open folder ##openCarDir", vec2(80, 30)) then
+  -- [BUTTON] Open configuration directory
+  ui.offsetCursor(vec2(initial_gap, button_gap))
+  if ui.button("Open directory with car setups##openCarDir", vec2(button_width * 2 + button_gap, button_height)) then
     os.openInExplorer(ac.getFolder(ac.FolderID.ExtCfgUser)  .. "\\drift-mode\\cars")
   end
+end
 
-  ui.offsetCursorY(20)
-  ui.separator()
-  ui.offsetCursorY(20)
-
-  -- [DECORATIVE] Track patching section
-  ui.pushFont(ui.Font.Title)
-  ui.text("Track patcher")
-
-  -- [DECORATIVE] Track patching help text
-  ui.pushFont(ui.Font.Main)
-  ui.text("For teleportation functionality track data has\nto be patched to use extended physics.")
-  ui.text("After patching or restoring surfaces.ini\nrestart the game to apply changes.")
-  ui.pushFont(ui.Font.Italic)
-  ui.text("Note: this may lead to buggy collisions.")
-
+local function drawUITrackPatcher()
   -- [BUTTON] Track patch button
-  ui.pushFont(ui.Font.Main)
   local patch_button_label = "Patch track"
   if PP.isPatched() then patch_button_label = "Unpatch track" end
-  if ui.button(patch_button_label, vec2(260, 30)) then
+  if ui.button(patch_button_label, vec2(ui.availableSpaceX(), 60)) then
     if PP.isPatched() then
       PP.restore()
+      ac.setMessage("Removed track patch successfully", "")
     else
       PP.patch()
+      ac.setMessage("Track patched successfully", "Please restart the game to enable extended physics.")
     end
   end
+  ui.offsetCursorY(8)
+
+  local patch_button_label = "Show file to patch"
+  if ui.button(patch_button_label, vec2(ui.availableSpaceX(), 30)) then
+    os.showInExplorer(PP.getSurfacesPath())
+  end
+  ui.offsetCursorY(15)
+
+  -- [DECORATIVE] Track patching help text
+  local help_text = [[
+Functionality requiring patched track:
+  - teleportation
+  - zone collision
+
+After patching the track restart the game.
+
+Patched tracks may prevent joining online servers, as the local track version would be different than the one on the server.
+
+Patcher modifies surfaces.ini file to enable extended physics.
+
+More information on extended track physics in:]]
+  ui.dwriteTextAligned(help_text, 14, -1, -1, vec2(ui.availableSpaceX(), 0), true)
+
+  if ui.textHyperlink("CSP SDK documentation") then
+    os.openURL("https://github.com/ac-custom-shaders-patch/acc-lua-sdk/blob/main/common/ac_physics.lua#L7")
+  end
+end
+
+local function drawUIAbout()
+  ui.text("Visit project pages:")
+  if ui.textHyperlink("RaceDepartment") then
+    os.openURL("https://www.racedepartment.com/downloads/driftmode-competition-drift-gamemode.59863/")
+  end
+  if ui.textHyperlink("YouTube") then
+    os.openURL("https://www.youtube.com/channel/UCzdi8sI1KxO7VXNlo_WaSAA")
+  end
+  if ui.textHyperlink("GitHub") then
+    os.openURL("https://github.com/Brewsk11/ac-drift-mode")
+  end
+end
+
+local __tabs = {
+  { 'Course editor', drawUIEditor },
+  { 'Car setup',     drawUICarSetup },
+  { 'Track patcher', drawUITrackPatcher },
+  { 'About',         drawUIAbout}
+}
+
+local function drawAppUI()
+
+  local logo_height = 150
+  ui.image(Resources.EmblemFlat, vec2(ui.availableSpaceX(), logo_height), ui.ImageFit.Fit)
+
+  ui.tabBar('tabs', function()
+    for _, v in ipairs(__tabs) do
+      ui.tabItem(v[1], ui.TabItemFlags.None, function()
+        ui.childWindow('#scrollMainTabs', ui.availableSpace(), function()
+          ui.offsetCursorY(15)
+          ui.pushItemWidth(ui.availableSpaceX())
+          v[2]()
+          ui.popItemWidth()
+        end)
+      end)
+    end
+  end)
 end
 
 function WindowMain()
