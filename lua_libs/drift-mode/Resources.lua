@@ -1,12 +1,16 @@
 local Assert = require('drift-mode/assert')
 
+local gui_dir = ac.getFolder(ac.FolderID.Root) .. "/content/gui/drift-mode"
+
 ---@enum Resources
 local Resources = {
-    IconZoneWhite = "D:\\Projects\\drift-mode\\res\\zone_icon_white.png",
-    IconZoneBlack = "D:\\Projects\\drift-mode\\res\\zone_icon_black.png",
-    IconClipWhite = "D:\\Projects\\drift-mode\\res\\clip_icon_white.png",
-    IconClipBlack = "D:\\Projects\\drift-mode\\res\\clip_icon_black.png",
-    LogoWhite = "D:\\Projects\\drift-mode\\res\\logo white.png",
+    IconZoneWhite = gui_dir .. "/zone_icon_white.png",
+    IconZoneBlack = gui_dir .. "/zone_icon_black.png",
+    IconClipWhite = gui_dir .. "/clip_icon_white.png",
+    IconClipBlack = gui_dir .. "/clip_icon_black.png",
+    LogoWhite =     gui_dir .. "/logo_white.png",
+    EmblemInvertedFlat =     gui_dir .. "/emblem_inverted_flat.png",
+    EmblemFlat =     gui_dir .. "/emblem_flat.png",
     ColorSpeed = rgbm(230 / 255, 138 / 255, 46 / 255, 1),
     ColorAngle = rgbm(20 / 255, 204 / 255, 112 / 255, 1),
     ColorDepth = rgbm(112 / 255, 20 / 255, 204 / 255, 1),
@@ -15,6 +19,5 @@ local Resources = {
     ColorNeutralRatio = rgbm(102 / 255, 82 / 255, 106 / 255, 1),
     ColorFaintBg = rgbm(1, 1, 1, 0.2)
 }
-
 
 return Resources
