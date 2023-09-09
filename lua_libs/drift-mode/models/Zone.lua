@@ -87,7 +87,7 @@ function Zone:gatherColliders()
             segment:getCenter() + vec3(0, 0.5),
             look,
             up,
-            true
+            false
         )
         colliders[idx] = collider
     end
