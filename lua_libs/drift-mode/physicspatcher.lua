@@ -14,25 +14,25 @@ WAV_PITCH=extended-0
 ALLOW_APPS=1
 ]] .. PhysicsPatcher.PATCH_TAG_END
 
-local function getSurfacesPath()
+function PhysicsPatcher.getSurfacesPath()
     local layout_subpath = ac.getTrackLayout()
     if layout_subpath ~= "" then layout_subpath = "\\" .. layout_subpath end
     return ac.getFolder(ac.FolderID.ContentTracks) .. "\\" .. ac.getTrackID() .. layout_subpath .. "\\data\\surfaces.ini"
 end
 
-local function getSurfacesBackupPath()
+function PhysicsPatcher.getSurfacesBackupPath()
     local layout_subpath = ac.getTrackLayout()
     if layout_subpath ~= "" then layout_subpath = "\\" .. layout_subpath end
     return ac.getFolder(ac.FolderID.ContentTracks) .. "\\" .. ac.getTrackID() .. layout_subpath .. "\\data\\surfaces.driftmode_patch_backup.ini"
 end
 
 function PhysicsPatcher.backupExists()
-    return io.exists(getSurfacesBackupPath())
+    return io.exists(PhysicsPatcher.getSurfacesBackupPath())
 end
 
 local patched = false
 local function checkPatched()
-    for line in io.lines(getSurfacesPath()) do
+    for line in io.lines(PhysicsPatcher.getSurfacesPath()) do
         if line == PhysicsPatcher.PATCH_TAG_BEGIN then return true end
     end
     return false
@@ -44,11 +44,11 @@ function PhysicsPatcher.isPatched()
 end
 
 function PhysicsPatcher.backupSurfaces()
-    local og_file = io.open(getSurfacesPath(), "r")
-    Assert.NotEqual(og_file, nil, "Could not open " .. getSurfacesPath() .. " file")
+    local og_file = io.open(PhysicsPatcher.getSurfacesPath(), "r")
+    Assert.NotEqual(og_file, nil, "Could not open " .. PhysicsPatcher.getSurfacesPath() .. " file")
 
-    local back_file = io.open(getSurfacesBackupPath(), "w")
-    Assert.NotEqual(back_file, nil, "Could not open " .. getSurfacesBackupPath() .. " file")
+    local back_file = io.open(PhysicsPatcher.getSurfacesBackupPath(), "w")
+    Assert.NotEqual(back_file, nil, "Could not open " .. PhysicsPatcher.getSurfacesBackupPath() .. " file")
 
     back_file:write(og_file:read("a"))
 
@@ -63,7 +63,7 @@ function PhysicsPatcher.patch()
 
     PhysicsPatcher.backupSurfaces()
 
-    local surfaces_file = io.open(getSurfacesPath(), "a")
+    local surfaces_file = io.open(PhysicsPatcher.getSurfacesPath(), "a")
     surfaces_file:write(PhysicsPatcher.PATCH_CONTENT)
     surfaces_file:close()
 
@@ -71,18 +71,18 @@ function PhysicsPatcher.patch()
 end
 
 function PhysicsPatcher.restore()
-    local back_file = io.open(getSurfacesBackupPath(), "r")
-    Assert.NotEqual(back_file, nil, "Could not open " .. getSurfacesBackupPath() .. " file")
+    local back_file = io.open(PhysicsPatcher.getSurfacesBackupPath(), "r")
+    Assert.NotEqual(back_file, nil, "Could not open " .. PhysicsPatcher.getSurfacesBackupPath() .. " file")
 
-    local og_file = io.open(getSurfacesPath(), "w")
-    Assert.NotEqual(og_file, nil, "Could not open " .. getSurfacesPath() .. " file")
+    local og_file = io.open(PhysicsPatcher.getSurfacesPath(), "w")
+    Assert.NotEqual(og_file, nil, "Could not open " .. PhysicsPatcher.getSurfacesPath() .. " file")
 
     og_file:write(back_file:read("a"))
 
     og_file:close()
     back_file:close()
 
-    io.deleteFile(getSurfacesBackupPath())
+    io.deleteFile(PhysicsPatcher.getSurfacesBackupPath())
 
     patched = checkPatched()
 end
