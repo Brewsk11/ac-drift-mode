@@ -623,7 +623,6 @@ function CourseEditor:drawUIScoringObjects(dt)
 
     ui.sameLine(0, 4)
     if objects[i].isInstanceOf(Zone) then
-      ac.debug("img", Resources.IconZoneWhite)
       ui.image(Resources.IconZoneWhite, vec2(24, 24), rgbm(1, 1, 1, 0.7))
       if ui.itemHovered() then
         ui.setTooltip("Zone")
