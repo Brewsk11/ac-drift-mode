@@ -83,11 +83,11 @@ function Zone:gatherColliders()
         local up = parallel:clone():cross(look)
 
         local collider = physics.Collider.Box(
-            vec3(segment:lenght(), 1, 0.5),
-            segment:getCenter() + vec3(0, 0.5) - look * 0.25,
+            vec3(segment:lenght(), 1, 0.01),
+            segment:getCenter() + vec3(0, 0.5),
             look,
             up,
-            false
+            true
         )
         colliders[idx] = collider
     end
