@@ -25,29 +25,8 @@ end
 local color_outside = rgbm(0, 3, 0, 0.4)
 local color_inside = rgbm(0, 0, 3, 0.4)
 
-function Zone:__serialize()
-    local data = {
-        __class = "Zone",
-        name = S.serialize(self.name),
-        outsideLine = self.outsideLine:serialize(),
-        insideLine = self.insideLine:serialize(),
-        maxPoints = S.serialize(self.maxPoints),
-        collide = S.serialize(self.collide),
-    }
-    return data
-end
-
-function Zone.__deserialize(data)
-    Assert.Equal(data.__class, "Zone", "Tried to deserialize wrong class")
-
-    local obj = Zone(
-        S.deserialize(data.name),
-        PointGroup.deserialize(data.outsideLine),
-        PointGroup.deserialize(data.insideLine),
-        S.deserialize(data.maxPoints),
-        S.deserialize(data.collide)
-    )
-    return obj
+function Zone:__post_deserialize()
+    self:setDirty()
 end
 
 ---@private

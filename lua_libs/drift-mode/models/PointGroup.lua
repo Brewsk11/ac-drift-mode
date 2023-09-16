@@ -13,33 +13,6 @@ function PointGroup:initialize(points)
     self.points = _points
 end
 
-function PointGroup:serialize()
-    local data = {
-        __class = "PointGroup",
-        points = {}
-    }
-
-    for idx, point in ipairs(self.points) do
-        data.points[idx] = point:__serialize()
-    end
-
-    return data
-end
-
-function PointGroup.deserialize(data)
-    Assert.Equal(data.__class, "PointGroup", "Tried to deserialize wrong class")
-
-    local obj = PointGroup()
-
-    local points = {}
-    for idx, point in ipairs(data.points) do
-        points[idx] = Point.__deserialize(point)
-    end
-
-    obj.points = points
-    return obj
-end
-
 ---Append a point to the end of the gropu
 ---@param self PointGroup
 ---@param point Point

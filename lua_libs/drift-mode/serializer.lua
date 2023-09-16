@@ -108,20 +108,28 @@ function Serializer.deserialize(data)
     -- CSP classes
     if data['__class'] ~= nil then
 
+        local obj = nil
+
         if _G[data.__class].__deserialize == nil then
             -- Classes with no custom de/serializer
-
-            local obj = _G[data.__class]()
+            obj = _G[data.__class]()
             for k, v in pairs(data) do
                 obj[k] = Serializer.deserialize(v)
             end
-            return obj
         else
             -- Classes with customized de/serializer
-
             Assert.Equal(type(_G[data.__class].__deserialize), "function")
-            return _G[data.__class].__deserialize(data)
+            obj = _G[data.__class].__deserialize(data)
         end
+
+        -- Additional function to call if any calculation is needed
+        -- post obj:initialize()
+        if obj.__post_deserialize ~= nil then
+            Assert.Equal(type(obj.__post_deserialize), "function")
+            obj:__post_deserialize()
+        end
+
+        return obj
     end
 
     -- table
