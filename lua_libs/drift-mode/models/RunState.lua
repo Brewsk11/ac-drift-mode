@@ -27,7 +27,7 @@ end
 ---Serializes to lightweight RunStateData as RunState should not be brokered.
 ---@param self RunState
 ---@return table
-function RunState:serialize()
+function RunState:__serialize()
     local data = {
         __class = "RunStateData",
         scoringObjectStates = S.serialize(self.scoringObjectStates),

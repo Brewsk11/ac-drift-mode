@@ -9,30 +9,6 @@ local S = require('drift-mode/serializer')
 ---@field avgMultiplier number
 local RunStateData = class("RunStateData")
 
-function RunStateData:serialize()
-    local data = {
-        __class = "RunStateData",
-        scoringObjectStates = S.serialize(self.scoringObjectStates),
-        driftState = S.serialize(self.driftState),
-        totalScore = S.serialize(self.totalScore),
-        maxScore = S.serialize(self.maxScore),
-        avgMultiplier = S.serialize(self.avgMultiplier),
-    }
-
-    return data
-end
-
-function RunStateData.deserialize(data)
-    Assert.Equal(data.__class, "RunStateData", "Tried to deserialize wrong class")
-    local obj = setmetatable({}, RunStateData)
-    obj.scoringObjectStates = S.deserialize(data.scoringObjectStates)
-    obj.driftState = S.deserialize(data.driftState)
-    obj.totalScore = S.deserialize(data.totalScore)
-    obj.maxScore = S.deserialize(data.maxScore)
-    obj.avgMultiplier = S.deserialize(data.avgMultiplier)
-    return obj
-end
-
 local function test()
 end
 test()

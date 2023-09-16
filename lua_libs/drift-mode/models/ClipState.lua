@@ -28,7 +28,7 @@ end
 ---due to volume of `self.clip: Clip`
 ---@param self ClipState
 ---@return table
-function ClipState:serialize()
+function ClipState:__serialize()
     local data = {
         __class = "ClipStateData",
         name = S.serialize(self.clip.name),

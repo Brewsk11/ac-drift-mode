@@ -15,22 +15,6 @@ function Segment:initialize(head, tail)
     self.tail = tail
 end
 
-function Segment:serialize()
-    local data = {
-        __class = "Segment",
-        head = self.head:serialize(),
-        tail = self.tail:serialize()
-    }
-    return data
-end
-
-function Segment.deserialize(data)
-    Assert.Equal(data.__class, "Segment", "Tried to deserialize wrong class")
-    return Segment(
-        Point.deserialize(data.head),
-        Point.deserialize(data.tail))
-end
-
 ---Return 2-item array with start and end point values
 ---@param self Segment
 ---@return vec3 head, vec3 tail Start and end points of the segment

@@ -12,9 +12,23 @@ local Serializer = {}
 ---@return any
 function Serializer.serialize(data)
 
-    -- custom classes
-    if type(data) == "table" and data.serialize ~= nil then
-        return data:serialize()
+    -- CSP class
+    if ClassBase.isInstanceOf(data) then
+
+        if data.__serialize == nil then
+            -- Classes with no custom de/serializer
+
+            local obj = { __class = data.__name }
+            for k, v in pairs(data) do
+                obj[k] = Serializer.serialize(v)
+            end
+            return obj
+        else
+            -- Classes with customized de/serializer
+
+            Assert.Equal(type(data.__serialize), "function")
+            return data:__serialize()
+        end
     end
 
     -- array
@@ -91,10 +105,23 @@ function Serializer.deserialize(data)
     -- nil
     if data == nil then return nil end
 
-    -- custom classes
+    -- CSP classes
     if data['__class'] ~= nil then
-        Assert.NotEqual(_G[data.__class], nil, "Deserializing class that is not in global namespace (_G[classname])")
-        return _G[data.__class].deserialize(data)
+
+        if _G[data.__class].__deserialize == nil then
+            -- Classes with no custom de/serializer
+
+            local obj = _G[data.__class]()
+            for k, v in pairs(data) do
+                obj[k] = Serializer.deserialize(v)
+            end
+            return obj
+        else
+            -- Classes with customized de/serializer
+
+            Assert.Equal(type(_G[data.__class].__deserialize), "function")
+            return _G[data.__class].__deserialize(data)
+        end
     end
 
     -- table
@@ -139,37 +166,84 @@ function Serializer.toJson(data)
     return json.encode(Serializer.serialize(data))
 end
 
+TestClassNested = class("TestClassNested")
+function TestClassNested:initialize()
+    self.number = math.random(1000)
+    self.string = "from_initialize"
+    self.nested_table = { table = { number = math.random(1000), float = math.random()}}
+end
+
+TestClass = class("TestClass")
+function TestClass:initialize()
+    self.number = math.random(1000)
+    self.string = "from_initialize"
+    self.nested_table = { string = 'from_initialize_nested', table = { number = math.random(1000), float = math.random()}}
+    self.nested_class = TestClassNested()
+    self.nested_class_array = {}
+    for i = 1, 2 do
+        self.nested_class_array[#self.nested_class_array+1] = TestClassNested()
+    end
+end
+
+TestClassCustomSerializer = class("TestClassCustomSerializer")
+function TestClassCustomSerializer:initialize()
+    self.number = math.random(1000)
+end
+function TestClassCustomSerializer:__serialize()
+    return {
+        __class = self.__name,
+        custom_number = "abc" .. tostring(self.number) .. "def"
+    }
+end
+function TestClassCustomSerializer.__deserialize(data)
+    local obj = TestClassCustomSerializer()
+    obj.number = tonumber(string.trim(data.custom_number, "abcdef"))
+    return obj
+end
+
 local function test()
+    ac.log("== Start testing ==")
+
+    local c = TestClass()
+    c.string = "changed"
+    c.nested_table.string = "changed_nested"
+
     local test_payload = {
-        a = vec3(1, 2, 3),
-        b = "abc",
-        c = 123,
-        d = true,
-        e = nil,
-        f = {
-            a = 1,
-            b = '2'
+        ctype_vec3 = vec3(1, 2, 3),
+        string = "abc",
+        number = 123,
+        boolean = true,
+        nil_value = nil,
+        simple_table = {
+            number = 1,
+            string = '2'
         },
-        g = { "a", "b" }
+        array = { "a", "b" },
+        class = c,
+        class_custom_serializer = TestClassCustomSerializer()
     }
 
     local serialized = Serializer.serialize(test_payload)
     local deserialized = Serializer.deserialize(serialized)
 
-    local test_item = function (a, b)
-        assert(a == b, "Serializing test failed: " .. tostring(a) .. ' vs. ' .. tostring(b))
+    local function traverse_object(prefix, obj_a, obj_b, debug)
+        if type(obj_a) ~= "table" and type(obj_b) ~= "table" then
+            if debug then ac.log("`" .. prefix .. "` : " .. tostring(obj_a) .. " vs. " .. tostring(obj_b)) end
+            Assert.Equal(obj_a, obj_b)
+        elseif type(obj_a) == "table" and type(obj_b) == "table" then
+            for k, v in pairs(obj_a) do
+                traverse_object(prefix .. "." .. k, v, obj_b[k], debug)
+            end
+        else
+            if debug then ac.log(tostring(obj_a) .. " ~= " .. tostring(tostring(obj_b))) end
+            Assert.Error("Checking table vs. value")
+        end
     end
 
     ---@diagnostic disable: undefined-field
-    test_item(test_payload.a, deserialized.a)
-    test_item(test_payload.b, deserialized.b)
-    test_item(test_payload.c, deserialized.c)
-    test_item(test_payload.d, deserialized.d)
-    test_item(test_payload.e, deserialized.e)
-    test_item(test_payload.f.a, deserialized.f.a)
-    test_item(test_payload.f.b, deserialized.f.b)
-    test_item(test_payload.g[1], deserialized.g[1])
-    test_item(test_payload.g[2], deserialized.g[2])
+    traverse_object("test_payload", test_payload, deserialized, true)
+
+    ac.log("== End testing ==")
 end
 
 test()

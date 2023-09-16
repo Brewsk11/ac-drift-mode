@@ -21,25 +21,6 @@ function TrackConfigInfo:initialize(name, path, type)
     self.type = type
 end
 
-function TrackConfigInfo:serialize()
-    local data = {
-        __class = "TrackConfigInfo",
-        name = S.serialize(self.name),
-        path = S.serialize(self.path),
-        type = S.serialize(self.type),
-    }
-    return data
-end
-
-function TrackConfigInfo.deserialize(data)
-    Assert.Equal(data.__class, "TrackConfigInfo", "Tried to deserialize wrong class")
-    local obj = TrackConfigInfo()
-    obj.name = S.deserialize(data.name)
-    obj.path = S.deserialize(data.path)
-    obj.type = S.deserialize(data.type)
-    return obj
-end
-
 ---@return TrackConfig?
 function TrackConfigInfo:load()
     Assert.NotNil(self.path, "Tried to load track from empty TrackConfigInfo")

@@ -32,46 +32,6 @@ function Cursor:initialize(
     self.drawer_segment = DrawerSegmentLine(rgbm(1, 3, 1, 3))
 end
 
-function Cursor:serialize()
-    local _selector = nil
-    local _point_group_a = nil
-    local _point_group_b = nil
-    if self.selector then _selector = self.selector:serialize() end
-    if self.point_group_a then _point_group_a = self.point_group_a:serialize() end
-    if self.point_group_b then _point_group_b = self.point_group_b:serialize() end
-    local data = {
-        __class = "Cursor",
-        selector = _selector,
-        color_selector = S.serialize(self.color_selector),
-        point_group_a = _point_group_a,
-        point_group_b = _point_group_b,
-        color_a = S.serialize(self.color_a),
-        color_b = S.serialize(self.color_b)
-    }
-    return data
-end
-
-function Cursor.deserialize(data)
-    Assert.Equal(data.__class, "Cursor", "Tried to deserialize wrong class")
-
-    local _selector = nil
-    local _point_group_a = nil
-    local _point_group_b = nil
-    if data.selector then _selector = Point.deserialize(data.selector) end
-    if data.point_group_a then _point_group_a = PointGroup.deserialize(data.point_group_a) end
-    if data.point_group_b then _point_group_b = PointGroup.deserialize(data.point_group_b) end
-
-    local obj = Cursor(
-        _selector,
-        S.deserialize(data.color_selector),
-        _point_group_a,
-        _point_group_b,
-        S.deserialize(data.color_a),
-        S.deserialize(data.color_b)
-    )
-    return obj
-end
-
 function Cursor:reset()
     self.selector = nil
     self.color_selector = rgbm(3, 0, 0, 1)

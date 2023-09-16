@@ -13,25 +13,6 @@ function StartingPoint:initialize(origin, direction)
     self.direction = direction
 end
 
-function StartingPoint:serialize()
-    local data = {
-        __class = "StartingPoint",
-        origin = self.origin:serialize(),
-        direction = S.serialize(self.direction)
-    }
-    return data
-end
-
-function StartingPoint.deserialize(data)
-    Assert.Equal(data.__class, "StartingPoint", "Tried to deserialize wrong class")
-
-    local obj = StartingPoint(
-        Point.deserialize(data.origin),
-        S.deserialize(data.direction)
-    )
-    return obj
-end
-
 function StartingPoint:setEnd(new_end_point)
     self.direction = (new_end_point:value() - self.origin:value()):normalize()
 end

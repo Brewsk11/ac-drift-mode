@@ -23,18 +23,6 @@ function Clip:initialize(name, origin, direction, length, maxPoints)
     self.maxPoints = maxPoints
 end
 
-function Clip:serialize()
-    local data = {
-        __class = "Clip",
-        name = S.serialize(self.name),
-        origin = self.origin:serialize(),
-        direction = S.serialize(self.direction),
-        length = S.serialize(self.length),
-        maxPoints = S.serialize(self.maxPoints)
-    }
-    return data
-end
-
 function Clip.deserialize(data)
     -- 2.1.0 compatibility transfer
     if data.__class == "ClippingPoint" then data.__class = "Clip" end

@@ -20,7 +20,7 @@ function PointGroup:serialize()
     }
 
     for idx, point in ipairs(self.points) do
-        data.points[idx] = point:serialize()
+        data.points[idx] = point:__serialize()
     end
 
     return data
@@ -33,7 +33,7 @@ function PointGroup.deserialize(data)
 
     local points = {}
     for idx, point in ipairs(data.points) do
-        points[idx] = Point.deserialize(point)
+        points[idx] = Point.__deserialize(point)
     end
 
     obj.points = points

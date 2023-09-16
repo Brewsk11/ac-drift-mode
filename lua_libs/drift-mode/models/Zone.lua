@@ -25,7 +25,7 @@ end
 local color_outside = rgbm(0, 3, 0, 0.4)
 local color_inside = rgbm(0, 0, 3, 0.4)
 
-function Zone:serialize()
+function Zone:__serialize()
     local data = {
         __class = "Zone",
         name = S.serialize(self.name),
@@ -37,7 +37,7 @@ function Zone:serialize()
     return data
 end
 
-function Zone.deserialize(data)
+function Zone.__deserialize(data)
     Assert.Equal(data.__class, "Zone", "Tried to deserialize wrong class")
 
     local obj = Zone(

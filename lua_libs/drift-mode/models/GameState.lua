@@ -13,25 +13,6 @@ function GameState:initialize(is_car_setup, is_track_setup)
     self.isTrackSetup = is_track_setup or false
 end
 
-function GameState:serialize()
-    local data = {
-        __class = "GameState",
-        isCarSetup = S.serialize(self.isCarSetup),
-        isTrackSetup = S.serialize(self.isTrackSetup)
-    }
-
-    return data
-end
-
-function GameState.deserialize(data)
-    Assert.Equal(data.__class, "GameState", "Tried to deserialize wrong class")
-
-    local obj = GameState()
-    obj.isCarSetup = S.deserialize(data.isCarSetup)
-    obj.isTrackSetup = S.deserialize(data.isTrackSetup)
-    return obj
-end
-
 function GameState:isPlaymode()
     return not self.isTrackSetup and not self.isCarSetup
 end

@@ -17,30 +17,6 @@ function CarConfig:initialize(frontOffset, frontSpan, rearOffset, rearSpan)
     self.rearSpan = rearSpan or 1
 end
 
-function CarConfig:serialize()
-    local data = {
-        __class = "CarConfig",
-        frontOffset = S.serialize(self.frontOffset),
-        frontSpan = S.serialize(self.frontSpan),
-        rearOffset = S.serialize(self.rearOffset),
-        rearSpan = S.serialize(self.rearSpan)
-    }
-
-    return data
-end
-
-function CarConfig.deserialize(data)
-    Assert.Equal(data.__class, "CarConfig", "Tried to deserialize wrong class")
-
-    local obj = CarConfig()
-
-    obj.frontOffset = S.deserialize(data.frontOffset)
-    obj.frontSpan = S.deserialize(data.frontSpan)
-    obj.rearOffset = S.deserialize(data.rearOffset)
-    obj.rearSpan = S.deserialize(data.rearSpan)
-    return obj
-end
-
 function CarConfig:drawAlignment()
     local state = ac.getCar(0)
 

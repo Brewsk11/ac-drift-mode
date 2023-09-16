@@ -12,7 +12,7 @@ function Point:initialize(value)
     self:set(value)
 end
 
-function Point:serialize()
+function Point:__serialize()
     local data = {
         __class = "Point",
         _value = S.serialize(self:value())
@@ -20,7 +20,7 @@ function Point:serialize()
     return data
 end
 
-function Point.deserialize(data)
+function Point.__deserialize(data)
     Assert.Equal(data.__class, "Point", "Tried to deserialize wrong class")
     return Point(S.deserialize(data._value))
 end
@@ -81,6 +81,12 @@ local function test()
     -- Point:set()
     point:set(vec3(4, 5, 6))
     assert(point:value() == vec3(4, 5, 6), tostring(point:value()) .. " vs. " .. tostring(vec3(4, 5, 6)))
+
+    -- Serialization
+    local pt = Point(vec3(1, 2, 3))
+    local serialized = pt:__serialize()
+    local deserialized = Point.__deserialize(serialized)
+    Assert.Equal(deserialized:flat(), vec2(1, 3))
 end
 test()
 

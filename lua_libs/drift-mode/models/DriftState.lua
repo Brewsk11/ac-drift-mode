@@ -23,28 +23,6 @@ function DriftState:initialize(speed_mult, angle_mult, ratio_mult, side_drifting
     self.side_drifting = side_drifting
 end
 
-function DriftState:serialize()
-    local data = {
-        __class = "DriftState",
-        speed_mult = S.serialize(self.speed_mult),
-        angle_mult = S.serialize(self.angle_mult),
-        ratio_mult = S.serialize(self.ratio_mult),
-        side_drifting = S.serialize(self.side_drifting),
-    }
-
-    return data
-end
-
-function DriftState.deserialize(data)
-    Assert.Equal(data.__class, "DriftState", "Tried to deserialize wrong class")
-    local obj = setmetatable({}, DriftState)
-    obj.speed_mult = S.deserialize(data.speed_mult)
-    obj.angle_mult = S.deserialize(data.angle_mult)
-    obj.ratio_mult = S.deserialize(data.ratio_mult)
-    obj.side_drifting = S.deserialize(data.side_drifting)
-    return obj
-end
-
 function DriftState:getFinalMult()
     if not self.speed_mult or not self.angle_mult or not self.ratio_mult then return 0.0 end
     return self.speed_mult * self.angle_mult * self.ratio_mult

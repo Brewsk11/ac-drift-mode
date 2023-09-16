@@ -11,24 +11,6 @@ function Range:initialize(start, finish)
     self:setFinish(finish)
 end
 
-function Range:serialize()
-    local data = {
-        __class = "Range",
-        start = S.serialize(self.start),
-        finish = S.serialize(self.finish)
-    }
-    return data
-end
-
-function Range.deserialize(data)
-    Assert.Equal(data.__class, "Range", "Tried to deserialize wrong class")
-
-    local obj = Range()
-    obj.start = S.deserialize(data.start)
-    obj.finish = S.deserialize(data.finish)
-    return obj
-end
-
 ---@private
 function Range:calcValues()
     if not self.start or not self.finish then return end

@@ -23,7 +23,7 @@ end
 ---due to volume of `self.zone: Zone`
 ---@param self ZoneState
 ---@return table
-function ZoneState:serialize()
+function ZoneState:__serialize()
     local data = {
         __class = "ZoneStateData",
         name = S.serialize(self.zone.name),
