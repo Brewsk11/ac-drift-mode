@@ -24,9 +24,21 @@ function DrawerZoneSetup:draw(zone)
 
     DrawerZone.draw(self, zone)
 
+    local zone_name_location = nil
+
     local gate = zone:getStartGate()
     if gate then
-        render.debugText(gate:getCenter() + vec3(0, 0.5, 0), zone.name)
+        zone_name_location = gate:getCenter():value()
+    else
+        if zone:getOutsideLine():count() > 0 then
+            zone_name_location = zone:getOutsideLine():get(1):value()
+        elseif zone:getInsideLine():count() > 0 then
+            zone_name_location = zone:getInsideLine():get(1):value()
+        end
+    end
+
+    if zone_name_location then
+        render.debugText(zone_name_location + vec3(0, 0.5, 0), zone.name)
     end
 end
 

@@ -321,14 +321,17 @@ end
 function RoutineMovePoi:run()
   ---@type vec3?
   local hit = AsyncUtils.taskTrackRayHit()
-  if not hit then return end
+  if not hit then
+    cursor_data:unregisterObject("move_poi_selector")
+    return
+  end
 
   self.poi:set(hit + self.offset)
 
-  cursor_data.selector = Point(hit + self.offset)
-  cursor_data.color_selector = rgbm(1.5, 3, 0, 3)
-
-  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
+  cursor_data:registerObject(
+    "move_poi_selector",
+    Point(hit + self.offset),
+    DrawerPoint(rgbm(1.5, 3, 0, 3)))
 
   if self.poi.isInstanceOf(PoiZone) then
     local poi_zone = self.poi ---@type PoiZone
@@ -362,7 +365,7 @@ function RoutineMovePoi:deletePoi(poi)
 end
 
 function RoutineMovePoi:attachCondition()
-  cursor_data:reset()
+  cursor_data:unregisterObject("move_poi_attach")
 
   ---@type vec3?
   local hit = AsyncUtils.taskTrackRayHit()
@@ -372,15 +375,12 @@ function RoutineMovePoi:attachCondition()
   local poi = findClosestPoi(hit, 1)
   if not poi then return false end
 
-  cursor_data.selector = poi.point
-
+  local color = rgbm(0, 3, 1.5, 3)
   if ui.keyboardButtonDown(ui.KeyIndex.Control) then
-    cursor_data.color_selector = rgbm(3, 0, 1.5, 3)
-  else
-    cursor_data.color_selector = rgbm(0, 3, 1.5, 3)
+    color = rgbm(3, 0, 1.5, 3)
   end
 
-  EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
+  cursor_data:registerObject("move_poi_attach", poi.point, DrawerPoint(color))
 
   self.poi = poi
   self.offset = poi.point:value() - hit
@@ -411,14 +411,20 @@ end
 function RoutineExtendPointGroup:run()
   ---@type vec3?
   local hit = AsyncUtils.taskTrackRayHit()
-  if not hit then return end
+  if not hit then
+    cursor_data:unregisterObject("extend_routine_selector")
+    cursor_data:unregisterObject("extend_routine_segment_to_last")
+    return
+  end
 
-  cursor_data.selector = Point(hit)
-  cursor_data.color_selector = rgbm(1.5, 3, 0, 3)
+  cursor_data:registerObject("extend_routine_selector", Point(hit), DrawerPoint(rgbm(1.5, 3, 0, 3)))
 
   if self.point_group:count() > 0 then
-    cursor_data.point_group_b = PointGroup({ self.point_group:last(), Point(hit) })
-    cursor_data.color_b = rgbm(0, 3, 0, 3)
+    cursor_data:registerObject(
+      "extend_routine_segment_to_last",
+      Segment(self.point_group:last(), Point(hit)),
+      DrawerSegmentLine(rgbm(0, 3, 0, 3))
+    )
   end
 
   if ui.mouseClicked() then
@@ -450,17 +456,28 @@ end
 function RoutineSelectSegment:run()
   ---@type vec3?
   local hit = AsyncUtils.taskTrackRayHit()
-  if not hit then return end
+  if not hit then
+    cursor_data:unregisterObject("routine_select_selector")
+    cursor_data:unregisterObject("routine_select_segment")
+    return
+  end
 
-  cursor_data.selector = Point(hit)
-  cursor_data.color_selector = rgbm(1.5, 3, 0, 3)
+  cursor_data:registerObject(
+    "routine_select_selector",
+    Point(hit),
+    DrawerPoint(rgbm(1.5, 3, 0, 3))
+  )
 
   -- When head has already been set
   if self.segment.head then
     if ui.mouseClicked() then
       self.segment.tail = Point(hit)
     end
-    cursor_data.point_group_b = PointGroup({ self.segment.head, Point(hit) })
+    cursor_data:registerObject(
+      "routine_select_segment",
+      Segment(self.segment.head, Point(hit)),
+      DrawerSegmentLine(rgbm(0, 0, 3, 1))
+    )
   end
 
   -- To set the head
@@ -610,6 +627,8 @@ function CourseEditor:drawUIScoringObjects(dt)
   local toRemove = nil
 
   for i = 1, #objects do
+    ui.beginGroup()
+
     ui.pushID(i)
     ui.pushFont(ui.Font.Main)
 
@@ -750,6 +769,17 @@ function CourseEditor:drawUIScoringObjects(dt)
     ui.offsetCursorY(8)
 
     ui.popID()
+
+    ui.endGroup()
+    if ui.itemHovered() then
+      cursor_data:registerObject(
+        "on_ui_hover_highlight_scoringobject_" .. tostring(i),
+        objects[i]:getVisualCenter(),
+        DrawerPoint()
+      )
+    else
+      cursor_data:unregisterObject("on_ui_hover_highlight_scoringobject_" .. tostring(i))
+    end
   end
 
   ui.offsetCursorY(ui.windowHeight() - 100)

@@ -49,7 +49,7 @@ function Segment:lenghtProjected()
 end
 
 function Segment:getCenter()
-    return (self.head:value() + self.tail:value()) / 2
+    return Point((self.head:value() + self.tail:value()) / 2)
 end
 
 local function test()

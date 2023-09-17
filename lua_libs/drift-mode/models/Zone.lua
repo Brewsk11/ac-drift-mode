@@ -63,7 +63,7 @@ function Zone:gatherColliders()
 
         local collider = physics.Collider.Box(
             vec3(segment:lenght(), 1, 0.01),
-            segment:getCenter() + vec3(0, 0.5),
+            segment:getCenter():value() + vec3(0, 0.5),
             look,
             up,
             false
@@ -281,6 +281,27 @@ function Zone:getStartGate()
     end
 
     return Segment(self:getInsideLine():get(1), self:getOutsideLine():get(1))
+end
+
+function Zone:getVisualCenter()
+    local segment = Segment()
+    if self:getInsideLine():count() > 0 then
+        segment.head = self:getInsideLine():get(math.floor(self:getInsideLine():count() / 2 + 0.5))
+    end
+
+    if self:getOutsideLine():count() > 0 then
+        segment.tail = self:getOutsideLine():get(math.floor(self:getOutsideLine():count() / 2 + 0.5))
+    end
+
+    if segment.head and segment.tail then
+        return segment:getCenter()
+    elseif segment.head then
+        return segment.head
+    elseif segment.tail then
+        return segment.tail
+    else
+        return nil
+    end
 end
 
 function Zone:drawWall(color)

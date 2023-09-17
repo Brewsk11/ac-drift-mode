@@ -48,6 +48,10 @@ function Clip:setEnd(new_end_point)
   self.length = new_end_point:value():distance(self.origin:value())
 end
 
+function Clip:getVisualCenter()
+    return self.origin
+end
+
 local function test()
 end
 test()

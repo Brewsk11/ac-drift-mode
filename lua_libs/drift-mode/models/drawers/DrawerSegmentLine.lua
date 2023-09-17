@@ -20,7 +20,7 @@ function DrawerSegmentLine:draw(segment)
         segment.tail:value() + vec3(0, 0.05, 0),
         self.color
     )
-    render.debugText(segment:getCenter() + vec3(0, 0.5, 0), self.label)
+    render.debugText(segment:getCenter():value() + vec3(0, 0.5, 0), self.label)
 end
 
 return DrawerSegmentLine

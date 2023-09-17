@@ -24,4 +24,9 @@ function WorldObject:setDrawer(drawer)
     self.drawer = drawer
 end
 
+---@returns Point?
+function WorldObject:getVisualCenter()
+    Assert.Error("Abstract method called")
+end
+
 return WorldObject
