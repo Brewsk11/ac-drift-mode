@@ -16,12 +16,12 @@ function RoutineSelectSegment:run(context)
     ---@type vec3?
     local hit = AsyncUtils.taskTrackRayHit()
     if not hit then
-        self.cursor_ref:unregisterObject("routine_select_selector")
-        self.cursor_ref:unregisterObject("routine_select_segment")
+        context.cursor:unregisterObject("routine_select_selector")
+        context.cursor:unregisterObject("routine_select_segment")
         return
     end
 
-    self.cursor_ref:registerObject(
+    context.cursor:registerObject(
         "routine_select_selector",
         Point(hit),
         DrawerPointSphere(rgbm(1.5, 3, 0, 3))
@@ -32,7 +32,7 @@ function RoutineSelectSegment:run(context)
         if ui.mouseClicked() then
             self.segment.tail = Point(hit)
         end
-        self.cursor_ref:registerObject(
+        context.cursor:registerObject(
             "routine_select_segment",
             Segment(self.segment.head, Point(hit)),
             DrawerSegmentLine(rgbm(0, 0, 3, 1))

@@ -1,15 +1,18 @@
 local Assert = require('drift-mode/assert')
 local AsyncUtils = require('drift-mode/asynchelper')
 local S = require('drift-mode/serializer')
+local Resources = require('drift-mode/Resources')
 
 ---@class RoutineMovePoi : EditorRoutine
 ---@field poi ObjectEditorPoi?
 ---@field offset vec3?
+---@field drawerPoint DrawerObjectEditorPoi --- To highlight possible pois to interact with
 local RoutineMovePoi = class("RoutineMovePoi", EditorRoutine)
 function RoutineMovePoi:initialize(callback)
     EditorRoutine.initialize(self, callback)
     self.poi = nil
     self.offset = nil
+    self.drawerPoint = DrawerObjectEditorPoi(DrawerPointSimple(Resources.ColorEditorInactivePoi, 0.5))
 end
 
 ---@param pois ObjectEditorPoi[]
@@ -21,19 +24,21 @@ function RoutineMovePoi:findClosestPoi(pois, origin, radius)
     local closest_dist = radius
     closest_poi = nil ---@type ObjectEditorPoi?
     if origin then
-      for _, poi in ipairs(pois) do
-        local distance = origin:distance(poi.point:value())
-        if distance < closest_dist then
-          closest_poi = poi
-          closest_dist = distance
+        for _, poi in ipairs(pois) do
+            local distance = origin:distance(poi.point:value())
+            if distance < closest_dist then
+                closest_poi = poi
+                closest_dist = distance
+            end
         end
-      end
     end
     return closest_poi
-  end
+end
 
 ---@param context EditorRoutine.Context
 function RoutineMovePoi:run(context)
+    context.cursor:unregisterObject("pois")
+
     ---@type vec3?
     local hit = AsyncUtils.taskTrackRayHit()
     if not hit then
@@ -84,12 +89,19 @@ end
 function RoutineMovePoi:attachCondition(context)
     context.cursor:unregisterObject("move_poi_attach")
 
+    local light_pois = {}
+    for _, poi in ipairs(context.pois) do light_pois[#light_pois + 1] = { point = poi.point, poi_type = poi.poi_type } end
+
+    context.cursor:registerObject("pois", light_pois, self.drawerPoint)
+
     ---@type vec3?
     local hit = AsyncUtils.taskTrackRayHit()
-    if not hit then return false end
+    if not hit then
+        context.cursor:unregisterObject("pois")
+        return false
+    end
 
     ---@type ObjectEditorPoi?
-    ac.debug("context", S.serialize(context.pois))
     local poi = self:findClosestPoi(context.pois, hit, 1)
     if not poi then return false end
 

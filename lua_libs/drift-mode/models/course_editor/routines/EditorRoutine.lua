@@ -3,13 +3,14 @@ local S = require('drift-mode/serializer')
 
 ---@class EditorRoutine : ClassBase
 ---@field callback fun(payload: any)?
----@field cursor_ref Cursor?
 local EditorRoutine = class("EditorRoutine")
 function EditorRoutine:initialize(callback)
     self.callback = callback
 end
 
----@alias EditorRoutine.Context { course: TrackConfig?, cursor: Cursor?, pois: ObjectEditorPoi[] }
+---@alias EditorRoutine.LightWeightPoiInfo { point: Point, type: ObjectEditorPoi.Type }
+
+---@alias EditorRoutine.Context { course: TrackConfig?, cursor: Cursor?, pois: EditorRoutine.LightWeightPoiInfo[] }
 
 ---@param context EditorRoutine.Context
 function EditorRoutine:run(context)
