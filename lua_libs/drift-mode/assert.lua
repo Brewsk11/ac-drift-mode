@@ -38,11 +38,11 @@ function Assert.MoreOrEqual(a, b, message)
 end
 
 function Assert.True(a, message)
-    _assert(a, nil, function (_a) return _a end, "Value is false", message)
+    _assert(a, true, function (_a) return _a == true end, "Value is false", message)
 end
 
 function Assert.False(a, message)
-    _assert(a, nil, function (_a) return not _a end, "Value is true", message)
+    _assert(a, false, function (_a) return _a == false end, "Value is true", message)
 end
 
 function Assert.Nil(a, message)

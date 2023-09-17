@@ -174,6 +174,25 @@ function Serializer.toJson(data)
     return json.encode(Serializer.serialize(data))
 end
 
+
+function Serializer.traverse_object(prefix, obj_a, obj_b, debug)
+    if type(obj_a) ~= "table" and type(obj_b) ~= "table" then
+        if debug then ac.log("`" .. prefix .. "` : " .. tostring(obj_a) .. " vs. " .. tostring(obj_b)) end
+        return obj_a == obj_b, obj_a, obj_b
+    elseif type(obj_a) == "table" and type(obj_b) == "table" then
+        for k, v in pairs(obj_a) do
+            local res, _obj_a, _obj_b = Serializer.traverse_object(prefix .. "." .. k, v, obj_b[k], debug)
+            if not res then
+                return res, _obj_a, _obj_b
+            end
+        end
+    else
+        if debug then ac.log(tostring(obj_a) .. " ~= " .. tostring(tostring(obj_b))) end
+        return false, obj_a, obj_b
+    end
+    return true, obj_a, obj_b
+end
+
 TestClassNested = class("TestClassNested")
 function TestClassNested:initialize()
     self.number = math.random(1000)
@@ -234,22 +253,9 @@ local function test()
     local serialized = Serializer.serialize(test_payload)
     local deserialized = Serializer.deserialize(serialized)
 
-    local function traverse_object(prefix, obj_a, obj_b, debug)
-        if type(obj_a) ~= "table" and type(obj_b) ~= "table" then
-            if debug then ac.log("`" .. prefix .. "` : " .. tostring(obj_a) .. " vs. " .. tostring(obj_b)) end
-            Assert.Equal(obj_a, obj_b)
-        elseif type(obj_a) == "table" and type(obj_b) == "table" then
-            for k, v in pairs(obj_a) do
-                traverse_object(prefix .. "." .. k, v, obj_b[k], debug)
-            end
-        else
-            if debug then ac.log(tostring(obj_a) .. " ~= " .. tostring(tostring(obj_b))) end
-            Assert.Error("Checking table vs. value")
-        end
-    end
-
     ---@diagnostic disable: undefined-field
-    traverse_object("test_payload", test_payload, deserialized, true)
+    local res, obj_a, obj_b = Serializer.traverse_object("test_payload", test_payload, deserialized, true)
+    Assert.True(res, "Serialization faled at: `" .. tostring(obj_a) .. "` vs. `" .. tostring(obj_b) .. "`\n")
 
     ac.log("== End testing ==")
 end

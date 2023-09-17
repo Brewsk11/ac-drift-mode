@@ -19,6 +19,7 @@ DrawerCourse                   = require('drift-mode/models/drawers/DrawerCourse
 DrawerCoursePlay               = require('drift-mode/models/drawers/DrawerCoursePlay')
 DrawerCourseSetup              = require('drift-mode/models/drawers/DrawerCourseSetup')
 DrawerPoint                    = require('drift-mode/models/drawers/DrawerPoint')
+DrawerPointSimple              = require('drift-mode/models/drawers/DrawerPointSimple')
 DrawerPointSphere              = require('drift-mode/models/drawers/DrawerPointSphere')
 DrawerRunState                 = require('drift-mode/models/drawers/DrawerRunState')
 DrawerRunStatePlay             = require('drift-mode/models/drawers/DrawerRunStatePlay')

@@ -331,7 +331,7 @@ function RoutineMovePoi:run()
   cursor_data:registerObject(
     "move_poi_selector",
     Point(hit + self.offset),
-    DrawerPoint(rgbm(1.5, 3, 0, 3)))
+    DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
 
   if self.poi.isInstanceOf(PoiZone) then
     local poi_zone = self.poi ---@type PoiZone
@@ -380,7 +380,7 @@ function RoutineMovePoi:attachCondition()
     color = rgbm(3, 0, 1.5, 3)
   end
 
-  cursor_data:registerObject("move_poi_attach", poi.point, DrawerPoint(color))
+  cursor_data:registerObject("move_poi_attach", poi.point, DrawerPointSphere(color))
 
   self.poi = poi
   self.offset = poi.point:value() - hit
@@ -417,7 +417,7 @@ function RoutineExtendPointGroup:run()
     return
   end
 
-  cursor_data:registerObject("extend_routine_selector", Point(hit), DrawerPoint(rgbm(1.5, 3, 0, 3)))
+  cursor_data:registerObject("extend_routine_selector", Point(hit), DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
 
   if self.point_group:count() > 0 then
     cursor_data:registerObject(
@@ -465,7 +465,7 @@ function RoutineSelectSegment:run()
   cursor_data:registerObject(
     "routine_select_selector",
     Point(hit),
-    DrawerPoint(rgbm(1.5, 3, 0, 3))
+    DrawerPointSphere(rgbm(1.5, 3, 0, 3))
   )
 
   -- When head has already been set
@@ -775,7 +775,7 @@ function CourseEditor:drawUIScoringObjects(dt)
       cursor_data:registerObject(
         "on_ui_hover_highlight_scoringobject_" .. tostring(i),
         objects[i]:getVisualCenter(),
-        DrawerPoint()
+        DrawerPointSphere()
       )
     else
       cursor_data:unregisterObject("on_ui_hover_highlight_scoringobject_" .. tostring(i))

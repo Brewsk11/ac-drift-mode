@@ -15,15 +15,21 @@ function Cursor:reset()
 end
 
 function Cursor:registerObject(id, object, drawer)
-    ac.log("pre", S.serialize(self.objects))
-    self.objects[id] = CursorObject(object, drawer)
-    ac.log("post", S.serialize(self.objects))
-    EventSystem.emit(EventSystem.Signal.CursorChanged, self)
+    -- Check if new object is the same and skip for performance (~10ms)
+    local are_same, _, _  = S.traverse_object(self.objects[id], { object, drawer })
+
+    if not are_same then
+        self.objects[id] = CursorObject(object, drawer)
+        EventSystem.emit(EventSystem.Signal.CursorChanged, self)
+    end
 end
 
 function Cursor:unregisterObject(id)
-    self.objects[id] = nil
-    EventSystem.emit(EventSystem.Signal.CursorChanged, self)
+    -- Check if new object is the same and skip for performance (~10ms)
+    if self.objects[id] ~= nil then
+        self.objects[id] = nil
+        EventSystem.emit(EventSystem.Signal.CursorChanged, self)
+    end
 end
 
 function Cursor:draw()
