@@ -33,8 +33,13 @@ function Cursor:unregisterObject(id)
 end
 
 function Cursor:draw()
-    for _, object in pairs(self.objects) do
-        object:draw()
+    for key, object in pairs(self.objects) do
+        if object.object == nil then
+            -- Self GC
+            self.objects[key] = nil
+        else
+            object:draw()
+        end
     end
 end
 

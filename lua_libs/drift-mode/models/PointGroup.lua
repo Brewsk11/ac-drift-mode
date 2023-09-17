@@ -37,16 +37,16 @@ function PointGroup:get(idx)
 end
 
 ---Get first point from the group
----@param self PointGroup
----@return Point
+---@return Point?
 function PointGroup:first()
-    assert(self:count() > 0, "Group is empty")
+    if self:count() == 0 then return nil end
     return self.points[1]
 end
 
 ---Get Last point from the group
+---@return Point?
 function PointGroup:last()
-    assert(self:count() > 0, "Group is empty")
+    if self:count() == 0 then return nil end
     return self.points[#self.points]
 end
 

@@ -343,6 +343,9 @@ function CourseEditor:drawUIScoringObjects(dt)
       end
       if ui.itemHovered() then
         ui.setTooltip("Enable pointer to extend the inner line")
+        cursor_data:registerObject("ui_on_hover_to_extend_zone_inner_" .. tostring(i), objects[i]:getInsideLine():last(), DrawerPointSimple())
+      else
+        cursor_data:unregisterObject("ui_on_hover_to_extend_zone_inner_" .. tostring(i))
       end
 
       ui.sameLine(0, 2)
@@ -351,6 +354,9 @@ function CourseEditor:drawUIScoringObjects(dt)
       end
       if ui.itemHovered() then
         ui.setTooltip("Enable pointer to extend the outer line")
+        cursor_data:registerObject("ui_on_hover_to_extend_zone_outer_" .. tostring(i), objects[i]:getOutsideLine():last(), DrawerPointSimple())
+      else
+        cursor_data:unregisterObject("ui_on_hover_to_extend_zone_outer_" .. tostring(i))
       end
 
       ui.sameLine(0, 8)
@@ -430,6 +436,7 @@ function CourseEditor:drawUIScoringObjects(dt)
   ui.offsetCursorY(ui.windowHeight() - 100)
 
   if toRemove then
+    cursor_data:unregisterObject("on_ui_hover_highlight_scoringobject_" .. tostring(toRemove))
     table.remove(objects, toRemove)
     onCourseEdited()
   end

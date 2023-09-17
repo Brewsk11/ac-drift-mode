@@ -15,15 +15,15 @@ function RoutineExtendPointGroup:run(context)
     ---@type vec3?
     local hit = AsyncUtils.taskTrackRayHit()
     if not hit then
-        self.cursor_ref:unregisterObject("extend_routine_selector")
-        self.cursor_ref:unregisterObject("extend_routine_segment_to_last")
+        context.cursor:unregisterObject("extend_routine_selector")
+        context.cursor:unregisterObject("extend_routine_segment_to_last")
         return
     end
 
-    self.cursor_ref:registerObject("extend_routine_selector", Point(hit), DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
+    context.cursor:registerObject("extend_routine_selector", Point(hit), DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
 
     if self.point_group:count() > 0 then
-        self.cursor_ref:registerObject(
+        context.cursor:registerObject(
             "extend_routine_segment_to_last",
             Segment(self.point_group:last(), Point(hit)),
             DrawerSegmentLine(rgbm(0, 3, 0, 3))
