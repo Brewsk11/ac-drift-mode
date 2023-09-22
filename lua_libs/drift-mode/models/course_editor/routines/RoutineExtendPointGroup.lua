@@ -1,5 +1,5 @@
 local Assert = require('drift-mode/assert')
-local AsyncUtils = require('drift-mode/asynchelper')
+local RaycastUtils = require('drift-mode/RaycastUtils')
 local S = require('drift-mode/serializer')
 
 ---@class RoutineExtendPointGroup : EditorRoutine
@@ -13,7 +13,7 @@ end
 ---@param context EditorRoutine.Context
 function RoutineExtendPointGroup:run(context)
     ---@type vec3?
-    local hit = AsyncUtils.taskTrackRayHit()
+    local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
         context.cursor:unregisterObject("extend_routine_selector")
         context.cursor:unregisterObject("extend_routine_segment_to_last")

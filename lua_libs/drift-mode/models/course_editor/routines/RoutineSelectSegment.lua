@@ -1,5 +1,5 @@
 local Assert = require('drift-mode/assert')
-local AsyncUtils = require('drift-mode/asynchelper')
+local RaycastUtils = require('drift-mode/RaycastUtils')
 local S = require('drift-mode/serializer')
 
 ---@class RoutineSelectSegment : EditorRoutine
@@ -14,7 +14,7 @@ end
 ---@param context EditorRoutine.Context
 function RoutineSelectSegment:run(context)
     ---@type vec3?
-    local hit = AsyncUtils.taskTrackRayHit()
+    local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
         context.cursor:unregisterObject("routine_select_selector")
         context.cursor:unregisterObject("routine_select_segment")

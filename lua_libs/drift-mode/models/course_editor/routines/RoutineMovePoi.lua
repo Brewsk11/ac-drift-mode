@@ -1,5 +1,5 @@
 local Assert = require('drift-mode/assert')
-local AsyncUtils = require('drift-mode/asynchelper')
+local RaycastUtils = require('drift-mode/RaycastUtils')
 local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
@@ -40,7 +40,7 @@ function RoutineMovePoi:run(context)
     context.cursor:unregisterObject("pois")
 
     ---@type vec3?
-    local hit = AsyncUtils.taskTrackRayHit()
+    local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
         context.cursor:unregisterObject("move_poi_selector")
         return
@@ -95,7 +95,7 @@ function RoutineMovePoi:attachCondition(context)
     context.cursor:registerObject("pois", light_pois, self.drawerPoint)
 
     ---@type vec3?
-    local hit = AsyncUtils.taskTrackRayHit()
+    local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
         context.cursor:unregisterObject("pois")
         return false

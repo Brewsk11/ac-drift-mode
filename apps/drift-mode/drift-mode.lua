@@ -1,6 +1,6 @@
 local DataBroker = require('drift-mode/databroker')
 local EventSystem = require('drift-mode/eventsystem')
-local AsyncUtils = require('drift-mode/asynchelper')
+local RaycastUtils = require('drift-mode/RaycastUtils')
 local ConfigIO = require('drift-mode/configio')
 local Timer = require('drift-mode/timer')
 local PP = require('drift-mode/physicspatcher')
