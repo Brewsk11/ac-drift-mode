@@ -334,7 +334,13 @@ local __tabs = {
 local function drawAppUI()
 
   local logo_height = 150
+
+  -- 0.1.79 compatibility
+  if ac.getPatchVersionCode() <= 2144 then
+    ui.image(Resources.EmblemFlat, vec2(ui.availableSpaceX(), logo_height), true)
+  else
   ui.image(Resources.EmblemFlat, vec2(ui.availableSpaceX(), logo_height), ui.ImageFit.Fit)
+  end
 
   ui.tabBar('tabs', function()
     for _, v in ipairs(__tabs) do
