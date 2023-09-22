@@ -52,6 +52,10 @@ function Segment:getCenter()
     return Point((self.head:value() + self.tail:value()) / 2)
 end
 
+function Segment:getNormal()
+    return Point(vec3():set(self.tail:value() - self.head:value()):cross(vec3(0, 1, 0)):normalize())
+end
+
 local function test()
     local points = {}
     points[1] = Point(vec3(1, 1, 1))
