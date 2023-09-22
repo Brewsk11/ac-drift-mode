@@ -369,7 +369,7 @@ function CourseEditor:drawUIScoringObjects(dt)
       end
 
       ui.sameLine(0, 8)
-      if ui.checkbox("Collide", zone:getCollide(), ui.Flags) then
+      if ui.checkbox("Collide", zone:getCollide()) then
         zone:setCollide(not zone:getCollide())
         onCourseEdited()
       end
@@ -414,8 +414,18 @@ function CourseEditor:drawUIScoringObjects(dt)
         clip.maxPoints = tonumber(new_clip_points)
         onCourseEdited()
       end
+
       ui.sameLine(0, 8)
-      if ui.checkbox("Collide", clip:getCollide(), ui.Flags) then
+      if ui.button("Invert", button_global_flags) then
+        local new_origin = clip:getEnd()
+        local new_end = clip.origin
+        clip.origin = new_origin
+        clip:setEnd(new_end)
+        onCourseEdited()
+      end
+
+      ui.sameLine(0, 8)
+      if ui.checkbox("Collide", clip:getCollide()) then
         clip:setCollide(not clip:getCollide())
         onCourseEdited()
       end
