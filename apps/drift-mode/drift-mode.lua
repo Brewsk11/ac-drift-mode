@@ -73,7 +73,20 @@ end
 
 local collider_body = nil
 
+local noPhysicsInfo = false
+
 local function reactivateColliders()
+  if not physics.allowed() then
+    if not noPhysicsInfo then
+      ac.setMessage(
+        "Extended physics unavailable",
+        "Colliders or teleportation won't work. Consider patching the track from the control panel."
+      )
+      noPhysicsInfo = true
+    end
+    return
+  end
+
   --Needs to be in the application code as mode scripts do not allow creating RigidBody objects
   --Moreover, these would be hard to serialize, so the app script asks TrackConfig to list all
   --needed colliders, and the app scripts spawns and disposes of them.
