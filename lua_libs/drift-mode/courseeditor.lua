@@ -64,6 +64,15 @@ local function gatherPois()
           idx
         )
       end
+      local zone_center = zone_obj:getVisualCenter()
+      if zone_center then
+        _pois[#_pois+1] = PoiZone(
+          zone_center,
+          zone_obj,
+          PoiZone.Type.Center,
+          nil
+        )
+      end
     elseif obj.isInstanceOf(Clip) then
       local clip_obj = obj ---@type Clip
       _pois[#_pois+1] = PoiClip(

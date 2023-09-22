@@ -1,4 +1,5 @@
 local Assert = require('drift-mode/assert')
+local RaycastUtils = require('drift-mode/RaycastUtils')
 local S = require('drift-mode/serializer')
 
 ---@class Zone : ScoringObject Class representing a drift scoring zone
@@ -37,13 +38,13 @@ function Zone:recalculatePolygon()
     end
 
     local points = {}
-    for _, insidePoint in self.insideLine:iter() do
+    for _, insidePoint in self:getInsideLine():iter() do
         points[#points+1] = insidePoint
     end
 
     local rev_idx = 0
-    for _, outsidePoint in self.outsideLine:iter() do
-        local idx = self.insideLine:count() + self.outsideLine:count() - rev_idx
+    for _, outsidePoint in self:getOutsideLine():iter() do
+        local idx = self:getInsideLine():count() + self:getOutsideLine():count() - rev_idx
         points[idx] = outsidePoint
         rev_idx = rev_idx + 1
     end
@@ -75,6 +76,7 @@ function Zone:gatherColliders()
 end
 
 function Zone:setDirty()
+    self:realignZonePointOnTrack()
     self:recalculatePolygon()
 end
 
@@ -136,7 +138,7 @@ function Zone:isInZone(point, custom_origin)
         end
     end
 
-    if hit_no % 2 == 1 then return true else return false end
+    return hit_no % 2 == 1
 end
 
 ---Check if a segment is inside the zone. Relatively expensive to compute.
@@ -304,6 +306,36 @@ function Zone:getVisualCenter()
     end
 end
 
+---Moves all zone points such that the passed point
+---becomes the zones centroid (visual center).
+---@param point Point
+function Zone:setZonePosition(point)
+    local origin = self:getVisualCenter()
+    local offset = point - origin:value()
+
+    for _, inside_point in self:getInsideLine():iter() do
+        inside_point:set(inside_point:value() + offset)
+    end
+    for _, outside_point in self:getOutsideLine():iter() do
+        outside_point:set(outside_point:value() + offset)
+    end
+
+    self:setDirty()
+end
+
+function Zone:realignZonePointOnTrack()
+    if self.insideLine then
+        for _, inside_point in self:getInsideLine():iter() do
+            RaycastUtils.alignPointToTrack(inside_point)
+        end
+    end
+    if self.outsideLine then
+        for _, outside_point in self:getOutsideLine():iter() do
+            RaycastUtils.alignPointToTrack(outside_point)
+        end
+    end
+end
+
 function Zone:drawWall(color)
     self.outsideLine:segment():drawWall(1, color)
     self.insideLine:segment():drawWall(0.1, color)
@@ -316,6 +348,7 @@ function Zone:drawSetup()
     self.insideLine:draw(0.2, color_inside, true)
     self.insideLine:segment():draw(color_inside)
 end
+
 
 local Assert = require('drift-mode/assert')
 local function test()

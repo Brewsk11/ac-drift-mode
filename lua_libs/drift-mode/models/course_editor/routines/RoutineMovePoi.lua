@@ -68,6 +68,14 @@ function RoutineMovePoi:deletePoi(context, poi)
             poi_zone.zone:getInsideLine():remove(poi_zone.point_index)
         elseif poi_zone.point_type == PoiZone.Type.FromOutsideLine then
             poi_zone.zone:getOutsideLine():remove(poi_zone.point_index)
+        elseif poi_zone.point_type == PoiZone.Type.Center then
+            ui.modalPopup(
+                "Deleting zone",
+                "Are you sure you want to delete the zone?",
+                function()
+                    table.removeItem(context.course.scoringObjects, poi_zone.zone)
+                end
+            )
         end
     elseif poi.poi_type == ObjectEditorPoi.Type.Clip then
         local poi_clip = poi ---@type PoiClip

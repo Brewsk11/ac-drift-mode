@@ -10,7 +10,8 @@ local PoiZone = class("PoiZone", ObjectEditorPoi)
 ---@enum PoiZone.Type
 PoiZone.Type = {
     FromInsideLine = "FromInsideLine",
-    FromOutsideLine = "FromOutsideLine"
+    FromOutsideLine = "FromOutsideLine",
+    Center = "Center"
 }
 
 function PoiZone:initialize(point, zone, zone_obj_type, point_index)
@@ -21,7 +22,11 @@ function PoiZone:initialize(point, zone, zone_obj_type, point_index)
 end
 
 function PoiZone:set(new_pos)
-    self.point:set(new_pos)
+    if self.point_type == PoiZone.Type.Center then
+        self.zone:setZonePosition(new_pos)
+    else
+        self.point:set(new_pos)
+    end
 end
 
 return PoiZone
