@@ -14,6 +14,12 @@ end
 ---@param point Point
 ---@return vec3?
 function RaycastHelper.alignPointToTrack(point)
+    -- Safeguard when calling from unsupported modules (app vs. mode etc.)
+    if not physics then
+        ac.warn("Could not call RaycastHelper.alignPointToTrack() due to not available `physics`")
+        return
+    end
+
     local hit = vec3()
 
     if physics.raycastTrack(point:value() + vec3(0, 10, 0), vec3(0, -1, 0), 500, hit) ~= -1 then
