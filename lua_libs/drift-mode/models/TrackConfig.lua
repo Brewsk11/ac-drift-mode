@@ -110,9 +110,7 @@ end
 function TrackConfig:gatherColliders()
     local colliders = {}
     for _, obj in ipairs(self.scoringObjects) do
-        if obj.isInstanceOf(Zone) then
-            colliders = table.chain(colliders, obj:gatherColliders())
-        end
+        colliders = table.chain(colliders, obj:gatherColliders())
     end
     return colliders
 end

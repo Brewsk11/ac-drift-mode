@@ -414,6 +414,11 @@ function CourseEditor:drawUIScoringObjects(dt)
         clip.maxPoints = tonumber(new_clip_points)
         onCourseEdited()
       end
+      ui.sameLine(0, 8)
+      if ui.checkbox("Collide", clip:getCollide(), ui.Flags) then
+        clip:setCollide(not clip:getCollide())
+        onCourseEdited()
+      end
     else
       Assert.Error("")
     end

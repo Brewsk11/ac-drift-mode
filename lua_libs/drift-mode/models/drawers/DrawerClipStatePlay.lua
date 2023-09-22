@@ -16,6 +16,9 @@ function DrawerClipStatePlay:initialize()
     -- TODO: Migrate to ClipStateHit?
     self.color_bad = rgb(1.5, 0, 1.5)
     self.color_good = rgb(0, 3, 0)
+
+    self.height_collide = 1
+    self.height_no_collide = 0.4
 end
 
 ---@param clip_state ClipState
@@ -26,6 +29,12 @@ function DrawerClipStatePlay:draw(clip_state)
         self.drawerClip = self.drawerDone
     else
         self.drawerClip = self.drawerInactive
+    end
+
+    if clip_state.clip:getCollide() then
+        self.drawerClip.flag_height = self.height_collide
+    else
+        self.drawerClip.flag_height = self.height_no_collide
     end
 
     DrawerClipState.draw(self, clip_state)
