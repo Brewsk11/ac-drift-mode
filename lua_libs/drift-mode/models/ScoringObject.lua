@@ -1,10 +1,16 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
----@class ScoringObject : WorldObject
-local ScoringObject = class("ScoringObject", WorldObject)
+---@class ScoringObject : ClassBase
+local ScoringObject = class("ScoringObject")
 
 function ScoringObject:initialize()
+end
+
+---Get visual center of the object.
+---Used mainly for visualization, so doesn't need to be accurate.
+function ScoringObject:getCenter()
+    Assert.Error("Called abstract method!")
 end
 
 local function test()

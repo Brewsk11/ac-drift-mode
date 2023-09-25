@@ -41,7 +41,6 @@ local function gatherPois()
   local _pois = {} ---@type ObjectEditorPoi[]
 
   if not course then
-    --cursor_data:unregisterObject("editor_pois")
     return _pois
   end
 
@@ -64,7 +63,7 @@ local function gatherPois()
           idx
         )
       end
-      local zone_center = zone_obj:getVisualCenter()
+      local zone_center = zone_obj:getCenter()
       if zone_center then
         _pois[#_pois + 1] = PoiZone(
           zone_center,
@@ -84,6 +83,11 @@ local function gatherPois()
         clip_obj:getEnd(),
         clip_obj,
         PoiClip.Type.Ending
+      )
+      _pois[#_pois + 1] = PoiClip(
+        clip_obj:getCenter(),
+        clip_obj,
+        PoiClip.Type.Center
       )
     end
   end
@@ -497,7 +501,7 @@ function CourseEditor:drawUIScoringObjects(dt)
     if ui.itemHovered() then
       cursor_data:registerObject(
         "on_ui_hover_highlight_scoringobject_" .. tostring(i),
-        objects[i]:getVisualCenter(),
+        objects[i]:getCenter(),
         DrawerPointSphere()
       )
     else

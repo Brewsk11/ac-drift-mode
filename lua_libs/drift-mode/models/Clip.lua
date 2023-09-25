@@ -33,7 +33,7 @@ function Clip.deserialize(data)
 
     local obj = Clip(
         S.deserialize(data.name),
-        Point.deserialize(data.origin),
+        Point.__deserialize(data.origin),
         S.deserialize(data.direction),
         S.deserialize(data.length),
         S.deserialize(data.maxPoints)
@@ -50,8 +50,8 @@ function Clip:setEnd(new_end_point)
   self.length = new_end_point:value():distance(self.origin:value())
 end
 
-function Clip:getVisualCenter()
-    return self.origin
+function Clip:getCenter()
+    return self:getSegment():getCenter()
 end
 
 function Clip:gatherColliders()

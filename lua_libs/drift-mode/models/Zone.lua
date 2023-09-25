@@ -285,7 +285,7 @@ function Zone:getStartGate()
     return Segment(self:getInsideLine():get(1), self:getOutsideLine():get(1))
 end
 
-function Zone:getVisualCenter()
+function Zone:getCenter()
     local segment = Segment()
     if self:getInsideLine():count() > 0 then
         segment.head = self:getInsideLine():get(math.floor(self:getInsideLine():count() / 2 + 0.5))
@@ -310,7 +310,7 @@ end
 ---becomes the zones centroid (visual center).
 ---@param point Point
 function Zone:setZonePosition(point)
-    local origin = self:getVisualCenter()
+    local origin = self:getCenter()
     local offset = point - origin:value()
 
     for _, inside_point in self:getInsideLine():iter() do
