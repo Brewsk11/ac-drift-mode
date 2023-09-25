@@ -2,6 +2,7 @@ local EventSystem = require('drift-mode/eventsystem')
 local ConfigIO = require('drift-mode/configio')
 local Assert = require('drift-mode/assert')
 local Resources = require('drift-mode/Resources')
+local CourseEditorElements = require('drift-mode/ui_layouts/CourseEditorElements')
 require('drift-mode/models')
 
 -- #region Pre-script definitions
@@ -16,8 +17,6 @@ local activeTab = nil
 
 ---Event system listener ID
 local listener_id = EventSystem.registerListener('app-editor-courses')
-
-local new_clip_points = "1000"
 
 ---Cursor
 local cursor_data = Cursor() ---@type Cursor
@@ -35,6 +34,10 @@ local pois = {} ---@type ObjectEditorPoi[]
 local current_routine = nil ---@type EditorRoutine?
 
 -- #endregion
+
+local function attachRoutine(routine)
+  current_routine = routine
+end
 
 ---@return ObjectEditorPoi[]
 local function gatherPois()
@@ -83,11 +86,6 @@ local function gatherPois()
         clip_obj:getEnd(),
         clip_obj,
         PoiClip.Type.Ending
-      )
-      _pois[#_pois + 1] = PoiClip(
-        clip_obj:getCenter(),
-        clip_obj,
-        PoiClip.Type.Center
       )
     end
   end
@@ -159,6 +157,7 @@ local function onCourseEdited()
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
 end
 
+
 -- #region CourseEditor
 
 ---@class CourseEditor : ClassBase
@@ -176,7 +175,13 @@ end
 ---Main function drawing app UI
 ---@param dt integer
 function CourseEditor:drawUI(dt)
-  if current_routine then
+  if current_routine ~= nil then
+    is_user_editing = true
+  else
+    is_user_editing = false
+  end
+
+  if is_user_editing then
     button_global_flags = ui.ButtonFlags.Disabled
     input_global_flags = ui.InputTextFlags.ReadOnly
   else
@@ -187,8 +192,10 @@ function CourseEditor:drawUI(dt)
   -- [COMBO] Track config combo box
   local combo_item_name = "<None>"
   ui.setNextItemWidth(ui.availableSpaceX() - 132)
-  if selected_course_info then combo_item_name = string.format("[%.1s] %s", selected_course_info.type,
-      selected_course_info.name) end
+  if selected_course_info then
+    combo_item_name = string.format("[%.1s] %s", selected_course_info.type,
+      selected_course_info.name)
+  end
   ui.combo("##configDropdown", combo_item_name, function()
     for _, cfg in ipairs(ConfigIO.listTrackConfigs()) do
       local label = string.format("%10s %s", "[" .. cfg.type .. "]", cfg.name)
@@ -268,12 +275,8 @@ function CourseEditor:onSelectedCourseChange(new_course)
   unsaved_changes = false
 end
 
-
 ---@alias PopupContext { obj: ScoringObject, val1: number }
 local popup_context = nil ---@type PopupContext
-local generate_inside_drawer = DrawerPointGroupConnected(
-  DrawerSegmentLine(Resources.ColorEditorActivePoi),
-  DrawerPointSimple(Resources.ColorEditorActivePoi, 0.2))
 
 function CourseEditor:drawUIScoringObjects(dt)
   local objects = course.scoringObjects
@@ -292,9 +295,11 @@ function CourseEditor:drawUIScoringObjects(dt)
 
   for i = 1, #objects do
     ui.beginGroup()
-
     ui.pushID(i)
+
     ui.pushFont(ui.Font.Main)
+
+    ui.beginGroup()
 
     local up_flags = (i == 1 or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
     if ui.button("↑", vec2(24, 0), up_flags) then
@@ -318,172 +323,26 @@ function CourseEditor:drawUIScoringObjects(dt)
     end
     ui.sameLine(0, 4)
 
-    if Zone.isInstanceOf(objects[i]) then
-      local zone = objects[i] ---@type Zone
-
-      ui.setNextItemWidth(ui.availableSpaceX() - 32)
-      zone.name = ui.inputText("Zone #" .. tostring(i), zone.name, ui.InputTextFlags.Placeholder + input_global_flags)
-      if ui.itemHovered() then
-        ui.setTooltip("Zone #" .. tostring(i))
-      end
-
-      ui.sameLine(0, 4)
-      local down_flags = (i == #objects or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-      if ui.button("↓", vec2(24, 0), down_flags) then
-        local tmp_zone = objects[i + 1]
-        objects[i + 1] = objects[i]
-        objects[i] = tmp_zone
-        onCourseEdited()
-      end
-      ui.popFont()
-
-      ui.pushFont(ui.Font.Monospace)
-      ui.setNextItemWidth(42)
-      local text, changed = ui.inputText("Points", tostring(zone.maxPoints),
-        (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
-      ui.popFont()
-
-      if ui.itemHovered() then
-        ui.setTooltip("Max points")
-      end
-      if changed then
-        if text == "" then
-          new_clip_points = "0"
-        else
-          new_clip_points = tostring(tonumber(text))
-        end
-        zone.maxPoints = tonumber(new_clip_points)
-        onCourseEdited()
-      end
-
-      ui.sameLine(0, 8)
-      if ui.button(")  Inner", vec2(60, 0), button_global_flags) then
-        current_routine = RoutineExtendPointGroup(zone:getInsideLine())
-      end
-      if ui.itemHovered() then
-        ui.setTooltip("Enable pointer to extend the inner line")
-        cursor_data:registerObject("ui_on_hover_to_extend_zone_inner_" .. tostring(i), objects[i]:getInsideLine():last(),
-          DrawerPointSimple())
-      else
-        cursor_data:unregisterObject("ui_on_hover_to_extend_zone_inner_" .. tostring(i))
-      end
-
-      ui.sameLine(0, 2)
-      if ui.button("Outer   )", vec2(60, 0), button_global_flags) then
-        current_routine = RoutineExtendPointGroup(zone:getOutsideLine())
-      end
-      if ui.itemHovered() then
-        ui.setTooltip("Enable pointer to extend the outer line")
-        cursor_data:registerObject("ui_on_hover_to_extend_zone_outer_" .. tostring(i), objects[i]:getOutsideLine():last(),
-          DrawerPointSimple())
-      else
-        cursor_data:unregisterObject("ui_on_hover_to_extend_zone_outer_" .. tostring(i))
-      end
-
-      ui.sameLine(0, 8)
-      if ui.button("Generate inside", vec2(100, 0)) then
-        popup_context = { obj = zone, type = "generate_inside" }
-      end
-      if ui.itemHovered() then
-        ui.setTooltip("Experimental - use to generate inside line after manually defining outside line.\nExpect bugs.")
-      end
-
-      if popup_context and popup_context.obj == zone then
-        ui.itemPopup(ui.MouseButton.Left, function()
-          popup_context.val1 = ui.slider("", popup_context.val1, -10, 10, 'Distance to outside: %.1f')
-
-          local pt_grp = PointGroup()
-          for _, segment in zone:getOutsideLine():segment():iter() do
-            local pt = Point(segment:getCenter():value() + segment:getNormal():value() * popup_context.val1)
-            pt_grp:append(pt)
-          end
-
-          cursor_data:registerObject("generate_inside", pt_grp, generate_inside_drawer)
-
-          ui.offsetCursorY(12)
-
-          if ui.button("Generate", vec2(ui.availableSpaceX() / 2 - 4, 40))  then
-            zone:setInsideLine(pt_grp)
-            onCourseEdited()
-            popup_context = nil
-            cursor_data:unregisterObject("generate_inside")
-          end
-
-          ui.sameLine(0, 8)
-
-          if ui.button("Cancel", vec2(ui.availableSpaceX(), 40)) then
-            popup_context = nil
-            cursor_data:unregisterObject("generate_inside")
-          end
-        end)
-      end
-
-      ui.sameLine(0, 8)
-      if ui.checkbox("Collide", zone:getCollide()) then
-        zone:setCollide(not zone:getCollide())
-        onCourseEdited()
-      end
-
-      if ui.itemHovered() then
-        ui.setTooltip("Enable collisions with the outside zone line\n\nWorks only with patched tracks!")
-      end
-    elseif Clip.isInstanceOf(objects[i]) then
-      local clip = objects[i] ---@type Clip
-
-      ui.sameLine(0, 4)
-      ui.setNextItemWidth(ui.availableSpaceX() - 32)
-      objects[i].name = ui.inputText("Clip #" .. tostring(i), clip.name,
-        ui.InputTextFlags.Placeholder + input_global_flags)
-      if ui.itemHovered() then
-        ui.setTooltip("Clip #" .. tostring(i))
-      end
-
-      ui.sameLine(0, 4)
-      local down_flags = (i == #objects or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-      if ui.button("↓", vec2(24, 0), down_flags) then
-        local tmp_zone = objects[i + 1]
-        objects[i + 1] = objects[i]
-        objects[i] = tmp_zone
-        onCourseEdited()
-      end
-      ui.popFont()
-
-      ui.pushFont(ui.Font.Monospace)
-      ui.setNextItemWidth(42)
-      local text, changed = ui.inputText("Points", tostring(clip.maxPoints),
-        (ui.InputTextFlags.CharsDecimal + ui.InputTextFlags.Placeholder + input_global_flags))
-      ui.popFont()
-
-      if ui.itemHovered() then
-        ui.setTooltip("Max points")
-      end
-      if changed then
-        if text == "" then
-          new_clip_points = "0"
-        else
-          new_clip_points = tostring(tonumber(text))
-        end
-        clip.maxPoints = tonumber(new_clip_points)
-        onCourseEdited()
-      end
-
-      ui.sameLine(0, 8)
-      if ui.button("Invert", button_global_flags) then
-        local new_origin = clip:getEnd()
-        local new_end = clip.origin
-        clip.origin = new_origin
-        clip:setEnd(new_end)
-        onCourseEdited()
-      end
-
-      ui.sameLine(0, 8)
-      if ui.checkbox("Collide", clip:getCollide()) then
-        clip:setCollide(not clip:getCollide())
-        onCourseEdited()
-      end
-    else
-      Assert.Error("")
+    ui.setNextItemWidth(ui.availableSpaceX() - 32)
+    objects[i].name = ui.inputText("Object #" .. tostring(i), objects[i].name,
+      ui.InputTextFlags.Placeholder + input_global_flags)
+    if ui.itemHovered() then
+      ui.setTooltip("Object #" .. tostring(i))
     end
+
+    ui.sameLine(0, 4)
+    local down_flags = (i == #objects or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
+    if ui.button("↓", vec2(24, 0), down_flags) then
+      local tmp_zone = objects[i + 1]
+      objects[i + 1] = objects[i]
+      objects[i] = tmp_zone
+      onCourseEdited()
+    end
+    ui.popFont()
+
+    ui.endGroup()
+
+    CourseEditorElements.ObjectConfigPanel(i, objects[i], is_user_editing, cursor_data, onCourseEdited, attachRoutine)
 
     ui.sameLine(0, 0)
     ui.offsetCursorX(ui.availableSpaceX() - 64)
@@ -634,12 +493,14 @@ function CourseEditor:drawUIOther(dt)
   ui.popFont()
   if ui.itemHovered() then
     ui.setTooltip(
-    "Speed [km/h] until which speed multiplier is at 0%.\nSuggested to be set lower for slow courses and higher if zone and clip entries are fast.")
+      "Speed [km/h] until which speed multiplier is at 0%.\nSuggested to be set lower for slow courses and higher if zone and clip entries are fast.")
   end
   if changed then
     if text == "" then text = "0" end
-    if tonumber(text) > course.scoringRanges.speedRange.finish then course.scoringRanges.speedRange.finish = tonumber(
-      text) end
+    if tonumber(text) > course.scoringRanges.speedRange.finish then
+      course.scoringRanges.speedRange.finish = tonumber(
+        text)
+    end
     course.scoringRanges.speedRange.start = tonumber(text)
     onCourseEdited()
   end
@@ -670,12 +531,14 @@ function CourseEditor:drawUIOther(dt)
   ui.popFont()
   if ui.itemHovered() then
     ui.setTooltip(
-    "Angle [deg] until which angle multiplier is at 0%.\nSuggested to be set lower for technical, tight courses and higher for courses with high speed scoring areas.")
+      "Angle [deg] until which angle multiplier is at 0%.\nSuggested to be set lower for technical, tight courses and higher for courses with high speed scoring areas.")
   end
   if changed then
     if text == "" then text = "0" end
-    if tonumber(text) > course.scoringRanges.angleRange.finish then course.scoringRanges.angleRange.finish = tonumber(
-      text) end
+    if tonumber(text) > course.scoringRanges.angleRange.finish then
+      course.scoringRanges.angleRange.finish = tonumber(
+        text)
+    end
     course.scoringRanges.angleRange.start = tonumber(text)
     onCourseEdited()
   end
