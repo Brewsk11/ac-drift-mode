@@ -229,8 +229,6 @@ function TestClassCustomSerializer.__deserialize(data)
 end
 
 local function test()
-    ac.log("== Start testing ==")
-
     local c = TestClass()
     c.string = "changed"
     c.nested_table.string = "changed_nested"
@@ -254,10 +252,8 @@ local function test()
     local deserialized = Serializer.deserialize(serialized)
 
     ---@diagnostic disable: undefined-field
-    local res, obj_a, obj_b = Serializer.traverse_object("test_payload", test_payload, deserialized, true)
+    local res, obj_a, obj_b = Serializer.traverse_object("test_payload", test_payload, deserialized, false)
     Assert.True(res, "Serialization faled at: `" .. tostring(obj_a) .. "` vs. `" .. tostring(obj_b) .. "`\n")
-
-    ac.log("== End testing ==")
 end
 
 test()
