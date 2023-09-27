@@ -3,6 +3,7 @@ local ConfigIO = require('drift-mode/configio')
 local Assert = require('drift-mode/assert')
 local Resources = require('drift-mode/Resources')
 local CourseEditorElements = require('drift-mode/ui_layouts/CourseEditorElements')
+local Utils = require('drift-mode/CourseEditorUtils')
 require('drift-mode/models')
 
 -- #region Pre-script definitions
@@ -32,6 +33,10 @@ local unsaved_changes = false
 local pois = {} ---@type ObjectEditorPoi[]
 
 local current_routine = nil ---@type EditorRoutine?
+
+
+---@alias EditorObjectsContext { is_hovered: boolean, smoothing_function: fun(number) }
+local editor_objects_context = nil ---@type EditorObjectsContext[]?
 
 -- #endregion
 
@@ -148,6 +153,7 @@ local function gatherPois()
   --cursor_data:registerObject("editor_pois", pois, DrawerObjectEditorPoi(DrawerPointSimple()))
   return _pois
 end
+
 
 ---Called when editor changes the course in any way
 local function onCourseEdited()
@@ -275,8 +281,9 @@ function CourseEditor:onSelectedCourseChange(new_course)
   unsaved_changes = false
 end
 
----@alias PopupContext { obj: ScoringObject, val1: number }
-local popup_context = nil ---@type PopupContext
+local smoothers = {}
+local config_initial_height = 38
+local config_final_heights = {}
 
 function CourseEditor:drawUIScoringObjects(dt)
   local objects = course.scoringObjects
@@ -292,71 +299,114 @@ function CourseEditor:drawUIScoringObjects(dt)
   ui.offsetCursorY(8)
 
   local toRemove = nil
+  local anyHightlighted = false
 
   for i = 1, #objects do
-    ui.beginGroup()
-    ui.pushID(i)
+    if smoothers[i] == nil then
+      smoothers[i] = ui.SmoothInterpolation(config_initial_height)
+    end
 
+    ui.pushID(i)
     ui.pushFont(ui.Font.Main)
 
     ui.beginGroup()
 
     local up_flags = (i == 1 or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-    if ui.button("↑", vec2(24, 0), up_flags) then
+    if ui.arrowButton("↑", ui.Direction.Up, vec2(24, config_initial_height / 2 - 2), up_flags) then
       local tmp_zone = objects[i - 1]
       objects[i - 1] = objects[i]
       objects[i] = tmp_zone
       onCourseEdited()
     end
 
-    ui.sameLine(0, 4)
-    if objects[i].isInstanceOf(Zone) then
-      ui.image(Resources.IconZoneWhite, vec2(24, 24), rgbm(1, 1, 1, 0.7))
-      if ui.itemHovered() then
-        ui.setTooltip("Zone")
-      end
-    elseif objects[i].isInstanceOf(Clip) then
-      ui.image(Resources.IconClipWhite, vec2(24, 24), rgbm(1, 1, 1, 0.7))
-      if ui.itemHovered() then
-        ui.setTooltip("Clip")
-      end
-    end
-    ui.sameLine(0, 4)
-
-    ui.setNextItemWidth(ui.availableSpaceX() - 32)
-    objects[i].name = ui.inputText("Object #" .. tostring(i), objects[i].name,
-      ui.InputTextFlags.Placeholder + input_global_flags)
-    if ui.itemHovered() then
-      ui.setTooltip("Object #" .. tostring(i))
-    end
-
-    ui.sameLine(0, 4)
     local down_flags = (i == #objects or is_user_editing) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-    if ui.button("↓", vec2(24, 0), down_flags) then
+    if ui.arrowButton("↓", ui.Direction.Down, vec2(24, config_initial_height / 2 - 2), down_flags) then
       local tmp_zone = objects[i + 1]
       objects[i + 1] = objects[i]
       objects[i] = tmp_zone
       onCourseEdited()
     end
-    ui.popFont()
-
     ui.endGroup()
 
-    CourseEditorElements.ObjectConfigPanel(i, objects[i], is_user_editing, cursor_data, onCourseEdited, attachRoutine)
+    ui.sameLine(0, 4)
 
-    ui.sameLine(0, 0)
-    ui.offsetCursorX(ui.availableSpaceX() - 64)
-    if ui.button("Remove", vec2(60, 0), button_global_flags) then
+    local config_height
+    if currently_highlighted == i then
+      config_height = smoothers[i](config_final_heights[i])
+    else
+      config_height = smoothers[i](config_initial_height)
+    end
+
+    ui.childWindow("object" .. tostring(i), vec2(ui.availableSpaceX() - 32, config_height), true,
+      bit.bor(ui.WindowFlags.NoScrollbar, ui.WindowFlags.NoScrollWithMouse), function()
+      if objects[i].isInstanceOf(Zone) then
+        ui.image(Resources.IconZoneWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
+        if ui.itemHovered() then
+          ui.setTooltip("Zone")
+        end
+      elseif objects[i].isInstanceOf(Clip) then
+        ui.image(Resources.IconClipWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
+        if ui.itemHovered() then
+          ui.setTooltip("Clip")
+        end
+      end
+
+      ui.sameLine(0, 4)
+
+      ui.setNextItemWidth(ui.availableSpaceX() - 60)
+      ui.pushFont(ui.Font.Main)
+      objects[i].name = ui.inputText("Object #" .. tostring(i), objects[i].name,
+        ui.InputTextFlags.Placeholder + input_global_flags)
+      if ui.itemHovered() then
+        ui.setTooltip("Object #" .. tostring(i))
+      end
+      ui.popFont()
+
+      ui.sameLine(0, 6)
+
+      ui.setNextItemWidth(ui.availableSpaceX())
+      local text, changed = ui.inputText(
+        "0",
+        tostring(objects[i].maxPoints),
+        Utils.wrapFlags({ ui.InputTextFlags.CharsDecimal, ui.InputTextFlags.Placeholder }, Utils.DisableFlags.Input,
+          is_user_editing)
+      )
+      if ui.itemHovered() then
+        ui.setTooltip("Max points")
+      end
+
+      if changed then
+        if text == "" then
+            text = "0"
+        end
+        objects[i].maxPoints = tonumber(text)
+        onCourseEdited()
+      end
+
+      ui.offsetCursorY(2)
+      ui.separator()
+      ui.offsetCursorY(6)
+
+      CourseEditorElements.ObjectConfigPanel(i, objects[i], is_user_editing, cursor_data, onCourseEdited, attachRoutine)
+
+      config_final_heights[i] = ui.windowContentSize().y + 24
+    end)
+
+    if ui.itemHovered(ui.HoveredFlags.AllowWhenBlockedByActiveItem) then
+      currently_highlighted = i
+      anyHightlighted = true
+    end
+
+    ui.sameLine(0, 6)
+
+    if ui.iconButton(ui.Icons.Trash, vec2(24, config_initial_height), rgbm(1, 0, 0, 0.6), rgbm(0, 0, 0, 0), -1, nil, nil, true, button_global_flags) then
       toRemove = i
     end
 
-    ui.offsetCursorY(8)
-    ui.separator()
-    ui.offsetCursorY(8)
+    ui.popFont()
 
     ui.popID()
 
-    ui.endGroup()
     if ui.itemHovered() then
       cursor_data:registerObject(
         "on_ui_hover_highlight_scoringobject_" .. tostring(i),
@@ -366,6 +416,10 @@ function CourseEditor:drawUIScoringObjects(dt)
     else
       cursor_data:unregisterObject("on_ui_hover_highlight_scoringobject_" .. tostring(i))
     end
+
+    ui.offsetCursorY(8)
+    ui.separator()
+    ui.offsetCursorY(8)
   end
 
   ui.offsetCursorY(ui.windowHeight() - 100)
@@ -374,6 +428,10 @@ function CourseEditor:drawUIScoringObjects(dt)
     cursor_data:unregisterObject("on_ui_hover_highlight_scoringobject_" .. tostring(toRemove))
     table.remove(objects, toRemove)
     onCourseEdited()
+  end
+
+  if not anyHightlighted then
+    currently_highlighted = nil
   end
 
   ui.popFont()
@@ -390,7 +448,7 @@ function CourseEditor:drawUIScoringObjects(dt)
   end
 
   if ui.button("Create new zone", vec2(button_width, 40), button_global_flags) then
-    objects[#objects + 1] = Zone(course:getNextZoneName(), nil, nil, tonumber(new_clip_points))
+    objects[#objects + 1] = Zone(course:getNextZoneName(), nil, nil, 1000)
     onCourseEdited()
   end
 

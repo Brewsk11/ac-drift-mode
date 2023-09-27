@@ -4,28 +4,9 @@ require('drift-mode/models')
 
 local CourseEditorElements = {}
 
+local line_height = 36
+
 function CourseEditorElements.ObjectConfigPanel(idx, object, is_disabled, cursor_data, onCourseEdited, attachRoutine)
-    ui.pushFont(ui.Font.Monospace)
-    ui.setNextItemWidth(42)
-    local text, changed = ui.inputText(
-        "Points",
-        tostring(object.maxPoints),
-        Utils.wrapFlags({ui.InputTextFlags.CharsDecimal, ui.InputTextFlags.Placeholder}, Utils.DisableFlags.Input, is_disabled)
-    )
-    ui.popFont()
-
-    if ui.itemHovered() then
-        ui.setTooltip("Max points")
-    end
-
-    if changed then
-        if text == "" then
-            text = "0"
-        end
-        object.maxPoints = tonumber(text)
-        onCourseEdited()
-    end
-
     if Zone.isInstanceOf(object) then
         CourseEditorElements.ZoneConfigPanel(idx, object, is_disabled, cursor_data, onCourseEdited, attachRoutine)
     elseif Clip.isInstanceOf(object) then
@@ -38,8 +19,14 @@ local generate_inside_drawer = DrawerPointGroupConnected(
   DrawerPointSimple(Resources.ColorEditorActivePoi, 0.2))
 
 function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_data, onCourseEdited, attachRoutine)
-    ui.sameLine(0, 8)
-    if ui.button(")  Inner", vec2(60, 0), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
+
+    if ui.checkbox("Enable collisions", zone:getCollide()) then
+        zone:setCollide(not zone:getCollide())
+        onCourseEdited()
+    end
+    ui.offsetCursorY(4)
+
+    if ui.button(")  Inside Line", vec2(ui.availableSpaceX() / 2, line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
         attachRoutine(RoutineExtendPointGroup(zone:getInsideLine()))
     end
     if ui.itemHovered() then
@@ -51,8 +38,9 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
         cursor_data:unregisterObject("ui_on_hover_to_extend_zone_inner_" .. tostring(idx))
     end
 
-    ui.sameLine(0, 2)
-    if ui.button("Outer   )", vec2(60, 0), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
+    ui.sameLine(0, 8)
+
+    if ui.button("Outside Line  )", vec2(ui.availableSpaceX(), line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
         attachRoutine(RoutineExtendPointGroup(zone:getOutsideLine()))
     end
     if ui.itemHovered() then
@@ -64,10 +52,12 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
         cursor_data:unregisterObject("ui_on_hover_to_extend_zone_outer_" .. tostring(idx))
     end
 
-    ui.sameLine(0, 8)
-    if ui.button("Generate inside", vec2(100, 0), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
+    ui.offsetCursorY(4)
+
+    if ui.button("Generate Inside Line", vec2(ui.availableSpaceX(), line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
         popup_context = { obj = zone, type = "generate_inside" }
     end
+
     if ui.itemHovered() then
         ui.setTooltip(
             "Experimental - use to generate inside line after manually defining outside line.\nExpect bugs.")
@@ -87,47 +77,37 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
 
             ui.offsetCursorY(12)
 
-            if ui.button("Generate", vec2(ui.availableSpaceX() / 2 - 4, 40)) then
+            if ui.button("Generate", vec2(ui.availableSpaceX() / 2 - 4, line_height)) then
                 zone:setInsideLine(pt_grp)
                 onCourseEdited()
                 popup_context = nil
                 cursor_data:unregisterObject("generate_inside")
             end
 
-            ui.sameLine(0, 8)
+            ui.sameLine(0, 4)
 
-            if ui.button("Cancel", vec2(ui.availableSpaceX(), 40)) then
+            if ui.button("Cancel", vec2(ui.availableSpaceX(), line_height)) then
                 popup_context = nil
                 cursor_data:unregisterObject("generate_inside")
             end
         end)
     end
-
-    ui.sameLine(0, 8)
-    if ui.checkbox("Collide", zone:getCollide()) then
-        zone:setCollide(not zone:getCollide())
-        onCourseEdited()
-    end
-
-    if ui.itemHovered() then
-        ui.setTooltip("Enable collisions with the outside zone line\n\nWorks only with patched tracks!")
-    end
 end
 
 
 function CourseEditorElements.ClipConfigPanel(idx, clip, is_disabled, cursor_data, onCourseEdited, attachRoutine)
-    ui.sameLine(0, 8)
-    if ui.button("Invert", vec2(60, 0), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
+
+    if ui.checkbox("Enable collisions", clip:getCollide()) then
+        clip:setCollide(not clip:getCollide())
+        onCourseEdited()
+    end
+    ui.offsetCursorY(4)
+
+    if ui.button("Invert", vec2(ui.availableSpaceX(), line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
         local new_origin = clip:getEnd()
         local new_end = clip.origin
         clip.origin = new_origin
         clip:setEnd(new_end)
-        onCourseEdited()
-    end
-
-    ui.sameLine(0, 8)
-    if ui.checkbox("Collide", clip:getCollide()) then
-        clip:setCollide(not clip:getCollide())
         onCourseEdited()
     end
 end
