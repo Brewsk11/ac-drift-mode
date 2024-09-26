@@ -56,7 +56,8 @@ function RunState:registerCar(car_config, car)
             end
         elseif scoring_object.isInstanceOf(ClipState) then
             local clip_scoring_point = Point(
-                car.position + car.look * car_config.frontOffset + car.side * car_config.frontSpan * -self.driftState.side_drifting
+                car.position + car.look * car_config.frontOffset +
+                car.side * car_config.frontSpan * -self.driftState.side_drifting
             )
             scoring_object:registerPosition(clip_scoring_point, self.driftState)
         else
@@ -72,8 +73,12 @@ function RunState:calcDriftState(car)
 
     self.driftState.speed_mult = self.trackConfig.scoringRanges.speedRange:getFractionClamped(car.speedKmh)
 
-    -- Somehow the dot sometimes is outside of the arccos domain, even though both v are normalized
-    self.driftState.angle_mult = self.trackConfig.scoringRanges.angleRange:getFractionClamped(math.deg(math.acos(car_direction:dot(car.look))))
+    -- TODO: Somehow the dot sometimes is outside of the arccos domain, even though both v are normalized
+    -- For now run additional check not to dirty the logs
+    local car_angle = math.deg(math.acos(car_direction:dot(car.look)))
+    if car_angle == car_angle then -- Check if nan
+        self.driftState.angle_mult = self.trackConfig.scoringRanges.angleRange:getFractionClamped(car_angle)
+    end
 
     -- Ignore angle when min speed not reached, to avoid big fluctuations with low speed
     if self.driftState.speed_mult == 0 then
