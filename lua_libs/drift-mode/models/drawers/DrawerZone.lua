@@ -18,7 +18,7 @@ function DrawerZone:draw(zone)
     end
 
     for _, segment in zone:getOutsideLine():segment():iter() do
-        if self.drawerInsideLine then
+        if self.drawerOutsideLine then
             self.drawerOutsideLine:draw(segment)
         end
     end
