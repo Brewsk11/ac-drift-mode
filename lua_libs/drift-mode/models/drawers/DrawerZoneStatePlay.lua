@@ -27,7 +27,7 @@ end
 
 ---@param zone_state ZoneState
 function DrawerZoneStatePlay:draw(zone_state)
-    render.setDepthMode(render.DepthMode.Normal)
+    render.setDepthMode(render.DepthMode.ReadOnly)
 
     if zone_state:isActive() then
         self.drawerZone = self.drawerActive

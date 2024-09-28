@@ -17,12 +17,12 @@ function DrawerClipSetup:initialize(draw_name, custom_label, color_origin, color
     self.color_arrow = color_arrow or rgbm(1.5, 0.5, 3, 3)
 
     self.drawerSegmentCollision = DrawerSegmentLine(rgbm(0.2, 0.1, 2.7, 3))
-    self.drawerSegmentNoCollision = DrawerSegmentLine(  rgbm(0.4, 0.4, 2.2, 3))
+    self.drawerSegmentNoCollision = DrawerSegmentLine(rgbm(0.4, 0.4, 2.2, 3))
 end
 
 ---@param clip Clip
 function DrawerClipSetup:draw(clip)
-    render.setDepthMode(render.DepthMode.Normal)
+    render.setDepthMode(render.DepthMode.ReadOnly)
 
     clip.origin:draw(0.6, self.color_origin)
     if clip:getCollide() then

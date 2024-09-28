@@ -12,7 +12,7 @@ end
 
 ---@param zone Zone
 function DrawerZonePlay:draw(zone)
-    render.setDepthMode(render.DepthMode.Normal)
+    render.setDepthMode(render.DepthMode.ReadOnly)
     DrawerZone.draw(self, zone)
 end
 
