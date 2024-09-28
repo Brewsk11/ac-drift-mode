@@ -1,5 +1,5 @@
 {
-    "triggerTaskOnSave.on": true,
+    "triggerTaskOnSave.on": false,
     "triggerTaskOnSave.tasks": {
         "install_files": [
             "*.lua",
