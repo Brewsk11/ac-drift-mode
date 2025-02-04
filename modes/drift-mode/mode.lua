@@ -13,8 +13,8 @@ local cursor_data = nil
 ---@type CarConfig?
 local car_data = nil
 
----@type GameState?
-local game_state = nil
+---@type EditorsState?
+local editors_state = nil
 
 ---@type RunState?
 local run_state = nil
@@ -31,16 +31,25 @@ local drawerRun = DrawerRunStatePlay() ---@type DrawerRunStatePlay
 local function listenForSignals()
   local changed = false
   EventSystem.startGroup()
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,      function (payload) cursor_data = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged, function (payload) track_data = payload; run_state = RunState(track_data) end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CarConfigChanged,   function (payload) car_data = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.GameStateChanged,   function (payload) game_state = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.ResetScore,         function (_      ) resetScore() end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedStart,       function (_      ) run_state = RunState(track_data) end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedFinish,      function (_      ) if run_state then run_state:setFinished(true) end end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,
+    function(payload) cursor_data = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged,
+    function(payload)
+      track_data = payload; run_state = RunState(track_data)
+    end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CarConfigChanged,
+    function(payload) car_data = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.EditorsStateChanged,
+    function(payload) editors_state = payload end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.ResetScore, function(_) resetScore() end) or
+      changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedStart,
+    function(_) run_state = RunState(track_data) end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedFinish,
+    function(_) if run_state then run_state:setFinished(true) end end) or changed
   EventSystem.endGroup(changed)
   local crossed_respawn = false
-  EventSystem.listen(listener_id, EventSystem.Signal.CrossedRespawn, function (_) crossed_respawn = true end)
+  EventSystem.listen(listener_id, EventSystem.Signal.CrossedRespawn, function(_) crossed_respawn = true end)
   if crossed_respawn then
     EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
@@ -107,9 +116,9 @@ local function monitorCrossingLines()
 end
 
 local timers = {
-  data_brokered = Timer(0.02, function () listenForSignals() end),
-  scoring_player = Timer(0.05, function ()
-    if run_state and game_state and game_state:isPlaymode() then
+  data_brokered = Timer(0.02, function() listenForSignals() end),
+  scoring_player = Timer(0.05, function()
+    if run_state and editors_state and editors_state:isPlaymode() then
       registerPosition()
       DataBroker.store("run_state_data", run_state)
     end
@@ -129,9 +138,9 @@ function script.update(dt)
 end
 
 function script.draw3D()
-  if car_data and game_state and game_state.isCarSetup then car_data:drawAlignment() end
+  if car_data and editors_state and editors_state.isCarSetup then car_data:drawAlignment() end
 
-  if game_state and not game_state:isPlaymode() then
+  if editors_state and not editors_state:isPlaymode() then
     if track_data then drawerSetup:draw(track_data) end
     if cursor_data then cursor_data:draw() end
   else

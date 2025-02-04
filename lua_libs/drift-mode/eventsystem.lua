@@ -4,16 +4,16 @@ local EventSystem = {}
 
 ---@enum EventSystem.Signal
 EventSystem.Signal = {
-    CrossedFinish = "CrossedFinish", ---Crossed finish line
-    CrossedStart = "CrossedStart", ---Crossed start line
-    CrossedRespawn = "CrossedRespawn", ---Crossed respawn line
-    TeleportToStart = "TeleportToStart", ---Request to teleport to starting point
-    ResetScore = "ResetScore", ---Requested run reset run scoring
+    CrossedFinish = "CrossedFinish",            ---Crossed finish line
+    CrossedStart = "CrossedStart",              ---Crossed start line
+    CrossedRespawn = "CrossedRespawn",          ---Crossed respawn line
+    TeleportToStart = "TeleportToStart",        ---Request to teleport to starting point
+    ResetScore = "ResetScore",                  ---Requested run reset run scoring
 
-    CursorChanged = "CursorChanged", ---Signal for UI to update cursor data
-    TrackConfigChanged = "TrackConfigChanged", ---Signal for UI to update track data
-    CarConfigChanged = "CarConfigChanged", ---Signal for UI to update car data
-    GameStateChanged = "GameStateChanged" ---Signal for when game state changes
+    CursorChanged = "CursorChanged",            ---Signal for UI to update cursor data
+    TrackConfigChanged = "TrackConfigChanged",  ---Signal for UI to update track data
+    CarConfigChanged = "CarConfigChanged",      ---Signal for UI to update car data
+    EditorsStateChanged = "EditorsStateChanged" ---Signal for when game state changes
 }
 
 local payloads = nil
@@ -32,8 +32,8 @@ local function loadPayloads()
     payloads = DataBroker.read("payloads") or {}
 end
 
-local function storeSignals()  DataBroker.store("signal_log", signal_log) end
-local function storePayloads() DataBroker.store("payloads", payloads)   end
+local function storeSignals() DataBroker.store("signal_log", signal_log) end
+local function storePayloads() DataBroker.store("payloads", payloads) end
 
 local charset = "abcdefghijklmnopqrstuvwxyz1234567890"
 local function randomString(length)
