@@ -9,7 +9,8 @@ local function compactObjectList(run_state_data)
     local min_object_name_width = 100
     local max_columns = 2
 
-    local info_columns_count = math.min(math.floor((ui.windowWidth() - min_object_name_width) / column_width), max_columns)
+    local info_columns_count = math.min(math.floor((ui.windowWidth() - min_object_name_width) / column_width),
+        max_columns)
 
     for _, object_state in ipairs(run_state_data.scoringObjectStates) do
         local icon = nil
@@ -25,18 +26,22 @@ local function compactObjectList(run_state_data)
         if object_state.done then color = rgbm(1, 1, 1, 0.7) end
         ui.image(icon, vec2(entry_height, entry_height), color)
         ui.sameLine(0, 4)
-        ui.textAligned(object_state.name, vec2(0, 0), vec2(ui.availableSpaceX() - info_columns_count * column_width, entry_height))
+        ui.textAligned(object_state.name, vec2(0, 0),
+            vec2(ui.availableSpaceX() - info_columns_count * column_width, entry_height))
         ui.pushFont(ui.Font.Monospace)
         ui.sameLine(0, 0)
 
         ui.drawRect(ui.getCursor(), ui.getCursor() + vec2(column_width, entry_height), Resources.ColorFaintBg, 2)
         if object_state.score > 0 then
-            ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(column_width * object_state.score / object_state.max_score, entry_height), Resources.ColorFaintBg, 2)
+            ui.drawRectFilled(ui.getCursor(),
+                ui.getCursor() + vec2(column_width * object_state.score / object_state.max_score, entry_height),
+                Resources.ColorFaintBg, 2)
         end
 
-        ui.dwriteTextAligned(string.format("%d", object_state.score), 12, ui.Alignment.Center, ui.Alignment.Center, vec2(column_width, entry_height), false, rgbm(1, 1, 1, 1))
+        ui.dwriteTextAligned(string.format("%d", object_state.score), 12, ui.Alignment.Center, ui.Alignment.Center,
+            vec2(column_width, entry_height), false, rgbm(1, 1, 1, 1))
         if ui.itemHovered() then
-            ui.tooltip(function ()
+            ui.tooltip(function()
                 local function formattedLabel(label, format, value)
                     ui.pushFont(ui.Font.Main)
                     ui.textAligned(label, vec2(0, 0), vec2(60, 16))
@@ -79,7 +84,7 @@ local function compactObjectList(run_state_data)
             ui.textAligned(string.format(""), vec2(1, 1), vec2(column_width, entry_height))
             ui.endGroup()
             if ui.itemHovered() then
-                ui.tooltip(function ()
+                ui.tooltip(function()
                     local function formattedLabel(label, value)
                         ui.textAligned(label, vec2(0, 0), vec2(120, 16))
                         ui.sameLine(0, 0)
@@ -96,14 +101,17 @@ local function compactObjectList(run_state_data)
                     end
                     ui.text("")
                     if object_state.isInstanceOf(ZoneStateData) then
-                        formattedLabel("Average multiplier", object_state.speed * object_state.angle * object_state.depth * (object_state.timeInZone or 1.0))
+                        formattedLabel("Average multiplier",
+                            object_state.speed * object_state.angle * object_state.depth *
+                            (object_state.timeInZone or 1.0))
                         formattedLabel("Final multiplier", object_state.performance * (object_state.timeInZone or 0))
                     elseif object_state.isInstanceOf(ClipStateData) then
                         formattedLabel("Final multiplier", object_state.multiplier or 0)
                     end
                     ui.text("")
                     if object_state.isInstanceOf(ZoneStateData) then
-                        ui.text("Averages may not necessarily produce the final total multiplier as\nthe score is calculated for every point separately, then averaged.")
+                        ui.text(
+                            "Averages may not necessarily produce the final total multiplier as\nthe score is calculated for every point separately, then averaged.")
                         ui.text("Depth means closeness to zone outside line as a ratio of zone width.")
                         ui.text("Distance is the lenght of zone driven through.")
                     elseif object_state.isInstanceOf(ClipStateData) then
@@ -119,11 +127,9 @@ end
 
 ---comment
 ---@param run_state_data RunStateData
----@param game_state GameState
 ---@param track_data TrackConfig
-function appScoresLayout(run_state_data, game_state, track_data)
-
-    if not run_state_data or not game_state or not game_state:isPlaymode() then return end
+function appScoresLayout(run_state_data, track_data)
+    if not run_state_data then return end
 
     if ui.windowHeight() > 120 then
         -- COURSE NAME
@@ -154,7 +160,8 @@ function appScoresLayout(run_state_data, game_state, track_data)
     if ui.windowHeight() > 100 then
         -- AVERAGE SCORE
         ui.beginGroup()
-        ui.textAligned(string.format("%.2f%%", run_state_data.avgMultiplier * 100), vec2(1, 0), vec2(ui.availableSpaceX(), 20), true)
+        ui.textAligned(string.format("%.2f%%", run_state_data.avgMultiplier * 100), vec2(1, 0),
+            vec2(ui.availableSpaceX(), 20), true)
         ui.endGroup()
         if ui.itemHovered() then
             ui.setTooltip("Average score percentage from all zones & clips that have been already scored on.\n\
@@ -168,7 +175,8 @@ This is a very good score-independent run quality metric.")
         ui.separator()
         ui.offsetCursorY(10)
 
-        ui.beginChild("scores_app_objects_list_pane", ui.availableSpace(), false, ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoBackground)
+        ui.beginChild("scores_app_objects_list_pane", ui.availableSpace(), false,
+            ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoBackground)
         compactObjectList(run_state_data)
         ui.endChild()
     end

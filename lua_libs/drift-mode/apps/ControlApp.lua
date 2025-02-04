@@ -10,7 +10,6 @@ local Resources = require('drift-mode/Resources')
 
 local ControlApp = {}
 
-require('drift-mode/ui_layouts/scores')
 require('drift-mode/models')
 
 local config_list = ConfigIO.listTrackConfigs()
@@ -28,9 +27,6 @@ local track_config_info = nil
 
 ---@type TrackConfig?
 local track_data = nil
-
----@type RunStateData?
-local run_state_data = nil
 
 local function loadCar()
     car_data = ConfigIO.loadCarConfig()
@@ -367,10 +363,6 @@ end
 
 function ControlApp.Main()
     drawAppUI()
-end
-
-function ControlApp.WindowScores()
-    appScoresLayout(run_state_data, game_state, track_data)
 end
 
 gameStateUpdate()

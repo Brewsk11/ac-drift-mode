@@ -1,4 +1,5 @@
 local ControlApp = require('drift-mode/apps/ControlApp')
+local ScoresApp = require('drift-mode/apps/ScoresApp')
 local DriftStatusApp = require('drift-mode/apps/DriftStatusApp')
 
 function Window_Controls()
@@ -6,7 +7,7 @@ function Window_Controls()
 end
 
 function Window_Scores()
-  ControlApp.WindowScores()
+  ScoresApp.Main()
 end
 
 function Window_DriftStatus()
