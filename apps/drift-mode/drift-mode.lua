@@ -1,13 +1,14 @@
-local MainApp = require('drift-mode/apps/ControlApp')
+local ControlApp = require('drift-mode/apps/ControlApp')
+local DriftStatusApp = require('drift-mode/apps/DriftStatusApp')
 
-function WindowMain()
-  MainApp.WindowMain()
+function Window_Controls()
+  ControlApp.Main()
 end
 
-function WindowScores()
-  MainApp.WindowScores()
+function Window_Scores()
+  ControlApp.WindowScores()
 end
 
-function WindowInfobars()
-  MainApp.WindowInfobars()
+function Window_DriftStatus()
+  DriftStatusApp.Main()
 end

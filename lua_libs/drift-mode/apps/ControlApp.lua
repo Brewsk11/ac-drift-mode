@@ -11,12 +11,11 @@ local Resources = require('drift-mode/Resources')
 local ControlApp = {}
 
 require('drift-mode/ui_layouts/scores')
-require('drift-mode/ui_layouts/infobars')
 require('drift-mode/models')
 
 local config_list = ConfigIO.listTrackConfigs()
 
-local listener_id = EventSystem.registerListener('dev-app')
+local listener_id = EventSystem.registerListener('app-control')
 
 ---@type GameState
 local game_state = GameState()
@@ -366,18 +365,12 @@ local function drawAppUI()
     end)
 end
 
-function ControlApp.WindowMain()
+function ControlApp.Main()
     drawAppUI()
 end
 
 function ControlApp.WindowScores()
-    appScoresLayout(run_state_data, game_state, track_data, scores_scale)
-end
-
-function ControlApp.WindowInfobars()
-    if run_state_data and track_data then
-        drawModifiers(track_data.scoringRanges, run_state_data.driftState)
-    end
+    appScoresLayout(run_state_data, game_state, track_data)
 end
 
 gameStateUpdate()
