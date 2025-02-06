@@ -4,6 +4,8 @@ local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
 require('drift-mode/models')
 
+local Teleporter = require('drift-mode/modes/Teleporter')
+
 local config_list = ConfigIO.listTrackConfigs()
 
 ---@type Cursor
@@ -47,17 +49,6 @@ local function resetScore()
   if track_data then run_state = RunState(track_data) end
 end
 
-local function teleportToStart()
-  if physics.allowed() and track_data and track_data.startingPoint then
-    physics.setCarPosition(
-      0,
-      track_data.startingPoint.origin:value(),
-      track_data.startingPoint.direction * -1
-    )
-  else
-    physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
-  end
-end
 
 local collider_body = nil
 
@@ -113,7 +104,7 @@ local function listenForSignals()
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedFinish,
     function(_) if run_state then run_state:setFinished(true) end end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TeleportToStart,
-    function(_) teleportToStart() end) or changed
+    function(_) Teleporter.teleportToStart(0, track_data) end) or changed
   EventSystem.endGroup(changed)
 
   local crossed_respawn = false
