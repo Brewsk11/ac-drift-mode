@@ -22,7 +22,6 @@ local editors_state = EditorsState()
 ---@type TrackConfigInfo?
 local track_config_info = nil
 
-
 ---@type TrackConfig?
 local track_data = nil
 
@@ -132,30 +131,15 @@ local function editorsStateUpdate()
     EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
 end
 
-local course_editor = CourseEditor()
-local course_editor_enabled = false
-
-local function drawUIEditor()
-    if ui.checkbox("Enable course editor", course_editor_enabled) then
-        course_editor_enabled = not course_editor_enabled
-        editors_state.isTrackSetup = course_editor_enabled
-        EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
-    end
-
-    if course_editor_enabled then
-        course_editor:drawUI()
-        course_editor:runEditor()
-    end
-end
 
 
-require('drift-mode/apps/ControlAppTabs/Editor')
+local EditorTab = require('drift-mode/apps/ControlAppTabs/Editor')
 local CarSetupTab = require('drift-mode/apps/ControlAppTabs/CarSetup')
 local TrackPatcherTab = require('drift-mode/apps/ControlAppTabs/TrackPatcher')
 local AboutTab = require('drift-mode/apps/ControlAppTabs/About')
 
 local __tabs = {
-    { 'Course editor', drawUIEditor },
+    { 'Course editor', EditorTab.drawUIEditor },
     { 'Car setup',     CarSetupTab.drawUICarSetup },
     { 'Track patcher', TrackPatcherTab.drawUITrackPatcher },
     { 'About',         AboutTab.drawUIAbout }
