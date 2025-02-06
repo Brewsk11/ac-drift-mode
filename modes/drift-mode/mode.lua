@@ -1,4 +1,6 @@
 local EventSystem = require('drift-mode/eventsystem')
+local listener_id = EventSystem.registerListener("mode")
+
 local DataBroker = require('drift-mode/databroker')
 local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
@@ -21,7 +23,6 @@ local editors_state = nil
 ---@type RunState?
 local run_state = nil
 
-local listener_id = EventSystem.registerListener("mode")
 
 ---@type TrackConfigInfo?
 local track_config_info = nil
@@ -78,40 +79,65 @@ end
 local drawerSetup = DrawerCourseSetup() ---@type DrawerCourseSetup
 local drawerRun = DrawerRunStatePlay() ---@type DrawerRunStatePlay
 
-local function listenForSignals()
-  local changed = false
-  EventSystem.startGroup()
 
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,
-    function(payload) cursor_data = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged,
+local signalListeners = {
+  {
+    EventSystem.Signal.TrackConfigChanged,
     function(payload)
       track_data = payload
       if track_data ~= nil then
         run_state = RunState(track_data)
         reactivateColliders()
       end
-    end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CarConfigChanged,
-    function(payload) car_data = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.EditorsStateChanged,
-    function(payload) editors_state = payload end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.ResetScore, function(_) resetScore() end) or
-      changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedStart,
-    function(_) run_state = RunState(track_data) end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedFinish,
-    function(_) if run_state then run_state:setFinished(true) end end) or changed
-  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TeleportToStart,
-    function(_) Teleporter.teleportToStart(0, track_data) end) or changed
+    end
+  },
+  {
+    EventSystem.Signal.CursorChanged,
+    function(payload) cursor_data = payload end
+  },
+  {
+    EventSystem.Signal.CarConfigChanged,
+    function(payload) car_data = payload end
+  },
+  {
+    EventSystem.Signal.EditorsStateChanged,
+    function(payload) editors_state = payload end
+  },
+  {
+    EventSystem.Signal.ResetScore,
+    function(payload) resetScore() end
+  },
+  {
+    EventSystem.Signal.CrossedStart,
+    function(payload) run_state = RunState(track_data) end
+  },
+  {
+    EventSystem.Signal.CrossedFinish,
+    function(payload) if run_state then run_state:setFinished(true) end end
+  },
+  {
+    EventSystem.Signal.TeleportToStart,
+    function(payload) Teleporter.teleportToStart(0, track_data) end
+  }
+}
+
+local function listenForSignals()
+  local changed = false
+  EventSystem.startGroup()
+  for _, v in ipairs(signalListeners) do
+    changed = EventSystem.listenInGroup(listener_id, v[1], v[2]) or changed
+  end
   EventSystem.endGroup(changed)
 
+  -- Handle CrossedRespawn separately, as it wants to emit signal and probably
+  -- should not be called in the group listening
   local crossed_respawn = false
   EventSystem.listen(listener_id, EventSystem.Signal.CrossedRespawn, function(_) crossed_respawn = true end)
   if crossed_respawn then
     EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
 end
+
 
 local function registerPosition()
   if not car_data or not run_state then return end

@@ -8,7 +8,7 @@ local CameraHelper = require('drift-mode/modes/CameraHelper')
 
 local CarSetup = {}
 
----@type EditorsState
+---@type EditorsState?
 local editors_state = nil
 
 ---@type CarConfig?
