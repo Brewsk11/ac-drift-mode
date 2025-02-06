@@ -19,11 +19,6 @@ local function loadCar()
 end
 loadCar()
 
-local function editorsStateUpdate()
-    DataBroker.store("editors_state", editors_state)
-    EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
-end
-
 local helper_cam = nil
 local is_helper_cam_active = false
 
@@ -39,7 +34,7 @@ function CarSetup.drawUICarSetup()
     -- [CHECKBOX] Enable configuration
     if ui.checkbox("Show guides", editors_state.isCarSetup) then
         editors_state.isCarSetup = not editors_state.isCarSetup
-        editorsStateUpdate()
+        EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
     end
 
     -- [CHECKBOX] Enable helper camera

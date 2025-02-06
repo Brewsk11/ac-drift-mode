@@ -178,6 +178,11 @@ function script.update(dt)
 
   ac.debug("physics.allowed()", physics.allowed())
 
+  if ac.getCar(0).extraF then
+    ac.setExtraSwitch(5, false)
+    EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
+  end
+
   if not run_state and track_data then run_state = RunState(track_data) end
 end
 
