@@ -37,17 +37,44 @@ local function teleportToStart()
   end
 end
 
+local collider_body = nil
+
+local noPhysicsInfo = false
+
+local function reactivateColliders()
+  -- Function probably broken between 0.1.79 : 0.2.5
+  if not physics.allowed() then
+    if not noPhysicsInfo then
+      ac.setMessage(
+        "Extended physics unavailable",
+        "Colliders or teleportation won't work. Consider patching the track from the control panel."
+      )
+      noPhysicsInfo = true
+    end
+    return
+  end
+
+  if not track_data then return end
+
+  if collider_body then
+    collider_body:setInWorld(false):dispose()
+  end
+  local colliders = track_data:gatherColliders()
+  collider_body = physics.RigidBody(colliders, 1):setSemiDynamic(true, false)
+end
+
 local drawerSetup = DrawerCourseSetup() ---@type DrawerCourseSetup
 local drawerRun = DrawerRunStatePlay() ---@type DrawerRunStatePlay
 
 local function listenForSignals()
   local changed = false
   EventSystem.startGroup()
+
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,
     function(payload) cursor_data = payload end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged,
     function(payload)
-      track_data = payload; run_state = RunState(track_data)
+      track_data = payload; run_state = RunState(track_data); reactivateColliders()
     end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CarConfigChanged,
     function(payload) car_data = payload end) or changed
@@ -62,6 +89,7 @@ local function listenForSignals()
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TeleportToStart,
     function(_) teleportToStart() end) or changed
   EventSystem.endGroup(changed)
+
   local crossed_respawn = false
   EventSystem.listen(listener_id, EventSystem.Signal.CrossedRespawn, function(_) crossed_respawn = true end)
   if crossed_respawn then
@@ -147,6 +175,8 @@ function script.update(dt)
   for _, timer in pairs(timers) do
     timer:tick(dt)
   end
+
+  ac.debug("physics.allowed()", physics.allowed())
 
   if not run_state and track_data then run_state = RunState(track_data) end
 end
