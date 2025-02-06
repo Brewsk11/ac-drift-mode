@@ -19,10 +19,22 @@ local editors_state = nil
 ---@type RunState?
 local run_state = nil
 
-local listener_id = EventSystem.registerListener("drift-mode-dev")
+local listener_id = EventSystem.registerListener("mode")
 
 local function resetScore()
   if track_data then run_state = RunState(track_data) end
+end
+
+local function teleportToStart()
+  if physics.allowed() and track_data and track_data.startingPoint then
+    physics.setCarPosition(
+      0,
+      track_data.startingPoint.origin:value(),
+      track_data.startingPoint.direction * -1
+    )
+  else
+    physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
+  end
 end
 
 local drawerSetup = DrawerCourseSetup() ---@type DrawerCourseSetup
@@ -47,6 +59,8 @@ local function listenForSignals()
     function(_) run_state = RunState(track_data) end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CrossedFinish,
     function(_) if run_state then run_state:setFinished(true) end end) or changed
+  changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TeleportToStart,
+    function(_) teleportToStart() end) or changed
   EventSystem.endGroup(changed)
   local crossed_respawn = false
   EventSystem.listen(listener_id, EventSystem.Signal.CrossedRespawn, function(_) crossed_respawn = true end)

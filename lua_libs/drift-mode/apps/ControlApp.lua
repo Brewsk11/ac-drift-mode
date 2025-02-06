@@ -47,18 +47,6 @@ DataBroker.store("track_data", track_data)
 local cursor_data = Cursor()
 DataBroker.store("cursor_data", cursor_data)
 
-local function teleportToStart()
-    if physics.allowed() and track_data and track_data.startingPoint then
-        physics.setCarPosition(
-            0,
-            track_data.startingPoint.origin:value(),
-            track_data.startingPoint.direction * -1
-        )
-    else
-        physics.teleportCarTo(0, ac.SpawnSet.HotlapStart)
-    end
-end
-
 local collider_body = nil
 
 local noPhysicsInfo = false
@@ -94,8 +82,6 @@ local function listenForData()
         function(payload)
             track_data = payload; reactivateColliders()
         end) or changed
-    changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TeleportToStart,
-        function(payload) teleportToStart() end) or changed
     EventSystem.endGroup(changed)
 end
 
