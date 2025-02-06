@@ -1,11 +1,12 @@
 local EventSystem = require('drift-mode/eventsystem')
+local listener_id = EventSystem.registerListener('app-control')
+
 local Resources = require('drift-mode/Resources')
+require('drift-mode/models')
+
 
 local ControlApp = {}
 
-require('drift-mode/models')
-
-local listener_id = EventSystem.registerListener('app-control')
 
 ---@type EditorsState
 local editors_state = EditorsState()
@@ -53,7 +54,5 @@ function ControlApp.Main(dt)
 
     ac.debug("physics.allowed()", physics.allowed())
 end
-
-EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
 
 return ControlApp
