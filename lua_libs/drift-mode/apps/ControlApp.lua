@@ -18,6 +18,7 @@ local listener_id = EventSystem.registerListener('app-control')
 
 ---@type EditorsState
 local editors_state = EditorsState()
+EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
 
 ---@type TrackConfigInfo?
 local track_config_info = nil
@@ -75,21 +76,13 @@ function script.update(dt)
         end
     end
 
-    ac.debug("physics.allowed() from app", physics.allowed())
-    ac.debug("physics from app", physics)
+    ac.debug("physics.allowed()", physics.allowed())
 
     if ac.getCar(0).extraF then
         ac.setExtraSwitch(5, false)
         EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
     end
 end
-
-local function editorsStateUpdate()
-    DataBroker.store("editors_state", editors_state)
-    EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
-end
-
-
 
 local EditorTab = require('drift-mode/apps/ControlAppTabs/Editor')
 local CarSetupTab = require('drift-mode/apps/ControlAppTabs/CarSetup')
@@ -131,7 +124,6 @@ function ControlApp.Main()
     drawAppUI()
 end
 
-editorsStateUpdate()
 EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
 
 return ControlApp
