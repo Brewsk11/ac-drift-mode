@@ -10,7 +10,7 @@ local config_list = ConfigIO.listTrackConfigs()
 
 ---@type Cursor
 local cursor_data = Cursor()
-DataBroker.store("cursor_data", cursor_data)
+EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
 
 ---@type CarConfig?
 local car_data = nil
@@ -43,7 +43,6 @@ if track_config_info then
 elseif #config_list > 0 then
   loadTrack(config_list[1])
 end
-DataBroker.store("track_data", track_data)
 
 local function resetScore()
   if track_data then run_state = RunState(track_data) end
