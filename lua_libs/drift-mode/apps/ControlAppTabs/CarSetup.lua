@@ -4,6 +4,8 @@ local ConfigIO = require('drift-mode/configio')
 
 local listener_id = EventSystem.registerListener("apptab-carsetup")
 
+local CameraHelper = require('drift-mode/modes/CameraHelper')
+
 local CarSetup = {}
 
 ---@type EditorsState
@@ -19,7 +21,7 @@ local function loadCar()
 end
 loadCar()
 
-local helper_cam = nil
+
 local is_helper_cam_active = false
 
 function CarSetup.drawUICarSetup()
@@ -42,16 +44,22 @@ function CarSetup.drawUICarSetup()
     if ui.checkbox("Helper camera", is_helper_cam_active) then
         is_helper_cam_active = not is_helper_cam_active
         if is_helper_cam_active then
-            helper_cam = ac.grabCamera("For car alignment")
-            local car = ac.getCar(0)
-            local cam_pos = car.position + vec3(0, 80, 0)
-            helper_cam.transform.position:set(cam_pos)
-            helper_cam.transform.side:set(car.side)
-            helper_cam.transform.look:set(vec3(0, -1, 0))
-            helper_cam.fov = 5
+            CameraHelper.grabCamera("For car alignment")
         else
-            helper_cam:dispose(); helper_cam = nil
+            CameraHelper.disposeCamera()
         end
+    end
+
+    if is_helper_cam_active then
+        local car = ac.getCar(0)
+        local cam_pos = car.position + vec3(0, 80, 0)
+
+        CameraHelper.setCamera(
+            cam_pos,
+            vec3.tmp(), -- Any will do because the camera stays on horizon. Will need to figure it out
+            vec3(0, -1, 0),
+            5
+        )
     end
 
     ui.offsetCursorY(15)
