@@ -160,7 +160,7 @@ end
 local timers = {
   data_brokered = Timer(0.02, function() listenForSignals() end),
   scoring_player = Timer(0.05, function()
-    if run_state and editors_state and editors_state:isPlaymode() then
+    if run_state and editors_state and not editors_state:anyEditorEnabled() then
       registerPosition()
       DataBroker.store("run_state_data", run_state)
     end
@@ -189,7 +189,7 @@ end
 function script.draw3D()
   if car_data and editors_state and editors_state.isCarSetup then car_data:drawAlignment() end
 
-  if editors_state and not editors_state:isPlaymode() then
+  if editors_state and editors_state:anyEditorEnabled() then
     if track_data then drawerSetup:draw(track_data) end
     if cursor_data then cursor_data:draw() end
   else

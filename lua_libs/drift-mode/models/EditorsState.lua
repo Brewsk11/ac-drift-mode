@@ -13,8 +13,8 @@ function EditorsState:initialize(is_car_setup, is_track_setup)
     self.isTrackSetup = is_track_setup or false
 end
 
-function EditorsState:isPlaymode()
-    return not self.isTrackSetup and not self.isCarSetup
+function EditorsState:anyEditorEnabled()
+    return self.isTrackSetup or self.isCarSetup
 end
 
 local function test()
