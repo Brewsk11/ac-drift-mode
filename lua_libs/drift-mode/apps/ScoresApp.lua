@@ -19,6 +19,8 @@ function ScoresApp.Main(dt)
         track_data = payload;
     end)
 
+    if track_data == nil then return end
+
     appScoresLayout(run_state_data, track_data)
 end
 

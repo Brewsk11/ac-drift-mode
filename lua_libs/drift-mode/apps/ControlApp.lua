@@ -1,14 +1,9 @@
-local DataBroker = require('drift-mode/databroker')
 local EventSystem = require('drift-mode/eventsystem')
-local ConfigIO = require('drift-mode/configio')
-local Timer = require('drift-mode/timer')
 local Resources = require('drift-mode/Resources')
 
 local ControlApp = {}
 
 require('drift-mode/models')
-
-local config_list = ConfigIO.listTrackConfigs()
 
 local listener_id = EventSystem.registerListener('app-control')
 
@@ -16,48 +11,6 @@ local listener_id = EventSystem.registerListener('app-control')
 local editors_state = EditorsState()
 EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
 
----@type TrackConfigInfo?
-local track_config_info = nil
-
----@type TrackConfig?
-local track_data = nil
-
-
----@param track_cfg_info TrackConfigInfo
-local function loadTrack(track_cfg_info)
-    track_config_info = track_cfg_info
-    track_data = track_config_info:load()
-    EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
-end
-
-track_config_info = ConfigIO.getLastUsedTrackConfigInfo()
-if track_config_info then
-    loadTrack(track_config_info)
-elseif #config_list > 0 then
-    loadTrack(config_list[1])
-else
-    track_data = TrackConfig()
-end
-DataBroker.store("track_data", track_data)
-
----@type Cursor
-local cursor_data = Cursor()
-DataBroker.store("cursor_data", cursor_data)
-
-
-local function listenForData()
-    local changed = false
-    EventSystem.startGroup()
-    changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CursorChanged,
-        function(payload) cursor_data = payload end) or changed
-    EventSystem.endGroup(changed)
-end
-
-local running_task = nil
-
-local timers = {
-    listeners = Timer(0.5, listenForData)
-}
 
 local EditorTab = require('drift-mode/apps/ControlAppTabs/Editor')
 local CarSetupTab = require('drift-mode/apps/ControlAppTabs/CarSetup')
@@ -97,17 +50,6 @@ end
 
 function ControlApp.Main(dt)
     drawAppUI()
-
-    for _, timer in pairs(timers) do
-        timer:tick(dt)
-    end
-
-    if running_task ~= nil then
-        coroutine.resume(running_task)
-        if coroutine.status(running_task) == 'dead' then
-            running_task = nil
-        end
-    end
 
     ac.debug("physics.allowed()", physics.allowed())
 end

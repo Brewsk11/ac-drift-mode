@@ -1,14 +1,14 @@
 local EventSystem = require('drift-mode/eventsystem')
 local DataBroker = require('drift-mode/databroker')
 local Timer = require('drift-mode/timer')
-local S = require('drift-mode/serializer')
+local ConfigIO = require('drift-mode/configio')
 require('drift-mode/models')
 
----@type TrackConfig?
-local track_data = nil
+local config_list = ConfigIO.listTrackConfigs()
 
----@type Cursor?
-local cursor_data = nil
+---@type Cursor
+local cursor_data = Cursor()
+DataBroker.store("cursor_data", cursor_data)
 
 ---@type CarConfig?
 local car_data = nil
@@ -20,6 +20,28 @@ local editors_state = nil
 local run_state = nil
 
 local listener_id = EventSystem.registerListener("mode")
+
+---@type TrackConfigInfo?
+local track_config_info = nil
+
+---@type TrackConfig?
+local track_data = TrackConfig()
+
+
+---@param track_cfg_info TrackConfigInfo
+local function loadTrack(track_cfg_info)
+  track_config_info = track_cfg_info
+  track_data = track_config_info:load()
+  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
+end
+
+track_config_info = ConfigIO.getLastUsedTrackConfigInfo()
+if track_config_info then
+  loadTrack(track_config_info)
+elseif #config_list > 0 then
+  loadTrack(config_list[1])
+end
+DataBroker.store("track_data", track_data)
 
 local function resetScore()
   if track_data then run_state = RunState(track_data) end
@@ -74,7 +96,11 @@ local function listenForSignals()
     function(payload) cursor_data = payload end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.TrackConfigChanged,
     function(payload)
-      track_data = payload; run_state = RunState(track_data); reactivateColliders()
+      track_data = payload
+      if track_data ~= nil then
+        run_state = RunState(track_data)
+        reactivateColliders()
+      end
     end) or changed
   changed = EventSystem.listenInGroup(listener_id, EventSystem.Signal.CarConfigChanged,
     function(payload) car_data = payload end) or changed
@@ -171,9 +197,18 @@ local timers = {
 }
 
 
+local running_task = nil
+
 function script.update(dt)
   for _, timer in pairs(timers) do
     timer:tick(dt)
+  end
+
+  if running_task ~= nil then
+    coroutine.resume(running_task)
+    if coroutine.status(running_task) == 'dead' then
+      running_task = nil
+    end
   end
 
   ac.debug("physics.allowed()", physics.allowed())
