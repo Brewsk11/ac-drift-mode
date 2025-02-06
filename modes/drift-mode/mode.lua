@@ -7,6 +7,7 @@ local ConfigIO = require('drift-mode/configio')
 require('drift-mode/models')
 
 local Teleporter = require('drift-mode/modes/Teleporter')
+local LineCrossDetector = require('drift-mode/modes/LineCrossDetector')
 
 local config_list = ConfigIO.listTrackConfigs()
 
@@ -88,6 +89,20 @@ local signalListeners = {
       if track_data ~= nil then
         run_state = RunState(track_data)
         reactivateColliders()
+
+        LineCrossDetector.clear()
+        if track_data.startLine then
+          LineCrossDetector.registerLine(track_data.startLine,
+            EventSystem.Signal.CrossedStart, 5)
+        end
+        if track_data.finishLine then
+          LineCrossDetector.registerLine(track_data.finishLine,
+            EventSystem.Signal.CrossedFinish, 5)
+        end
+        if track_data.respawnLine then
+          LineCrossDetector.registerLine(track_data.respawnLine,
+            EventSystem.Signal.CrossedRespawn, 5)
+        end
       end
     end
   },
@@ -147,57 +162,6 @@ local function registerPosition()
   run_state:registerCar(car_data, car)
 end
 
-local last_pos = nil
-local function monitorCrossingLines()
-  if not run_state or not track_data or not car_data then return end
-
-  local car = ac.getCar(0)
-
-  local current_pos = Point(car.position + car.look * car_data.frontOffset)
-  if last_pos == nil then
-    last_pos = current_pos
-    return
-  end
-
-  -- If the delta is large then it was probably a teleport.
-  -- Do not emit start/finish cross in such case.
-  if last_pos:flat():distance(current_pos:flat()) > 5 then
-    last_pos = current_pos
-    return
-  end
-
-  if track_data.startLine then
-    local res = vec2.intersect(
-      track_data.startLine.head:flat(),
-      track_data.startLine.tail:flat(),
-      last_pos:flat(),
-      current_pos:flat()
-    )
-    if res then EventSystem.emit(EventSystem.Signal.CrossedStart, {}) end
-  end
-
-  if track_data.finishLine then
-    local res = vec2.intersect(
-      track_data.finishLine.head:flat(),
-      track_data.finishLine.tail:flat(),
-      last_pos:flat(),
-      current_pos:flat()
-    )
-    if res then EventSystem.emit(EventSystem.Signal.CrossedFinish, {}) end
-  end
-
-  if track_data.respawnLine then
-    local res = vec2.intersect(
-      track_data.respawnLine.head:flat(),
-      track_data.respawnLine.tail:flat(),
-      last_pos:flat(),
-      current_pos:flat()
-    )
-    if res then EventSystem.emit(EventSystem.Signal.CrossedRespawn, {}) end
-  end
-
-  last_pos = current_pos
-end
 
 local timers = {
   data_brokered = Timer(0.02, function() listenForSignals() end),
@@ -208,10 +172,12 @@ local timers = {
     end
   end),
   monitor_crossing = Timer(0.1, function()
-    monitorCrossingLines()
+    if not run_state or not track_data or not car_data then return end
+    local car = ac.getCar(0)
+    local current_pos = Point(car.position + car.look * car_data.frontOffset)
+    LineCrossDetector.registerPoint(current_pos)
   end)
 }
-
 
 local running_task = nil
 
