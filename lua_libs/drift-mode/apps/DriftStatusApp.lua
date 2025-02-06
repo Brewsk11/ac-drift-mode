@@ -12,7 +12,7 @@ local run_state_data = nil
 ---@type TrackConfig?
 local track_data = nil
 
-function DriftStatusApp.Main()
+function DriftStatusApp.Main(dt)
     run_state_data = DataBroker.read("run_state_data")
 
     EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)

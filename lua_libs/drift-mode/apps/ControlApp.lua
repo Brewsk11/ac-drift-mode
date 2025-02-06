@@ -1,11 +1,7 @@
 local DataBroker = require('drift-mode/databroker')
 local EventSystem = require('drift-mode/eventsystem')
-local RaycastUtils = require('drift-mode/RaycastUtils')
 local ConfigIO = require('drift-mode/configio')
 local Timer = require('drift-mode/timer')
-local PP = require('drift-mode/physicspatcher')
-local S = require('drift-mode/serializer')
-local CourseEditor = require('drift-mode/courseeditor')
 local Resources = require('drift-mode/Resources')
 
 local ControlApp = {}
@@ -63,27 +59,6 @@ local timers = {
     listeners = Timer(0.5, listenForData)
 }
 
----@diagnostic disable-next-line: duplicate-set-field
-function script.update(dt)
-    for _, timer in pairs(timers) do
-        timer:tick(dt)
-    end
-
-    if running_task ~= nil then
-        coroutine.resume(running_task)
-        if coroutine.status(running_task) == 'dead' then
-            running_task = nil
-        end
-    end
-
-    ac.debug("physics.allowed()", physics.allowed())
-
-    if ac.getCar(0).extraF then
-        ac.setExtraSwitch(5, false)
-        EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
-    end
-end
-
 local EditorTab = require('drift-mode/apps/ControlAppTabs/Editor')
 local CarSetupTab = require('drift-mode/apps/ControlAppTabs/CarSetup')
 local TrackPatcherTab = require('drift-mode/apps/ControlAppTabs/TrackPatcher')
@@ -120,8 +95,21 @@ local function drawAppUI()
     end)
 end
 
-function ControlApp.Main()
+function ControlApp.Main(dt)
     drawAppUI()
+
+    for _, timer in pairs(timers) do
+        timer:tick(dt)
+    end
+
+    if running_task ~= nil then
+        coroutine.resume(running_task)
+        if coroutine.status(running_task) == 'dead' then
+            running_task = nil
+        end
+    end
+
+    ac.debug("physics.allowed()", physics.allowed())
 end
 
 EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
