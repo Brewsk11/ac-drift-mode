@@ -13,7 +13,6 @@ function LineCrossDetector.registerLine(segment, signal, maxDelta)
         signal = signal,
         maxDelta = maxDelta
     }
-    ac.log(registeredLines)
 end
 
 function LineCrossDetector.clear()
