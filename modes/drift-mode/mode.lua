@@ -179,18 +179,9 @@ local timers = {
   end)
 }
 
-local running_task = nil
-
 function script.update(dt)
   for _, timer in pairs(timers) do
     timer:tick(dt)
-  end
-
-  if running_task ~= nil then
-    coroutine.resume(running_task)
-    if coroutine.status(running_task) == 'dead' then
-      running_task = nil
-    end
   end
 
   ac.debug("physics.allowed()", physics.allowed())
