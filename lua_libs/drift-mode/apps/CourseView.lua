@@ -27,6 +27,8 @@ function CourseView.Main(dt)
     app_map_canvas:clear()
     app_map_canvas:update(function(dt)
         if track_data then
+            if #track_data.scoringObjects == 0 then return end
+
             local bounding_box = track_data:getBoundingBox(20)
             minimap_helper:setBoundingBox(bounding_box)
 
@@ -37,9 +39,6 @@ function CourseView.Main(dt)
                 rgbm(1, 1, 1, 1),
                 minimap_helper.uv1,
                 minimap_helper.uv2)
-
-            ac.debug('uv1', minimap_helper.uv1)
-            ac.debug('uv2', minimap_helper.uv2)
 
             for _, obj in ipairs(track_data.scoringObjects) do
                 obj:drawFlat(minimap_helper:worldToScaledBoundMapTransformer())

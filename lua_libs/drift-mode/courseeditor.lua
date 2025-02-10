@@ -339,58 +339,58 @@ function CourseEditor:drawUIScoringObjects(dt)
 
     ui.childWindow("object" .. tostring(i), vec2(ui.availableSpaceX() - 32, config_height), true,
       bit.bor(ui.WindowFlags.NoScrollbar, ui.WindowFlags.NoScrollWithMouse), function()
-      if objects[i].isInstanceOf(Zone) then
-        ui.image(Resources.IconZoneWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
-        if ui.itemHovered() then
-          ui.setTooltip("Zone")
+        if objects[i].isInstanceOf(Zone) then
+          ui.image(Resources.IconZoneWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
+          if ui.itemHovered() then
+            ui.setTooltip("Zone")
+          end
+        elseif objects[i].isInstanceOf(Clip) then
+          ui.image(Resources.IconClipWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
+          if ui.itemHovered() then
+            ui.setTooltip("Clip")
+          end
         end
-      elseif objects[i].isInstanceOf(Clip) then
-        ui.image(Resources.IconClipWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
+
+        ui.sameLine(0, 4)
+
+        ui.setNextItemWidth(ui.availableSpaceX() - 60)
+        ui.pushFont(ui.Font.Main)
+        objects[i].name = ui.inputText("Object #" .. tostring(i), objects[i].name,
+          ui.InputTextFlags.Placeholder + input_global_flags)
         if ui.itemHovered() then
-          ui.setTooltip("Clip")
+          ui.setTooltip("Object #" .. tostring(i))
         end
-      end
+        ui.popFont()
 
-      ui.sameLine(0, 4)
+        ui.sameLine(0, 6)
 
-      ui.setNextItemWidth(ui.availableSpaceX() - 60)
-      ui.pushFont(ui.Font.Main)
-      objects[i].name = ui.inputText("Object #" .. tostring(i), objects[i].name,
-        ui.InputTextFlags.Placeholder + input_global_flags)
-      if ui.itemHovered() then
-        ui.setTooltip("Object #" .. tostring(i))
-      end
-      ui.popFont()
+        ui.setNextItemWidth(ui.availableSpaceX())
+        local text, changed = ui.inputText(
+          "0",
+          tostring(objects[i].maxPoints),
+          Utils.wrapFlags({ ui.InputTextFlags.CharsDecimal, ui.InputTextFlags.Placeholder }, Utils.DisableFlags.Input,
+            is_user_editing)
+        )
+        if ui.itemHovered() then
+          ui.setTooltip("Max points")
+        end
 
-      ui.sameLine(0, 6)
-
-      ui.setNextItemWidth(ui.availableSpaceX())
-      local text, changed = ui.inputText(
-        "0",
-        tostring(objects[i].maxPoints),
-        Utils.wrapFlags({ ui.InputTextFlags.CharsDecimal, ui.InputTextFlags.Placeholder }, Utils.DisableFlags.Input,
-          is_user_editing)
-      )
-      if ui.itemHovered() then
-        ui.setTooltip("Max points")
-      end
-
-      if changed then
-        if text == "" then
+        if changed then
+          if text == "" then
             text = "0"
+          end
+          objects[i].maxPoints = tonumber(text)
+          onCourseEdited()
         end
-        objects[i].maxPoints = tonumber(text)
-        onCourseEdited()
-      end
 
-      ui.offsetCursorY(2)
-      ui.separator()
-      ui.offsetCursorY(6)
+        ui.offsetCursorY(2)
+        ui.separator()
+        ui.offsetCursorY(6)
 
-      CourseEditorElements.ObjectConfigPanel(i, objects[i], is_user_editing, cursor_data, onCourseEdited, attachRoutine)
+        CourseEditorElements.ObjectConfigPanel(i, objects[i], is_user_editing, cursor_data, onCourseEdited, attachRoutine)
 
-      config_final_heights[i] = ui.windowContentSize().y + 24
-    end)
+        config_final_heights[i] = ui.windowContentSize().y + 24
+      end)
 
     if ui.itemHovered(ui.HoveredFlags.AllowWhenBlockedByActiveItem) then
       currently_highlighted = i

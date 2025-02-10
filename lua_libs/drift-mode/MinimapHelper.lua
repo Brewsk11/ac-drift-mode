@@ -66,7 +66,6 @@ end
 function MinimapHelper:worldToScaledBoundMapTransformer()
     return (function(coord)
         local res = self:worldToScaledBoundMap(coord)
-        ac.log(coord:flat(), " -> ", res)
         return res
     end)
 end

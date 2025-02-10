@@ -95,6 +95,8 @@ end
 
 ---@param context EditorRoutine.Context
 function RoutineMovePoi:attachCondition(context)
+    ---TODO: Massive performance cow
+
     context.cursor:unregisterObject("move_poi_attach")
 
     local light_pois = {}
