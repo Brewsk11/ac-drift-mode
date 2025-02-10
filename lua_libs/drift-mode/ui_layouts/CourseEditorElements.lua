@@ -60,7 +60,6 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
 
     ui.offsetCursorY(4)
 
-    local popup_context = nil
     if ui.button("Generate Inside Line", vec2(ui.availableSpaceX() / 2, line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
         popup_context = { obj = zone, type = "generate_inside" }
     end
@@ -69,20 +68,6 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
         ui.setTooltip(
             "Experimental - use to generate inside line after manually defining outside line.\nExpect bugs.")
     end
-
-    ui.sameLine(0, 8)
-
-    if ui.button("Focus camera", vec2(ui.availableSpaceX(), line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
-        ac.setCurrentCamera(ac.CameraMode.Free)
-
-        local cam_pos = zone:getCenter():value() + vec3(0, 60, 0)
-
-        ac.setCameraPosition(cam_pos)
-        ac.setCameraDirection(vec3(0.01, -1, 0)) -- Add slight skew to fix a mysterious bug (division by zero?)
-        ac.setCameraFOV(40)
-    end
-
-
     if popup_context and popup_context.obj == zone then
         ui.itemPopup(ui.MouseButton.Left, function()
             popup_context.val1 = ui.slider("", popup_context.val1, -10, 10, 'Distance to outside: %.1f')
@@ -111,6 +96,18 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
                 cursor_data:unregisterObject("generate_inside")
             end
         end)
+    end
+
+    ui.sameLine(0, 8)
+
+    if ui.button("Focus camera", vec2(ui.availableSpaceX(), line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
+        ac.setCurrentCamera(ac.CameraMode.Free)
+
+        local cam_pos = zone:getCenter():value() + vec3(0, 60, 0)
+
+        ac.setCameraPosition(cam_pos)
+        ac.setCameraDirection(vec3(0.01, -1, 0)) -- Add slight skew to fix a mysterious bug (division by zero?)
+        ac.setCameraFOV(40)
     end
 end
 
