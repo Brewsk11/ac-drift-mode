@@ -1,6 +1,8 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local Point = require('drift-mode/models/Point')
+
 ---@class Clip : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field origin Point
@@ -46,8 +48,8 @@ function Clip:getEnd()
 end
 
 function Clip:setEnd(new_end_point)
-  self.direction = (new_end_point:value() - self.origin:value()):normalize()
-  self.length = new_end_point:value():distance(self.origin:value())
+    self.direction = (new_end_point:value() - self.origin:value()):normalize()
+    self.length = new_end_point:value():distance(self.origin:value())
 end
 
 function Clip:getCenter()
@@ -86,7 +88,30 @@ function Clip:getSegment()
     return Segment(self.origin, self:getEnd())
 end
 
+function Clip:getBoundingBox()
+    local pMin = vec3(9999, 9999, 9999)
+    local pMax = vec3(-9999, -9999, -9999)
+
+    pMin:min(self.origin:value())
+    pMax:max(self.origin:value())
+
+    pMin:min(self:getEnd():value())
+    pMax:max(self:getEnd():value())
+
+    return { p1 = Point(pMin), p2 = Point(pMax) }
+end
+
+function Clip:drawFlat(coord_transformer)
+    local origin_mapped = coord_transformer(self.origin)
+    local end_mapped = coord_transformer(self:getEnd())
+    ui.drawLine(origin_mapped, end_mapped, rgbm(0, 0, 1, 1), 2)
+end
+
 local function test()
+    local test_clip = Clip("TestBoundingBox", Point(vec3(-1, 1, -1)))
+    test_clip:setEnd(Point(vec3(1, -1, 1)))
+    Assert.Equal(test_clip:getBoundingBox().p1:value(), vec3(-1, -1, -1))
+    Assert.Equal(test_clip:getBoundingBox().p2:value(), vec3(1, 1, 1))
 end
 test()
 

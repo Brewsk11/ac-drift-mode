@@ -39,7 +39,7 @@ function Zone:recalculatePolygon()
 
     local points = {}
     for _, insidePoint in self:getInsideLine():iter() do
-        points[#points+1] = insidePoint
+        points[#points + 1] = insidePoint
     end
 
     local rev_idx = 0
@@ -154,7 +154,7 @@ function Zone:isSegmentInZone(segment, custom_origin)
     local is_tail_in_zone = self:isInZone(segment.tail, custom_origin)
 
     if not is_head_in_zone and not is_tail_in_zone then return 0.0 end
-    if     is_head_in_zone and     is_tail_in_zone then return 1.0 end
+    if is_head_in_zone and is_tail_in_zone then return 1.0 end
 
     -- Find which zone part is crossing the segment
     for _, zone_segment in self:getPolygon():segment(true):iter() do
@@ -177,10 +177,9 @@ function Zone:isSegmentInZone(segment, custom_origin)
     Assert.Error([[
         Calculated that either head or tail are in zone,
         while the segment does not intersect with any of the zone's polygon sides]]
-        ---@diagnostic disable-next-line: missing-return
+    ---@diagnostic disable-next-line: missing-return
     )
 end
-
 
 local function rotateVec2(v, theta)
     local new_x = v.x * math.cos(theta) - v.y * math.sin(theta)
@@ -223,7 +222,7 @@ function Zone:shortestCrossline(point)
                     segment.tail:flat()
                 )
                 if segment_hit ~= nil then
-                out_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
+                    out_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
                 end
             end
         end
@@ -239,7 +238,7 @@ function Zone:shortestCrossline(point)
                     segment.tail:flat()
                 )
                 if segment_hit ~= nil then
-                in_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
+                    in_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
                 end
             end
         end
@@ -248,8 +247,8 @@ function Zone:shortestCrossline(point)
             if shortest.segment == nil then
                 shortest = {
                     segment = Segment(
-                    Point(vec3(out_hit.hit.x, 0, out_hit.hit.y)),
-                    Point(vec3(in_hit.hit.x, 0, in_hit.hit.y))),
+                        Point(vec3(out_hit.hit.x, 0, out_hit.hit.y)),
+                        Point(vec3(in_hit.hit.x, 0, in_hit.hit.y))),
                     out_no = out_hit.segment_no,
                     in_no = in_hit.segment_no
                 }
@@ -260,8 +259,8 @@ function Zone:shortestCrossline(point)
                 if shortest_lenght > new_lenght then
                     shortest = {
                         segment = Segment(
-                        Point(vec3(out_hit.hit.x, 0, out_hit.hit.y)),
-                        Point(vec3(in_hit.hit.x, 0, in_hit.hit.y))),
+                            Point(vec3(out_hit.hit.x, 0, out_hit.hit.y)),
+                            Point(vec3(in_hit.hit.x, 0, in_hit.hit.y))),
                         out_no = out_hit.segment_no,
                         in_no = in_hit.segment_no
                     }
@@ -349,6 +348,36 @@ function Zone:drawSetup()
     self.insideLine:segment():draw(color_inside)
 end
 
+function Zone:getBoundingBox()
+    local pMin = vec3(9999, 9999, 9999)
+    local pMax = vec3(-9999, -9999, -9999)
+
+    for _, point in self:getInsideLine():iter() do
+        pMin:min(point:value())
+        pMax:max(point:value())
+    end
+
+    for _, point in self:getOutsideLine():iter() do
+        pMin:min(point:value())
+        pMax:max(point:value())
+    end
+
+    return { p1 = Point(pMin), p2 = Point(pMax) }
+end
+
+function Zone:drawFlat(coord_transformer)
+    for _, seg in self:getOutsideLine():segment(false):iter() do
+        local head_mapped = coord_transformer(seg.head)
+        local tail_mapped = coord_transformer(seg.tail)
+        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 1), 3)
+    end
+
+    for _, seg in self:getInsideLine():segment(false):iter() do
+        local head_mapped = coord_transformer(seg.head)
+        local tail_mapped = coord_transformer(seg.tail)
+        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 1), 1)
+    end
+end
 
 local Assert = require('drift-mode/assert')
 local function test()
@@ -359,7 +388,7 @@ local function test()
         Point(vec3(1, 0, 0)) })
     local outside = PointGroup({
         Point(vec3(0, 0, 1)),
-        Point(vec3(1, 0, 1))})
+        Point(vec3(1, 0, 1)) })
 
     local zone = Zone("test", outside, inside, 0)
     local custom_origin = Point(vec3(23.45, 0, 51.23))

@@ -29,14 +29,14 @@ end
 
 function TrackConfig:serialize()
     local data = {
-        __class = "TrackConfig",
-        name = S.serialize(self.name),
+        __class        = "TrackConfig",
+        name           = S.serialize(self.name),
         scoringObjects = {},
-        startLine = S.serialize(self.startLine),
-        finishLine  = S.serialize(self.finishLine),
-        respawnLine  = S.serialize(self.respawnLine),
-        startingPoint = S.serialize(self.startingPoint),
-        scoringRanges = S.serialize(self.scoringRanges)
+        startLine      = S.serialize(self.startLine),
+        finishLine     = S.serialize(self.finishLine),
+        respawnLine    = S.serialize(self.respawnLine),
+        startingPoint  = S.serialize(self.startingPoint),
+        scoringRanges  = S.serialize(self.scoringRanges)
     }
 
     for idx, scoringObject in ipairs(self.scoringObjects) do
@@ -70,10 +70,10 @@ function TrackConfig.deserialize(data)
     if data.zones or data.clips then
         local scoringObjects = {}
         for _, zone in ipairs(data.zones) do
-            scoringObjects[#scoringObjects+1] = zone
+            scoringObjects[#scoringObjects + 1] = zone
         end
         for _, clip in ipairs(data.clips) do
-            scoringObjects[#scoringObjects+1] = clip
+            scoringObjects[#scoringObjects + 1] = clip
         end
         data.scoringObjects = scoringObjects
     end
@@ -113,6 +113,22 @@ function TrackConfig:gatherColliders()
         colliders = table.chain(colliders, obj:gatherColliders())
     end
     return colliders
+end
+
+function TrackConfig:getBoundingBox(padding)
+    local pMin = vec3(9999, 9999, 9999)
+    local pMax = vec3(-9999, -9999, -9999)
+
+    for _, obj in ipairs(self.scoringObjects) do
+        local obj_bounding_box = obj:getBoundingBox()
+        pMin:min(obj_bounding_box.p1:value())
+        pMax:max(obj_bounding_box.p2:value())
+    end
+
+    return {
+        p1 = Point(pMin - vec3(padding, padding, padding)),
+        p2 = Point(pMax + vec3(padding, padding, padding))
+    }
 end
 
 local function test()
