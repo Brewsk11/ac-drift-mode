@@ -33,7 +33,7 @@ function CourseView.Main(dt)
             minimap_helper:setBoundingBox(bounding_box)
 
             ui.drawImage(
-                minimap_helper.track_map_image_path,
+                minimap_helper._track_map_image_path,
                 vec2(0, 0),
                 minimap_helper:getSize(),
                 rgbm(1, 1, 1, 1),
@@ -41,15 +41,15 @@ function CourseView.Main(dt)
                 minimap_helper.uv2)
 
             for _, obj in ipairs(track_data.scoringObjects) do
-                obj:drawFlat(minimap_helper:worldToScaledBoundMapTransformer())
+                obj:drawFlat(minimap_helper:worldToBoundMapTransformer())
             end
 
             ui.drawRect(
-                minimap_helper:worldToScaledBoundMap(bounding_box.p1),
-                minimap_helper:worldToScaledBoundMap(bounding_box.p2),
+                minimap_helper:worldToBoundMap(bounding_box.p1),
+                minimap_helper:worldToBoundMap(bounding_box.p2),
                 rgbm(1, 1, 0, 1))
 
-            ui.drawCircleFilled(minimap_helper:worldToScaledBoundMap(Point(ac.getCar(0).position)), 3, rgbm(1, 0, 1, 1))
+            ui.drawCircleFilled(minimap_helper:worldToBoundMap(Point(ac.getCar(0).position)), 3, rgbm(1, 0, 1, 1))
         end
     end)
 
