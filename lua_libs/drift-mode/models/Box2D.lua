@@ -129,15 +129,23 @@ function Box2D:fitIn(box, out)
 
     if out == nil then
         self:setSize(self._size * ratio)
-        self:setCenter(box:getCenter())
     else
         out:setSize(self._size * ratio)
+    end
+end
+
+function Box2D:fitInAndMoveTo(box, out)
+    if out == nil then
+        self:fitIn(box)
+        self:setCenter(box:getCenter())
+    else
+        self:fitIn(box, out)
         out:setCenter(box:getCenter())
     end
 end
 
 local function test()
-    local RENDER_TEST_TEXTURE = false
+    local RENDER_TEST_TEXTURE = true
 
     -- Box2D:fitIn()
     local fitIn_data = {
@@ -176,7 +184,7 @@ local function test()
     -- Transform
     for _, data in ipairs(fitIn_data) do
         data.res = Box2D()
-        data.box:fitIn(data.containment, data.res)
+        data.box:fitInAndMoveTo(data.containment, data.res)
     end
 
     -- Visualize
