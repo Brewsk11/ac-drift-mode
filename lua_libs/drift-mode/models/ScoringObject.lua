@@ -14,7 +14,7 @@ function ScoringObject:getCenter()
 end
 
 ---Draw itself using ui.* calls
----@param coord_transformer fun(Point) Function converting true coordinate to canvas coordinate
+---@param coord_transformer fun(Point): vec2 Function converting true coordinate to canvas coordinate
 function ScoringObject:drawFlat(coord_transformer)
     Assert.Error("Called abstract method!")
 end
