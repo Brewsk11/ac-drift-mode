@@ -158,6 +158,7 @@ local function registerPosition()
   local car = ac.getCar(0)
 
   run_state:registerCar(car_data, car)
+  EventSystem.emit(EventSystem.Signal.RunStateChanged, run_state)
 end
 
 
@@ -189,7 +190,7 @@ function script.update(dt)
     EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
   end
 
-  if not run_state and track_data then run_state = RunState(track_data) end
+  if not run_state and track_data then resetScore() end
 end
 
 function script.draw3D()

@@ -13,6 +13,8 @@ local ClipStateData = class("ClipStateData", ScoringObjectStateData)
 function ClipStateData:initialize()
 end
 
+function ClipStateData:drawFlat(coord_transformer)
+end
 
 local function test()
 end

@@ -159,16 +159,47 @@ function MinimapHelper:drawBoundingBox(origin)
     )
 end
 
-function MinimapHelper:drawCar(origin, idx)
-    local car_position = ac.getCar(idx).position
-    ui.drawCircleFilled(self:mapCoord(Point(car_position)), 2, rgbm.colors.green)
+---comment
+---@param origin vec2
+---@param idx integer
+---@param car_config CarConfig?
+function MinimapHelper:drawCar(origin, idx, car_config)
+    local car = ac.getCar(idx)
+
+    if car_config ~= nil then
+        local p1, p2, p3, p4 =
+            car.position + car.look * car_config.frontOffset + car.side * car_config.frontSpan,
+            car.position + car.look * car_config.frontOffset - car.side * car_config.frontSpan,
+            car.position - car.look * car_config.rearOffset + car.side * car_config.rearSpan,
+            car.position - car.look * car_config.rearOffset - car.side * car_config.rearSpan
+
+        ui.drawQuadFilled(
+            self:mapCoord(Point(p1)),
+            self:mapCoord(Point(p2)),
+            self:mapCoord(Point(p4)),
+            self:mapCoord(Point(p3)),
+            rgbm.colors.gray)
+    end
 end
 
 ---@param track_config TrackConfig
 function MinimapHelper:drawTrackConfig(origin, track_config)
     for _, obj in ipairs(track_config.scoringObjects) do
         obj:drawFlat(function(p)
-            return self:mapCoord(p)
+            return origin + self:mapCoord(p)
+        end)
+    end
+end
+
+---@param run_state_data RunStateData?
+function MinimapHelper:drawRunState(origin, run_state_data)
+    if run_state_data == nil then
+        return
+    end
+    for _, obj in ipairs(run_state_data.scoringObjectStates) do
+        ac.debug("obj", obj)
+        obj:drawFlat(function(p)
+            return origin + self:mapCoord(p)
         end)
     end
 end

@@ -9,6 +9,12 @@ require('drift-mode/models')
 ---@type TrackConfig?
 local track_data = nil
 
+---@type CarConfig?
+local car_config = nil
+
+---@type RunStateData?
+local run_state_data = nil
+
 local app_map_canvas = ui.ExtraCanvas(vec2(512, 512)):clear(rgbm(0, 0, 0, 0)):setName("Testing")
 
 local CourseView = {}
@@ -20,6 +26,12 @@ function CourseView.Main(dt)
     EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
         track_data = payload;
     end)
+    EventSystem.listen(listener_id, EventSystem.Signal.CarConfigChanged, function(payload)
+        car_config = payload;
+    end)
+    EventSystem.listen(listener_id, EventSystem.Signal.RunStateChanged, function(payload)
+        run_state_data = payload;
+    end)
 
     local window_size = ui.windowSize()
 
@@ -28,7 +40,7 @@ function CourseView.Main(dt)
         if track_data then
             if #track_data.scoringObjects == 0 then return end
 
-            local bounding_box = track_data:getBoundingBox(10)
+            local bounding_box = track_data:getBoundingBox(0)
 
             minimap_helper:setViewportSize(window_size)
             minimap_helper:setBoundingBox(bounding_box)
@@ -38,7 +50,9 @@ function CourseView.Main(dt)
             minimap_helper:drawTrackConfig(vec2(0, 0), track_data)
 
             minimap_helper:drawBoundingBox(vec2(0, 0))
-            minimap_helper:drawCar(vec2(0, 0), 0)
+            minimap_helper:drawCar(vec2(0, 0), 0, car_config)
+
+            minimap_helper:drawRunState(vec2(0, 0), run_state_data)
 
             --ui.drawCircleFilled(minimap_helper:worldToBoundMap(Point(ac.getCar(0).position)), 3, rgbm(1, 0, 1, 1))
         end

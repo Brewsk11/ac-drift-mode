@@ -16,7 +16,9 @@ function ZoneScoringPoint:initialize(point, speed_mult, angle_mult, ratio_mult, 
     self.speed_mult = speed_mult
     self.angle_mult = angle_mult
     self.ratio_mult = ratio_mult
-    self.score_mult = speed_mult * angle_mult * ratio_mult
+    if speed_mult and angle_mult and ratio_mult then
+        self.score_mult = speed_mult * angle_mult * ratio_mult
+    end
     self.location = location
     self.inside = inside
 end

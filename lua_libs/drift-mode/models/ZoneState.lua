@@ -11,7 +11,6 @@ local ZoneState = class("ZoneState", ScoringObjectState)
 
 function ZoneState:initialize(zone)
     self.zone = zone
-    self.scoring_points = {}
     self.scores = {}
     self.started = false
     self.finished = false
@@ -33,10 +32,11 @@ function ZoneState:__serialize()
         speed = S.serialize(self:getSpeed()),
         angle = S.serialize(self:getAngle()),
         depth = S.serialize(self:getDepth()),
+        score_points = S.serialize(self.scores),
 
         active = S.serialize(self:isActive()),
         performance = S.serialize(self:getPerformance()),
-        timeInZone = S.serialize(self:getTimeInZone()),
+        timeInZone = S.serialize(self:getTimeInZone())
     }
 
     return data
@@ -49,7 +49,8 @@ function ZoneState:registerCar(car_config, car, drift_state)
     -- If zone has already been finished, ignore call
     if self.finished then return nil end
 
-    local zone_scoring_point = Point(car.position - car.look * car_config.rearOffset + car.side * drift_state.side_drifting * car_config.rearSpan)
+    local zone_scoring_point = Point(car.position - car.look * car_config.rearOffset +
+        car.side * drift_state.side_drifting * car_config.rearSpan)
 
     -- Check if the registering point belongs to the zone
     if not self.zone:isInZone(zone_scoring_point) then
@@ -83,17 +84,19 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
 
     -- In limited number of rays there may not be a hit for a valid point inside the zone
     -- In such case for now unfortunatelly we'll assume the score did not happen
-    if cross_line.segment == nil then ac.log("Didn't find a crossline for valid point!"); return 0.0 end
+    if cross_line.segment == nil then
+        ac.log("Didn't find a crossline for valid point!"); return 0.0
+    end
 
     local ratio_mult = 0.0
     -- In case of calculating for point in safety buffer (when player slightly ran outside
     -- but we keep scoring 0 to allow coming back to the zone)
     if is_inside then
         local cross_distance =
-          cross_line.segment.tail:projected():distance(point:projected()) +
-          cross_line.segment.head:projected():distance(point:projected())
+            cross_line.segment.tail:projected():distance(point:projected()) +
+            cross_line.segment.head:projected():distance(point:projected())
         local point_distance =
-          cross_line.segment.tail:projected():distance(point:projected())
+            cross_line.segment.tail:projected():distance(point:projected())
         ratio_mult = point_distance / cross_distance
     end
 
@@ -102,8 +105,8 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
     local out_segments = self.zone:getOutsideLine():count() - 1 -- There are 1 less segments than points in group
     local in_segments  = self.zone:getInsideLine():count() - 1
     local out_distance = cross_line.out_no / out_segments
-    local in_distance = cross_line.in_no / in_segments
-    local distance = (out_distance + in_distance) / 2 -- Simple average, there may be a better way
+    local in_distance  = cross_line.in_no / in_segments
+    local distance     = (out_distance + in_distance) / 2 -- Simple average, there may be a better way
 
     -- Workaround for first segment
     -- If any of out or in segment hit number is 1, set the distance to 0
@@ -111,7 +114,7 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
     -- Setting the distance to 0 will allow to report 100% zone completion.
     if cross_line.in_no == 1 or cross_line.out_no == 1 then distance = 0 end
 
-    self.scores[#self.scores+1] = ZoneScoringPoint(
+    self.scores[#self.scores + 1] = ZoneScoringPoint(
         point,
         drift_state.speed_mult,
         drift_state.angle_mult,

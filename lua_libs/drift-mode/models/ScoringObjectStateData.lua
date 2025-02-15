@@ -14,6 +14,9 @@ local ScoringObjectStateData = class("ScoringObjectStateData")
 function ScoringObjectStateData:initialize()
 end
 
+function ScoringObjectStateData:drawFlat(coord_transformer)
+end
+
 local function test()
 end
 test()
