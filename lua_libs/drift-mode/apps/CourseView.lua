@@ -30,8 +30,8 @@ function CourseView.Main(dt)
 
             local bounding_box = track_data:getBoundingBox(10)
 
-            minimap_helper.viewport_size = window_size
-            minimap_helper.bounding_box = bounding_box
+            minimap_helper:setViewportSize(window_size)
+            minimap_helper:setBoundingBox(bounding_box)
 
             minimap_helper:drawMap(vec2(0, 0))
 

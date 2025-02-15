@@ -23,10 +23,49 @@ function MinimapHelper:initialize(track_content_path, viewport_size, bounding_bo
         scale_factor = track_map_ini_config:get("PARAMETERS", "SCALE_FACTOR", 1)
     }
 
-    self.viewport_size = viewport_size or vec2(100, 100)
+    self._viewport_size = viewport_size or vec2(100, 100)
 
-    self.bounding_box = bounding_box
-    self.padding = 10
+    self._bounding_box = bounding_box
+    self._padding = 10
+
+    -- Initialize cache fields
+    self._dirty = true
+    self._cached_scale = nil
+    self._cached_scaled_size = nil
+    self._cached_offset = nil
+end
+
+---@return vec2
+function MinimapHelper:getViewportSize()
+    return self._viewport_size
+end
+
+---@param viewport_size vec2
+function MinimapHelper:setViewportSize(viewport_size)
+    self._viewport_size = viewport_size
+    self._dirty = true
+end
+
+---@return table
+function MinimapHelper:getBoundingBox()
+    return self._bounding_box
+end
+
+---@param bounding_box table
+function MinimapHelper:setBoundingBox(bounding_box)
+    self._bounding_box = bounding_box
+    self._dirty = true
+end
+
+---@return number
+function MinimapHelper:getPadding()
+    return self._padding
+end
+
+---@param padding number
+function MinimapHelper:setPadding(padding)
+    self._padding = padding
+    self._dirty = true
 end
 
 --- Maps a world coordinate to a pixel position on map.png
@@ -39,13 +78,12 @@ end
 
 --- Calculates the scaled bounding box and offset for drawing the map
 ---@private
----@return number, vec2, vec2
-function MinimapHelper:getMapScalingAndOffset()
+function MinimapHelper:recalculateMapScalingAndOffset()
     local bounding_box_p1 = nil
     local bounding_box_p2 = nil
-    if self.bounding_box then
-        bounding_box_p1 = self:worldToMap(self.bounding_box.p1) - vec2(self.padding, self.padding)
-        bounding_box_p2 = self:worldToMap(self.bounding_box.p2) + vec2(self.padding, self.padding)
+    if self:getBoundingBox() then
+        bounding_box_p1 = self:worldToMap(self:getBoundingBox().p1) - vec2(self:getPadding(), self:getPadding())
+        bounding_box_p2 = self:worldToMap(self:getBoundingBox().p2) + vec2(self:getPadding(), self:getPadding())
     else
         bounding_box_p1 = vec2(0, 0)
         bounding_box_p2 = vec2(
@@ -58,8 +96,8 @@ function MinimapHelper:getMapScalingAndOffset()
 
     -- Compute scale to fit the bounding box into the viewport
     local scale = math.min(
-        self.viewport_size.x / bb_box:getWidth(),
-        self.viewport_size.y / bb_box:getHeight()
+        self:getViewportSize().x / bb_box:getWidth(),
+        self:getViewportSize().y / bb_box:getHeight()
     )
 
     -- Calculate scaled dimensions of the original image
@@ -71,11 +109,26 @@ function MinimapHelper:getMapScalingAndOffset()
     local scaled_bbox_center_x = (bounding_box_p1.x + bounding_box_p2.x) / 2 * scale
     local scaled_bbox_center_y = (bounding_box_p1.y + bounding_box_p2.y) / 2 * scale
 
-    local desired_offset_x = scaled_bbox_center_x - self.viewport_size.x / 2
-    local desired_offset_y = scaled_bbox_center_y - self.viewport_size.y / 2
+    local desired_offset_x = scaled_bbox_center_x - self:getViewportSize().x / 2
+    local desired_offset_y = scaled_bbox_center_y - self:getViewportSize().y / 2
     local offset = vec2(desired_offset_x, desired_offset_y)
 
-    return scale, scaled_size, offset
+    self._cached_scale = scale
+    self._cached_scaled_size = scaled_size
+    self._cached_offset = offset
+end
+
+--- Calculates the scaled bounding box and offset for drawing the map
+---@private
+---@param force_recalculate boolean|nil
+---@return number, vec2, vec2
+function MinimapHelper:getMapScalingAndOffset(force_recalculate)
+    if force_recalculate or self._dirty then
+        self:recalculateMapScalingAndOffset()
+        self._dirty = false
+    end
+
+    return self._cached_scale, self._cached_scaled_size, self._cached_offset
 end
 
 function MinimapHelper:drawMap(origin)
@@ -97,9 +150,11 @@ function MinimapHelper:mapCoord(coord)
 end
 
 function MinimapHelper:drawBoundingBox(origin)
+    if self:getBoundingBox() == nil then return end
+
     ui.drawRect(
-        origin + self:mapCoord(self.bounding_box.p1),
-        origin + self:mapCoord(self.bounding_box.p2),
+        origin + self:mapCoord(self:getBoundingBox().p1),
+        origin + self:mapCoord(self:getBoundingBox().p2),
         rgbm.colors.green
     )
 end
