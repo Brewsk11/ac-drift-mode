@@ -138,10 +138,12 @@ function MinimapHelper:drawMap(origin)
         self._track_map_image_path,
         origin - offset,
         origin + scaled_size - offset,
-        rgbm(1, 1, 1, 1)
+        rgbm(1, 1, 1, 0.3)
     )
 end
 
+---@param coord Point
+---@return vec2
 function MinimapHelper:mapCoord(coord)
     local scale, _, offset = self:getMapScalingAndOffset()
 
@@ -159,7 +161,6 @@ function MinimapHelper:drawBoundingBox(origin)
     )
 end
 
----comment
 ---@param origin vec2
 ---@param idx integer
 ---@param car_config CarConfig?

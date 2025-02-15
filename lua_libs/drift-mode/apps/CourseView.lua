@@ -49,12 +49,10 @@ function CourseView.Main(dt)
 
             minimap_helper:drawTrackConfig(vec2(0, 0), track_data)
 
-            minimap_helper:drawBoundingBox(vec2(0, 0))
+            -- minimap_helper:drawBoundingBox(vec2(0, 0))
             minimap_helper:drawCar(vec2(0, 0), 0, car_config)
 
             minimap_helper:drawRunState(vec2(0, 0), run_state_data)
-
-            --ui.drawCircleFilled(minimap_helper:worldToBoundMap(Point(ac.getCar(0).position)), 3, rgbm(1, 0, 1, 1))
         end
     end)
 
