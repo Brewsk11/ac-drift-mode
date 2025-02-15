@@ -1,21 +1,14 @@
 local Assert = require('drift-mode/assert')
 
 ---@class MinimapHelper
----@field private _track_map_data table Data from map ini file required for coordinate calculation
----@field private _track_content_path string
----@field private _track_map_image_path string Path to the track minimap
----@field private _scale number The minimap scale, should be changed with the setter
----@field public bounding_box nil|Box2D World coordinate corners of the area which the minimap should show. Nil is the whole map.
----@field public max_size vec2 The size of the container the minimap is to be rendered in.
 local MinimapHelper = class("MinimapHelper")
 
 ---@param track_content_path string
 ---@param max_size vec2
 function MinimapHelper:initialize(track_content_path, max_size)
-    self._track_content_path = track_content_path
-    self._track_map_image_path = self._track_content_path .. "/map.png"
+    self._track_map_image_path = track_content_path .. "/map.png"
 
-    local track_map_data_path = self._track_content_path .. "/data/map.ini"
+    local track_map_data_path = track_content_path .. "/data/map.ini"
     local track_map_ini_config = ac.INIConfig.load(track_map_data_path)
 
     self._track_map_data = {
@@ -29,22 +22,14 @@ function MinimapHelper:initialize(track_content_path, max_size)
         ),
         scale_factor = track_map_ini_config:get("PARAMETERS", "SCALE_FACTOR", 1)
     }
-
-    self._scale = 1
-    self.bounding_box = nil
-
-    self.max_size = max_size
-end
-
-function MinimapHelper:getViewPort()
-
+    self.viewport_size = max_size
 end
 
 ---Maps a world coordinate to a pixel position on map.png
 ---@param coord Point
 ---@private
 ---@return vec2
-function MinimapHelper:worldToRawMap(coord)
+function MinimapHelper:worldToMap(coord)
     -- The transformation from world coordinate (eg. ac.getCar(0).position) to a coordinate on the map.png is:
     -- 1. Add offset from the map.ini file to the coordinate
     -- 2. Inversly scale the coorinate by SCALE_FACTOR from the map.ini. This is the scale that map creator set
@@ -56,143 +41,97 @@ function MinimapHelper:worldToRawMap(coord)
     return map_pos
 end
 
----Maps a world coordinate to a pixel position on map.png additionally scaled by the user-provided
----scale, to be correctly scaled in the UI.
----@param coord Point
----@return vec2
-function MinimapHelper:worldToMap(coord)
-    return self:worldToRawMap(coord) * self:getScale()
-end
+function MinimapHelper:drawMap(origin, bounding_box)
+    self.bounding_box = bounding_box
 
----@param coord vec2
----@return vec2
-function MinimapHelper:flatToRawMap(coord)
-    return self:worldToRawMap(Point(vec3(coord.x, 0, coord.y)))
-end
+    local bounding_box_p1 = self:worldToMap(bounding_box.p1)
+    local bounding_box_p2 = self:worldToMap(bounding_box.p2)
 
----@param coord vec2
----@return vec2
-function MinimapHelper:flatToMap(coord)
-    return self:flatToRawMap(coord) * self:getScale()
-end
+    local bb_box = Box2D(bounding_box_p1, bounding_box_p2)
 
-function MinimapHelper:worldToMapTransformer()
-    return (function(coord)
-        return self:worldToMap(coord)
-    end)
-end
-
----@param coord Point
----@return vec2|nil
-function MinimapHelper:worldToBoundMap(coord)
-    Assert.Equal(self:isBound(), true, "called worldToBoundMap on unbound map")
-
-    local point_on_scaled_map = self:worldToMap(coord)
-    local bounding_p1_on_scaled_map = self:flatToMap(self.bounding_box:getP1())
-    local bounding_p2_on_scaled_map = self:flatToMap(self.bounding_box:getP2())
-
-    if point_on_scaled_map.x < bounding_p1_on_scaled_map.x or
-        point_on_scaled_map.x > bounding_p2_on_scaled_map.x or
-        point_on_scaled_map.y < bounding_p1_on_scaled_map.y or
-        point_on_scaled_map.y > bounding_p2_on_scaled_map.y then
-        return nil -- Point outside of the bounding box
-    end
-
-    local bounding_size_on_scaled_map = vec2(
-        bounding_p2_on_scaled_map.x - bounding_p1_on_scaled_map.x,
-        bounding_p2_on_scaled_map.y - bounding_p1_on_scaled_map.y
+    -- Compute scale to fit the bounding box into the viewport
+    local scale = math.min(
+        self.viewport_size.x / bb_box:getWidth(),
+        self.viewport_size.y / bb_box:getHeight()
     )
 
-    local p1 = ((point_on_scaled_map.x - bounding_p1_on_scaled_map.x) / bounding_size_on_scaled_map.x * self:getSize().x)
-    local p2 = ((point_on_scaled_map.y - bounding_p1_on_scaled_map.y) / bounding_size_on_scaled_map.y * self:getSize().y)
+    -- Calculate scaled dimensions of the original image
+    local scaled_width = self._track_map_data.size.x * self._track_map_data.scale_factor * scale
+    local scaled_height = self._track_map_data.size.y * self._track_map_data.scale_factor * scale
 
-    return vec2(p1, p2)
-end
+    -- Calculate the center of the bounding box
+    local scaled_bbox_center_x = (bounding_box_p1.x + bounding_box_p2.x) / 2 * scale
+    local scaled_bbox_center_y = (bounding_box_p1.y + bounding_box_p2.y) / 2 * scale
 
-function MinimapHelper:worldToBoundMapTransformer()
-    return (function(coord)
-        local res = self:worldToBoundMap(coord)
-        return res
-    end)
-end
+    local desired_offset_x = scaled_bbox_center_x - self.viewport_size.x / 2
+    local desired_offset_y = scaled_bbox_center_y - self.viewport_size.y / 2
 
----@param coord vec2
----@return vec2
-function MinimapHelper:flatToBoundMap(coord)
-    return self:worldToBoundMap(Point(vec3(coord.x, 0, coord.y)))
-end
-
-function MinimapHelper:setScale(scale)
-    self._scale = scale
-end
-
---- Proportional
-function MinimapHelper:setWidth(new_width)
-    local original_width = self._track_map_data.size.x
-    local scale_factor = new_width / original_width
-    self:setScale(scale_factor)
-end
-
---- Proportional
-function MinimapHelper:setHeight(new_height)
-    local original_width = self._track_map_data.size.y
-    local scale_factor = new_height / original_width
-    self:setScale(scale_factor)
-end
-
-function MinimapHelper:getScale()
-    return self._scale
-end
-
-function MinimapHelper:getSize()
-    return self._track_map_data.size * self._scale
-end
-
----Sets bound for the minimap in world coordinates
-function MinimapHelper:setBoundingBox(bounding_box)
-    self.bounding_box = Box2D(
-        self:worldToRawMap(bounding_box.p1),
-        self:worldToRawMap(bounding_box.p2)
-    )
-end
-
-function MinimapHelper:setMaxsize(max_size)
-    self.max_size = max_size
-    self:setBoundingBox(self.bounding_box)
-end
-
-function MinimapHelper:isBound()
-    return self.bounding_box ~= nil
-end
-
-function MinimapHelper:drawMap(origin)
-    local b = Box2D(vec2(0, 0), self.max_size)
-    self.bounding_box:fit(b)
-
-    b:setCenter(self.bounding_box:getCenter())
-    self.uv1 = self:flatToRawMap(b:getP1()):div(self:getSize())
-    self.uv2 = self:flatToRawMap(b:getP2()):div(self:getSize())
+    local desired_offset = vec2(desired_offset_x, desired_offset_y)
 
     ui.drawImage(
         self._track_map_image_path,
-        origin,
-        self.max_size,
-        rgbm(1, 1, 1, 0.5),
-        self.uv1,
-        self.uv2)
+        origin - desired_offset,
+        origin + vec2(scaled_width, scaled_height) - desired_offset,
+        rgbm(1, 1, 1, 1)
+    )
+end
+
+function MinimapHelper:mapCoord(coord)
+    if self.bounding_box == nil then return end
+
+    local map_coord = self:worldToMap(coord)
+
+    local bounding_box_p1 = self:worldToMap(self.bounding_box.p1)
+    local bounding_box_p2 = self:worldToMap(self.bounding_box.p2)
+
+    local bb_box = Box2D(bounding_box_p1, bounding_box_p2)
+
+    -- Compute scale to fit the bounding box into the viewport
+    local scale = math.min(
+        self.viewport_size.x / bb_box:getWidth(),
+        self.viewport_size.y / bb_box:getHeight()
+    )
+
+    -- Calculate scaled dimensions of the original image
+    local scaled_width = self._track_map_data.size.x * self._track_map_data.scale_factor * scale
+    local scaled_height = self._track_map_data.size.y * self._track_map_data.scale_factor * scale
+
+    -- Calculate the center of the bounding box
+    local scaled_bbox_center_x = (bounding_box_p1.x + bounding_box_p2.x) / 2 * scale
+    local scaled_bbox_center_y = (bounding_box_p1.y + bounding_box_p2.y) / 2 * scale
+    local scaled_bbox_center = vec2(scaled_bbox_center_x, scaled_bbox_center_y)
+
+    local coord_scaled = map_coord * scale
+
+    local desired_offset_x = scaled_bbox_center_x - self.viewport_size.x / 2
+    local desired_offset_y = scaled_bbox_center_y - self.viewport_size.y / 2
+
+    local desired_offset = vec2(desired_offset_x, desired_offset_y)
+
+    return coord_scaled - desired_offset
 end
 
 function MinimapHelper:drawBoundingBox(origin)
-    ui.drawRect(
-        self:flatToBoundMap(self.bounding_box:getP1()) + origin,
-        self:flatToBoundMap(self.bounding_box:getP2()) + origin,
-        rgbm(1, 1, 0, 1))
+end
+
+function MinimapHelper:drawCar(origin, idx)
+    local car_position = ac.getCar(idx).position
+    ui.drawCircleFilled(self:mapCoord(Point(car_position)), 2, rgbm.colors.green)
 end
 
 ---@param track_config TrackConfig
 function MinimapHelper:drawTrackConfig(origin, track_config)
-    for _, obj in ipairs(track_config.scoringObjects) do
-        obj:drawFlat(self:worldToBoundMapTransformer())
+    if self.bounding_box ~= nil then
+        -- ui.drawCircleFilled(
+        --     self:mapCoord(Point((self.bounding_box.p1:value() + self.bounding_box.p2:value()) / 2)), 2,
+        --     rgbm.colors.green
+        -- )
+
+        for _, obj in ipairs(track_config.scoringObjects) do
+            obj:drawFlat(function(p)
+                return self:mapCoord(p)
+            end)
+        end
     end
 end
 

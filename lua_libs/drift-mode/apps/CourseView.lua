@@ -2,7 +2,7 @@ local EventSystem = require('drift-mode/eventsystem')
 local listener_id = EventSystem.registerListener('app-courseview')
 
 local Resources = require('drift-mode/Resources')
-local MiniMapHelper3 = require('drift-mode/MiniMapHelper3')
+local MinimapHelper = require('drift-mode/MinimapHelper')
 
 require('drift-mode/models')
 
@@ -14,7 +14,7 @@ local app_map_canvas = ui.ExtraCanvas(vec2(512, 512)):clear(rgbm(0, 0, 0, 0)):se
 local CourseView = {}
 
 ---@type MinimapHelper
-local minimap_helper = MiniMapHelper3(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(512, 512))
+local minimap_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(512, 512))
 
 function CourseView.Main(dt)
     EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
