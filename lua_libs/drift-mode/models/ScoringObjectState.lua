@@ -16,7 +16,7 @@ function ScoringObjectState:getMaxScore()
 end
 
 ---Draw itself using ui.* calls
----@param coord_transformer fun(Point): vec2 Function converting true coordinate to canvas coordinate
+---@param coord_transformer fun(point: Point): vec2 Function converting true coordinate to canvas coordinate
 function ScoringObjectState:drawFlat(coord_transformer)
     Assert.Error("Called abstract method!")
 end

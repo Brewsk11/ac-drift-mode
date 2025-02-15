@@ -1,5 +1,6 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
+local Resources = require('drift-mode/Resources')
 
 local Point = require('drift-mode/models/Point')
 
@@ -104,7 +105,8 @@ end
 function Clip:drawFlat(coord_transformer)
     local origin_mapped = coord_transformer(self.origin)
     local end_mapped = coord_transformer(self:getEnd())
-    ui.drawLine(origin_mapped, end_mapped, rgbm(0, 0, 1, 1), 2)
+    ui.drawLine(origin_mapped, end_mapped, Resources.Colors.EditorActivePoi, 1)
+    ui.drawCircleFilled(origin_mapped, 2, Resources.Colors.EditorActivePoi)
 end
 
 local function test()

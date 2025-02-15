@@ -12,7 +12,7 @@ function RoutineMovePoi:initialize(callback)
     EditorRoutine.initialize(self, callback)
     self.poi = nil
     self.offset = nil
-    self.drawerPoint = DrawerObjectEditorPoi(DrawerPointSimple(Resources.ColorEditorInactivePoi, 0.5))
+    self.drawerPoint = DrawerObjectEditorPoi(DrawerPointSimple(Resources.Colors.EditorInactivePoi, 0.5))
 end
 
 ---@param pois ObjectEditorPoi[]

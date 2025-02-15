@@ -31,11 +31,11 @@ local function compactObjectList(run_state_data)
         ui.pushFont(ui.Font.Monospace)
         ui.sameLine(0, 0)
 
-        ui.drawRect(ui.getCursor(), ui.getCursor() + vec2(column_width, entry_height), Resources.ColorFaintBg, 2)
+        ui.drawRect(ui.getCursor(), ui.getCursor() + vec2(column_width, entry_height), Resources.Colors.FaintBg, 2)
         if object_state.score > 0 then
             ui.drawRectFilled(ui.getCursor(),
                 ui.getCursor() + vec2(column_width * object_state.score / object_state.max_score, entry_height),
-                Resources.ColorFaintBg, 2)
+                Resources.Colors.FaintBg, 2)
         end
 
         ui.dwriteTextAligned(string.format("%d", object_state.score), 12, ui.Alignment.Center, ui.Alignment.Center,
@@ -74,9 +74,9 @@ local function compactObjectList(run_state_data)
             local end_angle = ui.getCursor() + vec2(multiinfo_column_width * object_state.angle, entry_height / 3 * 2)
             local end_depth = ui.getCursor() + vec2(multiinfo_column_width * object_state.depth, entry_height)
 
-            ui.drawRectFilled(start_speed, end_speed, Resources.ColorNeutralSpeed, 1)
-            ui.drawRectFilled(start_angle, end_angle, Resources.ColorNeutralAngle, 1)
-            ui.drawRectFilled(start_depth, end_depth, Resources.ColorNeutralRatio, 1)
+            ui.drawRectFilled(start_speed, end_speed, Resources.Colors.NeutralSpeed, 1)
+            ui.drawRectFilled(start_angle, end_angle, Resources.Colors.NeutralAngle, 1)
+            ui.drawRectFilled(start_depth, end_depth, Resources.Colors.NeutralRatio, 1)
 
             ui.offsetCursorX(-10)
 

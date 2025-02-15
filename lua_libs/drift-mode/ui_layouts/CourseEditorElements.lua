@@ -15,8 +15,8 @@ function CourseEditorElements.ObjectConfigPanel(idx, object, is_disabled, cursor
 end
 
 local generate_inside_drawer = DrawerPointGroupConnected(
-    DrawerSegmentLine(Resources.ColorEditorActivePoi),
-    DrawerPointSimple(Resources.ColorEditorActivePoi, 0.2))
+    DrawerSegmentLine(Resources.Colors.EditorActivePoi),
+    DrawerPointSimple(Resources.Colors.EditorActivePoi, 0.2))
 
 ---comment
 ---@param idx any

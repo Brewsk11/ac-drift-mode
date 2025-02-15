@@ -369,13 +369,13 @@ function Zone:drawFlat(coord_transformer)
     for _, seg in self:getOutsideLine():segment(false):iter() do
         local head_mapped = coord_transformer(seg.head)
         local tail_mapped = coord_transformer(seg.tail)
-        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 1), 3)
+        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 1), 1)
     end
 
     for _, seg in self:getInsideLine():segment(false):iter() do
         local head_mapped = coord_transformer(seg.head)
         local tail_mapped = coord_transformer(seg.tail)
-        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 1), 1)
+        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 0.5), 1)
     end
 end
 
