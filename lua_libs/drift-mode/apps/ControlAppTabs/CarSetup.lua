@@ -76,7 +76,6 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##foffset", car_data.frontOffset, 0.5, 3, 'Offset: %.2f')
     if changed then
         car_data.frontOffset = tonumber(string.format("%.3f", value))
-        DataBroker.store("car_data", car_data)
         EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
 
@@ -85,7 +84,6 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##fwidth", car_data.frontSpan, 0.05, 1.5, 'Span: %.2f')
     if changed then
         car_data.frontSpan = tonumber(string.format("%.3f", value))
-        DataBroker.store("car_data", car_data)
         EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
     ui.popFont()
@@ -104,7 +102,6 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##roffset", car_data.rearOffset, 0.5, 3, 'Offset: %.2f')
     if changed then
         car_data.rearOffset = tonumber(string.format("%.3f", value))
-        DataBroker.store("car_data", car_data)
         EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
 
@@ -113,7 +110,6 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##rwidth", car_data.rearSpan, 0.05, 1.5, 'Span: %.2f')
     if changed then
         car_data.rearSpan = tonumber(string.format("%.3f", value))
-        DataBroker.store("car_data", car_data)
         EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
     ui.popFont()

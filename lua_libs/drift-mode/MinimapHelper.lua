@@ -192,12 +192,12 @@ function MinimapHelper:drawTrackConfig(origin, track_config)
     end
 end
 
----@param run_state_data RunStateData?
-function MinimapHelper:drawRunState(origin, run_state_data)
-    if run_state_data == nil then
+---@param scoring_objects_state_data ScoringObjectStateData[]?
+function MinimapHelper:drawRunState(origin, scoring_objects_state_data)
+    if scoring_objects_state_data == nil then
         return
     end
-    for _, obj in ipairs(run_state_data.scoringObjectStates) do
+    for _, obj in ipairs(scoring_objects_state_data) do
         ac.debug("obj", obj)
         obj:drawFlat(function(p)
             return origin + self:mapCoord(p)

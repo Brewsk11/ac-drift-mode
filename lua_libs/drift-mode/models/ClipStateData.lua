@@ -5,7 +5,6 @@ local S = require('drift-mode/serializer')
 ---@field maxPoints integer
 ---@field score number
 ---@field performance number
----@field multiplier number
 ---@field hitPoint Point
 ---@field hitRatioMult number
 local ClipStateData = class("ClipStateData", ScoringObjectStateData)

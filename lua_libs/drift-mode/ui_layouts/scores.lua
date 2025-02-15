@@ -1,7 +1,8 @@
 local Resources = require('drift-mode/Resources')
+local Assert = require('drift-mode/Assert')
 
----@param run_state_data RunStateData
-local function compactObjectList(run_state_data)
+---@param scoring_objects_state_data ScoringObjectStateData[]
+local function compactObjectList(scoring_objects_state_data)
     local entry_height = 18
     local entry_gap = 8
 
@@ -12,7 +13,7 @@ local function compactObjectList(run_state_data)
     local info_columns_count = math.min(math.floor((ui.windowWidth() - min_object_name_width) / column_width),
         max_columns)
 
-    for _, object_state in ipairs(run_state_data.scoringObjectStates) do
+    for _, object_state in ipairs(scoring_objects_state_data) do
         local icon = nil
         if object_state.isInstanceOf(ZoneStateData) then
             icon = Resources.IconZoneWhite
@@ -125,11 +126,20 @@ local function compactObjectList(run_state_data)
     end
 end
 
----comment
----@param run_state_data RunStateData
+---@param drift_state DriftState
+---@param scoring_objects_state_data ScoringObjectStateData[]
 ---@param track_data TrackConfig
-function appScoresLayout(run_state_data, track_data)
-    if not run_state_data then return end
+function appScoresLayout(drift_state, scoring_objects_state_data, track_data)
+    if not drift_state or not scoring_objects_state_data or not track_data then return end
+
+
+    local function getMaxScore() -- TODO: CACHE
+        local score = 0
+        for _, scoring_object in ipairs(scoring_objects_state_data) do
+            score = score + scoring_object.max_score
+        end
+        return score
+    end
 
     if ui.windowHeight() > 120 then
         -- COURSE NAME
@@ -138,7 +148,7 @@ function appScoresLayout(run_state_data, track_data)
         ui.sameLine()
         ui.text(track_data.name)
         if ui.itemHovered() then
-            ui.setTooltip(string.format("Max course score: %d", run_state_data.maxScore))
+            ui.setTooltip(string.format("Max course score: %d", getMaxScore()))
         end
         ui.popFont()
 
@@ -146,11 +156,19 @@ function appScoresLayout(run_state_data, track_data)
     end
 
     -- TOTAL SCORE
+    function RunState:getScore() -- TODO: CACHE
+        local score = 0
+        for _, scoring_object in ipairs(scoring_objects_state_data) do
+            score = score + scoring_object.score
+        end
+        return score
+    end
+
     ui.sameLine(0, 0)
     ui.pushFont(ui.Font.Huge)
     ui.beginGroup()
     ui.beginGroup()
-    ui.textAligned(string.format("%d", run_state_data.totalScore), vec2(1, 0), vec2(ui.availableSpaceX(), 60), true)
+    ui.textAligned(string.format("%d", getMaxScore()), vec2(1, 0), vec2(ui.availableSpaceX(), 60), true)
     ui.popFont()
     ui.endGroup()
     if ui.itemHovered() then
@@ -159,8 +177,24 @@ function appScoresLayout(run_state_data, track_data)
 
     if ui.windowHeight() > 100 then
         -- AVERAGE SCORE
+
+
+        local function getAvgMultiplier() -- TODO: CACHE
+            local mult = 0
+            local scoring_finished = 0
+            for _, scoring_object_state in ipairs(scoring_objects_state_data) do
+                if scoring_object_state.done and scoring_object_state.multiplier ~= nil then
+                    mult = mult + scoring_object_state.multiplier
+                    scoring_finished = scoring_finished + 1
+                end
+            end
+            if scoring_finished == 0 then return 0 end
+            mult = mult / scoring_finished
+            return mult
+        end
+
         ui.beginGroup()
-        ui.textAligned(string.format("%.2f%%", run_state_data.avgMultiplier * 100), vec2(1, 0),
+        ui.textAligned(string.format("%.2f%%", getAvgMultiplier() * 100), vec2(1, 0),
             vec2(ui.availableSpaceX(), 20), true)
         ui.endGroup()
         if ui.itemHovered() then

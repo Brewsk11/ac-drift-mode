@@ -9,6 +9,7 @@ local S = require('drift-mode/serializer')
 ---@field speed number
 ---@field angle number
 ---@field depth number
+---@field multiplier number
 local ScoringObjectStateData = class("ScoringObjectStateData")
 
 function ScoringObjectStateData:initialize()

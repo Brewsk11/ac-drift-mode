@@ -14,7 +14,11 @@ EventSystem.Signal = {
     TrackConfigChanged = "TrackConfigChanged",   ---Signal for UI to update track data
     CarConfigChanged = "CarConfigChanged",       ---Signal for UI to update car data
     EditorsStateChanged = "EditorsStateChanged", ---Signal for when game state changes
-    RunStateChanged = "RunStateChanged"          ---Signal for when run state changes
+
+    DriftStateChanged = "DriftStateChanged",
+    ScoringObjectStateAdded = "ScoringObjectStateAdded",
+    ScoringObjectStatesReset = "ScoringObjectStatesReset"
+
 }
 
 local payloads = nil

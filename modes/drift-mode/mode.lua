@@ -48,7 +48,6 @@ end
 local function resetScore()
   if track_data then
     run_state = RunState(track_data)
-    EventSystem.queue(EventSystem.Signal.RunStateChanged, run_state)
   end
 end
 
@@ -158,7 +157,6 @@ local function registerPosition()
   local car = ac.getCar(0)
 
   run_state:registerCar(car_data, car)
-  EventSystem.emit(EventSystem.Signal.RunStateChanged, run_state)
 end
 
 
@@ -167,7 +165,6 @@ local timers = {
   scoring_player = Timer(0.05, function()
     if run_state and editors_state and not editors_state:anyEditorEnabled() then
       registerPosition()
-      DataBroker.store("run_state_data", run_state)
     end
   end),
   monitor_crossing = Timer(0.1, function()

@@ -1,6 +1,9 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local EventSystem = require('drift-mode/eventsystem')
+local listener_id = EventSystem.registerListener('mode-runstate')
+
 ---@class RunState : ClassBase
 ---@field trackConfig TrackConfig
 ---@field driftState DriftState
@@ -22,6 +25,8 @@ function RunState:initialize(track_config)
             Assert.Error("")
         end
     end
+
+    EventSystem.queue(EventSystem.Signal.ScoringObjectStatesReset, self.scoringObjectStates)
 end
 
 ---Serializes to lightweight RunStateData as RunState should not be brokered.
@@ -46,12 +51,13 @@ function RunState:registerCar(car_config, car)
     self:calcDriftState(car)
 
     self.driftState.ratio_mult = 0.0
-
-    for _, scoring_object in ipairs(self.scoringObjectStates) do
+    for idx, scoring_object in ipairs(self.scoringObjectStates) do
         if scoring_object.isInstanceOf(ZoneState) then
             local res = scoring_object:registerCar(car_config, car, self.driftState)
             if res ~= nil then
                 self.driftState.ratio_mult = res
+                EventSystem.queue(EventSystem.Signal.ScoringObjectStateAdded,
+                    { idx = idx, scoring_object_state = scoring_object })
                 break
             end
         elseif scoring_object.isInstanceOf(ClipState) then
@@ -64,6 +70,8 @@ function RunState:registerCar(car_config, car)
             Assert.Error("")
         end
     end
+
+    EventSystem.queue(EventSystem.Signal.DriftStateChanged, self.driftState)
 end
 
 ---@param car ac.StateCar

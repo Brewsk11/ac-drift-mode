@@ -6,21 +6,23 @@ local listener_id = EventSystem.registerListener('app-driftstatus')
 
 local DriftStatusApp = {}
 
----@type RunStateData?
-local run_state_data = nil
+---@type DriftState?
+local drift_state = nil
 
 ---@type TrackConfig?
 local track_data = nil
 
 function DriftStatusApp.Main(dt)
-    run_state_data = DataBroker.read("run_state_data")
+    EventSystem.listen(listener_id, EventSystem.Signal.DriftStateChanged, function(payload)
+        drift_state = payload;
+    end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
         track_data = payload;
     end)
 
-    if run_state_data and track_data then
-        drawModifiers(track_data.scoringRanges, run_state_data.driftState)
+    if drift_state and track_data then
+        drawModifiers(track_data.scoringRanges, drift_state)
     end
 end
 
