@@ -24,7 +24,6 @@ local editors_state = nil
 ---@type RunState?
 local run_state = nil
 
-
 ---@type TrackConfigInfo?
 local track_config_info = nil
 
@@ -47,7 +46,10 @@ elseif #config_list > 0 then
 end
 
 local function resetScore()
-  if track_data then run_state = RunState(track_data) end
+  if track_data then
+    run_state = RunState(track_data)
+    EventSystem.queue(EventSystem.Signal.RunStateChanged, run_state)
+  end
 end
 
 
@@ -87,7 +89,7 @@ local signalListeners = {
     function(payload)
       track_data = payload
       if track_data ~= nil then
-        run_state = RunState(track_data)
+        resetScore()
         reactivateColliders()
 
         LineCrossDetector.clear()
@@ -124,7 +126,7 @@ local signalListeners = {
   },
   {
     EventSystem.Signal.CrossedStart,
-    function(payload) run_state = RunState(track_data) end
+    function(payload) resetScore() end
   },
   {
     EventSystem.Signal.CrossedFinish,
@@ -133,6 +135,10 @@ local signalListeners = {
   {
     EventSystem.Signal.TeleportToStart,
     function(payload) Teleporter.teleportToStart(0, track_data) end
+  },
+  {
+    EventSystem.Signal.CrossedRespawn,
+    function(payload) EventSystem.queue(EventSystem.Signal.TeleportToStart, {}) end
   }
 }
 
@@ -143,14 +149,6 @@ local function listenForSignals()
     changed = EventSystem.listenInGroup(listener_id, v[1], v[2]) or changed
   end
   EventSystem.endGroup(changed)
-
-  -- Handle CrossedRespawn separately, as it wants to emit signal and probably
-  -- should not be called in the group listening
-  local crossed_respawn = false
-  EventSystem.listen(listener_id, EventSystem.Signal.CrossedRespawn, function(_) crossed_respawn = true end)
-  if crossed_respawn then
-    EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
-  end
 end
 
 

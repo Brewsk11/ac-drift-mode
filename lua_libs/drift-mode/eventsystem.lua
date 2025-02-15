@@ -4,20 +4,24 @@ local EventSystem = {}
 
 ---@enum EventSystem.Signal
 EventSystem.Signal = {
-    CrossedFinish = "CrossedFinish",            ---Crossed finish line
-    CrossedStart = "CrossedStart",              ---Crossed start line
-    CrossedRespawn = "CrossedRespawn",          ---Crossed respawn line
-    TeleportToStart = "TeleportToStart",        ---Request to teleport to starting point
-    ResetScore = "ResetScore",                  ---Requested run reset run scoring
+    CrossedFinish = "CrossedFinish",             ---Crossed finish line
+    CrossedStart = "CrossedStart",               ---Crossed start line
+    CrossedRespawn = "CrossedRespawn",           ---Crossed respawn line
+    TeleportToStart = "TeleportToStart",         ---Request to teleport to starting point
+    ResetScore = "ResetScore",                   ---Requested run reset run scoring
 
-    CursorChanged = "CursorChanged",            ---Signal for UI to update cursor data
-    TrackConfigChanged = "TrackConfigChanged",  ---Signal for UI to update track data
-    CarConfigChanged = "CarConfigChanged",      ---Signal for UI to update car data
-    EditorsStateChanged = "EditorsStateChanged" ---Signal for when game state changes
+    CursorChanged = "CursorChanged",             ---Signal for UI to update cursor data
+    TrackConfigChanged = "TrackConfigChanged",   ---Signal for UI to update track data
+    CarConfigChanged = "CarConfigChanged",       ---Signal for UI to update car data
+    EditorsStateChanged = "EditorsStateChanged", ---Signal for when game state changes
+    RunStateChanged = "RunStateChanged"          ---Signal for when run state changes
 }
 
 local payloads = nil
 local signal_log = nil
+
+local signal_queue = {}
+local listening = false
 
 local function loadSignals()
     signal_log =
@@ -57,10 +61,19 @@ function EventSystem.registerListener(name)
     return name
 end
 
+local function unloadQueue()
+    for idx, signal in ipairs(signal_queue) do
+        EventSystem.emit(signal.signal, signal.payload)
+        signal_queue[idx] = nil
+    end
+end
+
 ---@param listener_id string
 ---@param signal EventSystem.Signal
 ---@param callback fun(payload: table)
 function EventSystem.listenInGroup(listener_id, signal, callback)
+    listening = true
+
     local signal_data = signal_log.signals[signal]
     if signal_data == nil then return false end
 
@@ -93,6 +106,8 @@ end
 
 function EventSystem.endGroup(changed)
     if changed then storeSignals() end
+    listening = false
+    unloadQueue()
 end
 
 ---@param listener_id string
@@ -119,6 +134,17 @@ function EventSystem.emit(signal, payload)
 
     storePayloads()
     storeSignals()
+end
+
+---Always use queue over emit when you want to emit a signal from within a listener
+---@param signal any
+---@param payload any
+function EventSystem.queue(signal, payload)
+    signal_queue[#signal_queue + 1] = { signal = signal, payload = payload }
+
+    if not listening then
+        unloadQueue()
+    end
 end
 
 return EventSystem
