@@ -16,8 +16,8 @@ EventSystem.Signal = {
     EditorsStateChanged = "EditorsStateChanged", ---Signal for when game state changes
 
     DriftStateChanged = "DriftStateChanged",
-    ScoringObjectStateAdded = "ScoringObjectStateAdded",
-    ScoringObjectStatesReset = "ScoringObjectStatesReset"
+    ScoringObjectStateChanged = "ScoringObjectStateChanged", -- TODO: Document these
+    ScoringObjectStatesReset = "ScoringObjectStatesReset"    -- TODO: Document these
 
 }
 

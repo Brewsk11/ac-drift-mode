@@ -29,7 +29,7 @@ function CourseView.Main(dt)
     EventSystem.listen(listener_id, EventSystem.Signal.CarConfigChanged, function(payload)
         car_config = payload;
     end)
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateAdded, function(payload)
+    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
         scoring_object_state_data[payload.idx] = payload.scoring_object_state;
     end)
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)

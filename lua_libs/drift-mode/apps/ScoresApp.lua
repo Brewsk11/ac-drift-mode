@@ -20,7 +20,7 @@ function ScoresApp.Main(dt)
         drift_state = payload
     end)
 
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateAdded, function(payload)
+    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
         scoring_objects_state_data[payload.idx] = payload.scoring_object_state;
     end)
 

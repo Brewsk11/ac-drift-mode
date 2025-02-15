@@ -56,7 +56,7 @@ function RunState:registerCar(car_config, car)
             local res = scoring_object:registerCar(car_config, car, self.driftState)
             if res ~= nil then
                 self.driftState.ratio_mult = res
-                EventSystem.queue(EventSystem.Signal.ScoringObjectStateAdded,
+                EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
                     { idx = idx, scoring_object_state = scoring_object })
                 break
             end
@@ -66,6 +66,9 @@ function RunState:registerCar(car_config, car)
                 car.side * car_config.frontSpan * -self.driftState.side_drifting
             )
             scoring_object:registerPosition(clip_scoring_point, self.driftState)
+            EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+                { idx = idx, scoring_object_state = scoring_object })
+            break
         else
             Assert.Error("")
         end
