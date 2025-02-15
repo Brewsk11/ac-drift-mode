@@ -12,16 +12,17 @@ local Box2D = class("Box2D")
 ---When p1 & p2 == nil create a dummy 10x10 box starting at (0, 0)
 ---@param p1 vec2|nil
 ---@param p2 vec2|nil
----@return Box2D
 function Box2D:initialize(p1, p2)
+    local _p1 = p1
+    local _p2 = p2
     if p1 == nil then
-        p1 = vec2(0, 0)
-        p2 = vec2(10, 10)
+        _p1 = vec2(0, 0)
+        _p2 = vec2(10, 10)
     end
 
     self._size = nil
     self._center = nil
-    self:set(p1, p2)
+    self:set(_p1, _p2)
 end
 
 ---For now, P1 must be closer to origin than P2
@@ -134,6 +135,27 @@ function Box2D:fitIn(box, out)
     end
 end
 
+---Change the size of self proportionally to fit in the given box.
+---Align to center of the area.
+---@param box Box2D
+---@param out Box2D|nil
+function Box2D:fit(box, out)
+    local boxWidth = box:getWidth()
+    local boxHeight = box:getHeight()
+    local selfWidth = self:getWidth()
+    local selfHeight = self:getHeight()
+
+    local ratio = math.min(
+        boxWidth / selfWidth,
+        boxHeight / selfHeight)
+
+    if out == nil then
+        self:setSize(self._size / ratio)
+    else
+        out:setSize(self._size / ratio)
+    end
+end
+
 function Box2D:fitInAndMoveTo(box, out)
     if out == nil then
         self:fitIn(box)
@@ -201,6 +223,18 @@ local function test()
                 display.rect({ pos = data.expected:getP1(), size = data.expected:getSize(), color = rgbm(0, 1, 0, 0.33) })
                 display.rect({ pos = data.res:getP1(), size = data.res:getSize(), color = rgbm(1, 0, 0, 0.33) })
             end
+
+            local container = Box2D(vec2(0, 0), vec2(51, 51))
+            local mapbb = Box2D(vec2(0, 0), vec2(17, 23))
+            mapbb:fitInAndMoveTo(container)
+
+            display.rect({
+                pos = container:getP1(),
+                size = container:getSize(),
+                color = rgbm(1, 1, 1,
+                    0.33)
+            })
+            display.rect({ pos = mapbb:getP1(), size = mapbb:getSize(), color = rgbm(1, 0, 0, 0.33) })
         end)
     end
 

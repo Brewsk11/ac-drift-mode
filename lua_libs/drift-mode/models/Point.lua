@@ -46,7 +46,6 @@ function Point:value()
     return self._value
 end
 
-
 ---Return the track point as vec2, projecting it on Y axis
 ---@param self Point
 ---@return vec2

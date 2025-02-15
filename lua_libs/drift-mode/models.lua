@@ -3,6 +3,7 @@
 
 -- Load models to global namespace
 
+Box2D                          = require('drift-mode/models/Box2D')
 CarConfig                      = require('drift-mode/models/CarConfig')
 Clip                           = require('drift-mode/models/Clip')
 ClipState                      = require('drift-mode/models/ClipState')
