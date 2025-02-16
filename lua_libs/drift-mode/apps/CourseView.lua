@@ -30,7 +30,14 @@ function CourseView.Main(dt)
         car_config = payload;
     end)
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
-        scoring_object_state_data[payload.idx] = payload.scoring_object_state;
+        if scoring_object_state_data == nil then return end
+        if payload.type == "ZoneState" then
+            scoring_object_state_data[payload.idx].score_points[#scoring_object_state_data[payload.idx].score_points + 1] =
+                payload.scoring_object_state_delta;
+        else
+            scoring_object_state_data[payload.idx] = payload.scoring_object_state;
+        end
+        ac.debug("scoring_object_state_data", scoring_object_state_data)
     end)
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
         scoring_object_state_data = payload;

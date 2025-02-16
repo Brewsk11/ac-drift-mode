@@ -21,7 +21,13 @@ function ScoresApp.Main(dt)
     end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
-        scoring_objects_state_data[payload.idx] = payload.scoring_object_state;
+        if scoring_objects_state_data == nil then return end
+        if payload.type == "ZoneState" then
+            scoring_objects_state_data[payload.idx].score_points[#scoring_objects_state_data[payload.idx].score_points + 1] =
+                payload.scoring_object_state_delta;
+        else
+            scoring_objects_state_data[payload.idx] = payload.scoring_object_state;
+        end
     end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
