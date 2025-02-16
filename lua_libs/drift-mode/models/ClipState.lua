@@ -51,10 +51,12 @@ end
 ---@param drift_state DriftState
 function ClipState:registerPosition(point, drift_state)
     -- If clip has been scored already, ignore
-    if self.crossed then return end
+    if self.crossed then return false end
 
     -- If last is nil then start by assigning last
-    if self.lastPoint == nil then self.lastPoint = point; return end
+    if self.lastPoint == nil then
+        self.lastPoint = point; return false
+    end
 
     local res = vec2.intersect(
         self.lastPoint:flat(),
@@ -64,8 +66,8 @@ function ClipState:registerPosition(point, drift_state)
     )
 
     if not res then -- Not hit, continue
-       self.lastPoint = point
-       return
+        self.lastPoint = point
+        return false
     end
 
     self.hitAngleMult = drift_state.angle_mult
@@ -75,7 +77,7 @@ function ClipState:registerPosition(point, drift_state)
     self.hitRatioMult = end_to_hit / self.clip.length
 
     -- Some magic to determine height of the hit
-    local hit_segment_height =  point:value().y - self.lastPoint:value().y
+    local hit_segment_height = point:value().y - self.lastPoint:value().y
     local hit_segment_ratio = point:flat():distance(res) / self.lastPoint:flat():distance(point:flat())
     local hit_height = point:value().y + hit_segment_height * hit_segment_ratio
     self.hitPoint = Point(vec3(res.x, hit_height, res.y))
@@ -83,6 +85,8 @@ function ClipState:registerPosition(point, drift_state)
     self.finalMultiplier = self.hitRatioMult * self.hitAngleMult * self.hitSpeedMult
     self.finalScore = self.finalMultiplier * self.clip.maxPoints
     self.crossed = true
+
+    return true
 end
 
 function ClipState:getPerformance()

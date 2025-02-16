@@ -53,9 +53,7 @@ function RunState:registerCar(car_config, car)
     self.driftState.ratio_mult = 0.0
     for idx, scoring_object in ipairs(self.scoringObjectStates) do
         if scoring_object.isInstanceOf(ZoneState) then
-            ac.log("looking at " .. idx)
             local res = scoring_object:registerCar(car_config, car, self.driftState)
-            ac.debug("res", res)
             if res ~= nil then
                 self.driftState.ratio_mult = res
                 EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
@@ -64,7 +62,6 @@ function RunState:registerCar(car_config, car)
                         type = "ZoneState",
                         scoring_object_state_delta = scoring_object.scores[#scoring_object.scores]
                     })
-                ac.log("sending idx " .. idx)
                 break
             end
         elseif scoring_object.isInstanceOf(ClipState) then
@@ -72,9 +69,11 @@ function RunState:registerCar(car_config, car)
                 car.position + car.look * car_config.frontOffset +
                 car.side * car_config.frontSpan * -self.driftState.side_drifting
             )
-            scoring_object:registerPosition(clip_scoring_point, self.driftState)
-            EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
-                { idx = idx, type = "ClipState", scoring_object_state = scoring_object })
+            local res = scoring_object:registerPosition(clip_scoring_point, self.driftState)
+            if res then
+                EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+                    { idx = idx, type = "ClipState", scoring_object_state = scoring_object })
+            end
         else
             Assert.Error("")
         end
