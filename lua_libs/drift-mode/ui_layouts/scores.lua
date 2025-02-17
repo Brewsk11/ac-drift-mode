@@ -156,7 +156,7 @@ function appScoresLayout(drift_state, scoring_objects_state_data, track_data)
     end
 
     -- TOTAL SCORE
-    function RunState:getScore() -- TODO: CACHE
+    local function getScore() -- TODO: CACHE
         local score = 0
         for _, scoring_object in ipairs(scoring_objects_state_data) do
             score = score + scoring_object.score
@@ -168,7 +168,7 @@ function appScoresLayout(drift_state, scoring_objects_state_data, track_data)
     ui.pushFont(ui.Font.Huge)
     ui.beginGroup()
     ui.beginGroup()
-    ui.textAligned(string.format("%d", getMaxScore()), vec2(1, 0), vec2(ui.availableSpaceX(), 60), true)
+    ui.textAligned(string.format("%d", getScore()), vec2(1, 0), vec2(ui.availableSpaceX(), 60), true)
     ui.popFont()
     ui.endGroup()
     if ui.itemHovered() then
@@ -177,7 +177,6 @@ function appScoresLayout(drift_state, scoring_objects_state_data, track_data)
 
     if ui.windowHeight() > 100 then
         -- AVERAGE SCORE
-
 
         local function getAvgMultiplier() -- TODO: CACHE
             local mult = 0
@@ -211,7 +210,7 @@ This is a very good score-independent run quality metric.")
 
         ui.beginChild("scores_app_objects_list_pane", ui.availableSpace(), false,
             ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoBackground)
-        compactObjectList(run_state_data)
+        compactObjectList(scoring_objects_state_data)
         ui.endChild()
     end
 end
