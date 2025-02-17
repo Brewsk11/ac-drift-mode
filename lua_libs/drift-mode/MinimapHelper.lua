@@ -20,13 +20,16 @@ function MinimapHelper:initialize(track_content_path, viewport_size, bounding_bo
             track_map_ini_config:get('PARAMETERS', 'WIDTH', 1),
             track_map_ini_config:get('PARAMETERS', 'HEIGHT', 1)
         ),
-        scale_factor = track_map_ini_config:get("PARAMETERS", "SCALE_FACTOR", 1)
+        scale_factor = track_map_ini_config:get("PARAMETERS", "SCALE_FACTOR", 1),
+        size_img = ui.imageSize(self._track_map_image_path)
     }
+
+    ac.log(self._track_map_data)
 
     self._viewport_size = viewport_size or vec2(100, 100)
 
     self._bounding_box = bounding_box
-    self._padding = 10
+    self._padding = 50
 
     -- Initialize cache fields
     self._dirty = true
@@ -101,9 +104,9 @@ function MinimapHelper:recalculateMapScalingAndOffset()
     )
 
     -- Calculate scaled dimensions of the original image
-    local scaled_width = self._track_map_data.size.x * self._track_map_data.scale_factor * scale
-    local scaled_height = self._track_map_data.size.y * self._track_map_data.scale_factor * scale
-    local scaled_size = vec2(scaled_width, scaled_height)
+    local scaled_width = self._track_map_data.size.x / self._track_map_data.scale_factor * scale
+    local scaled_height = self._track_map_data.size.y / self._track_map_data.scale_factor * scale
+    local scaled_size = self._track_map_data.size_img * scale -- vec2(scaled_width, scaled_height)
 
     -- Calculate the center of the bounding box
     local scaled_bbox_center_x = (bounding_box_p1.x + bounding_box_p2.x) / 2 * scale
@@ -128,6 +131,7 @@ function MinimapHelper:getMapScalingAndOffset(force_recalculate)
         self._dirty = false
     end
 
+    ac.debug("cached_scale", self._cached_scale)
     return self._cached_scale, self._cached_scaled_size, self._cached_offset
 end
 
@@ -198,7 +202,6 @@ function MinimapHelper:drawRunState(origin, scoring_objects_state_data)
         return
     end
     for _, obj in ipairs(scoring_objects_state_data) do
-        ac.debug("obj", obj)
         obj:drawFlat(function(p)
             return origin + self:mapCoord(p)
         end)
