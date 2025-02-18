@@ -161,7 +161,7 @@ end
 
 
 local timers = {
-  data_brokered = Timer(0.02, function() listenForSignals() end),
+  data_brokered = Timer(0.1, function() listenForSignals() end),
   scoring_player = Timer(0.1, function()
     if run_state and editors_state and not editors_state:anyEditorEnabled() then
       registerPosition()

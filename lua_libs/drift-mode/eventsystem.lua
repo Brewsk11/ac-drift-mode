@@ -13,12 +13,11 @@ EventSystem.Signal = {
     CursorChanged = "CursorChanged",             ---Signal for UI to update cursor data
     TrackConfigChanged = "TrackConfigChanged",   ---Signal for UI to update track data
     CarConfigChanged = "CarConfigChanged",       ---Signal for UI to update car data
-    EditorsStateChanged = "EditorsStateChanged", ---Signal for when game state changes
+    EditorsStateChanged = "EditorsStateChanged", ---Signal for when car or track editor state changes
 
     DriftStateChanged = "DriftStateChanged",
     ScoringObjectStateChanged = "ScoringObjectStateChanged", -- TODO: Document these
-    ScoringObjectStatesReset = "ScoringObjectStatesReset"    -- TODO: Document these
-
+    ScoringObjectStatesReset = "ScoringObjectStatesReset",   -- TODO: Document these
 }
 
 local payloads = nil
