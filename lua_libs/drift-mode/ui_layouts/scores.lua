@@ -99,16 +99,19 @@ local function compactObjectList(scoring_objects_states)
                     formattedLabel("Angle multiplier", object_state:getAngle())
                     formattedLabel("Depth multiplier", object_state:getDepth())
                     if object_state.isInstanceOf(ZoneState) then
+                        ---@cast object_state ZoneState
                         formattedLabel("Distance multiplier", object_state:getTimeInZone() or 0)
                     end
                     ui.text("")
                     if object_state.isInstanceOf(ZoneState) then
+                        ---@cast object_state ZoneState
                         formattedLabel("Average multiplier",
                             object_state:getSpeed() * object_state:getAngle() * object_state:getDepth() *
                             (object_state:getTimeInZone() or 1.0))
                         formattedLabel("Final multiplier",
                             object_state:getPerformance() * (object_state:getTimeInZone() or 0))
-                    elseif object_state.isInstanceOf(ClipStateData) then
+                    elseif object_state.isInstanceOf(ClipState) then
+                        ---@cast object_state ClipState
                         formattedLabel("Final multiplier", object_state:getMultiplier() or 0)
                     end
                     ui.text("")
@@ -184,8 +187,8 @@ function appScoresLayout(drift_state, scoring_objects_state_data, track_data)
             local mult = 0
             local scoring_finished = 0
             for _, scoring_object_state in ipairs(scoring_objects_state_data) do
-                if scoring_object_state.done and scoring_object_state.multiplier ~= nil then
-                    mult = mult + scoring_object_state.multiplier
+                if scoring_object_state:isDone() and scoring_object_state:getMultiplier() ~= nil then
+                    mult = mult + scoring_object_state:getMultiplier()
                     scoring_finished = scoring_finished + 1
                 end
             end
