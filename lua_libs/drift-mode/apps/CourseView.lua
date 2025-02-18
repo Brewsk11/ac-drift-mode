@@ -12,8 +12,8 @@ local track_data = nil
 ---@type CarConfig?
 local car_config = nil
 
----@type ScoringObjectStateData[]?
-local scoring_object_state_data = nil
+---@type ScoringObjectState[]?
+local scoring_object_states = nil
 
 local app_map_canvas = ui.ExtraCanvas(vec2(512, 512)):clear(rgbm(0, 0, 0, 0)):setName("Testing")
 
@@ -30,17 +30,20 @@ function CourseView.Main(dt)
         car_config = payload;
     end)
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
-        if scoring_object_state_data == nil then return end
-        if payload.type == "ZoneState" then
-            scoring_object_state_data[payload.idx].score_points[#scoring_object_state_data[payload.idx].score_points + 1] =
-                payload.scoring_object_state_delta;
-        else
-            scoring_object_state_data[payload.idx] = payload.scoring_object_state;
+        if scoring_object_states == nil then return end
+        for idx, obj in ipairs(scoring_object_states) do
+            if obj:getName() == payload.name then
+                if obj:updatesFully() then
+                    scoring_object_states[idx] = payload.payload
+                else
+                    obj:consumeUpdate(payload.payload)
+                end
+                break
+            end
         end
-        ac.debug("scoring_object_state_data", scoring_object_state_data)
     end)
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
-        scoring_object_state_data = payload;
+        scoring_object_states = payload;
     end)
 
     local window_size = ui.windowSize()
@@ -62,7 +65,7 @@ function CourseView.Main(dt)
             -- minimap_helper:drawBoundingBox(vec2(0, 0))
             minimap_helper:drawCar(vec2(0, 0), 0, car_config)
 
-            minimap_helper:drawRunState(vec2(0, 0), scoring_object_state_data)
+            minimap_helper:drawRunState(vec2(0, 0), scoring_object_states)
         end
     end)
 

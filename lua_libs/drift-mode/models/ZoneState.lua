@@ -1,3 +1,4 @@
+local EventSystem = require('drift-mode/eventsystem')
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
@@ -18,33 +19,18 @@ function ZoneState:initialize(zone)
     self:calculateFields()
 end
 
----Serializes to lightweight ZoneStateData as ZoneState should not be brokered.
----due to volume of `self.zone: Zone`
----@param self ZoneState
----@return table
-function ZoneState:__serialize()
-    local data = {
-        __class = "ZoneStateData",
-        name = S.serialize(self.zone.name),
-        done = S.serialize(self:isDone()),
-        score = S.serialize(self:getScore()),
-        max_score = S.serialize(self:getMaxScore()),
-        speed = S.serialize(self:getSpeed()),
-        angle = S.serialize(self:getAngle()),
-        depth = S.serialize(self:getDepth()),
-        score_points = S.serialize(self.scores),
+function ZoneState:getName()
+    return self.zone.name
+end
 
-        active = S.serialize(self:isActive()),
-        performance = S.serialize(self:getPerformance()),
-        timeInZone = S.serialize(self:getTimeInZone())
-    }
-
-    return data
+function ZoneState:getId()
+    Assert.Error("Not implemented")
 end
 
 ---@param car_config CarConfig
 ---@param car ac.StateCar
 ---@param drift_state DriftState
+---@return number|nil
 function ZoneState:registerCar(car_config, car, drift_state)
     -- If zone has already been finished, ignore call
     if self.finished then return nil end
@@ -124,7 +110,37 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
     )
 
     self:calculateFields()
+
+    EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+        {
+            name = self.zone.name,
+            payload = {
+                new_scoring_point = self.scores[#self.scores]
+            }
+        })
+
     return ratio_mult
+end
+
+function ZoneState:drawFlat(coord_transformer)
+    for _, score in ipairs(self.scores) do
+        local color = rgbm.colors.white - rgbm.colors.fuchsia * score.angle_mult
+        color.mult = 1
+        ui.drawCircleFilled(
+            coord_transformer(score.point),
+            4 - score.speed_mult * 2,
+            color)
+    end
+end
+
+function ZoneState:updatesFully()
+    return false
+end
+
+-- Payload has to match ZoneState:registerPosition()
+function ZoneState:consumeUpdate(payload)
+    self.scores[#self.scores + 1] = payload.new_scoring_point
+    self:calculateFields()
 end
 
 ---@private

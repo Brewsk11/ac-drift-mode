@@ -1,3 +1,4 @@
+local EventSystem = require('drift-mode/eventsystem')
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
@@ -24,38 +25,58 @@ function ClipState:initialize(clip)
     self.lastPoint = nil
 end
 
----Serializes to lightweight ClipStateData as ClipState should not be brokered.
----due to volume of `self.clip: Clip`
----@param self ClipState
----@return table
-function ClipState:__serialize()
-    local data = {
-        __class = "ClipStateData",
-        name = S.serialize(self.clip.name),
-        done = S.serialize(self:isDone()),
-        score = S.serialize(self:getScore()),
-        max_score = S.serialize(self.clip.maxPoints),
-        speed = S.serialize(self:getSpeed()),
-        angle = S.serialize(self:getAngle()),
-        depth = S.serialize(self:getDepth()),
+---@param car_config CarConfig
+---@param car ac.StateCar
+---@param drift_state DriftState
+---@return number|nil
+function ClipState:registerCar(car_config, car, drift_state)
+    if car.position:distance(self.clip.origin:value()) > self.clip:getLength() then
+        return nil
+    end
 
-        performance = S.serialize(self:getPerformance()),
-        multiplier = S.serialize(self:getMultiplier()),
-        hitPoint = S.serialize(self.hitPoint),
-        hitRatioMult = S.serialize(self:getRatio())
-    }
-    return data
+    local clip_scoring_point = Point(
+        car.position + car.look * car_config.frontOffset +
+        car.side * car_config.frontSpan * -drift_state.side_drifting
+    )
+    local res = self:registerPosition(clip_scoring_point, drift_state)
+
+    if res then
+        EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+            {
+                name = self.clip.name,
+                payload = self
+            })
+    end
+
+    return res
+end
+
+function ClipState:getName()
+    return self.clip.name
+end
+
+function ClipState:getId()
+    Assert.Error("Not implemented")
+end
+
+function ClipState:updatesFully()
+    return true
+end
+
+-- Payload has to match ClipState:registerPosition()
+function ClipState:consumeUpdate(payload)
+    Assert.Error("ClipState updates fully by overwriting")
 end
 
 ---@param point Point
 ---@param drift_state DriftState
 function ClipState:registerPosition(point, drift_state)
     -- If clip has been scored already, ignore
-    if self.crossed then return false end
+    if self.crossed then return nil end
 
     -- If last is nil then start by assigning last
     if self.lastPoint == nil then
-        self.lastPoint = point; return false
+        self.lastPoint = point; return nil
     end
 
     local res = vec2.intersect(
@@ -67,7 +88,7 @@ function ClipState:registerPosition(point, drift_state)
 
     if not res then -- Not hit, continue
         self.lastPoint = point
-        return false
+        return nil
     end
 
     self.hitAngleMult = drift_state.angle_mult
@@ -86,7 +107,13 @@ function ClipState:registerPosition(point, drift_state)
     self.finalScore = self.finalMultiplier * self.clip.maxPoints
     self.crossed = true
 
-    return true
+    return self.hitRatioMult
+end
+
+---@param coord_transformer fun(point: Point): vec2
+function ClipState:drawFlat(coord_transformer)
+    if self.hitPoint == nil then return end
+    ui.drawCircle(coord_transformer(self.hitPoint), 5 - self:getPerformance() * 5, rgbm.colors.lime)
 end
 
 function ClipState:getPerformance()

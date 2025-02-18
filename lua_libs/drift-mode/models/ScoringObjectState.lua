@@ -1,6 +1,7 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+
 ---@class ScoringObjectState : ClassBase
 local ScoringObjectState = class("ScoringObjectState", WorldObject)
 
@@ -12,6 +13,51 @@ function ScoringObjectState:getScore()
 end
 
 function ScoringObjectState:getMaxScore()
+    Assert.Error("Abstract method called")
+end
+
+function ScoringObjectState:consumeUpdate(payload)
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:updatesFully()
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:getName()
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:getId()
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:isDone()
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:getSpeed()
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:getAngle()
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:getDepth()
+    Assert.Error("Called abstract method!")
+end
+
+function ScoringObjectState:getMultiplier()
+    Assert.Error("Called abstract method!")
+end
+
+---Register position of the car and update the score if the object was scored.
+---@param car_config CarConfig
+---@param car ac.StateCar
+---@param drift_state DriftState
+---@return number|nil [0, 1] Depth/ratio of the object scored or nil if registered outside of the object
+function ScoringObjectState:registerCar(car_config, car, drift_state)
     Assert.Error("Abstract method called")
 end
 

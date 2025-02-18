@@ -9,8 +9,8 @@ local ScoresApp = {}
 ---@type DriftState?
 local drift_state = nil
 
----@type ScoringObjectStateData[]?
-local scoring_objects_state_data = nil
+---@type ScoringObjectState[]?
+local scoring_object_states = nil
 
 ---@type TrackConfig?
 local track_data = nil
@@ -21,17 +21,21 @@ function ScoresApp.Main(dt)
     end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
-        if scoring_objects_state_data == nil then return end
-        if payload.type == "ZoneState" then
-            scoring_objects_state_data[payload.idx].score_points[#scoring_objects_state_data[payload.idx].score_points + 1] =
-                payload.scoring_object_state_delta;
-        else
-            scoring_objects_state_data[payload.idx] = payload.scoring_object_state;
+        if scoring_object_states == nil then return end
+        for idx, obj in ipairs(scoring_object_states) do
+            if obj:getName() == payload.name then
+                if obj:updatesFully() then
+                    scoring_object_states[idx] = payload.payload
+                else
+                    obj:consumeUpdate(payload.payload)
+                end
+                break
+            end
         end
     end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
-        scoring_objects_state_data = payload
+        scoring_object_states = payload
     end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
@@ -40,7 +44,9 @@ function ScoresApp.Main(dt)
 
     if track_data == nil then return end
 
-    appScoresLayout(drift_state, scoring_objects_state_data, track_data)
+    if drift_state and scoring_object_states then
+        appScoresLayout(drift_state, scoring_object_states, track_data)
+    end
 end
 
 return ScoresApp

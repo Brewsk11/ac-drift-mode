@@ -24,8 +24,6 @@ function MinimapHelper:initialize(track_content_path, viewport_size, bounding_bo
         size_img = ui.imageSize(self._track_map_image_path)
     }
 
-    ac.log(self._track_map_data)
-
     self._viewport_size = viewport_size or vec2(100, 100)
 
     self._bounding_box = bounding_box
@@ -196,12 +194,12 @@ function MinimapHelper:drawTrackConfig(origin, track_config)
     end
 end
 
----@param scoring_objects_state_data ScoringObjectStateData[]?
-function MinimapHelper:drawRunState(origin, scoring_objects_state_data)
-    if scoring_objects_state_data == nil then
+---@param scoring_objects_states ScoringObjectState[]?
+function MinimapHelper:drawRunState(origin, scoring_objects_states)
+    if scoring_objects_states == nil then
         return
     end
-    for _, obj in ipairs(scoring_objects_state_data) do
+    for _, obj in ipairs(scoring_objects_states) do
         obj:drawFlat(function(p)
             return origin + self:mapCoord(p)
         end)

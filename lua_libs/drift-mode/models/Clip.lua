@@ -53,6 +53,10 @@ function Clip:setEnd(new_end_point)
     self.length = new_end_point:value():distance(self.origin:value())
 end
 
+function Clip:getLength()
+    return self.length
+end
+
 function Clip:getCenter()
     return self:getSegment():getCenter()
 end
