@@ -17,12 +17,14 @@ local EditorTab = require('drift-mode/apps/ControlAppTabs/Editor')
 local CarSetupTab = require('drift-mode/apps/ControlAppTabs/CarSetup')
 local TrackPatcherTab = require('drift-mode/apps/ControlAppTabs/TrackPatcher')
 local AboutTab = require('drift-mode/apps/ControlAppTabs/About')
+local DebugTab = require('drift-mode/apps/ControlAppTabs/Debug')
 
 local __tabs = {
     { 'Course editor', EditorTab.drawUIEditor },
     { 'Car setup',     CarSetupTab.drawUICarSetup },
     { 'Track patcher', TrackPatcherTab.drawUITrackPatcher },
-    { 'About',         AboutTab.drawUIAbout }
+    { 'About',         AboutTab.drawUIAbout },
+    { 'Debug',         DebugTab.drawUIDebug },
 }
 
 local function drawAppUI()
