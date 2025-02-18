@@ -119,6 +119,17 @@ end
 ---@param custom_origin Point? Custom origin point, to check corretly it must be outside the zone
 ---@return boolean
 function Zone:isInZone(point, custom_origin)
+    -- TODO: Cache bounding_box in class
+    local bounding_box = self:getBoundingBox()
+    if bounding_box ~= nil and
+        point:flat().x < bounding_box.p1:flat().x or
+        point:flat().y < bounding_box.p1:flat().y or
+        point:flat().y > bounding_box.p2:flat().y or
+        point:flat().y > bounding_box.p2:flat().y
+    then
+        return false
+    end
+
     local origin = custom_origin or Point(vec3(0, 0, 0))
 
     --DEBUG local hits = {}
@@ -349,6 +360,7 @@ function Zone:drawSetup()
 end
 
 function Zone:getBoundingBox()
+    -- TODO: Add padding for inZone detection
     local pMin = vec3(9999, 9999, 9999)
     local pMax = vec3(-9999, -9999, -9999)
 
