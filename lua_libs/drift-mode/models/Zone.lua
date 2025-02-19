@@ -78,6 +78,7 @@ end
 function Zone:setDirty()
     self:realignZonePointOnTrack()
     self:recalculatePolygon()
+    self:recalculateBoundingBox()
 end
 
 function Zone:setCollide(value)
@@ -360,21 +361,33 @@ function Zone:drawSetup()
 end
 
 function Zone:getBoundingBox()
+    if self.bounding_box == nil then
+        self:recalculateBoundingBox()
+    end
+
+    return self.bounding_box
+end
+
+function Zone:recalculateBoundingBox()
     -- TODO: Add padding for inZone detection
     local pMin = vec3(9999, 9999, 9999)
     local pMax = vec3(-9999, -9999, -9999)
 
-    for _, point in self:getInsideLine():iter() do
-        pMin:min(point:value())
-        pMax:max(point:value())
+    if self:getInsideLine() ~= nil then
+        for _, point in self:getInsideLine():iter() do
+            pMin:min(point:value())
+            pMax:max(point:value())
+        end
     end
 
-    for _, point in self:getOutsideLine():iter() do
-        pMin:min(point:value())
-        pMax:max(point:value())
+    if self:getOutsideLine() ~= nil then
+        for _, point in self:getOutsideLine():iter() do
+            pMin:min(point:value())
+            pMax:max(point:value())
+        end
     end
 
-    return { p1 = Point(pMin), p2 = Point(pMax) }
+    self.bounding_box = { p1 = Point(pMin), p2 = Point(pMax) }
 end
 
 function Zone:drawFlat(coord_transformer)
