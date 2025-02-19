@@ -6,9 +6,6 @@ local listener_id = EventSystem.registerListener('app-scores')
 
 local ScoresApp = {}
 
----@type DriftState?
-local drift_state = nil
-
 ---@type ScoringObjectState[]?
 local scoring_object_states = nil
 
@@ -16,10 +13,6 @@ local scoring_object_states = nil
 local track_data = nil
 
 function ScoresApp.Main(dt)
-    EventSystem.listen(listener_id, EventSystem.Signal.DriftStateChanged, function(payload)
-        drift_state = payload
-    end)
-
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
         if scoring_object_states == nil then return end
         for idx, obj in ipairs(scoring_object_states) do
@@ -44,8 +37,8 @@ function ScoresApp.Main(dt)
 
     if track_data == nil then return end
 
-    if drift_state and scoring_object_states then
-        appScoresLayout(drift_state, scoring_object_states, track_data)
+    if scoring_object_states then
+        appScoresLayout(scoring_object_states, track_data)
     end
 end
 

@@ -131,12 +131,10 @@ local function compactObjectList(scoring_objects_states)
     end
 end
 
----@param drift_state DriftState
 ---@param scoring_objects_state_data ScoringObjectState[]
 ---@param track_data TrackConfig
-function appScoresLayout(drift_state, scoring_objects_state_data, track_data)
-    if not drift_state or not scoring_objects_state_data or not track_data then return end
-
+function appScoresLayout(scoring_objects_state_data, track_data)
+    if not scoring_objects_state_data or not track_data then return end
 
     local function getMaxScore() -- TODO: CACHE
         local score = 0
