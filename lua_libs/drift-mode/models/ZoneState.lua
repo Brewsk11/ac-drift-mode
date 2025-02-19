@@ -33,7 +33,7 @@ end
 ---@return number|nil
 function ZoneState:registerCar(car_config, car, drift_state)
     -- If zone has already been finished, ignore call
-    if self.finished then return nil end
+    if self:isDone() then return nil end
 
     local zone_scoring_point = Point(car.position - car.look * car_config.rearOffset +
         car.side * drift_state.side_drifting * car_config.rearSpan)
@@ -45,7 +45,7 @@ function ZoneState:registerCar(car_config, car, drift_state)
         if self.started then
             local rear_bumper_center = Point(car.position - car.look * car_config.rearOffset)
             if not self.zone:isInZone(rear_bumper_center) then
-                self.finished = true
+                self:setFinished(true)
                 return nil
             else
                 return self:registerPosition(zone_scoring_point, drift_state, false)
@@ -122,6 +122,21 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
     return ratio_mult
 end
 
+function ZoneState:updatesFully()
+    return false
+end
+
+-- Payload has to match ZoneState:registerPosition()
+function ZoneState:consumeUpdate(payload)
+    if payload.new_scoring_point ~= nil then
+        self.scores[#self.scores + 1] = payload.new_scoring_point
+        self:calculateFields()
+    end
+    if payload.finished ~= nil then
+        self.finished = payload.finished
+    end
+end
+
 function ZoneState:drawFlat(coord_transformer)
     for _, score in ipairs(self.scores) do
         local color = rgbm.colors.white - rgbm.colors.fuchsia * score.angle_mult
@@ -131,16 +146,6 @@ function ZoneState:drawFlat(coord_transformer)
             4 - score.speed_mult * 2,
             color)
     end
-end
-
-function ZoneState:updatesFully()
-    return false
-end
-
--- Payload has to match ZoneState:registerPosition()
-function ZoneState:consumeUpdate(payload)
-    self.scores[#self.scores + 1] = payload.new_scoring_point
-    self:calculateFields()
 end
 
 ---@private
@@ -165,6 +170,18 @@ function ZoneState:calculateFields()
     self.speed = speed_mult
     self.angle = angle_mult
     self.depth = depth_mult
+end
+
+---@private
+function ZoneState:setFinished(value)
+    self.finished = value
+    EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+        {
+            name = self.zone.name,
+            payload = {
+                finished = value
+            }
+        })
 end
 
 ---Get zone performance, i.e. a multiplier of speed, angle and distance to outside line.
@@ -241,7 +258,7 @@ function ZoneState:getMaxScore()
 end
 
 function ZoneState:isActive()
-    return self.started and not self.finished
+    return self.started and not self:isDone()
 end
 
 function ZoneState:isDone()
