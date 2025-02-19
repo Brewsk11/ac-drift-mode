@@ -29,22 +29,6 @@ function RunState:initialize(track_config)
     EventSystem.queue(EventSystem.Signal.ScoringObjectStatesReset, self.scoringObjectStates)
 end
 
----Serializes to lightweight RunStateData as RunState should not be brokered.
----@param self RunState
----@return table
-function RunState:__serialize()
-    local data = {
-        __class = "RunStateData",
-        scoringObjectStates = S.serialize(self.scoringObjectStates),
-        driftState = S.serialize(self.driftState),
-        totalScore = S.serialize(self:getScore()),
-        maxScore = S.serialize(self:getMaxScore()),
-        avgMultiplier = S.serialize(self:getAvgMultiplier()),
-    }
-
-    return data
-end
-
 -- EXPERIMENTAL: Use ac.connect() for drift ratio multiplier sharing
 local shared_data = ac.connect({
     ac.StructItem.key("driftmode__DriftState"),
