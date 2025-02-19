@@ -11,10 +11,8 @@ local Serializer = {}
 ---@param data any
 ---@return any
 function Serializer.serialize(data)
-
     -- CSP class
     if ClassBase.isInstanceOf(data) then
-
         if data.__serialize == nil then
             -- Classes with no custom de/serializer
 
@@ -101,13 +99,11 @@ end
 ---@param data any
 ---@return any
 function Serializer.deserialize(data)
-
     -- nil
     if data == nil then return nil end
 
     -- CSP classes
     if data['__class'] ~= nil then
-
         local obj = nil
 
         if _G[data.__class].__deserialize == nil then
@@ -174,14 +170,13 @@ function Serializer.toJson(data)
     return json.encode(Serializer.serialize(data))
 end
 
-
-function Serializer.traverse_object(prefix, obj_a, obj_b, debug)
+function Serializer.checkEqual(prefix, obj_a, obj_b, debug)
     if type(obj_a) ~= "table" and type(obj_b) ~= "table" then
         if debug then ac.log("`" .. prefix .. "` : " .. tostring(obj_a) .. " vs. " .. tostring(obj_b)) end
         return obj_a == obj_b, obj_a, obj_b
     elseif type(obj_a) == "table" and type(obj_b) == "table" then
         for k, v in pairs(obj_a) do
-            local res, _obj_a, _obj_b = Serializer.traverse_object(prefix .. "." .. k, v, obj_b[k], debug)
+            local res, _obj_a, _obj_b = Serializer.checkEqual(prefix .. "." .. k, v, obj_b[k], debug)
             if not res then
                 return res, _obj_a, _obj_b
             end
@@ -197,18 +192,18 @@ TestClassNested = class("TestClassNested")
 function TestClassNested:initialize()
     self.number = math.random(1000)
     self.string = "from_initialize"
-    self.nested_table = { table = { number = math.random(1000), float = math.random()}}
+    self.nested_table = { table = { number = math.random(1000), float = math.random() } }
 end
 
 TestClass = class("TestClass")
 function TestClass:initialize()
     self.number = math.random(1000)
     self.string = "from_initialize"
-    self.nested_table = { string = 'from_initialize_nested', table = { number = math.random(1000), float = math.random()}}
+    self.nested_table = { string = 'from_initialize_nested', table = { number = math.random(1000), float = math.random() } }
     self.nested_class = TestClassNested()
     self.nested_class_array = {}
     for i = 1, 2 do
-        self.nested_class_array[#self.nested_class_array+1] = TestClassNested()
+        self.nested_class_array[#self.nested_class_array + 1] = TestClassNested()
     end
 end
 
@@ -216,12 +211,14 @@ TestClassCustomSerializer = class("TestClassCustomSerializer")
 function TestClassCustomSerializer:initialize()
     self.number = math.random(1000)
 end
+
 function TestClassCustomSerializer:__serialize()
     return {
         __class = self.__name,
         custom_number = "abc" .. tostring(self.number) .. "def"
     }
 end
+
 function TestClassCustomSerializer.__deserialize(data)
     local obj = TestClassCustomSerializer()
     obj.number = tonumber(string.trim(data.custom_number, "abcdef"))
@@ -252,7 +249,7 @@ local function test()
     local deserialized = Serializer.deserialize(serialized)
 
     ---@diagnostic disable: undefined-field
-    local res, obj_a, obj_b = Serializer.traverse_object("test_payload", test_payload, deserialized, false)
+    local res, obj_a, obj_b = Serializer.checkEqual("test_payload", test_payload, deserialized, false)
     Assert.True(res, "Serialization faled at: `" .. tostring(obj_a) .. "` vs. `" .. tostring(obj_b) .. "`\n")
 end
 

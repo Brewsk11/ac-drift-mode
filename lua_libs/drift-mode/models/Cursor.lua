@@ -16,7 +16,7 @@ end
 
 function Cursor:registerObject(id, object, drawer)
     -- Check if new object is the same and skip for performance (~10ms)
-    local are_same, _, _  = S.traverse_object(self.objects[id], { object, drawer })
+    local are_same, _, _ = S.checkEqual(self.objects[id], { object, drawer })
 
     if not are_same then
         self.objects[id] = CursorObject(object, drawer)
