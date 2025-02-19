@@ -27,7 +27,7 @@ function MinimapHelper:initialize(track_content_path, viewport_size, bounding_bo
     self._viewport_size = viewport_size or vec2(100, 100)
 
     self._bounding_box = bounding_box
-    self._padding = 50
+    self._padding = 10
 
     -- Initialize cache fields
     self._dirty = true

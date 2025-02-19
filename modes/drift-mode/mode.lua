@@ -1,7 +1,6 @@
 local EventSystem = require('drift-mode/eventsystem')
 local listener_id = EventSystem.registerListener("mode")
 
-local DataBroker = require('drift-mode/databroker')
 local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
 require('drift-mode/models')
@@ -88,7 +87,7 @@ local signalListeners = {
     function(payload)
       track_data = payload
       if track_data ~= nil then
-        resetScore()
+        EventSystem.queue(EventSystem.Signal.ResetScore)
         reactivateColliders()
 
         LineCrossDetector.clear()
@@ -125,7 +124,7 @@ local signalListeners = {
   },
   {
     EventSystem.Signal.CrossedStart,
-    function(payload) resetScore() end
+    function(payload) EventSystem.queue(EventSystem.Signal.ResetScore) end
   },
   {
     EventSystem.Signal.CrossedFinish,
@@ -137,7 +136,7 @@ local signalListeners = {
   },
   {
     EventSystem.Signal.CrossedRespawn,
-    function(payload) EventSystem.queue(EventSystem.Signal.TeleportToStart, {}) end
+    function(payload) EventSystem.queue(EventSystem.Signal.TeleportToStart) end
   }
 }
 
@@ -162,7 +161,7 @@ end
 
 local timers = {
   data_brokered = Timer(0.1, function() listenForSignals() end),
-  scoring_player = Timer(0.1, function()
+  scoring_player = Timer(0.05, function()
     if run_state and editors_state and not editors_state:anyEditorEnabled() then
       registerPosition()
     end
