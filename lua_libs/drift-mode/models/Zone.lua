@@ -234,7 +234,9 @@ function Zone:shortestCrossline(point)
                     segment.tail:flat()
                 )
                 if segment_hit ~= nil then
-                    out_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
+                    out_hit.hit = segment_hit
+                    out_hit.distance = segment_distance
+                    out_hit.segment_no = idx
                 end
             end
         end
@@ -250,7 +252,9 @@ function Zone:shortestCrossline(point)
                     segment.tail:flat()
                 )
                 if segment_hit ~= nil then
-                    in_hit = { hit = segment_hit, distance = segment_distance, segment_no = idx }
+                    in_hit.hit = segment_hit
+                    in_hit.distance = segment_distance
+                    in_hit.segment_no = idx
                 end
             end
         end
