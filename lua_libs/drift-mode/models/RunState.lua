@@ -45,47 +45,25 @@ function RunState:__serialize()
     return data
 end
 
+-- EXPERIMENTAL: Use ac.connect() for drift ratio multiplier sharing
+local shared_data = ac.connect({
+    ac.StructItem.key("driftmode__DriftState"),
+    driftmode__drift_state_ratio = ac.StructItem.float()
+})
+
 ---@param car_config CarConfig
 ---@param car ac.StateCar
 function RunState:registerCar(car_config, car)
-    self:calcDriftState(car)
+    self.driftState:calcDriftState(car, self.trackConfig.scoringRanges)
 
     self.driftState.ratio_mult = 0.0
     for _, scoring_object in ipairs(self.scoringObjectStates) do
         local res = scoring_object:registerCar(car_config, car, self.driftState)
         if res ~= nil then
             self.driftState.ratio_mult = res
+            shared_data.driftmode__drift_state_ratio = res
             break
         end
-    end
-
-    EventSystem.queue(EventSystem.Signal.DriftStateChanged, self.driftState)
-end
-
----@param car ac.StateCar
-function RunState:calcDriftState(car)
-    local car_direction = vec3(0, 0, 0)
-    car.velocity:normalize(car_direction)
-
-    self.driftState.speed_mult = self.trackConfig.scoringRanges.speedRange:getFractionClamped(car.speedKmh)
-
-    -- TODO: Somehow the dot sometimes is outside of the arccos domain, even though both v are normalized
-    -- For now run additional check not to dirty the logs
-    local car_angle = math.deg(math.acos(car_direction:dot(car.look)))
-    if car_angle == car_angle then -- Check if nan
-        self.driftState.angle_mult = self.trackConfig.scoringRanges.angleRange:getFractionClamped(car_angle)
-    end
-
-    -- Ignore angle when min speed not reached, to avoid big fluctuations with low speed
-    if self.driftState.speed_mult == 0 then
-        self.driftState.angle_mult = 0
-    end
-
-    local dot = car.velocity:dot(car.side)
-    if dot > 0 then
-        self.driftState.side_drifting = DriftState.Side.LeftLeads
-    else
-        self.driftState.side_drifting = DriftState.Side.RightLeads
     end
 end
 

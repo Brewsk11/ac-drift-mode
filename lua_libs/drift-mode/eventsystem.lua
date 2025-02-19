@@ -15,7 +15,7 @@ EventSystem.Signal = {
     CarConfigChanged = "CarConfigChanged",       ---Signal for UI to update car data
     EditorsStateChanged = "EditorsStateChanged", ---Signal for when car or track editor state changes
 
-    DriftStateChanged = "DriftStateChanged",
+    DriftStateRatioChanged = "DriftStateMultChanged",
     ScoringObjectStateChanged = "ScoringObjectStateChanged", -- TODO: Document these
     ScoringObjectStatesReset = "ScoringObjectStatesReset",   -- TODO: Document these
 }
@@ -115,7 +115,7 @@ end
 
 ---@param listener_id string
 ---@param signal EventSystem.Signal
----@param callback fun(payload: table)
+---@param callback fun(payload: table|number|boolean|nil)
 function EventSystem.listen(listener_id, signal, callback)
     EventSystem.startGroup()
     local changed = EventSystem.listenInGroup(listener_id, signal, callback)
