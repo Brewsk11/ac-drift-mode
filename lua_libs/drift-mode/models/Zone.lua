@@ -1,5 +1,6 @@
 local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
+local Resources = require('drift-mode/Resources')
 local S = require('drift-mode/serializer')
 
 ---@class Zone : ScoringObject Class representing a drift scoring zone
@@ -394,17 +395,19 @@ function Zone:recalculateBoundingBox()
     self.bounding_box = { p1 = Point(pMin), p2 = Point(pMax) }
 end
 
-function Zone:drawFlat(coord_transformer)
+function Zone:drawFlat(coord_transformer, scale)
+    local color = Resources.Colors
+
     for _, seg in self:getOutsideLine():segment(false):iter() do
         local head_mapped = coord_transformer(seg.head)
         local tail_mapped = coord_transformer(seg.tail)
-        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 1), 1)
+        ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 1 * scale)
     end
 
     for _, seg in self:getInsideLine():segment(false):iter() do
         local head_mapped = coord_transformer(seg.head)
         local tail_mapped = coord_transformer(seg.tail)
-        ui.drawLine(head_mapped, tail_mapped, rgbm(1, 0, 0, 0.5), 1)
+        ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 0.5 * scale)
     end
 end
 

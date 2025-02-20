@@ -129,7 +129,6 @@ function MinimapHelper:getMapScalingAndOffset(force_recalculate)
         self._dirty = false
     end
 
-    ac.debug("cached_scale", self._cached_scale)
     return self._cached_scale, self._cached_scaled_size, self._cached_offset
 end
 
@@ -187,10 +186,12 @@ end
 
 ---@param track_config TrackConfig
 function MinimapHelper:drawTrackConfig(origin, track_config)
+    local scale, _, _ = self:getMapScalingAndOffset()
     for _, obj in ipairs(track_config.scoringObjects) do
         obj:drawFlat(function(p)
-            return origin + self:mapCoord(p)
-        end)
+                return origin + self:mapCoord(p)
+            end,
+            scale)
     end
 end
 
@@ -199,10 +200,13 @@ function MinimapHelper:drawRunState(origin, scoring_objects_states)
     if scoring_objects_states == nil then
         return
     end
+
+    local scale, _, _ = self:getMapScalingAndOffset()
     for _, obj in ipairs(scoring_objects_states) do
         obj:drawFlat(function(p)
-            return origin + self:mapCoord(p)
-        end)
+                return origin + self:mapCoord(p)
+            end,
+            scale)
     end
 end
 

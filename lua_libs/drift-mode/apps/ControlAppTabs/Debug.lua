@@ -1,22 +1,39 @@
 local EventSystem = require('drift-mode/eventsystem')
+local listener_id = EventSystem.registerListener("app-debug-tab")
+
 local ConfigIO = require('drift-mode/configio')
 
 local Debug = {}
 
+---@type ScoringObjectState[]?
+local scoring_object_states = nil
 
-function Debug.drawUIDebug(scoring_objects)
+function Debug.drawUIDebug()
+    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
+        if scoring_object_states == nil then return end
+        for idx, obj in ipairs(scoring_object_states) do
+            if obj:getName() == payload.name then
+                if obj:updatesFully() then
+                    scoring_object_states[idx] = payload.payload
+                else
+                    obj:consumeUpdate(payload.payload)
+                end
+                break
+            end
+        end
+    end)
+
+    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
+        scoring_object_states = payload
+    end)
+
     if ui.button("Save scoring objects") then
-        ConfigIO.saveConfig(ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/scoring.json", scoring_objects)
+        ConfigIO.saveConfig(ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/scoring.json", scoring_object_states)
     end
 
     if ui.button("Load scoring objects") then
-        local scoring_objects = ConfigIO.loadConfig(ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/scoring.json")
-
-        EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, {})
-
-        for _, object in ipairs(scoring_objects) do
-            EventSystem.emit(EventSystem.Signal.ScoringObjectState(object))
-        end
+        scoring_object_states = ConfigIO.loadConfig(ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/scoring.json")
+        EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, scoring_object_states)
     end
 end
 

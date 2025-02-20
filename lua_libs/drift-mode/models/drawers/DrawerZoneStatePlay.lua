@@ -1,6 +1,8 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local Resources = require('drift-mode/Resources')
+
 ---@class DrawerZoneStatePlay : DrawerZoneState
 ---@field drawerZone DrawerZone
 ---@field protected drawerInactive DrawerZone
@@ -9,12 +11,12 @@ local S = require('drift-mode/serializer')
 local DrawerZoneStatePlay = class("DrawerZoneStatePlay", DrawerZoneState)
 
 function DrawerZoneStatePlay:initialize(showZoneScorePoints)
-    self.color_inactive = rgbm(0, 2, 1, 0.4)
-    self.color_active = rgbm(0, 3, 0, 0.4)
-    self.color_done = rgbm(0, 0, 3, 0.4)
-    self.color_bad = rgbm(2, 0, 1, 3)
-    self.color_good = rgbm(0, 3, 0, 3)
-    self.color_outside = rgbm(3, 0, 0, 0.2)
+    self.color_inactive = Resources.Colors.ScoringObjectInactive
+    self.color_active = Resources.Colors.ScoringObjectActive
+    self.color_done = Resources.Colors.ScoringObjectDone
+    self.color_bad = Resources.Colors.ScoringObjectBad
+    self.color_good = Resources.Colors.ScoringObjectGood
+    self.color_outside = Resources.Colors.ScoringObjectOutside
 
     self.showZoneScorePoints = showZoneScorePoints or false
 

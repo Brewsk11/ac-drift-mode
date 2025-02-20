@@ -73,8 +73,6 @@ function EventSystem.listen(listener_id, signal, callback)
     local last_signal_id = signal_log[signal]
     local last_listeners_signal_id_read = listeners[listener_id].signals_read[signal]
 
-    ac.debug("last_listeners_signal_id_read", last_listeners_signal_id_read)
-    ac.debug("last_signal_id", last_signal_id)
     if last_listeners_signal_id_read == last_signal_id then
         return false
     end

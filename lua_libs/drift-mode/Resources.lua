@@ -20,9 +20,15 @@ local Resources = {
         NeutralAngle = rgbm(120 / 255, 142 / 255, 125 / 255, 1),
         NeutralRatio = rgbm(102 / 255, 82 / 255, 106 / 255, 1),
         FaintBg = rgbm(1, 1, 1, 0.2),
-        EditorInactivePoi = rgbm(1, 1, 1, 0.5),
-        EditorActivePoi = rgbm(1, 1, 1, 1),
-        EditorHighlightedPoi = rgbm(3, 0, 0, 1),
+        EditorInactivePoi = rgbm(1, 1, 1, 1),
+        EditorActivePoi = rgbm(0, 1, 0, 1),
+        EditorHighlightedPoi = rgbm(0, 0, 1, 1),
+        ScoringObjectInactive = rgbm(0, 0.5, 1, 1),
+        ScoringObjectActive = rgbm(0, 1, 0.2, 1),
+        ScoringObjectDone = rgbm(0.7, 0.4, 0.4, 1),
+        ScoringObjectBad = rgbm(0.8, 0.3, 0.3, 1),
+        ScoringObjectGood = rgbm(0, 1, 0, 1),
+        ScoringObjectOutside = rgbm(1, 0, 0, 1),
     },
 }
 

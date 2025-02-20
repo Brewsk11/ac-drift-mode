@@ -62,8 +62,8 @@ function ScoringObjectState:registerCar(car_config, car, drift_state)
 end
 
 ---Draw itself using ui.* calls
----@param coord_transformer fun(point: Point): vec2 Function converting true coordinate to canvas coordinate
-function ScoringObjectState:drawFlat(coord_transformer)
+---@param coord_transformer fun(point: Point): vec2, number Function converting true coordinate to canvas coordinate
+function ScoringObjectState:drawFlat(coord_transformer, scale)
     Assert.Error("Called abstract method!")
 end
 

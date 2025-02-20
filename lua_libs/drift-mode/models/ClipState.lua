@@ -1,6 +1,7 @@
 local EventSystem = require('drift-mode/eventsystem')
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
+local Resources = require('drift-mode/Resources')
 
 ---@class ClipState : ScoringObjectState
 ---@field clip Clip
@@ -111,9 +112,26 @@ function ClipState:registerPosition(point, drift_state)
 end
 
 ---@param coord_transformer fun(point: Point): vec2
-function ClipState:drawFlat(coord_transformer)
+function ClipState:drawFlat(coord_transformer, scale)
     if self.hitPoint == nil then return end
-    ui.drawCircle(coord_transformer(self.hitPoint), 5 - self:getPerformance() * 5, rgbm.colors.lime)
+
+    local point_color =
+        Resources.Colors.ScoringObjectGood * self:getAngle() +
+        Resources.Colors.ScoringObjectBad * (1 - self:getAngle())
+
+    point_color.mult = 1
+
+    local radius = 2 - self:getSpeed() * 1.3
+
+    ui.drawCircleFilled(
+        coord_transformer(self.hitPoint),
+        (radius + 0.5) * scale,
+        rgbm.colors.white)
+
+    ui.drawCircleFilled(
+        coord_transformer(self.hitPoint),
+        radius * scale,
+        point_color)
 end
 
 function ClipState:getPerformance()

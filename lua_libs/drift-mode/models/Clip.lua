@@ -106,11 +106,11 @@ function Clip:getBoundingBox()
     return { p1 = Point(pMin), p2 = Point(pMax) }
 end
 
-function Clip:drawFlat(coord_transformer)
+function Clip:drawFlat(coord_transformer, scale)
     local origin_mapped = coord_transformer(self.origin)
     local end_mapped = coord_transformer(self:getEnd())
-    ui.drawLine(origin_mapped, end_mapped, Resources.Colors.EditorActivePoi, 1)
-    ui.drawCircleFilled(origin_mapped, 2, Resources.Colors.EditorActivePoi)
+    ui.drawLine(origin_mapped, end_mapped, rgbm.colors.white, 0.5 * scale)
+    ui.drawCircleFilled(origin_mapped, 1 * scale, rgbm.colors.white)
 end
 
 local function test()
