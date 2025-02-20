@@ -15,7 +15,7 @@ EventSystem.Signal = {
     CarConfigChanged = "CarConfigChanged",       ---Signal for UI to update car data
     EditorsStateChanged = "EditorsStateChanged", ---Signal for when car or track editor state changes
 
-    DriftStateRatioChanged = "DriftStateMultChanged",
+    DriftStateChanged = "DriftStateChanged",
     ScoringObjectStateChanged = "ScoringObjectStateChanged", -- TODO: Document these
     ScoringObjectStatesReset = "ScoringObjectStatesReset",   -- TODO: Document these
 }

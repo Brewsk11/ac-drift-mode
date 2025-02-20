@@ -29,12 +29,6 @@ function RunState:initialize(track_config)
     EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, self.scoringObjectStates)
 end
 
--- EXPERIMENTAL: Use ac.connect() for drift ratio multiplier sharing
-local shared_data = ac.connect({
-    ac.StructItem.key("driftmode__DriftState"),
-    driftmode__drift_state_ratio = ac.StructItem.float()
-})
-
 ---@param car_config CarConfig
 ---@param car ac.StateCar
 function RunState:registerCar(car_config, car)
@@ -45,10 +39,11 @@ function RunState:registerCar(car_config, car)
         local res = scoring_object:registerCar(car_config, car, self.driftState)
         if res ~= nil then
             self.driftState.ratio_mult = res
-            shared_data.driftmode__drift_state_ratio = res
             break
         end
     end
+
+    EventSystem.emit(EventSystem.Signal.DriftStateChanged, self.driftState)
 end
 
 function RunState:getScore()
