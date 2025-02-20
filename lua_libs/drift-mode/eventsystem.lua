@@ -22,12 +22,12 @@ EventSystem.Signal = {
 
 local charset = "abcdefghijklmnopqrstuvwxyz1234567890"
 local function randomString(length)
-    if length > 0 then
+    local result = {}
+    for _ = 1, length do
         local idx = math.random(1, #charset)
-        return randomString(length - 1) .. charset:sub(idx, idx)
-    else
-        return ""
+        table.insert(result, charset:sub(idx, idx))
     end
+    return table.concat(result)
 end
 
 ---@param name string
