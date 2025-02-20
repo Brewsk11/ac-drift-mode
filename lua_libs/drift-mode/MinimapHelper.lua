@@ -177,11 +177,11 @@ function MinimapHelper:drawCar(origin, idx, car_config)
             car.position - car.look * car_config.rearOffset - car.side * car_config.rearSpan
 
         ui.drawQuadFilled(
-            self:mapCoord(Point(p1)),
-            self:mapCoord(Point(p2)),
-            self:mapCoord(Point(p4)),
-            self:mapCoord(Point(p3)),
-            rgbm.colors.gray)
+            origin + self:mapCoord(Point(p1)),
+            origin + self:mapCoord(Point(p2)),
+            origin + self:mapCoord(Point(p4)),
+            origin + self:mapCoord(Point(p3)),
+            rgbm.colors.white)
     end
 end
 

@@ -15,12 +15,12 @@ local car_config = nil
 ---@type ScoringObjectState[]?
 local scoring_object_states = nil
 
-local app_map_canvas = ui.ExtraCanvas(vec2(512, 512)):clear(rgbm(0, 0, 0, 0)):setName("Testing")
+local app_map_canvas = ui.ExtraCanvas(vec2(1024, 1024)):clear(rgbm(0, 0, 0, 0)):setName("Testing")
 
 local CourseView = {}
 
 ---@type MinimapHelper
-local minimap_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(512, 512))
+local minimap_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(1024, 1024))
 
 function CourseView.Main(dt)
     EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
@@ -69,7 +69,7 @@ function CourseView.Main(dt)
         end
     end)
 
-    ui.drawImage(app_map_canvas, vec2(0, 0), vec2(512, 512))
+    ui.drawImage(app_map_canvas, vec2(0, 0), vec2(1024, 1024))
 end
 
 return CourseView
