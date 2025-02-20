@@ -29,6 +29,11 @@ function RunState:initialize(track_config)
     EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, self.scoringObjectStates)
 end
 
+function RunState:calcDriftState(car)
+    self.driftState:calcDriftState(car, self.trackConfig.scoringRanges)
+    EventSystem.emit(EventSystem.Signal.DriftStateChanged, self.driftState)
+end
+
 ---@param car_config CarConfig
 ---@param car ac.StateCar
 function RunState:registerCar(car_config, car)
@@ -39,11 +44,10 @@ function RunState:registerCar(car_config, car)
         local res = scoring_object:registerCar(car_config, car, self.driftState)
         if res ~= nil then
             self.driftState.ratio_mult = res
+            EventSystem.emit(EventSystem.Signal.DriftStateChanged, self.driftState)
             break
         end
     end
-
-    EventSystem.emit(EventSystem.Signal.DriftStateChanged, self.driftState)
 end
 
 function RunState:getScore()

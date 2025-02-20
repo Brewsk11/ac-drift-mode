@@ -158,9 +158,14 @@ end
 
 local timers = {
   data_brokered = Timer(0.1, function() listenForSignals() end),
-  scoring_player = Timer(0.02, function()
+  scoring_player = Timer(0.05, function()
     if run_state and editors_state and not editors_state:anyEditorEnabled() then
       registerPosition()
+    end
+  end),
+  refresh_driftstate = Timer(0.01, function()
+    if run_state and editors_state and not editors_state:anyEditorEnabled() then
+      run_state:calcDriftState(ac.getCar(0))
     end
   end),
   monitor_crossing = Timer(0.1, function()
