@@ -26,7 +26,7 @@ function RunState:initialize(track_config)
         end
     end
 
-    EventSystem.queue(EventSystem.Signal.ScoringObjectStatesReset, self.scoringObjectStates)
+    EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, self.scoringObjectStates)
 end
 
 -- EXPERIMENTAL: Use ac.connect() for drift ratio multiplier sharing

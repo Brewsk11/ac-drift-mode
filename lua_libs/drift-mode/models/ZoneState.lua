@@ -111,7 +111,7 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
 
     self:calculateFields()
 
-    EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+    EventSystem.emit(EventSystem.Signal.ScoringObjectStateChanged,
         {
             name = self.zone.name,
             payload = {
@@ -175,7 +175,7 @@ end
 ---@private
 function ZoneState:setFinished(value)
     self.finished = value
-    EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+    EventSystem.emit(EventSystem.Signal.ScoringObjectStateChanged,
         {
             name = self.zone.name,
             payload = {

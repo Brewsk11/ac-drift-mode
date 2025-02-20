@@ -41,7 +41,7 @@ function ClipState:registerCar(car_config, car, drift_state)
     local res = self:registerPosition(clip_scoring_point, drift_state)
 
     if res then
-        EventSystem.queue(EventSystem.Signal.ScoringObjectStateChanged,
+        EventSystem.emit(EventSystem.Signal.ScoringObjectStateChanged,
             {
                 name = self.clip.name,
                 payload = self

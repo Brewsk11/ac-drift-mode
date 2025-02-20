@@ -87,7 +87,7 @@ local signalListeners = {
     function(payload)
       track_data = payload
       if track_data ~= nil then
-        EventSystem.queue(EventSystem.Signal.ResetScore)
+        EventSystem.emit(EventSystem.Signal.ResetScore)
         reactivateColliders()
 
         LineCrossDetector.clear()
@@ -124,7 +124,7 @@ local signalListeners = {
   },
   {
     EventSystem.Signal.CrossedStart,
-    function(payload) EventSystem.queue(EventSystem.Signal.ResetScore) end
+    function(payload) EventSystem.emit(EventSystem.Signal.ResetScore) end
   },
   {
     EventSystem.Signal.CrossedFinish,
@@ -136,17 +136,14 @@ local signalListeners = {
   },
   {
     EventSystem.Signal.CrossedRespawn,
-    function(payload) EventSystem.queue(EventSystem.Signal.TeleportToStart) end
+    function(payload) EventSystem.emit(EventSystem.Signal.TeleportToStart) end
   }
 }
 
 local function listenForSignals()
-  local changed = false
-  EventSystem.startGroup()
   for _, v in ipairs(signalListeners) do
-    changed = EventSystem.listenInGroup(listener_id, v[1], v[2]) or changed
+    EventSystem.listen(listener_id, v[1], v[2])
   end
-  EventSystem.endGroup(changed)
 end
 
 

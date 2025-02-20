@@ -12,10 +12,10 @@ function Debug.drawUIDebug(scoring_objects)
     if ui.button("Load scoring objects") then
         local scoring_objects = ConfigIO.loadConfig(ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/scoring.json")
 
-        EventSystem.queue(EventSystem.Signal.ScoringObjectStatesReset, {})
+        EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, {})
 
         for _, object in ipairs(scoring_objects) do
-            EventSystem.queue(EventSystem.Signal.ScoringObjectState(object))
+            EventSystem.emit(EventSystem.Signal.ScoringObjectState(object))
         end
     end
 end
