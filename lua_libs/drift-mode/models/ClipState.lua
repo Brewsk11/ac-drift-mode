@@ -116,17 +116,12 @@ function ClipState:drawFlat(coord_transformer, scale)
     if self.hitPoint == nil then return end
 
     local point_color =
-        Resources.Colors.ScoringObjectGood * self:getAngle() +
-        Resources.Colors.ScoringObjectBad * (1 - self:getAngle())
+        Resources.Colors.ScoringObjectGood * self:getSpeed() +
+        Resources.Colors.ScoringObjectBad * (1 - self:getSpeed())
 
     point_color.mult = 1
 
-    local radius = 2 - self:getSpeed() * 1.3
-
-    ui.drawCircleFilled(
-        coord_transformer(self.hitPoint),
-        (radius + 0.5) * scale,
-        rgbm.colors.white)
+    local radius = 3 - self:getAngle() * 2.5
 
     ui.drawCircleFilled(
         coord_transformer(self.hitPoint),

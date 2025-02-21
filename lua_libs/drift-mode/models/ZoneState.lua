@@ -141,14 +141,14 @@ end
 function ZoneState:drawFlat(coord_transformer, scale)
     for _, score in ipairs(self.scores) do
         local point_color =
-            Resources.Colors.ScoringObjectGood * score.angle_mult +
-            Resources.Colors.ScoringObjectBad * (1 - score.angle_mult)
+            Resources.Colors.ScoringObjectGood * score.speed_mult +
+            Resources.Colors.ScoringObjectBad * (1 - score.speed_mult)
 
         point_color.mult = 1
 
         ui.drawCircleFilled(
             coord_transformer(score.point),
-            (2 - score.speed_mult * 1.3) * scale,
+            (3 - score.angle_mult * 2.5) * scale,
             point_color)
     end
 end
