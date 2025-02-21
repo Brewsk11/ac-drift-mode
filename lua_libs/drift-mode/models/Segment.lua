@@ -56,6 +56,11 @@ function Segment:getNormal()
     return Point(vec3():set(self.tail:value() - self.head:value()):cross(vec3(0, 1, 0)):normalize())
 end
 
+function Segment:drawFlat(coord_transformer, scale, color)
+    -- TODO: Dep injection
+    ui.drawLine(coord_transformer(self.head), coord_transformer(self.tail), color, scale)
+end
+
 local function test()
     local points = {}
     points[1] = Point(vec3(1, 1, 1))

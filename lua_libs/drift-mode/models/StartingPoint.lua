@@ -24,6 +24,17 @@ function StartingPoint:drawSetup()
     render.debugText(self.origin:value() + vec3(0, 2, 0), "Starting point")
 end
 
+function StartingPoint:drawFlat(coord_transformer, scale, color)
+    -- TODO: Dep injection
+    ui.drawCircleFilled(coord_transformer(self.origin), scale * 1, color)
+    ui.drawLine(
+        coord_transformer(self.origin),
+        coord_transformer(Point(self.origin:value() + self.direction * 2)),
+        color,
+        scale * 0.5
+    )
+end
+
 local Assert = require('drift-mode/assert')
 local function test()
 end

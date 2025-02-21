@@ -29,6 +29,10 @@ local Resources = {
         ScoringObjectBad = rgbm(0.8, 0.3, 0.3, 1),
         ScoringObjectGood = rgbm(0, 1, 0, 1),
         ScoringObjectOutside = rgbm(1, 0, 0, 1),
+        Start = rgbm(0.2, 1, 0.2, 1),
+        Finish = rgbm(0.2, 0.2, 1, 1),
+        Respawn = rgbm(1, 0.2, 0.2, 1),
+        RespawnPoint = rgbm(1, 0.2, 0.2, 1),
     },
 }
 

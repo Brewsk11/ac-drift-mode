@@ -1,5 +1,6 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
+local Resources = require('drift-mode/Resources')
 
 local Zone = require('drift-mode/models/Zone')
 local WorldObject = require('drift-mode/models/WorldObject')
@@ -123,12 +124,15 @@ function TrackConfig:getBoundingBox(padding)
         local obj_bounding_box = obj:getBoundingBox()
         pMin:min(obj_bounding_box.p1:value())
         pMax:max(obj_bounding_box.p2:value())
+function TrackConfig:drawFlat(coord_transformer, scale)
+    for _, obj in ipairs(self.scoringObjects) do
+        obj:drawFlat(coord_transformer, scale)
     end
 
-    return {
-        p1 = Point(pMin - vec3(padding, padding, padding)),
-        p2 = Point(pMax + vec3(padding, padding, padding))
-    }
+    if self.startLine then self.startLine:drawFlat(coord_transformer, scale, Resources.Colors.Start) end
+    if self.finishLine then self.finishLine:drawFlat(coord_transformer, scale, Resources.Colors.Finish) end
+    if self.respawnLine then self.respawnLine:drawFlat(coord_transformer, scale, Resources.Colors.Respawn) end
+    if self.startingPoint then self.startingPoint:drawFlat(coord_transformer, scale, Resources.Colors.Respawn) end
 end
 
 local function test()
