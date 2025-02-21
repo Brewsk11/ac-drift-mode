@@ -16,6 +16,7 @@ local car_config = nil
 local scoring_object_states = nil
 
 local app_map_canvas = ui.ExtraCanvas(vec2(1024, 1024)):clear(rgbm(0, 0, 0, 0)):setName("Testing")
+local saving_canvas = ui.ExtraCanvas(vec2(2048, 2048)):clear(rgbm(0, 0, 0, 0)):setName("savingcanvas")
 
 local CourseView = {}
 
@@ -68,6 +69,43 @@ function CourseView.Main(dt)
     end)
 
     ui.drawImage(app_map_canvas, vec2(0, 0), vec2(1024, 1024))
+    ui.invisibleButton("button_saving_canvas", ui.windowSize() - vec2(50, 50))
+
+    ui.itemPopup("##courseview_map_contextmenu", function()
+        if ui.selectable("Export to PNG") then
+            ---@type MinimapHelper
+            local saving_mm_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(2048, 1548))
+            saving_mm_helper:setBoundingBox(track_data:getBoundingBox(0))
+            saving_canvas:clear()
+            saving_canvas:update(function(dt)
+                saving_mm_helper:drawMap(vec2(0, 500))
+                saving_mm_helper:drawTrackConfig(vec2(0, 500), track_data)
+                saving_mm_helper:drawRunState(vec2(0, 500), scoring_object_states)
+
+                local scores = require('drift-mode/ui_layouts/scores_print')
+                ui.text(ac.getCarName(0))
+                ui.text(os.date())
+                scores.appScoresLayout(scoring_object_states, track_data)
+            end)
+
+            local file_path = ac.getFolder(ac.FolderID.ExtCfgUser) ..
+                "\\drift-mode\\runs\\" ..
+                ac.getTrackFullID("__") ..
+                "\\" .. track_data.name .. "\\" .. os.date("%Y-%m-%d %H-%M-%S") .. " " .. ac.getCarName(0) .. ".png"
+            io.createFileDir(file_path)
+            saving_canvas:save(file_path, ac.ImageFormat.PNG)
+            ac.setMessage("Saved the run result", file_path)
+        end
+
+        if ui.selectable("Open saved runs directory") then
+            local directory = ac.getFolder(ac.FolderID.ExtCfgUser) ..
+                "\\drift-mode\\runs\\" .. ac.getTrackFullID("__") .. "\\" .. track_data.name
+            io.createDir(directory)
+            os.openInExplorer(directory)
+        end
+
+        -- TODO: Autosave runs
+    end)
 end
 
 return CourseView
