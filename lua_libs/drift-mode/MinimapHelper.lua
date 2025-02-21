@@ -187,12 +187,10 @@ end
 ---@param track_config TrackConfig
 function MinimapHelper:drawTrackConfig(origin, track_config)
     local scale, _, _ = self:getMapScalingAndOffset()
-    for _, obj in ipairs(track_config.scoringObjects) do
-        obj:drawFlat(function(p)
-                return origin + self:mapCoord(p)
-            end,
-            scale)
-    end
+
+    track_config:drawFlat(function(p)
+        return origin + self:mapCoord(p)
+    end, scale)
 end
 
 ---@param scoring_objects_states ScoringObjectState[]?
