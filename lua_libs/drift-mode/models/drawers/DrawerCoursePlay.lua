@@ -1,14 +1,15 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
+local Resources = require('drift-mode/Resources')
 
 ---@class DrawerCoursePlay : DrawerCourse
 local DrawerCoursePlay = class("DrawerCourse", DrawerCourse)
 
 function DrawerCoursePlay:initialize()
     DrawerCourse.initialize(self)
-    self.drawerStartLine = DrawerSegmentLine(rgbm(0.5, 3, 1, 3))
-    self.drawerFinishLine = DrawerSegmentLine(rgbm(0.5, 1, 3, 3))
-    self.drawerRespawnLine = DrawerSegmentLine(rgbm(3, 0.5, 1, 3))
+    self.drawerStartLine = DrawerSegmentLine(Resources.Colors.Start)
+    self.drawerFinishLine = DrawerSegmentLine(Resources.Colors.Finish)
+    self.drawerRespawnLine = DrawerSegmentLine(Resources.Colors.Respawn)
     self.drawerClip = nil
     self.drawerZone = nil
     self.drawerStartingPoint = nil

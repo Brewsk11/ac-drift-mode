@@ -1,5 +1,6 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
+local Resources = require('drift-mode/Resources')
 
 ---@class DrawerClipStatePlay : DrawerClipState
 ---@field drawerClip DrawerClip
@@ -8,14 +9,14 @@ local S = require('drift-mode/serializer')
 local DrawerClipStatePlay = class("DrawerClipStatePlay", DrawerClipState)
 
 function DrawerClipStatePlay:initialize()
-    self.drawerInactive = DrawerClipPlay(rgbm(0, 3, 2, 0.4))
-    self.drawerDone = DrawerClipPlay(rgbm(0, 0, 3, 0.4))
+    self.drawerInactive = DrawerClipPlay(Resources.Colors.ScoringObjectInactive)
+    self.drawerDone = DrawerClipPlay(Resources.Colors.ScoringObjectDone)
 
     self.drawerClip = self.drawerInactive
 
     -- TODO: Migrate to ClipStateHit?
-    self.color_bad = rgb(1.5, 0, 1.5)
-    self.color_good = rgb(0, 3, 0)
+    self.color_bad = Resources.Colors.ScoringObjectBad
+    self.color_good = Resources.Colors.ScoringObjectGood
 
     self.height_collide = 1
     self.height_no_collide = 0.4
