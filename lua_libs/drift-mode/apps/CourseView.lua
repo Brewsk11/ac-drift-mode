@@ -51,8 +51,6 @@ function CourseView.Main(dt)
     app_map_canvas:clear()
     app_map_canvas:update(function(dt)
         if track_data then
-            if #track_data.scoringObjects == 0 then return end
-
             local bounding_box = track_data:getBoundingBox(0)
 
             minimap_helper:setViewportSize(window_size)

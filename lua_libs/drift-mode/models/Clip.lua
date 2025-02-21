@@ -94,6 +94,10 @@ function Clip:getSegment()
 end
 
 function Clip:getBoundingBox()
+    if self.origin == nil then
+        return nil
+    end
+
     local pMin = vec3(9999, 9999, 9999)
     local pMax = vec3(-9999, -9999, -9999)
 

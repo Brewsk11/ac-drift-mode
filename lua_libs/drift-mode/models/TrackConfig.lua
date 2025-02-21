@@ -117,13 +117,65 @@ function TrackConfig:gatherColliders()
 end
 
 function TrackConfig:getBoundingBox(padding)
+    local changed = false
+
     local pMin = vec3(9999, 9999, 9999)
     local pMax = vec3(-9999, -9999, -9999)
 
     for _, obj in ipairs(self.scoringObjects) do
         local obj_bounding_box = obj:getBoundingBox()
+
+        if obj_bounding_box == nil then
+            goto continue
+        end
+
         pMin:min(obj_bounding_box.p1:value())
         pMax:max(obj_bounding_box.p2:value())
+        changed = true
+
+        ::continue::
+    end
+
+    if self.startLine then
+        pMin:min(self.startLine.head:value())
+        pMax:max(self.startLine.head:value())
+        pMin:min(self.startLine.tail:value())
+        pMax:max(self.startLine.tail:value())
+        changed = true
+    end
+
+    if self.finishLine then
+        pMin:min(self.finishLine.head:value())
+        pMax:max(self.finishLine.head:value())
+        pMin:min(self.finishLine.tail:value())
+        pMax:max(self.finishLine.tail:value())
+        changed = true
+    end
+
+    if self.respawnLine then
+        pMin:min(self.respawnLine.head:value())
+        pMax:max(self.respawnLine.head:value())
+        pMin:min(self.respawnLine.tail:value())
+        pMax:max(self.respawnLine.tail:value())
+        changed = true
+    end
+
+    if self.startingPoint then
+        pMin:min(self.startingPoint.origin:value())
+        pMax:max(self.startingPoint.origin:value())
+        changed = true
+    end
+
+    if changed then
+        return {
+            p1 = Point(pMin - vec3(padding, padding, padding)),
+            p2 = Point(pMax + vec3(padding, padding, padding))
+        }
+    else
+        return nil
+    end
+end
+
 function TrackConfig:drawFlat(coord_transformer, scale)
     for _, obj in ipairs(self.scoringObjects) do
         obj:drawFlat(coord_transformer, scale)

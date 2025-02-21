@@ -366,11 +366,25 @@ function Zone:drawSetup()
 end
 
 function Zone:getBoundingBox()
+    if self:isEmpty() then
+        return nil
+    end
     if self.bounding_box == nil then
         self:recalculateBoundingBox()
     end
 
     return self.bounding_box
+end
+
+function Zone:isEmpty()
+    if self.insideLine == nil and self.outsideLine == nil then return true end
+
+    if self.insideLine and self.insideLine:count() == 0 and
+        self.outsideLine and self.outsideLine:count() == 0 then
+        return true
+    end
+
+    return false
 end
 
 function Zone:recalculateBoundingBox()
