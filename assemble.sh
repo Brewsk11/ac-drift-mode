@@ -38,6 +38,7 @@ cp "res/logo_white.png" output/assettocorsa/apps/lua/drift-mode/icon.png
 cp "res/logo_white_tool.png" output/assettocorsa/apps/lua/drift-mode/icon_tool.png
 cp "res/logo_white_info.png" output/assettocorsa/apps/lua/drift-mode/icon_info.png
 cp "res/logo_white_score.png" output/assettocorsa/apps/lua/drift-mode/icon_score.png
+cp "res/logo_white_map.png" output/assettocorsa/apps/lua/drift-mode/icon_map.png
 
 cp ./INSTALL.md output/README.txt
 cp ./uninstall_driftmode.bat output/
