@@ -4,6 +4,7 @@ local Assert = require('drift-mode/assert')
 local Resources = require('drift-mode/Resources')
 local CourseEditorElements = require('drift-mode/ui_layouts/CourseEditorElements')
 local Utils = require('drift-mode/CourseEditorUtils')
+local MinimapHelper = require('drift-mode/MinimapHelper')
 require('drift-mode/models')
 
 -- #region Pre-script definitions
@@ -37,6 +38,16 @@ local current_routine = nil ---@type EditorRoutine?
 
 ---@alias EditorObjectsContext { is_hovered: boolean, smoothing_function: fun(number) }
 local editor_objects_context = nil ---@type EditorObjectsContext[]?
+
+---A canvas to draw a minimap of the hovered over object
+local canvas = ui.ExtraCanvas(vec2(256, 256)):clear(rgbm(0, 0, 0, 0)):setName("TestingMinimap")
+
+---@type MinimapHelper
+local minimap_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(256, 256))
+local currently_hovered_track_config = {
+  name = nil,
+  track_config = nil
+}
 
 -- #endregion
 
@@ -202,12 +213,29 @@ function CourseEditor:drawUI(dt)
     combo_item_name = string.format("[%.1s] %s", selected_course_info.type,
       selected_course_info.name)
   end
+
   ui.combo("##configDropdown", combo_item_name, function()
     for _, cfg in ipairs(ConfigIO.listTrackConfigs()) do
       local label = string.format("%10s %s", "[" .. cfg.type .. "]", cfg.name)
       if ui.selectable(label) then
         selected_course_info = cfg
         self:onSelectedCourseChange(selected_course_info)
+      end
+
+      if ui.itemHovered(ui.HoveredFlags.None) then
+        if currently_hovered_track_config.name ~= cfg.name then
+          currently_hovered_track_config.name = cfg.name
+          currently_hovered_track_config.track_config = ConfigIO.loadTrackConfig(cfg)
+          minimap_helper:setBoundingBox(currently_hovered_track_config.track_config:getBoundingBox(0))
+        end
+
+        ui.setNextWindowContentSize(vec2(256, 256))
+        ui.tooltip(function()
+          minimap_helper:drawMap(vec2(0, 0))
+          if currently_hovered_track_config.track_config then
+            minimap_helper:drawTrackConfig(vec2(0, 0), currently_hovered_track_config.track_config)
+          end
+        end)
       end
     end
   end)
