@@ -1,8 +1,27 @@
 local PP = require('drift-mode/physicspatcher')
 
 local TrackPatcher = {}
-
+--3116
 function TrackPatcher.drawUITrackPatcher()
+    -- [DECORATIVE]
+    ui.dwriteTextAligned("From CSP 0.2.3 there is no need to patch tracks.", 14, -1, -1, vec2(ui.availableSpaceX(), 0),
+        true)
+
+    ui.offsetCursorY(8)
+    ui.dwriteTextAligned("Your CSP version is: " .. ac.getPatchVersion(), 14, -1, -1, vec2(ui.availableSpaceX(), 0),
+        true)
+
+    if ac.getPatchVersionCode() >= 3116 then
+        ui.dwriteTextAligned(
+            "You're good! If the track is patched, unpatch it and enjoy.", 14, -1,
+            -1, vec2(ui.availableSpaceX(), 0),
+            true)
+    end
+
+    ui.offsetCursorY(16)
+    ui.separator()
+    ui.offsetCursorY(16)
+
     -- [BUTTON] Track patch button
     local patch_button_label = "Patch track"
     if PP.isPatched() then patch_button_label = "Unpatch track" end
