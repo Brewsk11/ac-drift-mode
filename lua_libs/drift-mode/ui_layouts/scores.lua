@@ -131,18 +131,10 @@ local function compactObjectList(scoring_objects_states)
     end
 end
 
----@param scoring_objects_state_data ScoringObjectState[]
+---@param scoring_objects_states ScoringObjectState[]
 ---@param track_data TrackConfig
-function appScoresLayout(scoring_objects_state_data, track_data)
-    if not scoring_objects_state_data or not track_data then return end
-
-    local function getMaxScore() -- TODO: CACHE
-        local score = 0
-        for _, scoring_object in ipairs(scoring_objects_state_data) do
-            score = score + scoring_object:getMaxScore()
-        end
-        return score
-    end
+function appScoresLayout(scoring_objects_states, track_data)
+    if not scoring_objects_states or not track_data then return end
 
     if ui.windowHeight() > 120 then
         -- COURSE NAME
@@ -151,7 +143,7 @@ function appScoresLayout(scoring_objects_state_data, track_data)
         ui.sameLine()
         ui.text(track_data.name)
         if ui.itemHovered() then
-            ui.setTooltip(string.format("Max course score: %d", getMaxScore()))
+            ui.setTooltip(string.format("Max course score: %d", ScoringObjectState.getMaxScore(scoring_objects_states)))
         end
         ui.popFont()
 
@@ -159,19 +151,12 @@ function appScoresLayout(scoring_objects_state_data, track_data)
     end
 
     -- TOTAL SCORE
-    local function getScore() -- TODO: CACHE
-        local score = 0
-        for _, scoring_object in ipairs(scoring_objects_state_data) do
-            score = score + scoring_object:getScore()
-        end
-        return score
-    end
-
     ui.sameLine(0, 0)
     ui.pushFont(ui.Font.Huge)
     ui.beginGroup()
     ui.beginGroup()
-    ui.textAligned(string.format("%d", getScore()), vec2(1, 0), vec2(ui.availableSpaceX(), 60), true)
+    ui.textAligned(string.format("%d", ScoringObjectState.aggrScore(scoring_objects_states)), vec2(1, 0),
+        vec2(ui.availableSpaceX(), 60), true)
     ui.popFont()
     ui.endGroup()
     if ui.itemHovered() then
@@ -181,22 +166,9 @@ function appScoresLayout(scoring_objects_state_data, track_data)
     if ui.windowHeight() > 100 then
         -- AVERAGE SCORE
 
-        local function getAvgMultiplier() -- TODO: CACHE
-            local mult = 0
-            local scoring_finished = 0
-            for _, scoring_object_state in ipairs(scoring_objects_state_data) do
-                if scoring_object_state:isDone() and scoring_object_state:getMultiplier() ~= nil then
-                    mult = mult + scoring_object_state:getMultiplier()
-                    scoring_finished = scoring_finished + 1
-                end
-            end
-            if scoring_finished == 0 then return 0 end
-            mult = mult / scoring_finished
-            return mult
-        end
-
         ui.beginGroup()
-        ui.textAligned(string.format("%.2f%%", getAvgMultiplier() * 100), vec2(1, 0),
+        ui.textAligned(string.format("%.2f%%", ScoringObjectState.aggrAvgScore(scoring_objects_states) * 100),
+            vec2(1, 0),
             vec2(ui.availableSpaceX(), 20), true)
         ui.endGroup()
         if ui.itemHovered() then
@@ -213,7 +185,7 @@ This is a very good score-independent run quality metric.")
 
         ui.beginChild("scores_app_objects_list_pane", ui.availableSpace(), false,
             ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoBackground)
-        compactObjectList(scoring_objects_state_data)
+        compactObjectList(scoring_objects_states)
         ui.endChild()
     end
 end
