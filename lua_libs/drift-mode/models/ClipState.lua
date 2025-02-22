@@ -31,14 +31,14 @@ end
 ---@param drift_state DriftState
 ---@return number|nil
 function ClipState:registerCar(car_config, car, drift_state)
-    if car.position:distance(self.clip.origin:value()) > self.clip:getLength() then
-        return nil
-    end
-
     local clip_scoring_point = Point(
         car.position + car.look * car_config.frontOffset +
         car.side * car_config.frontSpan * -drift_state.side_drifting
     )
+    if clip_scoring_point:value():distance(self.clip.origin:value()) > self.clip:getLength() + 2 then
+        return nil
+    end
+
     local res = self:registerPosition(clip_scoring_point, drift_state)
 
     if res then
