@@ -22,7 +22,7 @@ function RaycastHelper.alignPointToTrack(point)
 
     local hit = vec3()
 
-    if physics.raycastTrack(point:value() + vec3(0, 10, 0), vec3(0, -1, 0), 500, hit) ~= -1 then
+    if physics.raycastTrack(point:value() + vec3(0, 10, 0), vec3(0, -1, 0), 15, hit) ~= -1 then
         point:set(hit)
         return hit
     end
