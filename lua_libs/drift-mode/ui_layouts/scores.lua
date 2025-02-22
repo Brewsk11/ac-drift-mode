@@ -144,25 +144,26 @@ function ScoresLayout.appScoresLayout(scoring_objects_states, track_data, window
         ui.image(Resources.LogoWhite, vec2(16, 16))
         ui.sameLine()
         ui.text(track_data.name)
-        if ui.itemHovered() then
-            ui.setTooltip(string.format("Max course score: %d", ScoringObjectState.getMaxScore(scoring_objects_states)))
-        end
         ui.popFont()
 
         ui.separator()
     end
 
     -- TOTAL SCORE
+    local total_score_str = ScoringObjectState.aggrScore(scoring_objects_states)
+    local max_score_str = ScoringObjectState.aggrMaxScore(scoring_objects_states)
     ui.sameLine(0, 0)
     ui.pushFont(ui.Font.Huge)
     ui.beginGroup()
     ui.beginGroup()
-    ui.textAligned(string.format("%d", ScoringObjectState.aggrScore(scoring_objects_states)), vec2(1, 0),
+    ui.textAligned(string.format("%d", total_score_str), vec2(1, 0),
         vec2(ui.availableSpaceX(), 60), true)
     ui.popFont()
     ui.endGroup()
     if ui.itemHovered() then
-        ui.setTooltip("Current score")
+        local tooltip_text = [[Current score: %d
+Max score for this course: %d]]
+        ui.setTooltip(tooltip_text:format(total_score_str, max_score_str))
     end
 
     if ui.windowHeight() > 100 then
