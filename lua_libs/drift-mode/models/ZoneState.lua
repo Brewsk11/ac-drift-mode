@@ -144,7 +144,7 @@ function ZoneState:drawFlat(coord_transformer, scale)
             Resources.Colors.ScoringObjectGood * score.speed_mult +
             Resources.Colors.ScoringObjectBad * (1 - score.speed_mult)
         if not score.inside then
-            point_color = Resources.Colors.ScoringObjectBad
+            point_color = Resources.Colors.ScoringObjectOutside
         end
 
         point_color.mult = 1
