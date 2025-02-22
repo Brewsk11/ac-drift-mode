@@ -23,8 +23,7 @@ local __tabs = {
     { 'Course editor', EditorTab.drawUIEditor },
     { 'Car setup',     CarSetupTab.drawUICarSetup },
     { 'Track patcher', TrackPatcherTab.drawUITrackPatcher },
-    { 'About',         AboutTab.drawUIAbout },
-    { 'Debug',         DebugTab.drawUIDebug },
+    { 'About',         AboutTab.drawUIAbout }
 }
 
 local function drawAppUI()
