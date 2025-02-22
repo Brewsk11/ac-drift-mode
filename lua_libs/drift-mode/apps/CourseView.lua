@@ -71,9 +71,9 @@ function CourseView.Main(dt)
     end)
 
     ui.drawImage(app_map_canvas, vec2(0, 0), vec2(1024, 1024))
-    ui.invisibleButton("button_saving_canvas", ui.windowSize() - vec2(50, 50))
+    ui.iconButton(ui.Icons.Save)
 
-    ui.itemPopup("##courseview_map_contextmenu", function()
+    ui.itemPopup("##courseview_map_contextmenu", ui.MouseButton.Left, function()
         if ui.selectable("Export to PNG") then
             ---@type MinimapHelper
             local saving_mm_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(1548, 2048))
