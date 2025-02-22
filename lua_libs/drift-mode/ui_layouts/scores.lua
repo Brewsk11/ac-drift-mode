@@ -1,6 +1,8 @@
 local Resources = require('drift-mode/Resources')
 local Assert = require('drift-mode/Assert')
 
+local ScoresLayout = {}
+
 ---@param scoring_objects_states ScoringObjectState[]
 local function compactObjectList(scoring_objects_states)
     local entry_height = 18
@@ -133,7 +135,7 @@ end
 
 ---@param scoring_objects_states ScoringObjectState[]
 ---@param track_data TrackConfig
-function appScoresLayout(scoring_objects_states, track_data)
+function ScoresLayout.appScoresLayout(scoring_objects_states, track_data, window_size)
     if not scoring_objects_states or not track_data then return end
 
     if ui.windowHeight() > 120 then
@@ -189,3 +191,5 @@ This is a very good score-independent run quality metric.")
         ui.endChild()
     end
 end
+
+return ScoresLayout

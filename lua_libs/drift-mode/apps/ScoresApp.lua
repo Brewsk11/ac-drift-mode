@@ -1,6 +1,6 @@
 local DataBroker = require('drift-mode/databroker')
 local EventSystem = require('drift-mode/eventsystem')
-require('drift-mode/ui_layouts/scores')
+local ScoresLayout = require('drift-mode/ui_layouts/scores')
 
 local listener_id = EventSystem.registerListener('app-scores')
 
@@ -28,17 +28,19 @@ function ScoresApp.Main(dt)
     end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
+        ---@cast payload ScoringObjectState[]
         scoring_object_states = payload
     end)
 
     EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
+        ---@cast payload TrackConfig
         track_data = payload;
     end)
 
     if track_data == nil then return end
 
     if scoring_object_states then
-        appScoresLayout(scoring_object_states, track_data)
+        ScoresLayout.appScoresLayout(scoring_object_states, track_data)
     end
 end
 

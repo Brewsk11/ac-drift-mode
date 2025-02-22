@@ -24,6 +24,7 @@ function ScoringObjectState:updatesFully()
     Assert.Error("Called abstract method!")
 end
 
+---@return string
 function ScoringObjectState:getName()
     Assert.Error("Called abstract method!")
 end

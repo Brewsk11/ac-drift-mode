@@ -2,6 +2,8 @@ local EventSystem = require('drift-mode/eventsystem')
 local listener_id = EventSystem.registerListener('app-courseview')
 
 local Resources = require('drift-mode/Resources')
+
+local ScoresLayout = require('drift-mode/ui_layouts/scores')
 local MinimapHelper = require('drift-mode/MinimapHelper')
 
 require('drift-mode/models')
@@ -74,18 +76,20 @@ function CourseView.Main(dt)
     ui.itemPopup("##courseview_map_contextmenu", function()
         if ui.selectable("Export to PNG") then
             ---@type MinimapHelper
-            local saving_mm_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(2048, 1548))
+            local saving_mm_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(1548, 2048))
             saving_mm_helper:setBoundingBox(track_data:getBoundingBox(0))
             saving_canvas:clear()
             saving_canvas:update(function(dt)
-                saving_mm_helper:drawMap(vec2(0, 500))
-                saving_mm_helper:drawTrackConfig(vec2(0, 500), track_data)
-                saving_mm_helper:drawRunState(vec2(0, 500), scoring_object_states)
+                saving_mm_helper:drawMap(vec2(500, 0))
+                saving_mm_helper:drawTrackConfig(vec2(500, 0), track_data)
+                saving_mm_helper:drawRunState(vec2(500, 0), scoring_object_states)
 
-                local scores = require('drift-mode/ui_layouts/scores_print')
-                ui.text(ac.getCarName(0))
-                ui.text(os.date())
-                scores.appScoresLayout(scoring_object_states, track_data)
+                ui.setCursor(vec2(40, 40))
+                ui.childWindow("", vec2(400, 2048 - 40 * 2), function()
+                    ui.text(ac.getCarName(0))
+                    ui.text(os.date())
+                    ScoresLayout.appScoresLayout(scoring_object_states, track_data)
+                end)
             end)
 
             local file_path = ac.getFolder(ac.FolderID.ExtCfgUser) ..
