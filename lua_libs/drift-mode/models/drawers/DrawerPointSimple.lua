@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class DrawerPointSimple : DrawerPoint
 local DrawerPointSimple = class("DrawerPointSimple", DrawerPoint)
+DrawerPointSimple.__model_path = "Drawers.DrawerPointSimple"
 
 function DrawerPointSimple:initialize(color, size)
     self.color = color or rgbm(1, 1, 1, 1)

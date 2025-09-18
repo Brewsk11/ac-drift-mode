@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class DrawerZonePlay : DrawerZone
 local DrawerZonePlay = class("DrawerZonePlay", DrawerZone)
+DrawerZonePlay.__model_path = "Drawers.DrawerZonePlay"
 
 function DrawerZonePlay:initialize(wall_color)
     DrawerZone.initialize(self)

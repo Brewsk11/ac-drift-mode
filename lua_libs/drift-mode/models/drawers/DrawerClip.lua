@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class DrawerClip : Drawer
 local DrawerClip = class("DrawerClip", Drawer)
+DrawerClip.__model_path = "Drawers.DrawerClip"
 
 function DrawerClip:initialize()
 end

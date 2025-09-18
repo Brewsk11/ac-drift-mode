@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class DrawerCourseSetup : DrawerCourse
 local DrawerCourseSetup = class("DrawerCourse", DrawerCourse)
+DrawerCourseSetup.__model_path = "Drawers.DrawerCourseSetup"
 
 function DrawerCourseSetup:initialize()
     DrawerCourse.initialize(self)

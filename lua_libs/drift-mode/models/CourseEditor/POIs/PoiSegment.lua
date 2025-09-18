@@ -6,6 +6,7 @@ local S = require('drift-mode/serializer')
 ---@field segment_type PoiSegment.Type
 ---@field segment_point_type PoiSegment.Part
 local PoiSegment = class("PoiSegment", ObjectEditorPoi)
+PoiSegment.__model_path = "CourseEditor.POIs.PoiSegment"
 
 ---@enum PoiSegment.Type
 PoiSegment.Type = {

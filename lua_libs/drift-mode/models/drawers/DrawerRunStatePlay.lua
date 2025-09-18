@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class DrawerRunStatePlay : DrawerRunState
 local DrawerRunStatePlay = class("DrawerRunStatePlay", DrawerRunState)
+DrawerRunStatePlay.__model_path = "Drawers.DrawerRunStatePlay"
 
 function DrawerRunStatePlay:initialize()
     self.drawerCourse = DrawerCoursePlay()

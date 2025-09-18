@@ -13,6 +13,7 @@ local Point = require('drift-mode/models/Point')
 ---@field private collide boolean Whether to enable colliders for this clip
 ---@field private lastPoint Point To calculate where crossed
 local Clip = class("Clip", ScoringObject)
+Clip.__model_path = "Clip"
 
 ---@param name string
 ---@param origin Point

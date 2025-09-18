@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@field drawerInsideLine DrawerSegment
 ---@field drawerOutsideLine DrawerSegment
 local DrawerZone = class("DrawerZone", Drawer)
+DrawerZone.__model_path = "Drawers.DrawerZone"
 
 function DrawerZone:initialize()
 end

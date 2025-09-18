@@ -8,6 +8,7 @@ local Assert = require('drift-mode/assert')
 ---@field private _size vec2
 ---@field private _center vec2
 local Box2D = class("Box2D")
+Box2D.__model_path = "Box2D"
 
 ---When p1 & p2 == nil create a dummy 10x10 box starting at (0, 0)
 ---@param p1 vec2|nil

@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@field start number
 ---@field finish number
 local Range = class("Range")
+Range.__model_path = "Range"
 
 function Range:initialize(start, finish)
     self:setStart(start)

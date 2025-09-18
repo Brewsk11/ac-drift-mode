@@ -9,6 +9,7 @@ local S = require('drift-mode/serializer')
 ---@field drawerZone DrawerZone?
 ---@field drawerStartingPoint DrawerStartingPoint?
 local DrawerCourse = class("DrawerCourse", Drawer)
+DrawerCourse.__model_path = "Drawers.DrawerCourse"
 
 function DrawerCourse:initialize()
 end

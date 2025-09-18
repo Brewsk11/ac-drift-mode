@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@field clip Clip
 ---@field point_type PoiClip.Type
 local PoiClip = class("PoiClip", ObjectEditorPoi)
+PoiClip.__model_path = "CourseEditor.POIs.PoiClip"
 
 ---@enum PoiClip.Type
 PoiClip.Type = {

@@ -7,6 +7,7 @@ local Resources = require('drift-mode/Resources')
 ---@field protected drawerInactive DrawerClip
 ---@field protected drawerDone DrawerClip
 local DrawerClipStatePlay = class("DrawerClipStatePlay", DrawerClipState)
+DrawerClipStatePlay.__model_path = "Drawers.DrawerClipStatePlay"
 
 function DrawerClipStatePlay:initialize()
     self.drawerInactive = DrawerClipPlay(Resources.Colors.ScoringObjectInactive)

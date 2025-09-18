@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---Abstract class
 ---@class Drawer : ClassBase
 local Drawer = class("Drawer")
+Drawer.__model_path = "Drawers.Drawer"
 
 function Drawer:initialize()
     Assert.Error("Abstract object called")

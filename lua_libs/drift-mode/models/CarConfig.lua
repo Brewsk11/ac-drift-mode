@@ -9,6 +9,7 @@ local S = require('drift-mode/serializer')
 ---@field rearOffset number Offset from car origin to the rear bumper
 ---@field rearSpan number Span between two endpoints of the rear bumper
 local CarConfig = class("CarConfig")
+CarConfig.__model_path = "CarConfig"
 
 function CarConfig:initialize(frontOffset, frontSpan, rearOffset, rearSpan)
     self.frontOffset = frontOffset or 2.3

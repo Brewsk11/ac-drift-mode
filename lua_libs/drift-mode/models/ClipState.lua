@@ -13,6 +13,7 @@ local Resources = require('drift-mode/Resources')
 ---@field private finalMultiplier number Final multiplier
 ---@field private lastPoint Point To calculate where crossed
 local ClipState = class("ClipState", ScoringObjectState)
+ClipState.__model_path = "ClipState"
 
 function ClipState:initialize(clip)
     self.clip = clip

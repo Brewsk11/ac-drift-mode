@@ -4,6 +4,7 @@ local Resources = require('drift-mode/Resources')
 
 ---@class DrawerCoursePlay : DrawerCourse
 local DrawerCoursePlay = class("DrawerCourse", DrawerCourse)
+DrawerCoursePlay.__model_path = "Drawers.DrawerCoursePlay"
 
 function DrawerCoursePlay:initialize()
     DrawerCourse.initialize(self)

@@ -7,6 +7,7 @@ local S = require('drift-mode/serializer')
 ---@field drawerZoneState DrawerZoneState
 ---@field drawerClipState DrawerClipState
 local DrawerRunState = class("DrawerRunState", Drawer)
+DrawerRunState.__model_path = "Drawers.DrawerRunState"
 
 function DrawerRunState:initialize()
 end

@@ -10,6 +10,7 @@ local Resources = require('drift-mode/Resources')
 ---@field finished boolean
 ---@field private performace number
 local ZoneState = class("ZoneState", ScoringObjectState)
+ZoneState.__model_path = "ZoneState"
 
 function ZoneState:initialize(zone)
     self.zone = zone

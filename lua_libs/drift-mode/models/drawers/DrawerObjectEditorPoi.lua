@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class DrawerObjectEditorPoi : Drawer
 ---@field drawerPoint DrawerPoint[]?
 local DrawerObjectEditorPoi = class("DrawerObjectEditorPoi", Drawer)
+DrawerObjectEditorPoi.__model_path = "Drawers.DrawerObjectEditorPoi"
 
 function DrawerObjectEditorPoi:initialize(drawerPoint)
     self.drawerPoint = drawerPoint or DrawerPointSimple()

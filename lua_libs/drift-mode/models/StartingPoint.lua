@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@field origin Point
 ---@field direction vec3
 local StartingPoint = class("StartingPoint")
+StartingPoint.__model_path = "StartingPoint"
 
 ---@param origin Point
 ---@param direction vec3

@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class DrawerPointGroup : Drawer
 ---@field drawerPoint DrawerPoint
 local DrawerPointGroup = class("DrawerPointGroup", Drawer)
+DrawerPointGroup.__model_path = "Drawers.DrawerPointGroup"
 
 function DrawerPointGroup:initialize()
 end

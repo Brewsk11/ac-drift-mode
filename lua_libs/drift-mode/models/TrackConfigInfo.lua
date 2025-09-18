@@ -14,6 +14,7 @@ TrackConfigType = {
 ---@field path string
 ---@field type TrackConfigType
 local TrackConfigInfo = class("TrackConfigInfo")
+TrackConfigInfo.__model_path = "TrackConfigInfo"
 
 function TrackConfigInfo:initialize(name, path, type)
     self.name = name

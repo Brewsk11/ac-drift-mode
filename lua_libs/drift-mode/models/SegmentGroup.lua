@@ -4,6 +4,7 @@ local Segment = require('drift-mode/models/Segment')
 ---@class SegmentGroup : ClassBase Ordered group of segments
 ---@field segments Segment[]
 local SegmentGroup = class("SegmentGroup")
+SegmentGroup.__model_path = "SegmentGroup"
 
 ---@param segments Segment[]?
 function SegmentGroup:initialize(segments)

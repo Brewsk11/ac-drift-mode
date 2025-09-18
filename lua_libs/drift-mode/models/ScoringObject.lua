@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class ScoringObject : ClassBase
 local ScoringObject = class("ScoringObject")
+ScoringObject.__model_path = "ScoringObject"
 
 function ScoringObject:initialize()
 end

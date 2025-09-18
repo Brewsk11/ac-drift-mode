@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@field speedRange Range
 ---@field angleRange Range
 local ScoringRanges = class("ScoringRanges")
+ScoringRanges.__model_path = "ScoringRanges"
 
 function ScoringRanges:initialize(speedRange, angleRange)
     -- TODO: Move defaults here from TrackConfig init

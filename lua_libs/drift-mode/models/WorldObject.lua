@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@class WorldObject : ClassBase
 ---@field protected drawer Drawer?
 local WorldObject = class("WorldObject")
+WorldObject.__model_path = "WorldObject"
 
 function WorldObject:initialize()
 end

@@ -8,6 +8,7 @@ local Resources = require('drift-mode/Resources')
 ---@field offset vec3?
 ---@field drawerPoint DrawerObjectEditorPoi --- To highlight possible pois to interact with
 local RoutineMovePoi = class("RoutineMovePoi", EditorRoutine)
+RoutineMovePoi.__model_path = "CourseEditor.Routines.RoutineMovePoi"
 function RoutineMovePoi:initialize(callback)
     EditorRoutine.initialize(self, callback)
     self.poi = nil

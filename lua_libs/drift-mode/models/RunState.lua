@@ -10,6 +10,7 @@ local listener_id = EventSystem.registerListener('mode-runstate')
 ---@field scoringObjectStates ScoringObjectState[]
 ---@field private finished boolean
 local RunState = class("RunState")
+RunState.__model_path = "RunState"
 
 function RunState:initialize(track_config)
     self.trackConfig = track_config

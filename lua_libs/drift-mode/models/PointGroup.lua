@@ -6,6 +6,7 @@ local Segment = require('drift-mode/models/Segment')
 ---@class PointGroup : ClassBase Ordered group of points in world space
 ---@field points Point[]
 local PointGroup = class("PointGroup")
+PointGroup.__model_path = "PointGroup"
 
 ---@param points Point[]?
 function PointGroup:initialize(points)

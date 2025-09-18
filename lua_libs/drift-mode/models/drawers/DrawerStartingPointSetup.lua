@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class DrawerStartingPointSetup : DrawerStartingPoint
 ---@field color rgbm
 local DrawerStartingPointSetup = class("DrawerStartingPointSetup", Drawer)
+DrawerStartingPointSetup.__model_path = "Drawers.DrawerStartingPointSetup"
 
 function DrawerStartingPointSetup:initialize(color)
     DrawerStartingPoint.initialize(self)

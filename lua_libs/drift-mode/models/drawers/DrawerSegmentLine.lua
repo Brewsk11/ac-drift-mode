@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class DrawerSegmentLine : DrawerSegment
 ---@field color rgbm
 local DrawerSegmentLine = class("DrawerSegmentLine", DrawerSegment)
+DrawerSegmentLine.__model_path = "Drawers.DrawerSegmentLine"
 
 function DrawerSegmentLine:initialize(color, label)
     DrawerSegment.initialize(self)

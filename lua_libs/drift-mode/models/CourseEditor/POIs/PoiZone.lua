@@ -6,6 +6,7 @@ local S = require('drift-mode/serializer')
 ---@field point_type PoiZone.Type
 ---@field point_index integer
 local PoiZone = class("PoiZone", ObjectEditorPoi)
+PoiZone.__model_path = "CourseEditor.POIs.PoiZone"
 
 ---@enum PoiZone.Type
 PoiZone.Type = {

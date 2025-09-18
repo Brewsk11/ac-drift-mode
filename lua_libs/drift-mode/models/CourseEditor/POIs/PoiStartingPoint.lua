@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class PoiStartingPoint : ObjectEditorPoi
 ---@field starting_point StartingPoint
 local PoiStartingPoint = class("PoiStartingPoint", ObjectEditorPoi)
+PoiStartingPoint.__model_path = "CourseEditor.POIs.PoiStartingPoint"
 
 function PoiStartingPoint:initialize(point, starting_point)
   ObjectEditorPoi.initialize(self, point, ObjectEditorPoi.Type.StartingPoint)

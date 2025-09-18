@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class DrawerPointGroupSimple : DrawerPointGroup
 local DrawerPointGroupSimple = class("DrawerPointGroupSimple", DrawerPointGroup)
+DrawerPointGroupSimple.__model_path = "Drawers.DrawerPointGroupSimple"
 
 function DrawerPointGroupSimple:initialize(drawerPoint)
     self.drawerPoint = drawerPoint or DrawerPointSimple()

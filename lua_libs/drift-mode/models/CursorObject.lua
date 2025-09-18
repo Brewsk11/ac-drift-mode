@@ -6,6 +6,7 @@ local S = require('drift-mode/serializer')
 ---@field object any
 ---@field drawer Drawer
 local CursorObject = class("CursorObject")
+CursorObject.__model_path = "CursorObject"
 
 function CursorObject:initialize(object, drawer)
     self.object = object

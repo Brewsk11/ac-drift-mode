@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class DrawerZoneState : Drawer
 ---@field drawerZone DrawerZone
 local DrawerZoneState = class("DrawerZoneState", Drawer)
+DrawerZoneState.__model_path = "Drawers.DrawerZoneState"
 
 function DrawerZoneState:initialize()
 end

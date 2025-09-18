@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@class RoutineExtendPointGroup : EditorRoutine
 ---@field point_group PointGroup
 local RoutineExtendPointGroup = class("RoutineExtendPointGroup", EditorRoutine)
+RoutineExtendPointGroup.__model_path = "CourseEditor.Routines.RoutineExtendPointGroup"
 function RoutineExtendPointGroup:initialize(point_group)
     EditorRoutine.initialize(self, nil)
     self.point_group = point_group

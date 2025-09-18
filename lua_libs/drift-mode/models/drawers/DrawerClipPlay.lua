@@ -4,6 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class DrawerClipPlay : DrawerClip
 ---@field color rgbm
 local DrawerClipPlay = class("DrawerClipPlay", DrawerClip)
+DrawerClipPlay.__model_path = "Drawers.DrawerClipPlay"
 
 function DrawerClipPlay:initialize(color, flag_height)
     self.color = color or rgbm(1, 1, 1, 3)

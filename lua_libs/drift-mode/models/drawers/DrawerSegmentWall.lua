@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@field color rgbm
 ---@field height number
 local DrawerSegmentWall = class("DrawerSegmentWall", DrawerSegment)
+DrawerSegmentWall.__model_path = "Drawers.DrawerSegmentWall"
 
 function DrawerSegmentWall:initialize(color, height)
     self.color = color or rgbm(1, 1, 1, 3)

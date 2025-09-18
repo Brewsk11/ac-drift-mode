@@ -9,6 +9,7 @@ local Resources = require('drift-mode/Resources')
 ---@field protected drawerActive DrawerZone
 ---@field protected drawerDone DrawerZone
 local DrawerZoneStatePlay = class("DrawerZoneStatePlay", DrawerZoneState)
+DrawerZoneStatePlay.__model_path = "Drawers.DrawerZoneStatePlay"
 
 function DrawerZoneStatePlay:initialize(showZoneScorePoints)
     self.color_inactive = Resources.Colors.ScoringObjectInactive

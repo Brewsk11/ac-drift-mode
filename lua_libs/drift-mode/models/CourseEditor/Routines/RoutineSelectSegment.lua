@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@class RoutineSelectSegment : EditorRoutine
 ---@field private segment Segment
 local RoutineSelectSegment = class("RoutineSelectSegment", EditorRoutine)
+RoutineSelectSegment.__model_path = "CourseEditor.Routines.RoutineSelectSegment"
 
 function RoutineSelectSegment:initialize(callback)
     EditorRoutine.initialize(self, callback)

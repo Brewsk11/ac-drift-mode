@@ -8,6 +8,7 @@ local S = require('drift-mode/serializer')
 ---@field color_pole rgbm
 ---@field color_arrow rgbm
 local DrawerClipSetup = class("DrawerClipSetup", DrawerClip)
+DrawerClipSetup.__model_path = "Drawers.DrawerClipSetup"
 
 function DrawerClipSetup:initialize(draw_name, custom_label, color_origin, color_pole, color_arrow)
     self.draw_name = draw_name or true

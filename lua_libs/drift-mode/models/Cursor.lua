@@ -5,6 +5,7 @@ local S = require('drift-mode/serializer')
 ---@class Cursor : ClassBase Data class containing various objects you may want to draw on the track, that are not related to track configuration
 ---@field objects table<string, CursorObject>
 local Cursor = class("Cursor")
+Cursor.__model_path = "Cursor"
 
 function Cursor:initialize()
     self.objects = {}

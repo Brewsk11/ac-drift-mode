@@ -11,6 +11,7 @@ local S = require('drift-mode/serializer')
 ---@field private collide boolean Whether to enable colliders for this zone
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
 local Zone = class("Zone", ScoringObject)
+Zone.__model_path = "Zone"
 
 ---@param name string
 ---@param outsideLine PointGroup

@@ -16,6 +16,7 @@ local WorldObject = require('drift-mode/models/WorldObject')
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
 local TrackConfig = class("TrackConfig", WorldObject)
+TrackConfig.__model_path = "TrackConfig"
 
 function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
     self.name = name or 'default'

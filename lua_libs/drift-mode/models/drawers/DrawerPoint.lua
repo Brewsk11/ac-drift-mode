@@ -3,6 +3,7 @@ local S = require('drift-mode/serializer')
 
 ---@class DrawerPoint : Drawer
 local DrawerPoint = class("DrawerPoint", Drawer)
+DrawerPoint.__model_path = "Drawers.DrawerPoint"
 
 function DrawerPoint:initialize()
 end

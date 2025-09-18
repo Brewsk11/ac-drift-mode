@@ -9,6 +9,7 @@ local S = require('drift-mode/serializer')
 ---@field score_mult number
 ---@field side_drifting DriftState.Side
 local DriftState = class("DriftState")
+DriftState.__model_path = "DriftState"
 
 ---@enum DriftState.Side
 DriftState.Side = {
