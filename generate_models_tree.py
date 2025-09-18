@@ -37,8 +37,6 @@ class LuaTableWriter:
         self.comma_needed = False
 
     def endTable(self):
-        if self.current_depth > 0 and self.comma_needed:
-            self.file.write(",")
         self.file.write("\n")
         self.current_depth -= 1
         self.file.write(" " * self.indent_size * self.current_depth)
@@ -58,8 +56,6 @@ writer = LuaTableWriter()
 
 
 def visitDir(dir_path):
-    print("visiting " + dir_path)
-
     with os.scandir(dir_path) as dir:
         for obj in dir:
             if obj.is_dir():
