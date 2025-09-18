@@ -67,101 +67,101 @@ local function gatherPois()
     if obj.isInstanceOf(Zone) then
       local zone_obj = obj ---@type Zone
       for idx, inside_point in zone_obj:getInsideLine():iter() do
-        _pois[#_pois + 1] = PoiZone(
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiZone(
           inside_point,
           zone_obj,
-          PoiZone.Type.FromInsideLine,
+          CourseEditorUtils.POIs.PoiZone.Type.FromInsideLine,
           idx
         )
       end
       for idx, outside_point in zone_obj:getOutsideLine():iter() do
-        _pois[#_pois + 1] = PoiZone(
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiZone(
           outside_point,
           zone_obj,
-          PoiZone.Type.FromOutsideLine,
+          CourseEditorUtils.POIs.PoiZone.Type.FromOutsideLine,
           idx
         )
       end
       local zone_center = zone_obj:getCenter()
       if zone_center then
-        _pois[#_pois + 1] = PoiZone(
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiZone(
           zone_center,
           zone_obj,
-          PoiZone.Type.Center,
+          CourseEditorUtils.POIs.PoiZone.Type.Center,
           nil
         )
       end
     elseif obj.isInstanceOf(Clip) then
       local clip_obj = obj ---@type Clip
-      _pois[#_pois + 1] = PoiClip(
+      _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiClip(
         clip_obj.origin,
         clip_obj,
-        PoiClip.Type.Origin
+        CourseEditorUtils.POIs.PoiClip.Type.Origin
       )
-      _pois[#_pois + 1] = PoiClip(
+      _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiClip(
         clip_obj:getEnd(),
         clip_obj,
-        PoiClip.Type.Ending
+        CourseEditorUtils.POIs.PoiClip.Type.Ending
       )
     end
   end
 
   if course.startLine then
-    _pois[#_pois + 1] = PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
       course.startLine.head,
       course.startLine,
-      PoiSegment.Type.StartLine,
-      PoiSegment.Part.Head
+      CourseEditorUtils.POIs.PoiSegment.Type.StartLine,
+      CourseEditorUtils.POIs.PoiSegment.Part.Head
     )
 
-    _pois[#_pois + 1] = PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
       course.startLine.tail,
       course.startLine,
-      PoiSegment.Type.StartLine,
-      PoiSegment.Part.Tail
+      CourseEditorUtils.POIs.PoiSegment.Type.StartLine,
+      CourseEditorUtils.POIs.PoiSegment.Part.Tail
     )
   end
 
   if course.finishLine then
-    _pois[#_pois + 1] = PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
       course.finishLine.head,
       course.finishLine,
-      PoiSegment.Type.FinishLine,
-      PoiSegment.Part.Head
+      CourseEditorUtils.POIs.PoiSegment.Type.FinishLine,
+      CourseEditorUtils.POIs.PoiSegment.Part.Head
     )
 
-    _pois[#_pois + 1] = PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
       course.finishLine.tail,
       course.finishLine,
-      PoiSegment.Type.FinishLine,
-      PoiSegment.Part.Tail
+      CourseEditorUtils.POIs.PoiSegment.Type.FinishLine,
+      CourseEditorUtils.POIs.PoiSegment.Part.Tail
     )
   end
 
   if course.respawnLine then
-    _pois[#_pois + 1] = PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
       course.respawnLine.head,
       course.respawnLine,
-      PoiSegment.Type.RespawnLine,
-      PoiSegment.Part.Head
+      CourseEditorUtils.POIs.PoiSegment.Type.RespawnLine,
+      CourseEditorUtils.POIs.PoiSegment.Part.Head
     )
 
-    _pois[#_pois + 1] = PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
       course.respawnLine.tail,
       course.respawnLine,
-      PoiSegment.Type.RespawnLine,
-      PoiSegment.Part.Tail
+      CourseEditorUtils.POIs.PoiSegment.Type.RespawnLine,
+      CourseEditorUtils.POIs.PoiSegment.Part.Tail
     )
   end
 
   if course.startingPoint then
-    _pois[#_pois + 1] = PoiStartingPoint(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiStartingPoint(
       course.startingPoint.origin,
       course.startingPoint
     )
   end
 
-  --cursor_data:registerObject("editor_pois", pois, DrawerObjectEditorPoi(DrawerPointSimple()))
+  --cursor_data:registerObject("editor_pois", pois, Drawers.DrawerObjectEditorPoi(Drawers.DrawerPointSimple()))
   return _pois
 end
 
@@ -439,7 +439,7 @@ function CourseEditor:drawUIScoringObjects(dt)
       cursor_data:registerObject(
         "on_ui_hover_highlight_scoringobject_" .. tostring(i),
         objects[i]:getCenter(),
-        DrawerPointSphere()
+        Drawers.DrawerPointSphere()
       )
     else
       cursor_data:unregisterObject("on_ui_hover_highlight_scoringobject_" .. tostring(i))
@@ -483,7 +483,7 @@ function CourseEditor:drawUIScoringObjects(dt)
   ui.sameLine(0, button_gap)
 
   if ui.button("Create new clip", vec2(button_width, 40), button_global_flags) then
-    current_routine = RoutineSelectSegment(function(segment)
+    current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
       local new_clip = Clip(course:getNextClipName(), segment.head, nil, nil, 1000)
       new_clip:setEnd(segment.tail)
       course.scoringObjects[#course.scoringObjects + 1] = new_clip
@@ -510,7 +510,7 @@ function CourseEditor:drawUIOther(dt)
     end
   else
     if ui.button("Define###startline", vec2(120, 30), button_global_flags) then
-      current_routine = RoutineSelectSegment(function(segment)
+      current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
         course.startLine = segment
       end)
     end
@@ -526,7 +526,7 @@ function CourseEditor:drawUIOther(dt)
     end
   else
     if ui.button("Define###finishline", vec2(120, 30), button_global_flags) then
-      current_routine = RoutineSelectSegment(function(segment)
+      current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
         course.finishLine = segment
       end)
     end
@@ -542,7 +542,7 @@ function CourseEditor:drawUIOther(dt)
     end
   else
     if ui.button("Define###respawnLine", vec2(120, 30), button_global_flags) then
-      current_routine = RoutineSelectSegment(function(segment)
+      current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
         course.respawnLine = segment
       end)
     end
@@ -560,7 +560,7 @@ function CourseEditor:drawUIOther(dt)
     end
   else
     if ui.button("Define###startingpoint", vec2(120, 30), button_global_flags) then
-      current_routine = RoutineSelectSegment(function(segment)
+      current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
         course.startingPoint = StartingPoint(segment.head, nil)
         course.startingPoint:setEnd(segment.tail)
       end)
@@ -706,7 +706,7 @@ function CourseEditor:runEditor(dt)
     end
     onCourseEdited()
   else
-    for _, routine_class in ipairs({ RoutineMovePoi }) do
+    for _, routine_class in ipairs({ CourseEditorUtils.Routines.RoutineMovePoi }) do
       local routine = routine_class(onCourseEdited)
       if routine:attachCondition(context) then
         current_routine = routine

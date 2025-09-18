@@ -2,6 +2,9 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
+local DrawerClipState = require('drift-mode/models/Drawers/DrawerClipState')
+local DrawerClipPlay = require('drift-mode/models/Drawers/DrawerClipPlay')
+
 ---@class DrawerClipStatePlay : DrawerClipState
 ---@field drawerClip DrawerClip
 ---@field protected drawerInactive DrawerClip

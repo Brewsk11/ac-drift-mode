@@ -1,6 +1,9 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local Drawer = require('drift-mode/models/Drawers/Drawer')
+local DrawerStartingPoint = require('drift-mode/models/Drawers/DrawerStartingPoint')
+
 ---@class DrawerStartingPointSetup : DrawerStartingPoint
 ---@field color rgbm
 local DrawerStartingPointSetup = class("DrawerStartingPointSetup", Drawer)

@@ -1,6 +1,8 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local Drawer = require('drift-mode/models/Drawers/Drawer')
+
 ---@class DrawerCourse : Drawer
 ---@field drawerStartLine DrawerSegment?
 ---@field drawerFinishLine DrawerSegment?
@@ -20,7 +22,7 @@ function DrawerCourse:draw(course)
         if obj.isInstanceOf(Zone) and self.drawerZone then
             self.drawerZone:draw(obj)
         elseif obj.isInstanceOf(Clip) and self.drawerClip then
-             self.drawerClip:draw(obj)
+            self.drawerClip:draw(obj)
         end
     end
 

@@ -1,6 +1,11 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local DrawerRunState = require('drift-mode/models/Drawers/DrawerRunState')
+local DrawerCoursePlay = require('drift-mode/models/Drawers/DrawerCoursePlay')
+local DrawerZoneStatePlay = require('drift-mode/models/Drawers/DrawerZoneStatePlay')
+local DrawerClipStatePlay = require('drift-mode/models/Drawers/DrawerClipStatePlay')
+
 ---@class DrawerRunStatePlay : DrawerRunState
 local DrawerRunStatePlay = class("DrawerRunStatePlay", DrawerRunState)
 DrawerRunStatePlay.__model_path = "Drawers.DrawerRunStatePlay"

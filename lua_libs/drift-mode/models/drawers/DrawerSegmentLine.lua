@@ -1,6 +1,8 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local DrawerSegment = require('drift-mode/models/Drawers/DrawerSegment')
+
 ---@class DrawerSegmentLine : DrawerSegment
 ---@field color rgbm
 local DrawerSegmentLine = class("DrawerSegmentLine", DrawerSegment)
@@ -21,6 +23,7 @@ function DrawerSegmentLine:draw(segment)
         segment.tail:value() + vec3(0, 0.05, 0),
         self.color
     )
+
     render.debugText(segment:getCenter():value() + vec3(0, 0.5, 0), self.label)
 end
 

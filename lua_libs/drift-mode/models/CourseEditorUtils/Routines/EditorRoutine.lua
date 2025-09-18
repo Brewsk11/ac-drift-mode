@@ -4,7 +4,7 @@ local S = require('drift-mode/serializer')
 ---@class EditorRoutine : ClassBase
 ---@field callback fun(payload: any)?
 local EditorRoutine = class("EditorRoutine")
-EditorRoutine.__model_path = "CourseEditor.Routines.EditorRoutine"
+EditorRoutine.__model_path = "CourseEditorUtils.Routines.EditorRoutine"
 function EditorRoutine:initialize(callback)
     self.callback = callback
 end

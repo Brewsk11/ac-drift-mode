@@ -1,6 +1,8 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local Drawer = require('drift-mode/models/Drawers/Drawer')
+
 ---@class DrawerSegment : Drawer
 local DrawerSegment = class("DrawerSegment", Drawer)
 DrawerSegment.__model_path = "Drawers.DrawerSegment"

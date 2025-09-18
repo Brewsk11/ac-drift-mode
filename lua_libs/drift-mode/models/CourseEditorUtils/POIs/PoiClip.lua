@@ -1,11 +1,13 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local ObjectEditorPoi = require('drift-mode/models/CourseEditor/POIs/ObjectEditorPoi')
+
 ---@class PoiClip : ObjectEditorPoi
 ---@field clip Clip
 ---@field point_type PoiClip.Type
 local PoiClip = class("PoiClip", ObjectEditorPoi)
-PoiClip.__model_path = "CourseEditor.POIs.PoiClip"
+PoiClip.__model_path = "CourseEditorUtils.POIs.PoiClip"
 
 ---@enum PoiClip.Type
 PoiClip.Type = {

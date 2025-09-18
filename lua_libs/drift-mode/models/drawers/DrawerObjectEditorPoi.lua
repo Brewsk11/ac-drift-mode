@@ -1,6 +1,9 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local Drawer = require('drift-mode/models/Drawers/Drawer')
+local DrawerPointSimple = require('drift-mode/models/Drawers/DrawerPointSimple')
+
 ---@class DrawerObjectEditorPoi : Drawer
 ---@field drawerPoint DrawerPoint[]?
 local DrawerObjectEditorPoi = class("DrawerObjectEditorPoi", Drawer)

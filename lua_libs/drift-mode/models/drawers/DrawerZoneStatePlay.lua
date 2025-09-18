@@ -3,6 +3,9 @@ local S = require('drift-mode/serializer')
 
 local Resources = require('drift-mode/Resources')
 
+local DrawerZoneState = require('drift-mode/models/Drawers/DrawerZoneState')
+local DrawerZonePlay = require('drift-mode/models/Drawers/DrawerZonePlay')
+
 ---@class DrawerZoneStatePlay : DrawerZoneState
 ---@field drawerZone DrawerZone
 ---@field protected drawerInactive DrawerZone

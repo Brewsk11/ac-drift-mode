@@ -3,7 +3,7 @@ local json = require('drift-mode/json')
 
 local ConfigIO = {}
 
-local usr_cfg_path = ac.getFolder(ac.FolderID.ExtCfgUser)  .. "\\drift-mode"
+local usr_cfg_path = ac.getFolder(ac.FolderID.ExtCfgUser) .. "\\drift-mode"
 local sys_cfg_path = ac.getFolder(ac.FolderID.ExtCfgSys) .. "\\drift-mode"
 
 local track_id = ac.getTrackID()
@@ -36,7 +36,7 @@ end
 
 function ConfigIO.saveCarConfig(car_data)
     io.createDir(usr_car_config_dir)
-    ConfigIO.saveConfig(usr_car_config_dir .. "\\" .. car_id  .. '.json', car_data)
+    ConfigIO.saveConfig(usr_car_config_dir .. "\\" .. car_id .. '.json', car_data)
 end
 
 ---@return TrackConfigInfo|nil
@@ -63,7 +63,7 @@ function ConfigIO.listTrackConfigs()
 
     for _, cfg_name in ipairs(usr_configs) do
         if cfg_name ~= last_used_name then
-            track_configs[#track_configs+1] = TrackConfigInfo(
+            track_configs[#track_configs + 1] = TrackConfigInfo(
                 cfg_name:gsub(".json", ""),
                 usr_track_config_dir .. "\\" .. cfg_name,
                 TrackConfigType.User
@@ -72,7 +72,7 @@ function ConfigIO.listTrackConfigs()
     end
 
     for _, cfg_name in ipairs(sys_configs) do
-        track_configs[#track_configs+1] = TrackConfigInfo(
+        track_configs[#track_configs + 1] = TrackConfigInfo(
             cfg_name:gsub(".json", ""),
             sys_track_config_dir .. "\\" .. cfg_name,
             TrackConfigType.Official
@@ -110,25 +110,25 @@ function ConfigIO.loadConfig(path)
         return nil
     end
 
-	local file = io.open(path, 'r')
-	local file_content = file:read("a")
+    local file = io.open(path, 'r')
+    local file_content = file:read("a")
     file:close()
 
     local json_repr = json.decode(file_content)
     local deserialized = Serializer.deserialize(json_repr)
 
-	return deserialized
+    return deserialized
 end
 
 function ConfigIO.saveConfig(path, data)
     assert(type(path) == 'string', 'Parameter "fileName" must be a string.')
-	local file = assert(io.open(path, 'w+b'), 'Error loading file :' .. path)
+    local file = assert(io.open(path, 'w+b'), 'Error loading file :' .. path)
 
     local serialized = Serializer.serialize(data)
     local json_content = json.encode(serialized)
 
-	file:write(json_content)
-	file:close()
+    file:write(json_content)
+    file:close()
 end
 
 return ConfigIO

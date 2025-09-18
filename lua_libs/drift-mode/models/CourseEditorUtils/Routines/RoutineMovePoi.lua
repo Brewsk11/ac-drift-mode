@@ -3,17 +3,19 @@ local RaycastUtils = require('drift-mode/RaycastUtils')
 local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
+local EditorRoutine = require('drift-mode/models/CourseEditorUtils/Routines/EditorRoutine')
+
 ---@class RoutineMovePoi : EditorRoutine
 ---@field poi ObjectEditorPoi?
 ---@field offset vec3?
 ---@field drawerPoint DrawerObjectEditorPoi --- To highlight possible pois to interact with
 local RoutineMovePoi = class("RoutineMovePoi", EditorRoutine)
-RoutineMovePoi.__model_path = "CourseEditor.Routines.RoutineMovePoi"
+RoutineMovePoi.__model_path = "CourseEditorUtils.Routines.RoutineMovePoi"
 function RoutineMovePoi:initialize(callback)
     EditorRoutine.initialize(self, callback)
     self.poi = nil
     self.offset = nil
-    self.drawerPoint = DrawerObjectEditorPoi(DrawerPointSimple(Resources.Colors.EditorInactivePoi, 0.5))
+    self.drawerPoint = Drawers.DrawerObjectEditorPoi(Drawers.DrawerPointSimple(Resources.Colors.EditorInactivePoi, 0.5))
 end
 
 ---@param pois ObjectEditorPoi[]
@@ -52,7 +54,7 @@ function RoutineMovePoi:run(context)
     context.cursor:registerObject(
         "move_poi_selector",
         Point(hit + self.offset),
-        DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
+        Drawers.DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
 
     if self.poi.isInstanceOf(PoiZone) then
         local poi_zone = self.poi ---@type PoiZone
@@ -121,7 +123,7 @@ function RoutineMovePoi:attachCondition(context)
         color = rgbm(3, 0, 1.5, 3)
     end
 
-    context.cursor:registerObject("move_poi_attach", poi.point, DrawerPointSphere(color))
+    context.cursor:registerObject("move_poi_attach", poi.point, Drawers.DrawerPointSphere(color))
 
     self.poi = poi
     self.offset = poi.point:value() - hit

@@ -1,6 +1,12 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local DrawerCourse = require('drift-mode/models/Drawers/DrawerCourse')
+local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
+local DrawerClipSetup = require('drift-mode/models/Drawers/DrawerClipSetup')
+local DrawerZoneSetup = require('drift-mode/models/Drawers/DrawerZoneSetup')
+local DrawerStartingPointSetup = require('drift-mode/models/Drawers/DrawerStartingPointSetup')
+
 ---@class DrawerCourseSetup : DrawerCourse
 local DrawerCourseSetup = class("DrawerCourse", DrawerCourse)
 DrawerCourseSetup.__model_path = "Drawers.DrawerCourseSetup"

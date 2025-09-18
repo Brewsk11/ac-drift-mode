@@ -1,6 +1,9 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local DrawerZone = require('drift-mode/models/Drawers/DrawerZone')
+local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
+
 ---@class DrawerZoneSetup : DrawerZone
 ---@field drawerOutsideLineWithCollision DrawerSegment
 ---@field drawerOutsideLineNoCollision DrawerSegment
@@ -11,7 +14,7 @@ function DrawerZoneSetup:initialize()
     DrawerZone.initialize(self)
     self.drawerInsideLine = DrawerSegmentLine(rgbm(0.5, 2, 1.5, 3))
     self.drawerOutsideLineWithCollision = DrawerSegmentLine(rgbm(0.2, 0.1, 2.7, 3))
-    self.drawerOutsideLineNoCollision = DrawerSegmentLine(  rgbm(0.4, 0.4, 2.2, 3))
+    self.drawerOutsideLineNoCollision = DrawerSegmentLine(rgbm(0.4, 0.4, 2.2, 3))
     self.drawerOutsideLine = nil
 end
 

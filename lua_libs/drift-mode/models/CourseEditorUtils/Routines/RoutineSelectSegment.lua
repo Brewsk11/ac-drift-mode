@@ -2,10 +2,12 @@ local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
 local S = require('drift-mode/serializer')
 
+local EditorRoutine = require('drift-mode/models/CourseEditorUtils/Routines/EditorRoutine')
+
 ---@class RoutineSelectSegment : EditorRoutine
 ---@field private segment Segment
 local RoutineSelectSegment = class("RoutineSelectSegment", EditorRoutine)
-RoutineSelectSegment.__model_path = "CourseEditor.Routines.RoutineSelectSegment"
+RoutineSelectSegment.__model_path = "CourseEditorUtils.Routines.RoutineSelectSegment"
 
 function RoutineSelectSegment:initialize(callback)
     EditorRoutine.initialize(self, callback)
@@ -25,7 +27,7 @@ function RoutineSelectSegment:run(context)
     context.cursor:registerObject(
         "routine_select_selector",
         Point(hit),
-        DrawerPointSphere(rgbm(1.5, 3, 0, 3))
+        Drawers.DrawerPointSphere(rgbm(1.5, 3, 0, 3))
     )
 
     -- When head has already been set
@@ -36,7 +38,7 @@ function RoutineSelectSegment:run(context)
         context.cursor:registerObject(
             "routine_select_segment",
             Segment(self.segment.head, Point(hit)),
-            DrawerSegmentLine(rgbm(0, 0, 3, 1))
+            Drawers.DrawerSegmentLine(rgbm(0, 0, 3, 1))
         )
     end
 

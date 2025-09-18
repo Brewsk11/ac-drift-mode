@@ -1,10 +1,12 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local ObjectEditorPoi = require('drift-mode/models/CourseEditor/POIs/ObjectEditorPoi')
+
 ---@class PoiStartingPoint : ObjectEditorPoi
 ---@field starting_point StartingPoint
 local PoiStartingPoint = class("PoiStartingPoint", ObjectEditorPoi)
-PoiStartingPoint.__model_path = "CourseEditor.POIs.PoiStartingPoint"
+PoiStartingPoint.__model_path = "CourseEditorUtils.POIs.PoiStartingPoint"
 
 function PoiStartingPoint:initialize(point, starting_point)
   ObjectEditorPoi.initialize(self, point, ObjectEditorPoi.Type.StartingPoint)

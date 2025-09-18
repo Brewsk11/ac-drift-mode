@@ -1,6 +1,8 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local DrawerClip = require('drift-mode/models/Drawers/DrawerClip')
+
 ---@class DrawerClipPlay : DrawerClip
 ---@field color rgbm
 local DrawerClipPlay = class("DrawerClipPlay", DrawerClip)

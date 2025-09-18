@@ -1,6 +1,8 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local Drawer = require('drift-mode/models/Drawers/Drawer')
+
 ---@class DrawerZoneState : Drawer
 ---@field drawerZone DrawerZone
 local DrawerZoneState = class("DrawerZoneState", Drawer)

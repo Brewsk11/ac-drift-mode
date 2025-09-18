@@ -1,6 +1,9 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
+local DrawerClip = require('drift-mode/models/Drawers/DrawerClip')
+local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
+
 ---@class DrawerClipSetup : DrawerClip
 ---@field draw_name boolean
 ---@field custom_label string

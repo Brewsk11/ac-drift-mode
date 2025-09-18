@@ -2,6 +2,9 @@ local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
+local DrawerCourse = require('drift-mode/models/Drawers/DrawerCourse')
+local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
+
 ---@class DrawerCoursePlay : DrawerCourse
 local DrawerCoursePlay = class("DrawerCourse", DrawerCourse)
 DrawerCoursePlay.__model_path = "Drawers.DrawerCoursePlay"

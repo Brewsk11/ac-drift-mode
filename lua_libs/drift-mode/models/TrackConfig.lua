@@ -26,7 +26,7 @@ function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, res
     self.respawnLine = respawnLine
     self.startingPoint = startingPoint
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
-    self:setDrawer(DrawerCourseSetup())
+    self:setDrawer(Drawers.DrawerCourseSetup())
 end
 
 function TrackConfig:serialize()

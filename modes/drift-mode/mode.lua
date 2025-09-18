@@ -77,8 +77,8 @@ local function reactivateColliders()
   collider_body = physics.RigidBody(colliders, 1):setSemiDynamic(true, false)
 end
 
-local drawerSetup = DrawerCourseSetup() ---@type DrawerCourseSetup
-local drawerRun = DrawerRunStatePlay() ---@type DrawerRunStatePlay
+local drawerSetup = Drawers.DrawerCourseSetup() ---@type DrawerCourseSetup
+local drawerRun = Drawers.DrawerRunStatePlay() ---@type DrawerRunStatePlay
 
 
 local signalListeners = {
