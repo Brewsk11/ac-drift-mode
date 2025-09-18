@@ -9,6 +9,7 @@ MODELS_GEN_CACHE=".generate_models.cache"
 
 if [[ ! -f ${MODELS_GEN_CACHE} || "$(hashModels)" != "$(cat ${MODELS_GEN_CACHE})" ]]; then
     ./generate_models_tree.py
+    ./generate_models_reflection.py
     hashModels > ${MODELS_GEN_CACHE}
 fi
 
