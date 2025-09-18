@@ -8,7 +8,7 @@ function hashModels { find lua_libs/drift-mode/models | md5sum; }
 MODELS_GEN_CACHE=".generate_models.cache"
 
 if [[ ! -f ${MODELS_GEN_CACHE} || "$(hashModels)" != "$(cat ${MODELS_GEN_CACHE})" ]]; then
-    ./generate_models.sh
+    ./generate_models_tree.py
     hashModels > ${MODELS_GEN_CACHE}
 fi
 

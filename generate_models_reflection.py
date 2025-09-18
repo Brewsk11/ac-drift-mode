@@ -10,7 +10,7 @@ def process_file(path):
     with open(path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    pattern = re.compile(r'local\s+(\w+)\s*=\s*class\(".*?"')
+    pattern = re.compile(r'local\s+(\w+)\s*=\s*class\(["\'].*?["\']')
 
     rel_path = os.path.relpath(path, MODELS_DIR)
     model_path = os.path.splitext(rel_path)[0]
