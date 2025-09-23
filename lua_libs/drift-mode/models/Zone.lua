@@ -25,9 +25,6 @@ function Zone:initialize(name, outsideLine, insideLine, maxPoints, collide)
     self:setInsideLine(insideLine or PointGroup())
 end
 
-local color_outside = rgbm(0, 3, 0, 0.4)
-local color_inside = rgbm(0, 0, 3, 0.4)
-
 function Zone:__post_deserialize()
     self:setDirty()
 end
@@ -351,19 +348,6 @@ function Zone:realignZonePointOnTrack()
             RaycastUtils.alignPointToTrack(outside_point)
         end
     end
-end
-
-function Zone:drawWall(color)
-    self.outsideLine:segment():drawWall(1, color)
-    self.insideLine:segment():drawWall(0.1, color)
-end
-
-function Zone:drawSetup()
-    self.outsideLine:draw(0.2, color_outside, true)
-    self.outsideLine:segment():draw(color_outside)
-
-    self.insideLine:draw(0.2, color_inside, true)
-    self.insideLine:segment():draw(color_inside)
 end
 
 function Zone:getBoundingBox()
