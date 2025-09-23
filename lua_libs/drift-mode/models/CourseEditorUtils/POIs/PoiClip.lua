@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 local S = require('drift-mode/serializer')
 
-local ObjectEditorPoi = require('drift-mode/models/CourseEditor/POIs/ObjectEditorPoi')
+local ObjectEditorPoi = require('drift-mode/models/CourseEditorUtils/POIs/ObjectEditorPoi')
 
 ---@class PoiClip : ObjectEditorPoi
 ---@field clip Clip
