@@ -1,6 +1,21 @@
 local Serializer = require('drift-mode/serializer')
 local json = require('drift-mode/json')
 
+-- #region FIXME: This is a shameful duplication of entire class for duck-typed circular dependency circumvention
+---@enum TrackConfigType
+TrackConfigType = {
+    User = "User",
+    Official = "Official"
+}
+local TrackConfigInfo = class("TrackConfigInfo")
+function TrackConfigInfo:initialize(name, path, type)
+    self.name = name
+    self.path = path
+    self.type = type
+end
+
+-- #endregion
+
 local ConfigIO = {}
 
 local usr_cfg_path = ac.getFolder(ac.FolderID.ExtCfgUser) .. "\\drift-mode"

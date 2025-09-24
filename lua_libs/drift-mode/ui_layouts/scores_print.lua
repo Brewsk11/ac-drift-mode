@@ -1,6 +1,9 @@
 local Resources = require('drift-mode/Resources')
 local Assert = require('drift-mode/Assert')
 
+local ZoneState = require("drift-mode.models.ZoneState")
+local ClipState = require("drift-mode.models.ClipState")
+
 -- TODO: This file should be temporary, merge with scores.lua in the future
 
 local ScoresPrint = {}

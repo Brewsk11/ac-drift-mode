@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 local DrawerPointGroup = require('drift-mode/models/Drawers/DrawerPointGroup')
 
 ---@class DrawerPointGroupConnected : DrawerPointGroup

@@ -1,5 +1,4 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
+local DrawerSegment = require("drift-mode.models.Drawers.DrawerSegment")
 
 ---@class DrawerSegmentWall : DrawerSegment
 ---@field color rgbm

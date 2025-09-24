@@ -1,6 +1,6 @@
 local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
 
+local WorldObject = require("drift-mode.models.WorldObject")
 
 ---@class ScoringObjectState : ClassBase
 local ScoringObjectState = class("ScoringObjectState", WorldObject)

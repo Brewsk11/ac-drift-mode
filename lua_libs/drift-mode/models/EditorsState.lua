@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 -- Game state information
 
 ---@class EditorsState : ClassBase

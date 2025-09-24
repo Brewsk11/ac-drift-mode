@@ -1,7 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
-
 ---@class DriftState : ClassBase Lightweight class for passing information about drift state such as angle from a calculating module to UI
 ---@field speed_mult number
 ---@field angle_mult number

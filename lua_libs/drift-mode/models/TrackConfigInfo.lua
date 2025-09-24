@@ -1,8 +1,6 @@
 local Assert = require('drift-mode/assert')
 local ConfigIO = require('drift-mode/configio')
 
-local S = require('drift-mode/serializer')
-
 ---@enum TrackConfigType
 TrackConfigType = {
     User = "User",

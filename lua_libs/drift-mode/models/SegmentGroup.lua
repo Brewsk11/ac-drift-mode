@@ -1,6 +1,9 @@
 local Assert = require('drift-mode/assert')
 local Segment = require('drift-mode/models/Segment')
 
+local Point = require("drift-mode.models.Point")
+
+
 ---@class SegmentGroup : ClassBase Ordered group of segments
 ---@field segments Segment[]
 local SegmentGroup = class("SegmentGroup")
@@ -47,7 +50,7 @@ end
 ---@param self SegmentGroup
 ---@param segment Segment
 function SegmentGroup:append(segment)
-    self.segments[#self.segments+1] = segment
+    self.segments[#self.segments + 1] = segment
 end
 
 ---Pop the last segment from the group
@@ -65,7 +68,7 @@ end
 function SegmentGroup:continuous()
     Assert.MoreThan(self:count(), 0, "Cannot calculate continous on empty set")
     for idx = 1, self:count() - 1 do
-        if self.segments[idx].tail:value() ~= self.segments[idx+1].head:value() then
+        if self.segments[idx].tail:value() ~= self.segments[idx + 1].head:value() then
             return false
         end
     end

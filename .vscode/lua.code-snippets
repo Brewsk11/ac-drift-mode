@@ -1,0 +1,9 @@
+{
+	"Require drift-mode model": {
+		"prefix": "model",
+		"body": [
+			"local ${1:VarName} = require(\"drift-mode.models.${2}${1}\")\n$3"
+		],
+		"description": "Insert a full require() for drift-mode.models requires"
+	}
+}

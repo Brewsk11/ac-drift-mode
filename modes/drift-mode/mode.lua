@@ -1,9 +1,16 @@
+M = require('drift-mode/models')
+
 local EventSystem = require('drift-mode/eventsystem')
 local listener_id = EventSystem.registerListener("mode")
 
 local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
-require('drift-mode/models')
+
+local Cursor = require("drift-mode.models.Cursor")
+local TrackConfig = require("drift-mode.models.TrackConfig")
+local RunState = require("drift-mode.models.RunState")
+local Drawers = require("drift-mode.models.Drawers")
+local Point = require("drift-mode.models.Point")
 
 local Teleporter = require('drift-mode/modes/Teleporter')
 local LineCrossDetector = require('drift-mode/modes/LineCrossDetector')

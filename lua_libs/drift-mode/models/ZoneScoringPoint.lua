@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 ---@class ZoneScoringPoint : ClassBase
 ---@field point Point
 ---@field speed_mult number

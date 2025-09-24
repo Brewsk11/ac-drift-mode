@@ -2,7 +2,7 @@ local EventSystem = require('drift-mode/eventsystem')
 local listener_id = EventSystem.registerListener('app-control')
 
 local Resources = require('drift-mode/Resources')
-require('drift-mode/models')
+local EditorsState = require("drift-mode.models.EditorsState")
 
 
 local ControlApp = {}

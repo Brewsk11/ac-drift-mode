@@ -1,12 +1,10 @@
 local EventSystem = require('drift-mode/eventsystem')
 local listener_id = EventSystem.registerListener('app-courseview')
 
-local Resources = require('drift-mode/Resources')
+local ScoresLayout = require('drift-mode.ui_layouts.scores')
+local MinimapHelper = require('drift-mode.MinimapHelper')
 
-local ScoresLayout = require('drift-mode/ui_layouts/scores')
-local MinimapHelper = require('drift-mode/MinimapHelper')
 
-require('drift-mode/models')
 
 ---@type TrackConfig?
 local track_data = nil

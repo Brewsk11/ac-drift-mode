@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 ---Base class for object that can be drawn in the world space
 ---@class WorldObject : ClassBase
 ---@field protected drawer Drawer?

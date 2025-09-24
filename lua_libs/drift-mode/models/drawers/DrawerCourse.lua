@@ -1,7 +1,6 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 local Drawer = require('drift-mode/models/Drawers/Drawer')
+local Zone = require("drift-mode.models.Zone")
+local Clip = require("drift-mode.models.Clip")
 
 ---@class DrawerCourse : Drawer
 ---@field drawerStartLine DrawerSegment?

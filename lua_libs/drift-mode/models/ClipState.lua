@@ -1,7 +1,9 @@
-local EventSystem = require('drift-mode/eventsystem')
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-local Resources = require('drift-mode/Resources')
+local Assert = require('drift-mode.assert')
+local EventSystem = require("drift-mode.eventsystem")
+local Resources = require('drift-mode.Resources')
+
+local ScoringObjectState = require("drift-mode.models.ScoringObjectState")
+local Point = require("drift-mode.models.Point")
 
 ---@class ClipState : ScoringObjectState
 ---@field clip Clip

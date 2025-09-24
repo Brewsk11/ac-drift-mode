@@ -1,5 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
 local DrawerCourse = require('drift-mode/models/Drawers/DrawerCourse')

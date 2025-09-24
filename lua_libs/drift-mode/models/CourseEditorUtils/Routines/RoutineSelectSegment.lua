@@ -1,8 +1,10 @@
 local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
-local S = require('drift-mode/serializer')
 
 local EditorRoutine = require('drift-mode/models/CourseEditorUtils/Routines/EditorRoutine')
+local Segment = require("drift-mode.models.Segment")
+local Point = require("drift-mode.models.Point")
+local Drawers = require("drift-mode.models.Drawers")
 
 ---@class RoutineSelectSegment : EditorRoutine
 ---@field private segment Segment

@@ -1,5 +1,4 @@
 local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
 
 local Point = require('drift-mode/models/Point')
 local WorldObject = require('drift-mode/models/WorldObject')

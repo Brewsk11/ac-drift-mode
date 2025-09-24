@@ -1,6 +1,10 @@
 local Resources = require('drift-mode/Resources')
 local Assert = require('drift-mode/Assert')
 
+local ScoringObjectState = require("drift-mode.models.ScoringObjectState")
+local ZoneState = require("drift-mode.models.ZoneState")
+local ClipState = require("drift-mode.models.ClipState")
+
 local ScoresLayout = {}
 
 ---@param scoring_objects_states ScoringObjectState[]

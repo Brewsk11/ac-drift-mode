@@ -1,8 +1,9 @@
 local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
-local Point = require('drift-mode/models/Point')
+local Point = require('drift-mode.models.Point')
+local ScoringObject = require("drift-mode.models.ScoringObject")
+local Segment = require("drift-mode.models.Segment")
 
 ---@class Clip : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone
@@ -30,6 +31,7 @@ function Clip:initialize(name, origin, direction, length, maxPoints, collide)
 end
 
 function Clip.deserialize(data)
+    local S = require('drift-mode/serializer')
     -- 2.1.0 compatibility transfer
     if data.__class == "ClippingPoint" then data.__class = "Clip" end
 

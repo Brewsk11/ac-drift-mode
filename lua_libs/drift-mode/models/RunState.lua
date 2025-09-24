@@ -1,8 +1,11 @@
 local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
 
 local EventSystem = require('drift-mode/eventsystem')
-local listener_id = EventSystem.registerListener('mode-runstate')
+local DriftState = require("drift-mode.models.DriftState")
+local Zone = require("drift-mode.models.Zone")
+local ZoneState = require("drift-mode.models.ZoneState")
+local Clip = require("drift-mode.models.Clip")
+local ClipState = require("drift-mode.models.ClipState")
 
 ---@class RunState : ClassBase
 ---@field trackConfig TrackConfig
@@ -18,9 +21,9 @@ function RunState:initialize(track_config)
     self.driftState = DriftState(0, 0, 0, 0)
     self.finished = false
     for idx, obj in ipairs(self.trackConfig.scoringObjects) do
-        if obj.isInstanceOf(Zone) then
+        if Zone.isInstanceOf(obj) then
             self.scoringObjectStates[idx] = ZoneState(obj)
-        elseif obj.isInstanceOf(Clip) then
+        elseif Clip.isInstanceOf(obj) then
             self.scoringObjectStates[idx] = ClipState(obj)
         else
             Assert.Error("")

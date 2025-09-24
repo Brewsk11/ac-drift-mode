@@ -1,7 +1,11 @@
 local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
 local Resources = require('drift-mode/Resources')
-local S = require('drift-mode/serializer')
+
+local Point = require("drift-mode.models.Point")
+local Segment = require("drift-mode.models.Segment")
+local ScoringObject = require("drift-mode.models.ScoringObject")
+local PointGroup = require("drift-mode.models.PointGroup")
 
 ---@class Zone : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone

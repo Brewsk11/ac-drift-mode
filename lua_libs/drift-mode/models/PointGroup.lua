@@ -1,7 +1,8 @@
 local Assert = require('drift-mode/assert')
 
-local Point = require('drift-mode/models/Point')
-local Segment = require('drift-mode/models/Segment')
+local Point = require('drift-mode.models.Point')
+local Segment = require('drift-mode.models.Segment')
+local SegmentGroup = require("drift-mode.models.SegmentGroup")
 
 ---@class PointGroup : ClassBase Ordered group of points in world space
 ---@field points Point[]

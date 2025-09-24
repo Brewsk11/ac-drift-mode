@@ -1,5 +1,4 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
+local DrawerPoint = require("drift-mode.models.Drawers.DrawerPoint")
 
 ---@class DrawerPointSphere : DrawerPoint
 local DrawerPointSphere = class("DrawerPointSphere", DrawerPoint)

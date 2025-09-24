@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 ---@class ScoringRanges : ClassBase
 ---@field speedRange Range
 ---@field angleRange Range

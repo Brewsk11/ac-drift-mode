@@ -4,7 +4,8 @@ local ConfigIO = require('drift-mode/configio')
 
 local listener_id = EventSystem.registerListener("apptab-carsetup")
 
-local CameraHelper = require('drift-mode/modes/CameraHelper')
+local CameraHelper = require('drift-mode.modes.CameraHelper')
+local CarConfig = require("drift-mode.models.CarConfig")
 
 local CarSetup = {}
 

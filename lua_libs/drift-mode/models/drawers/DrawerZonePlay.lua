@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 local DrawerZone = require('drift-mode/models/Drawers/DrawerZone')
 local DrawerSegmentWall = require('drift-mode/models/Drawers/DrawerSegmentWall')
 

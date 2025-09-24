@@ -1,5 +1,4 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
+local Point = require("drift-mode.models.Point")
 
 ---@class StartingPoint : ClassBase
 ---@field origin Point

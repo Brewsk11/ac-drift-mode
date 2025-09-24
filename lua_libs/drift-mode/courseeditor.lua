@@ -1,11 +1,20 @@
-local EventSystem = require('drift-mode/eventsystem')
-local ConfigIO = require('drift-mode/configio')
-local Assert = require('drift-mode/assert')
-local Resources = require('drift-mode/Resources')
-local CourseEditorElements = require('drift-mode/ui_layouts/CourseEditorElements')
-local Utils = require('drift-mode/CourseEditorUtils')
-local MinimapHelper = require('drift-mode/MinimapHelper')
-require('drift-mode/models')
+local Assert = require('drift-mode.assert')
+local Resources = require('drift-mode.Resources')
+local Utils = require('drift-mode.CourseEditorUtils') -- TODO: Fix this
+
+local CourseEditorElements = require('drift-mode.ui_layouts.CourseEditorElements')
+
+local Cursor = require('drift-mode.models.Cursor')
+local Zone = require("drift-mode.models.Zone")
+local Clip = require("drift-mode.models.Clip")
+local TrackConfig = require("drift-mode.models.TrackConfig")
+local Drawers = require("drift-mode.models.Drawers")
+local StartingPoint = require("drift-mode.models.StartingPoint")
+local CourseEditorUtils = require("drift-mode.models.CourseEditorUtils")
+local ConfigIO = require("drift-mode.configio")
+local EventSystem = require("drift-mode.EventSystem")
+local MinimapHelper = require("drift-mode.MinimapHelper")
+
 
 -- #region Pre-script definitions
 

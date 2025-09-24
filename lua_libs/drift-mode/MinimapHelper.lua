@@ -1,4 +1,6 @@
-local Assert = require('drift-mode/assert')
+local Box2D = require("drift-mode.models.Box2D")
+local Point = require("drift-mode.models.Point")
+
 
 ---@class MinimapHelper
 local MinimapHelper = class("MinimapHelper")

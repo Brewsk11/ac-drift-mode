@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
-
 -- Car configuration
 
 ---@class CarConfig : ClassBase Data class describing key car points positions for scoring purposes
@@ -25,10 +22,10 @@ function CarConfig:drawAlignment()
     local front_center = state.position + state.look * self.frontOffset + state.up / 3
 
     local rear_align_right_center = rear_center + state.side * self.rearSpan + state.look * 0.15
-    local rear_align_left_center =  rear_center - state.side * self.rearSpan + state.look * 0.15
+    local rear_align_left_center = rear_center - state.side * self.rearSpan + state.look * 0.15
 
     local front_align_right_center = front_center + state.side * self.frontSpan
-    local front_align_left_center =  front_center - state.side * self.frontSpan
+    local front_align_left_center = front_center - state.side * self.frontSpan
 
     -- Draw rear alignment planes (and center, for now)
     render.debugPlane(rear_align_right_center, -state.look + state.side, rgb(3, 0, 0), 0.5)

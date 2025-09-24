@@ -1,5 +1,8 @@
 local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
+
+local Drawer = require("drift-mode.models.Drawers.Drawer")
+local ZoneState = require("drift-mode.models.ZoneState")
+local ClipState = require("drift-mode.models.ClipState")
 
 ---@class DrawerRunState : Drawer
 ---@field drawerCourse DrawerCourse

@@ -1,5 +1,4 @@
 local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
 
 ---@class ScoringObject : ClassBase
 local ScoringObject = class("ScoringObject")

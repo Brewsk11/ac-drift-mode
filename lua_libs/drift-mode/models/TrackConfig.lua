@@ -1,9 +1,13 @@
 local Assert = require('drift-mode/assert')
-local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
-local Zone = require('drift-mode/models/Zone')
+local Zone = require('drift-mode.models.Zone')
 local WorldObject = require('drift-mode/models/WorldObject')
+local ScoringRanges = require("drift-mode.models.ScoringRanges")
+local Range = require("drift-mode.models.Range")
+local Drawers = require("drift-mode.models.Drawers")
+local Clip = require("drift-mode.models.Clip")
+local Point = require("drift-mode.models.Point")
 
 -- Track configration data
 
@@ -29,7 +33,8 @@ function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, res
     self:setDrawer(Drawers.DrawerCourseSetup())
 end
 
-function TrackConfig:serialize()
+function TrackConfig:serialize() -- TODO: Why does it work without __ prefix? Or maybe it doesn't?
+    local S = require('drift-mode/serializer')
     local data = {
         __class        = "TrackConfig",
         name           = S.serialize(self.name),
@@ -52,7 +57,8 @@ function TrackConfig:serialize()
     return data
 end
 
-function TrackConfig.deserialize(data)
+function TrackConfig.deserialize(data) -- TODO: Why does it work without __ prefix? Or maybe it doesn't?
+    local S = require('drift-mode/serializer')
     Assert.Equal(data.__class, "TrackConfig", "Tried to deserialize wrong class")
 
     local obj = TrackConfig()

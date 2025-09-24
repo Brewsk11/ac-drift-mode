@@ -1,9 +1,11 @@
-local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
-local S = require('drift-mode/serializer')
 local Resources = require('drift-mode/Resources')
 
-local EditorRoutine = require('drift-mode/models/CourseEditorUtils/Routines/EditorRoutine')
+local Drawers = require("drift-mode.models.Drawers")
+local Point = require("drift-mode.models.Point")
+local POIs = require("drift-mode.models.CourseEditorUtils.POIs")
+local EditorRoutine = require("drift-mode.models.CourseEditorUtils.Routines.EditorRoutine")
+
 
 ---@class RoutineMovePoi : EditorRoutine
 ---@field poi ObjectEditorPoi?
@@ -56,7 +58,7 @@ function RoutineMovePoi:run(context)
         Point(hit + self.offset),
         Drawers.DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
 
-    if self.poi.isInstanceOf(PoiZone) then
+    if self.poi.isInstanceOf(POIs.PoiZone) then
         local poi_zone = self.poi ---@type PoiZone
         poi_zone.zone:setDirty()
     end
@@ -65,13 +67,13 @@ end
 ---@param context EditorRoutine.Context
 ---@param poi ObjectEditorPoi
 function RoutineMovePoi:deletePoi(context, poi)
-    if poi.poi_type == ObjectEditorPoi.Type.Zone then
+    if poi.poi_type == POIs.ObjectEditorPoi.Type.Zone then
         local poi_zone = poi ---@type PoiZone
-        if poi_zone.point_type == PoiZone.Type.FromInsideLine then
+        if poi_zone.point_type == POIs.PoiZone.Type.FromInsideLine then
             poi_zone.zone:getInsideLine():remove(poi_zone.point_index)
-        elseif poi_zone.point_type == PoiZone.Type.FromOutsideLine then
+        elseif poi_zone.point_type == POIs.PoiZone.Type.FromOutsideLine then
             poi_zone.zone:getOutsideLine():remove(poi_zone.point_index)
-        elseif poi_zone.point_type == PoiZone.Type.Center then
+        elseif poi_zone.point_type == POIs.PoiZone.Type.Center then
             ui.modalPopup(
                 "Deleting zone",
                 "Are you sure you want to delete the zone?",
@@ -80,16 +82,16 @@ function RoutineMovePoi:deletePoi(context, poi)
                 end
             )
         end
-    elseif poi.poi_type == ObjectEditorPoi.Type.Clip then
+    elseif poi.poi_type == POIs.ObjectEditorPoi.Type.Clip then
         local poi_clip = poi ---@type PoiClip
         table.removeItem(context.course.scoringObjects, poi_clip.clip)
-    elseif poi.poi_type == ObjectEditorPoi.Type.StartingPoint then
+    elseif poi.poi_type == POIs.ObjectEditorPoi.Type.StartingPoint then
         context.course.startingPoint = nil
-    elseif poi.poi_type == ObjectEditorPoi.Type.Segment then
+    elseif poi.poi_type == POIs.ObjectEditorPoi.Type.Segment then
         local poi_segment = poi ---@type PoiSegment
-        if poi_segment.segment_type == PoiSegment.Type.StartLine then
+        if poi_segment.segment_type == POIs.PoiSegment.Type.StartLine then
             context.course.startLine = nil
-        elseif poi_segment.segment_type == PoiSegment.Type.FinishLine then
+        elseif poi_segment.segment_type == POIs.PoiSegment.Type.FinishLine then
             context.course.finishLine = nil
         end
     end
