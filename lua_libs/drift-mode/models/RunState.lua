@@ -1,3 +1,4 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 
 local EventSystem = require('drift-mode/eventsystem')
@@ -12,7 +13,7 @@ local ClipState = require("drift-mode.models.ClipState")
 ---@field driftState DriftState
 ---@field scoringObjectStates ScoringObjectState[]
 ---@field private finished boolean
-local RunState = class("RunState")
+local RunState = class("RunState", ModelBase)
 RunState.__model_path = "RunState"
 
 function RunState:initialize(track_config)

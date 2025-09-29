@@ -1,3 +1,4 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 ---@enum TrackConfigType
 TrackConfigType = {
     User = "User",
@@ -8,7 +9,7 @@ TrackConfigType = {
 ---@field name string
 ---@field path string
 ---@field type TrackConfigType
-local TrackConfigInfo = class("TrackConfigInfo")
+local TrackConfigInfo = class("TrackConfigInfo", ModelBase)
 TrackConfigInfo.__model_path = "TrackConfigInfo"
 
 function TrackConfigInfo:initialize(name, path, type)

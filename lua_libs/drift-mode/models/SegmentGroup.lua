@@ -1,3 +1,4 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 local Segment = require('drift-mode/models/Segment')
 
@@ -6,7 +7,7 @@ local Point = require("drift-mode.models.Point")
 
 ---@class SegmentGroup : ClassBase Ordered group of segments
 ---@field segments Segment[]
-local SegmentGroup = class("SegmentGroup")
+local SegmentGroup = class("SegmentGroup", ModelBase)
 SegmentGroup.__model_path = "SegmentGroup"
 
 ---@param segments Segment[]?

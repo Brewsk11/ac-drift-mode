@@ -1,10 +1,11 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 local EventSystem = require('drift-mode.eventsystem')
 
 local CursorObject = require("drift-mode.models.CursorObject")
 
 ---@class Cursor : ClassBase Data class containing various objects you may want to draw on the track, that are not related to track configuration
 ---@field objects table<string, CursorObject>
-local Cursor = class("Cursor")
+local Cursor = class("Cursor", ModelBase)
 Cursor.__model_path = "Cursor"
 
 function Cursor:initialize()

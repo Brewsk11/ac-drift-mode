@@ -1,10 +1,9 @@
 local Assert = require('drift-mode/assert')
 local ModelBase = require("drift-mode.models.ModelBase")
 
-
 ---Abstract class
----@class Drawer : ClassBase
-local Drawer = class("Drawer", ClassBase)
+---@class Drawer : ModelBase
+local Drawer = class("Drawer", ModelBase)
 Drawer.__model_path = "Drawers.Drawer"
 
 function Drawer:initialize()

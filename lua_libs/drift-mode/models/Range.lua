@@ -1,9 +1,10 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 
 ---@class Range : ClassBase Simple range of two numbers
 ---@field start number
 ---@field finish number
-local Range = class("Range")
+local Range = class("Range", ModelBase)
 Range.__model_path = "Range"
 
 function Range:initialize(start, finish)

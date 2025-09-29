@@ -1,10 +1,11 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 
 ---@class Point : ClassBase Class representing a point in the world space
 ---@field private _value vec3 World coordinate position of the point on the track
 ---@field private _flat vec2
 ---@field private _projected vec3
-local Point = class("Point")
+local Point = class("Point", ModelBase)
 Point.__model_path = "Point"
 
 ---@param value vec3 World position

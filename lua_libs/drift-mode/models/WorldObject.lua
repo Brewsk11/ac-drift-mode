@@ -1,7 +1,8 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 ---Base class for object that can be drawn in the world space
 ---@class WorldObject : ClassBase
 ---@field protected drawer Drawer?
-local WorldObject = class("WorldObject")
+local WorldObject = class("WorldObject", ModelBase)
 WorldObject.__model_path = "WorldObject"
 
 function WorldObject:initialize()

@@ -19,8 +19,13 @@ local Serializer = {}
 ---@param data any
 ---@return any
 function Serializer.serialize(data)
+    if ClassBase.isInstanceOf(data) and not ModelBase.isInstanceOf(data) then
+        Assert.Error("Cannot serialize ClassBase inherited class \"" ..
+            data.__model_path .. "\", it needs to extend ModelBase!")
+    end
+
     -- ModelBase class
-    if ClassBase.isInstanceOf(data) then
+    if ModelBase.isInstanceOf(data) then
         local obj = {}
 
         if data.__serialize == nil then
@@ -277,7 +282,7 @@ end
 
 function Serializer.test()
     local TestClass = require("drift-mode.models.Tests.Serializer.MainClass")
-    local TestClassCustomSerializer = require("drift-mode.models.Tests.Serializer.CustomSerializer")
+    local TestClassCustomSerializer = require("drift-mode.models.Tests.Serializer.CustomSerializerClass")
 
     local c = TestClass()
     c.string = "changed"

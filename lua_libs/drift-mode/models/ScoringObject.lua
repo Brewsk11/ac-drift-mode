@@ -1,7 +1,8 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 
 ---@class ScoringObject : ClassBase
-local ScoringObject = class("ScoringObject")
+local ScoringObject = class("ScoringObject", ModelBase)
 ScoringObject.__model_path = "ScoringObject"
 
 function ScoringObject:initialize()

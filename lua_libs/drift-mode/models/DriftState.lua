@@ -1,10 +1,11 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 ---@class DriftState : ClassBase Lightweight class for passing information about drift state such as angle from a calculating module to UI
 ---@field speed_mult number
 ---@field angle_mult number
 ---@field ratio_mult number
 ---@field score_mult number
 ---@field side_drifting DriftState.Side
-local DriftState = class("DriftState")
+local DriftState = class("DriftState", ModelBase)
 DriftState.__model_path = "DriftState"
 
 ---@enum DriftState.Side

@@ -1,3 +1,4 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 -- Car configuration
 
 ---@class CarConfig : ClassBase Data class describing key car points positions for scoring purposes
@@ -5,7 +6,7 @@
 ---@field frontSpan number Span between two endpoints of the front bumper
 ---@field rearOffset number Offset from car origin to the rear bumper
 ---@field rearSpan number Span between two endpoints of the rear bumper
-local CarConfig = class("CarConfig")
+local CarConfig = class("CarConfig", ModelBase)
 CarConfig.__model_path = "CarConfig"
 
 function CarConfig:initialize(frontOffset, frontSpan, rearOffset, rearSpan)

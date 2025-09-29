@@ -1,3 +1,4 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 ---@class ZoneScoringPoint : ClassBase
 ---@field point Point
 ---@field speed_mult number
@@ -6,7 +7,7 @@
 ---@field score_mult number
 ---@field location number -- Location as a fraction of where the scored point lays in the zone
 ---@field inside boolean -- Outside points are possible for buffering continuity when player left the zone only slightly
-local ZoneScoringPoint = class("ZoneScoringPoint")
+local ZoneScoringPoint = class("ZoneScoringPoint", ModelBase)
 ZoneScoringPoint.__model_path = "ZoneScoringPoint"
 
 function ZoneScoringPoint:initialize(point, speed_mult, angle_mult, ratio_mult, location, inside)

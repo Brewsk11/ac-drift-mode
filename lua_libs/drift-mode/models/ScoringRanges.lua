@@ -1,7 +1,8 @@
+local ModelBase = require("drift-mode.models.ModelBase")
 ---@class ScoringRanges : ClassBase
 ---@field speedRange Range
 ---@field angleRange Range
-local ScoringRanges = class("ScoringRanges")
+local ScoringRanges = class("ScoringRanges", ModelBase)
 ScoringRanges.__model_path = "ScoringRanges"
 
 function ScoringRanges:initialize(speedRange, angleRange)
