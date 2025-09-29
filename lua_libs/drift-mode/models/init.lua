@@ -26,7 +26,6 @@ local models = {
     Tests              = require('drift-mode.models.Tests'),
     TrackConfig        = require('drift-mode.models.TrackConfig'),
     TrackConfigInfo    = require('drift-mode.models.TrackConfigInfo'),
-    WorldObject        = require('drift-mode.models.WorldObject'),
     Zone               = require('drift-mode.models.Zone'),
     ZoneScoringPoint   = require('drift-mode.models.ZoneScoringPoint'),
     ZoneState          = require('drift-mode.models.ZoneState'),

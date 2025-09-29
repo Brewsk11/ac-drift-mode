@@ -10,7 +10,7 @@ function Drawer:initialize()
     Assert.Error("Abstract object called")
 end
 
----@param obj WorldObject
+---@param obj any
 function Drawer:draw(obj)
     Assert.Error("Abstract object called")
 end

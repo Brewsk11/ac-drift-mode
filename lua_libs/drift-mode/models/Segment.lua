@@ -1,12 +1,13 @@
 local Assert = require('drift-mode/assert')
 
 local Point = require('drift-mode/models/Point')
-local WorldObject = require('drift-mode/models/WorldObject')
+local ModelBase = require("drift-mode.models.ModelBase")
 
----@class Segment : WorldObject Class representing a line (two connected points) in world space
+
+---@class Segment : ModelBase Class representing a line (two connected points) in world space
 ---@field head Point World coordinate position of the point on the track
 ---@field tail Point World coordinate position of the point on the track
-local Segment = class('Segment', WorldObject)
+local Segment = class('Segment', ModelBase)
 Segment.__model_path = "Segment"
 
 ---@param head Point

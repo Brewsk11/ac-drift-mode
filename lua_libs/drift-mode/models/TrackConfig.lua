@@ -1,17 +1,13 @@
-local Assert = require('drift-mode/assert')
 local Resources = require('drift-mode/Resources')
 
-local Zone = require('drift-mode.models.Zone')
-local WorldObject = require('drift-mode/models/WorldObject')
+local ModelBase = require('drift-mode.models.ModelBase')
 local ScoringRanges = require("drift-mode.models.ScoringRanges")
 local Range = require("drift-mode.models.Range")
-local Drawers = require("drift-mode.models.Drawers")
-local Clip = require("drift-mode.models.Clip")
 local Point = require("drift-mode.models.Point")
 
 -- Track configration data
 
----@class TrackConfig : WorldObject
+---@class TrackConfig : ModelBase
 ---@field name string Configuration name
 ---@field scoringObjects ScoringObject[]
 ---@field startLine Segment
@@ -19,8 +15,9 @@ local Point = require("drift-mode.models.Point")
 ---@field finishLine Segment
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
-local TrackConfig = class("TrackConfig", WorldObject)
+local TrackConfig = class("TrackConfig", ModelBase)
 TrackConfig.__model_path = "TrackConfig"
+
 
 function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
     self.name = name or 'default'
@@ -30,7 +27,6 @@ function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, res
     self.respawnLine = respawnLine
     self.startingPoint = startingPoint
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
-    self:setDrawer(Drawers.DrawerCourseSetup())
 end
 
 function TrackConfig:getNextZoneName()
