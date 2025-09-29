@@ -39,8 +39,7 @@ local track_data = TrackConfig()
 
 ---@param track_cfg_info TrackConfigInfo
 local function loadTrack(track_cfg_info)
-  track_config_info = track_cfg_info
-  track_data = track_config_info:load()
+  track_data = ConfigIO.loadTrackConfig(track_cfg_info)
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
 end
 

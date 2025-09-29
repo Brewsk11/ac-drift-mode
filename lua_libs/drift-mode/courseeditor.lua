@@ -1,6 +1,7 @@
 local Assert = require('drift-mode.assert')
 local Resources = require('drift-mode.Resources')
 local Utils = require('drift-mode.CourseEditorUtils') -- TODO: Fix this
+local ConfigIO = require("drift-mode.configio")
 
 local CourseEditorElements = require('drift-mode.ui_layouts.CourseEditorElements')
 
@@ -21,7 +22,7 @@ local MinimapHelper = require("drift-mode.MinimapHelper")
 ---Course currently showing (choosen in combo box)
 local loaded_course_info = ConfigIO.getLastUsedTrackConfigInfo() ---@type TrackConfigInfo?
 local selected_course_info = ConfigIO.getLastUsedTrackConfigInfo() ---@type TrackConfigInfo?
-local course = (loaded_course_info and loaded_course_info:load()) ---@type TrackConfig?
+local course = (loaded_course_info and ConfigIO.loadTrackConfig(loaded_course_info)) ---@type TrackConfig?
 
 ---Currently activated tab
 local activeTab = nil
@@ -313,7 +314,7 @@ end
 ---@param new_course TrackConfigInfo
 function CourseEditor:onSelectedCourseChange(new_course)
   loaded_course_info = new_course
-  course = loaded_course_info:load()
+  course = ConfigIO.loadTrackConfig(loaded_course_info)
   onCourseEdited()
   unsaved_changes = false
 end

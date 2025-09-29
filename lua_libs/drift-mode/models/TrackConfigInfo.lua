@@ -1,6 +1,3 @@
-local Assert = require('drift-mode/assert')
-local ConfigIO = require('drift-mode/configio')
-
 ---@enum TrackConfigType
 TrackConfigType = {
     User = "User",
@@ -18,12 +15,6 @@ function TrackConfigInfo:initialize(name, path, type)
     self.name = name
     self.path = path
     self.type = type
-end
-
----@return TrackConfig?
-function TrackConfigInfo:load()
-    Assert.NotNil(self.path, "Tried to load track from empty TrackConfigInfo")
-    return ConfigIO.loadTrackConfig(self)
 end
 
 local function test()
