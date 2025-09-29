@@ -1,5 +1,4 @@
 local Assert = require('drift-mode/assert')
-local Resources = require('drift-mode/Resources')
 
 local Point = require('drift-mode.models.Point')
 local ScoringObject = require("drift-mode.models.ScoringObject")
@@ -28,23 +27,6 @@ function Clip:initialize(name, origin, direction, length, maxPoints, collide)
     self.length = length
     self.maxPoints = maxPoints
     self.collide = collide or true
-end
-
-function Clip.deserialize(data)
-    local S = require('drift-mode/serializer')
-    -- 2.1.0 compatibility transfer
-    if data.__class == "ClippingPoint" then data.__class = "Clip" end
-
-    Assert.Equal(data.__class, "Clip", "Tried to deserialize wrong class")
-
-    local obj = Clip(
-        S.deserialize(data.name),
-        Point.__deserialize(data.origin),
-        S.deserialize(data.direction),
-        S.deserialize(data.length),
-        S.deserialize(data.maxPoints)
-    )
-    return obj
 end
 
 function Clip:getEnd()

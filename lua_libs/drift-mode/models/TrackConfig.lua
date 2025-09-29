@@ -63,29 +63,6 @@ function TrackConfig.deserialize(data) -- TODO: Why does it work without __ pref
 
     local obj = TrackConfig()
 
-    -- 2.1.0 compatibility transfer
-    --   Changed `clippingPoints` field name to `clips`
-    if data.clippingPoints ~= nil then data.clips = data.clippingPoints end
-    --   Added new field `scoringRanges`; if nil then fill default
-    if S.deserialize(data.scoringRanges) == nil then
-        data.scoringRanges = S.serialize(
-            ScoringRanges(Range(15, 50), Range(5, 45))
-        )
-    end
-
-    -- 2.3.1 compatibility transfer
-    --   Migrated zones and clips to ScoringObjects
-    if data.zones or data.clips then
-        local scoringObjects = {}
-        for _, zone in ipairs(data.zones) do
-            scoringObjects[#scoringObjects + 1] = zone
-        end
-        for _, clip in ipairs(data.clips) do
-            scoringObjects[#scoringObjects + 1] = clip
-        end
-        data.scoringObjects = scoringObjects
-    end
-
     local scoringObjects = {}
     for idx, scoringObject in ipairs(data.scoringObjects) do
         if scoringObject.__class == Zone.__name then
