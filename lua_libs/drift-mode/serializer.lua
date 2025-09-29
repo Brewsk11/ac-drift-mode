@@ -8,7 +8,7 @@ local Serializer = {}
 ---Serialize custom objects so that they can be encoded as JSON.
 ---
 ---ModelBase derived classes can have a `Class:__serialize()` method
----and `Class.__deserialize()` class functionm, that `Serializer.serialize()`
+---and `Class.__deserialize()` class function, that `Serializer.serialize()`
 ---and `Serializer.deserialize()` would use to de/serialize them.
 ---
 ---Custom classes that are not exported as a `require()`-able modules
@@ -208,13 +208,6 @@ function Serializer.deserialize(data)
             -- Classes with customized deserializer
             Assert.Equal(type(ModelClass.__deserialize), "function")
             obj = ModelClass.__deserialize(data)
-        end
-
-        -- Additional function to call if any calculation is needed
-        -- post obj:initialize()
-        if obj.__post_deserialize ~= nil then
-            Assert.Equal(type(obj.__post_deserialize), "function")
-            obj:__post_deserialize()
         end
 
         return obj

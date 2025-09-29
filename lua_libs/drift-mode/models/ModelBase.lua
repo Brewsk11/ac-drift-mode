@@ -7,6 +7,6 @@ ModelBase.__model_path = "ModelBase"
 function ModelBase:subclassed(classDefinition)
 end
 
----@alias ModelDefinition {__name: string, __model_path: string, __deserialize: function|nil, __serialize: function|nil, __post_deserialize: function|nil, test: function|nil}
+---@alias ModelDefinition {__name: string, __model_path: string, __deserialize: function|nil, __serialize: function|nil, test: function|nil}
 
 return ModelBase

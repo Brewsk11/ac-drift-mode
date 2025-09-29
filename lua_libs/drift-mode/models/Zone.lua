@@ -18,19 +18,40 @@ local Zone = class("Zone", ScoringObject)
 Zone.__model_path = "Zone"
 
 ---@param name string
----@param outsideLine PointGroup
----@param insideLine PointGroup
+---@param outsideLine PointGroup|nil
+---@param insideLine PointGroup|nil
 ---@param maxPoints integer
+---@param collide boolean|nil
 function Zone:initialize(name, outsideLine, insideLine, maxPoints, collide)
     self.name = name
     self.maxPoints = maxPoints
     self.collide = collide or false
-    self:setOutsideLine(outsideLine or PointGroup())
-    self:setInsideLine(insideLine or PointGroup())
+    self.outsideLine = outsideLine or PointGroup()
+    self.insideLine = insideLine or PointGroup()
+    self:setDirty()
 end
 
-function Zone:__post_deserialize()
-    self:setDirty()
+function Zone:__serialize()
+    -- Custom serializer prevents redundant self.polygon serialization
+    local S = require('drift-mode/serializer')
+    return {
+        name = S.serialize(self.name),
+        maxPoints = S.serialize(self.maxPoints),
+        collide = S.serialize(self.collide),
+        outsideLine = S.serialize(self.outsideLine),
+        insideLine = S.serialize(self.insideLine)
+    }
+end
+
+function Zone.__deserialize(data)
+    local S = require('drift-mode/serializer')
+    return Zone(
+        S.deserialize(data.name),
+        S.deserialize(data.outsideLine),
+        S.deserialize(data.insideLine),
+        S.deserialize(data.maxPoints),
+        S.deserialize(data.collide)
+    )
 end
 
 ---@private

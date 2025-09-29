@@ -33,57 +33,6 @@ function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, res
     self:setDrawer(Drawers.DrawerCourseSetup())
 end
 
-function TrackConfig:serialize() -- TODO: Why does it work without __ prefix? Or maybe it doesn't?
-    local S = require('drift-mode/serializer')
-    local data = {
-        __class        = "TrackConfig",
-        name           = S.serialize(self.name),
-        scoringObjects = {},
-        startLine      = S.serialize(self.startLine),
-        finishLine     = S.serialize(self.finishLine),
-        respawnLine    = S.serialize(self.respawnLine),
-        startingPoint  = S.serialize(self.startingPoint),
-        scoringRanges  = S.serialize(self.scoringRanges)
-    }
-
-    for idx, scoringObject in ipairs(self.scoringObjects) do
-        if Zone.isInstanceOf(scoringObject) then
-            data.scoringObjects[idx] = Zone.serialize(scoringObject)
-        elseif Clip.isInstanceOf(scoringObject) then
-            data.scoringObjects[idx] = Clip.serialize(scoringObject)
-        end
-    end
-
-    return data
-end
-
-function TrackConfig.deserialize(data) -- TODO: Why does it work without __ prefix? Or maybe it doesn't?
-    local S = require('drift-mode/serializer')
-    Assert.Equal(data.__class, "TrackConfig", "Tried to deserialize wrong class")
-
-    local obj = TrackConfig()
-
-    local scoringObjects = {}
-    for idx, scoringObject in ipairs(data.scoringObjects) do
-        if scoringObject.__class == Zone.__name then
-            scoringObjects[idx] = Zone.deserialize(scoringObject)
-        elseif scoringObject.__class == Clip.__name then
-            scoringObjects[idx] = Clip.deserialize(scoringObject)
-        else
-            Assert.Error("Some ScoringObject was neither Zone or Clip")
-        end
-    end
-    obj.scoringObjects = scoringObjects
-
-    obj.name = S.deserialize(data.name)
-    obj.startLine = S.deserialize(data.startLine)
-    obj.finishLine = S.deserialize(data.finishLine)
-    obj.respawnLine = S.deserialize(data.respawnLine)
-    obj.startingPoint = S.deserialize(data.startingPoint)
-    obj.scoringRanges = S.deserialize(data.scoringRanges)
-    return obj
-end
-
 function TrackConfig:getNextZoneName()
     return "zone_" .. string.format('%03d', #self.scoringObjects + 1)
 end
