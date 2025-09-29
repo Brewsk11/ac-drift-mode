@@ -1,13 +1,15 @@
+local model_path = ...
+local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 
 ---A class for describing a rectangle on a 2D coordinate system.
 ---Useful for minimap calculations.
----@class Box2D
+---@class Box2D : ModelBase
 ---@field private _p1 vec2
 ---@field private _p2 vec2
 ---@field private _size vec2
 ---@field private _center vec2
-local Box2D = class("Box2D")
+local Box2D = class("Box2D", ModelBase)
 Box2D.__model_path = "Box2D"
 
 ---When p1 & p2 == nil create a dummy 10x10 box starting at (0, 0)
@@ -167,7 +169,7 @@ function Box2D:fitInAndMoveTo(box, out)
     end
 end
 
-local function test()
+function Box2D.test()
     local RENDER_TEST_TEXTURE = true
 
     -- Box2D:fitIn()
@@ -245,6 +247,5 @@ local function test()
         Assert.Equal(data.res:getP2(), data.expected:getP2(), "Checking P2 for #" .. idx .. " case")
     end
 end
-test()
 
 return Box2D

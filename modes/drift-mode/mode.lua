@@ -1,5 +1,3 @@
-M = require('drift-mode/models')
-
 local EventSystem = require('drift-mode/eventsystem')
 local listener_id = EventSystem.registerListener("mode")
 
@@ -14,6 +12,9 @@ local Point = require("drift-mode.models.Point")
 
 local Teleporter = require('drift-mode/modes/Teleporter')
 local LineCrossDetector = require('drift-mode/modes/LineCrossDetector')
+
+local TestHarness = require('drift-mode.TestHarness')
+TestHarness:runTesting()
 
 local config_list = ConfigIO.listTrackConfigs()
 
