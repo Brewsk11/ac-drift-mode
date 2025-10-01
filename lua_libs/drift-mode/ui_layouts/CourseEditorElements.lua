@@ -5,7 +5,7 @@ local Zone = require("drift-mode.models.Zone")
 local Clip = require("drift-mode.models.Clip")
 local Drawers = require("drift-mode.models.Drawers")
 local CourseEditorUtils = require("drift-mode.models.CourseEditorUtils")
-local PointGroup = require("drift-mode.models.PointGroup")
+local PointGroup = require("drift-mode.models.Common.PointGroup")
 local Point = require("drift-mode.models.Common.Point")
 
 local CourseEditorElements = {}

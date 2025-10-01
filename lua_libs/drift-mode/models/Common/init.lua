@@ -2,8 +2,9 @@
 -- Do not edit manually
 
 local Common = {
-    Box2D = require('drift-mode.models.Common.Box2D'),
-    Point = require('drift-mode.models.Common.Point'),
+    Box2D      = require('drift-mode.models.Common.Box2D'),
+    Point      = require('drift-mode.models.Common.Point'),
+    PointGroup = require('drift-mode.models.Common.PointGroup'),
 }
 
 return Common

@@ -13,7 +13,6 @@ local models = {
     EditorsState       = require('drift-mode.models.EditorsState'),
     Misc               = require('drift-mode.models.Misc'),
     ModelBase          = require('drift-mode.models.ModelBase'),
-    PointGroup         = require('drift-mode.models.PointGroup'),
     Range              = require('drift-mode.models.Range'),
     RunState           = require('drift-mode.models.RunState'),
     ScoringObject      = require('drift-mode.models.ScoringObject'),

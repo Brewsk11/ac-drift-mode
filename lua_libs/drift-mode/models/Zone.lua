@@ -5,7 +5,7 @@ local Resources = require('drift-mode/Resources')
 local Point = require("drift-mode.models.Common.Point")
 local Segment = require("drift-mode.models.Segment")
 local ScoringObject = require("drift-mode.models.ScoringObject")
-local PointGroup = require("drift-mode.models.PointGroup")
+local PointGroup = require("drift-mode.models.Common.PointGroup")
 
 ---@class Zone : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone
