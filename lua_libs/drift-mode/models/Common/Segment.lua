@@ -8,7 +8,7 @@ local ModelBase = require("drift-mode.models.ModelBase")
 ---@field head Point World coordinate position of the point on the track
 ---@field tail Point World coordinate position of the point on the track
 local Segment = class('Segment', ModelBase)
-Segment.__model_path = "Segment"
+Segment.__model_path = "Common.Segment"
 
 ---@param head Point
 ---@param tail Point

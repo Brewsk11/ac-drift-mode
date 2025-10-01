@@ -1,4 +1,4 @@
--Box2D
+ Box2D
 -CarConfig
 -Clip
 -ClipState
@@ -8,16 +8,16 @@
 -Drawers/
  DriftState
 -EditorsState
--ModelBase
--Point
--PointGroup
+ ModelBase
+ Point
+ PointGroup
 -Range
 -RunState
 -ScoringObject
 -ScoringObjectState
 -ScoringRanges
--Segment
--SegmentGroup
+ Segment
+ SegmentGroup
 -StartingPoint <- Position
 -Tests/
 -TrackConfig
