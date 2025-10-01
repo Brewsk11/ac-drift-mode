@@ -14,7 +14,7 @@ local ClipState = require("drift-mode.models.ClipState")
 ---@field scoringObjectStates ScoringObjectState[]
 ---@field private finished boolean
 local RunState = class("RunState", ModelBase)
-RunState.__model_path = "RunState"
+RunState.__model_path = "TrackObjects.Course.RunState"
 
 function RunState:initialize(track_config)
     self.trackConfig = track_config

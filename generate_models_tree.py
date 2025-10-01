@@ -31,9 +31,6 @@ def visit_dir(dir_path: str) -> None:
                 name, _ = os.path.splitext(obj.name)
                 entries.append((name, require_path))
 
-    entry_max_lenght = max([x[0] for x in entries], key=lambda x: len(x))
-    max_entry_lenght = len(entry_max_lenght)
-
     # Write the init.lua for this directory
     init_path = os.path.join(dir_path, "init.lua")
     dir_name = dir_path.replace("\\", "/").split("/")[-1]
@@ -42,10 +39,13 @@ def visit_dir(dir_path: str) -> None:
         f.write("-- Do not edit manually\n")
         f.write("\n")
         f.write(f"local {dir_name} = {{\n")
-        for name, req in entries:
-            space_count = max_entry_lenght - len(name)
-            spaces = space_count * " "
-            f.write(f"    {name}{spaces} = require('drift-mode.models.{req}'),\n")
+        if len(entries) > 0:
+            entry_max_lenght = max([x[0] for x in entries], key=lambda x: len(x))
+            max_entry_lenght = len(entry_max_lenght)
+            for name, req in entries:
+                space_count = max_entry_lenght - len(name)
+                spaces = space_count * " "
+                f.write(f"    {name}{spaces} = require('drift-mode.models.{req}'),\n")
         f.write("}\n\n")
         f.write(f"return {dir_name}\n")
 

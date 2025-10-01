@@ -154,6 +154,9 @@ MAP_271_MIGRATION = {
     Segment = "Common.Segment",
     SegmentGroup = "Common.SegmentGroup",
     CarConfig = "Editor.CarConfig",
+    TrackConfigInfo = "TrackObjects.Course.TrackConfigInfo",
+    TrackConfig = "TrackObjects.Course.TrackConfig",
+    RunState = "TrackObjects.Course.RunState",
 }
 
 local M = nil

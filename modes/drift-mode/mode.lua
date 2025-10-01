@@ -5,8 +5,8 @@ local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
 
 local Cursor = require("drift-mode.models.Editor.Cursor")
-local TrackConfig = require("drift-mode.models.TrackConfig")
-local RunState = require("drift-mode.models.RunState")
+local TrackConfig = require("drift-mode.models.TrackObjects.Course.TrackConfig")
+local RunState = require("drift-mode.models.TrackObjects.Course.RunState")
 local Drawers = require("drift-mode.models.Drawers")
 local Point = require("drift-mode.models.Common.Point")
 

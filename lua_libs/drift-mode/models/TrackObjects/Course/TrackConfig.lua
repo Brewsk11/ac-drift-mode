@@ -16,7 +16,7 @@ local Point = require("drift-mode.models.Common.Point")
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
 local TrackConfig = class("TrackConfig", ModelBase)
-TrackConfig.__model_path = "TrackConfig"
+TrackConfig.__model_path = "TrackObjects.Course.TrackConfig"
 
 
 function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
