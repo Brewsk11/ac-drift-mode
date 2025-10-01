@@ -2,7 +2,6 @@
 -- Do not edit manually
 
 local models = {
-    CarConfig          = require('drift-mode.models.CarConfig'),
     Clip               = require('drift-mode.models.Clip'),
     ClipState          = require('drift-mode.models.ClipState'),
     Common             = require('drift-mode.models.Common'),
@@ -10,6 +9,7 @@ local models = {
     Cursor             = require('drift-mode.models.Cursor'),
     CursorObject       = require('drift-mode.models.CursorObject'),
     Drawers            = require('drift-mode.models.Drawers'),
+    Editor             = require('drift-mode.models.Editor'),
     EditorsState       = require('drift-mode.models.EditorsState'),
     Misc               = require('drift-mode.models.Misc'),
     ModelBase          = require('drift-mode.models.ModelBase'),

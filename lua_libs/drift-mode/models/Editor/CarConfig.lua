@@ -7,7 +7,7 @@ local ModelBase = require("drift-mode.models.ModelBase")
 ---@field rearOffset number Offset from car origin to the rear bumper
 ---@field rearSpan number Span between two endpoints of the rear bumper
 local CarConfig = class("CarConfig", ModelBase)
-CarConfig.__model_path = "CarConfig"
+CarConfig.__model_path = "Editor.CarConfig"
 
 function CarConfig:initialize(frontOffset, frontSpan, rearOffset, rearSpan)
     self.frontOffset = frontOffset or 2.3

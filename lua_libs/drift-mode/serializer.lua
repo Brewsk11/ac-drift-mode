@@ -153,6 +153,7 @@ MAP_271_MIGRATION = {
     PointGroup = "Common.PointGroup",
     Segment = "Common.Segment",
     SegmentGroup = "Common.SegmentGroup",
+    CarConfig = "Editor.CarConfig",
 }
 
 local M = nil
