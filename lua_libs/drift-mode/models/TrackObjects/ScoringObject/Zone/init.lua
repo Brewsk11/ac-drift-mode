@@ -2,6 +2,9 @@
 -- Do not edit manually
 
 local Zone = {
+    Zone             = require('drift-mode.models.TrackObjects.ScoringObject.Zone.Zone'),
+    ZoneScoringPoint = require('drift-mode.models.TrackObjects.ScoringObject.Zone.ZoneScoringPoint'),
+    ZoneState        = require('drift-mode.models.TrackObjects.ScoringObject.Zone.ZoneState'),
 }
 
 return Zone

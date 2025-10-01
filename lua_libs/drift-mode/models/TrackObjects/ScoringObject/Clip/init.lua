@@ -2,6 +2,8 @@
 -- Do not edit manually
 
 local Clip = {
+    Clip      = require('drift-mode.models.TrackObjects.ScoringObject.Clip.Clip'),
+    ClipState = require('drift-mode.models.TrackObjects.ScoringObject.Clip.ClipState'),
 }
 
 return Clip

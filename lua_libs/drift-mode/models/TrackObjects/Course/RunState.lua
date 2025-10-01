@@ -3,10 +3,10 @@ local Assert = require('drift-mode/assert')
 
 local EventSystem = require('drift-mode/eventsystem')
 local DriftState = require("drift-mode.models.Misc.DriftState")
-local Zone = require("drift-mode.models.Zone")
-local ZoneState = require("drift-mode.models.ZoneState")
-local Clip = require("drift-mode.models.Clip")
-local ClipState = require("drift-mode.models.ClipState")
+local Zone = require("drift-mode.models.TrackObjects.ScoringObject.Zone.Zone")
+local ZoneState = require("drift-mode.models.TrackObjects.ScoringObject.Zone.ZoneState")
+local Clip = require("drift-mode.models.TrackObjects.ScoringObject.Clip.Clip")
+local ClipState = require("drift-mode.models.TrackObjects.ScoringObject.Clip.ClipState")
 
 ---@class RunState : ClassBase
 ---@field trackConfig TrackConfig

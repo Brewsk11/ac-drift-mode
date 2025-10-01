@@ -1,6 +1,6 @@
 local Drawer = require('drift-mode/models/Drawers/Drawer')
-local Zone = require("drift-mode.models.Zone")
-local Clip = require("drift-mode.models.Clip")
+local Zone = require("drift-mode.models.TrackObjects.ScoringObject.Zone.Zone")
+local Clip = require("drift-mode.models.TrackObjects.ScoringObject.Clip.Clip")
 
 ---@class DrawerCourse : Drawer
 ---@field drawerStartLine DrawerSegment?

@@ -3,7 +3,7 @@ local ModelBase = require("drift-mode.models.ModelBase")
 ---@field speedRange Range
 ---@field angleRange Range
 local ScoringRanges = class("ScoringRanges", ModelBase)
-ScoringRanges.__model_path = "ScoringRanges"
+ScoringRanges.__model_path = "TrackObjects.ScoringObject.ScoringRanges"
 
 function ScoringRanges:initialize(speedRange, angleRange)
     -- TODO: Move defaults here from TrackConfig init

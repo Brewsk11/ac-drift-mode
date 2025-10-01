@@ -1,8 +1,8 @@
 local Resources = require('drift-mode/Resources')
 local Utils = require('drift-mode/CourseEditorUtils')
 
-local Zone = require("drift-mode.models.Zone")
-local Clip = require("drift-mode.models.Clip")
+local Zone = require("drift-mode.models.TrackObjects.ScoringObject.Zone.Zone")
+local Clip = require("drift-mode.models.TrackObjects.ScoringObject.Clip.Clip")
 local Drawers = require("drift-mode.models.Drawers")
 local CourseEditorUtils = require("drift-mode.models.CourseEditorUtils")
 local PointGroup = require("drift-mode.models.Common.PointGroup")

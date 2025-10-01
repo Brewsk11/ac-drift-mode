@@ -2,8 +2,11 @@
 -- Do not edit manually
 
 local ScoringObject = {
-    Clip = require('drift-mode.models.TrackObjects.ScoringObject.Clip'),
-    Zone = require('drift-mode.models.TrackObjects.ScoringObject.Zone'),
+    Clip               = require('drift-mode.models.TrackObjects.ScoringObject.Clip'),
+    ScoringObject      = require('drift-mode.models.TrackObjects.ScoringObject.ScoringObject'),
+    ScoringObjectState = require('drift-mode.models.TrackObjects.ScoringObject.ScoringObjectState'),
+    ScoringRanges      = require('drift-mode.models.TrackObjects.ScoringObject.ScoringRanges'),
+    Zone               = require('drift-mode.models.TrackObjects.ScoringObject.Zone'),
 }
 
 return ScoringObject

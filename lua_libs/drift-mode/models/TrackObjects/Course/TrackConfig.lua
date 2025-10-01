@@ -1,7 +1,7 @@
 local Resources = require('drift-mode/Resources')
 
 local ModelBase = require('drift-mode.models.ModelBase')
-local ScoringRanges = require("drift-mode.models.ScoringRanges")
+local ScoringRanges = require("drift-mode.models.TrackObjects.ScoringObject.ScoringRanges")
 local Range = require("drift-mode.models.Range")
 local Point = require("drift-mode.models.Common.Point")
 

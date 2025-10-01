@@ -157,6 +157,14 @@ MAP_271_MIGRATION = {
     TrackConfigInfo = "TrackObjects.Course.TrackConfigInfo",
     TrackConfig = "TrackObjects.Course.TrackConfig",
     RunState = "TrackObjects.Course.RunState",
+    Zone = "TrackObjects.ScoringObject.Zone.Zone",
+    ZoneState = "TrackObjects.ScoringObject.Zone.ZoneState",
+    ZoneScoringPoint = "TrackObjects.ScoringObject.Zone.ZoneScoringPoint",
+    Clip = "TrackObjects.ScoringObject.Clip.Clip",
+    ClipState = "TrackObjects.ScoringObject.Clip.ClipState",
+    ScoringRanges = "TrackObjects.ScoringObject.ScoringRanges",
+    ScoringObject = "TrackObjects.ScoringObject.ScoringObject",
+    ScoringObjectState = "TrackObjects.ScoringObject.ScoringObjectState",
 }
 
 local M = nil

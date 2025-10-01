@@ -4,7 +4,7 @@ local Resources = require('drift-mode/Resources')
 
 local Point = require("drift-mode.models.Common.Point")
 local Segment = require("drift-mode.models.Common.Segment")
-local ScoringObject = require("drift-mode.models.ScoringObject")
+local ScoringObject = require("drift-mode.models.TrackObjects.ScoringObject.ScoringObject")
 local PointGroup = require("drift-mode.models.Common.PointGroup")
 
 ---@class Zone : ScoringObject Class representing a drift scoring zone
@@ -15,7 +15,7 @@ local PointGroup = require("drift-mode.models.Common.PointGroup")
 ---@field private collide boolean Whether to enable colliders for this zone
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
 local Zone = class("Zone", ScoringObject)
-Zone.__model_path = "Zone"
+Zone.__model_path = "TrackObjects.ScoringObject.Zone.Zone"
 
 ---@param name string
 ---@param outsideLine PointGroup|nil

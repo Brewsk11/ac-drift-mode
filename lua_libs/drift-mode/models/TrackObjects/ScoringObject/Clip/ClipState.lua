@@ -2,7 +2,7 @@ local Assert = require('drift-mode.assert')
 local EventSystem = require("drift-mode.eventsystem")
 local Resources = require('drift-mode.Resources')
 
-local ScoringObjectState = require("drift-mode.models.ScoringObjectState")
+local ScoringObjectState = require("drift-mode.models.TrackObjects.ScoringObject.ScoringObjectState")
 local Point = require("drift-mode.models.Common.Point")
 
 ---@class ClipState : ScoringObjectState
@@ -15,7 +15,7 @@ local Point = require("drift-mode.models.Common.Point")
 ---@field private finalMultiplier number Final multiplier
 ---@field private lastPoint Point To calculate where crossed
 local ClipState = class("ClipState", ScoringObjectState)
-ClipState.__model_path = "ClipState"
+ClipState.__model_path = "TrackObjects.ScoringObject.Clip.ClipState"
 
 function ClipState:initialize(clip)
     self.clip = clip

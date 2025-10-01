@@ -2,23 +2,15 @@
 -- Do not edit manually
 
 local models = {
-    Clip               = require('drift-mode.models.Clip'),
-    ClipState          = require('drift-mode.models.ClipState'),
-    Common             = require('drift-mode.models.Common'),
-    Drawers            = require('drift-mode.models.Drawers'),
-    Editor             = require('drift-mode.models.Editor'),
-    Misc               = require('drift-mode.models.Misc'),
-    ModelBase          = require('drift-mode.models.ModelBase'),
-    Range              = require('drift-mode.models.Range'),
-    ScoringObject      = require('drift-mode.models.ScoringObject'),
-    ScoringObjectState = require('drift-mode.models.ScoringObjectState'),
-    ScoringRanges      = require('drift-mode.models.ScoringRanges'),
-    StartingPoint      = require('drift-mode.models.StartingPoint'),
-    Tests              = require('drift-mode.models.Tests'),
-    TrackObjects       = require('drift-mode.models.TrackObjects'),
-    Zone               = require('drift-mode.models.Zone'),
-    ZoneScoringPoint   = require('drift-mode.models.ZoneScoringPoint'),
-    ZoneState          = require('drift-mode.models.ZoneState'),
+    Common        = require('drift-mode.models.Common'),
+    Drawers       = require('drift-mode.models.Drawers'),
+    Editor        = require('drift-mode.models.Editor'),
+    Misc          = require('drift-mode.models.Misc'),
+    ModelBase     = require('drift-mode.models.ModelBase'),
+    Range         = require('drift-mode.models.Range'),
+    StartingPoint = require('drift-mode.models.StartingPoint'),
+    Tests         = require('drift-mode.models.Tests'),
+    TrackObjects  = require('drift-mode.models.TrackObjects'),
 }
 
 return models

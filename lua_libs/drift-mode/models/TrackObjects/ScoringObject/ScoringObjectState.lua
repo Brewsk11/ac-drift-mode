@@ -3,7 +3,7 @@ local Assert = require('drift-mode/assert')
 
 ---@class ScoringObjectState : ClassBase
 local ScoringObjectState = class("ScoringObjectState", ModelBase)
-ScoringObjectState.__model_path = "ScoringObjectState"
+ScoringObjectState.__model_path = "TrackObjects.ScoringObject.ScoringObjectState"
 
 function ScoringObjectState:initialize()
 end
