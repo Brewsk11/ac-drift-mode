@@ -5,7 +5,7 @@ local Assert = require('drift-mode/assert')
 ---@field point Point
 ---@field poi_type ObjectEditorPoi.Type
 local ObjectEditorPoi = class("ObjectEditorPoi", ModelBase)
-ObjectEditorPoi.__model_path = "CourseEditorUtils.POIs.ObjectEditorPoi"
+ObjectEditorPoi.__model_path = "Editor.POIs.ObjectEditorPoi"
 
 ---@enum ObjectEditorPoi.Type
 ObjectEditorPoi.Type = {

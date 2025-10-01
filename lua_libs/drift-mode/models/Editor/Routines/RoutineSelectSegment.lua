@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
 
-local EditorRoutine = require('drift-mode/models/CourseEditorUtils/Routines/EditorRoutine')
+local EditorRoutine = require('drift-mode.models.Editor.Routines.EditorRoutine')
 local Segment = require("drift-mode.models.Common.Segment")
 local Point = require("drift-mode.models.Common.Point")
 local Drawers = require("drift-mode.models.Drawers")
@@ -9,7 +9,7 @@ local Drawers = require("drift-mode.models.Drawers")
 ---@class RoutineSelectSegment : EditorRoutine
 ---@field private segment Segment
 local RoutineSelectSegment = class("RoutineSelectSegment", EditorRoutine)
-RoutineSelectSegment.__model_path = "CourseEditorUtils.Routines.RoutineSelectSegment"
+RoutineSelectSegment.__model_path = "Editor.Routines.RoutineSelectSegment"
 
 function RoutineSelectSegment:initialize(callback)
     EditorRoutine.initialize(self, callback)

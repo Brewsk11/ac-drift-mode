@@ -4,7 +4,7 @@ local listener_id = EventSystem.registerListener("mode")
 local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
 
-local Cursor = require("drift-mode.models.Cursor")
+local Cursor = require("drift-mode.models.Editor.Cursor")
 local TrackConfig = require("drift-mode.models.TrackConfig")
 local RunState = require("drift-mode.models.RunState")
 local Drawers = require("drift-mode.models.Drawers")

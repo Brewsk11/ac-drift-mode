@@ -1,11 +1,11 @@
-local ObjectEditorPoi = require('drift-mode/models/CourseEditorUtils/POIs/ObjectEditorPoi')
+local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.ObjectEditorPoi')
 
 ---@class PoiZone : ObjectEditorPoi
 ---@field zone Zone
 ---@field point_type PoiZone.Type
 ---@field point_index integer
 local PoiZone = class("PoiZone", ObjectEditorPoi)
-PoiZone.__model_path = "CourseEditorUtils.POIs.PoiZone"
+PoiZone.__model_path = "Editor.POIs.PoiZone"
 
 ---@enum PoiZone.Type
 PoiZone.Type = {

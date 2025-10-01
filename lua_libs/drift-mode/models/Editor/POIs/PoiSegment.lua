@@ -1,11 +1,11 @@
-local ObjectEditorPoi = require('drift-mode/models/CourseEditorUtils/POIs/ObjectEditorPoi')
+local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.ObjectEditorPoi')
 
 ---@class PoiSegment : ObjectEditorPoi
 ---@field segment Segment
 ---@field segment_type PoiSegment.Type
 ---@field segment_point_type PoiSegment.Part
 local PoiSegment = class("PoiSegment", ObjectEditorPoi)
-PoiSegment.__model_path = "CourseEditorUtils.POIs.PoiSegment"
+PoiSegment.__model_path = "Editor.POIs.PoiSegment"
 
 ---@enum PoiSegment.Type
 PoiSegment.Type = {

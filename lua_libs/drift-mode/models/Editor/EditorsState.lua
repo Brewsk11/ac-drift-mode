@@ -5,7 +5,7 @@ local ModelBase = require("drift-mode.models.ModelBase")
 ---@field isTrackSetup boolean Is the car setup mode enabled
 ---@field isCarSetup boolean Is the track setup mode enabled
 local EditorsState = class("EditorsState", ModelBase)
-EditorsState.__model_path = "EditorsState"
+EditorsState.__model_path = "Editor.EditorsState"
 
 function EditorsState:initialize(is_car_setup, is_track_setup)
     self.isCarSetup = is_car_setup or false

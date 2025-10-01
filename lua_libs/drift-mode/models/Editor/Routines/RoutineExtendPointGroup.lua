@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
 
-local EditorRoutine = require('drift-mode/models/CourseEditorUtils/Routines/EditorRoutine')
+local EditorRoutine = require('drift-mode.models.Editor.Routines.EditorRoutine')
 local Point = require("drift-mode.models.Common.Point")
 local Drawers = require("drift-mode.models.Drawers")
 local Segment = require("drift-mode.models.Common.Segment")
@@ -9,7 +9,7 @@ local Segment = require("drift-mode.models.Common.Segment")
 ---@class RoutineExtendPointGroup : EditorRoutine
 ---@field point_group PointGroup
 local RoutineExtendPointGroup = class("RoutineExtendPointGroup", EditorRoutine)
-RoutineExtendPointGroup.__model_path = "CourseEditorUtils.Routines.RoutineExtendPointGroup"
+RoutineExtendPointGroup.__model_path = "Editor.Routines.RoutineExtendPointGroup"
 function RoutineExtendPointGroup:initialize(point_group)
     EditorRoutine.initialize(self, nil)
     self.point_group = point_group

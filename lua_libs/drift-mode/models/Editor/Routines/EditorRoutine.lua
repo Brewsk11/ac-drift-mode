@@ -4,7 +4,7 @@ local Assert = require('drift-mode/assert')
 ---@class EditorRoutine : ClassBase
 ---@field callback fun(payload: any)?
 local EditorRoutine = class("EditorRoutine", ModelBase)
-EditorRoutine.__model_path = "CourseEditorUtils.Routines.EditorRoutine"
+EditorRoutine.__model_path = "Editor.Routines.EditorRoutine"
 function EditorRoutine:initialize(callback)
     self.callback = callback
 end

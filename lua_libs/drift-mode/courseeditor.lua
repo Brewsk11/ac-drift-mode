@@ -5,7 +5,7 @@ local ConfigIO = require("drift-mode.configio")
 
 local CourseEditorElements = require('drift-mode.ui_layouts.CourseEditorElements')
 
-local Cursor = require('drift-mode.models.Cursor')
+local Cursor = require('drift-mode.models.Editor.Cursor')
 local Zone = require("drift-mode.models.Zone")
 local Clip = require("drift-mode.models.Clip")
 local TrackConfig = require("drift-mode.models.TrackConfig")

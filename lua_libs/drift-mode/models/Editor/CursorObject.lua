@@ -3,7 +3,7 @@ local ModelBase = require("drift-mode.models.ModelBase")
 ---@field object any
 ---@field drawer Drawer
 local CursorObject = class("CursorObject", ModelBase)
-CursorObject.__model_path = "CursorObject"
+CursorObject.__model_path = "Editor.CursorObject"
 
 function CursorObject:initialize(object, drawer)
     self.object = object
