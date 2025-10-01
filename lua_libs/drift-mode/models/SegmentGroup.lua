@@ -2,7 +2,7 @@ local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 local Segment = require('drift-mode/models/Segment')
 
-local Point = require("drift-mode.models.Point")
+local Point = require("drift-mode.models.Common.Point")
 
 
 ---@class SegmentGroup : ClassBase Ordered group of segments

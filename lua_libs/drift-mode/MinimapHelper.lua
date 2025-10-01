@@ -1,5 +1,5 @@
 local Box2D = require("drift-mode.models.Common.Box2D")
-local Point = require("drift-mode.models.Point")
+local Point = require("drift-mode.models.Common.Point")
 
 
 ---@class MinimapHelper

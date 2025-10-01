@@ -1,5 +1,5 @@
 local ModelBase = require("drift-mode.models.ModelBase")
-local Point = require("drift-mode.models.Point")
+local Point = require("drift-mode.models.Common.Point")
 
 ---@class StartingPoint : ClassBase
 ---@field origin Point

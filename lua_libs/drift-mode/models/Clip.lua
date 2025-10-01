@@ -1,6 +1,6 @@
 local Assert = require('drift-mode/assert')
 
-local Point = require('drift-mode.models.Point')
+local Point = require('drift-mode.models.Common.Point')
 local ScoringObject = require("drift-mode.models.ScoringObject")
 local Segment = require("drift-mode.models.Segment")
 

@@ -3,7 +3,7 @@ local Assert = require('drift-mode/assert')
 local Resources = require('drift-mode/Resources')
 
 local ScoringObjectState = require("drift-mode.models.ScoringObjectState")
-local Point = require("drift-mode.models.Point")
+local Point = require("drift-mode.models.Common.Point")
 local ZoneScoringPoint = require("drift-mode.models.ZoneScoringPoint")
 
 ---@class ZoneState : ScoringObjectState

@@ -6,7 +6,7 @@ local Assert = require('drift-mode/assert')
 ---@field private _flat vec2
 ---@field private _projected vec3
 local Point = class("Point", ModelBase)
-Point.__model_path = "Point"
+Point.__model_path = "Common.Point"
 
 ---@param value vec3 World position
 function Point:initialize(value)
@@ -16,7 +16,6 @@ end
 function Point:__serialize()
     local S = require('drift-mode/serializer')
     local data = {
-        __class = "Point",
         _value = S.serialize(self:value())
     }
     return data
@@ -24,7 +23,6 @@ end
 
 function Point.__deserialize(data)
     local S = require('drift-mode/serializer')
-    Assert.Equal(data.__class, "Point", "Tried to deserialize wrong class")
     return Point(S.deserialize(data._value))
 end
 

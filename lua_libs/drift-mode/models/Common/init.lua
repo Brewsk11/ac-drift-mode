@@ -3,6 +3,7 @@
 
 local Common = {
     Box2D = require('drift-mode.models.Common.Box2D'),
+    Point = require('drift-mode.models.Common.Point'),
 }
 
 return Common

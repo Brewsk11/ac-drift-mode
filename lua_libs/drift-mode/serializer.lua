@@ -148,7 +148,8 @@ MAP_271_MIGRATION = {
     EditorRoutine = "CourseEditor.Routines.EditorRoutine",
     RoutineExtendPointGroup = "CourseEditor.Routines.RoutineExtendPointGroup",
     RoutineMovePoi = "CourseEditor.Routines.RoutineMovePoi",
-    RoutineSelectSegment = "CourseEditor.Routines.RoutineSelectSegment"
+    RoutineSelectSegment = "CourseEditor.Routines.RoutineSelectSegment",
+    Point = "Common.Point"
 }
 
 local M = nil

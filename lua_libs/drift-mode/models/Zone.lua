@@ -2,7 +2,7 @@ local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
 local Resources = require('drift-mode/Resources')
 
-local Point = require("drift-mode.models.Point")
+local Point = require("drift-mode.models.Common.Point")
 local Segment = require("drift-mode.models.Segment")
 local ScoringObject = require("drift-mode.models.ScoringObject")
 local PointGroup = require("drift-mode.models.PointGroup")

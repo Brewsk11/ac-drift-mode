@@ -8,7 +8,7 @@ local Cursor = require("drift-mode.models.Cursor")
 local TrackConfig = require("drift-mode.models.TrackConfig")
 local RunState = require("drift-mode.models.RunState")
 local Drawers = require("drift-mode.models.Drawers")
-local Point = require("drift-mode.models.Point")
+local Point = require("drift-mode.models.Common.Point")
 
 local Teleporter = require('drift-mode/modes/Teleporter')
 local LineCrossDetector = require('drift-mode/modes/LineCrossDetector')

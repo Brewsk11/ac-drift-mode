@@ -1,7 +1,7 @@
 local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 
-local Point = require('drift-mode.models.Point')
+local Point = require('drift-mode.models.Common.Point')
 local Segment = require('drift-mode.models.Segment')
 local SegmentGroup = require("drift-mode.models.SegmentGroup")
 
@@ -20,7 +20,7 @@ end
 ---@param self PointGroup
 ---@param point Point
 function PointGroup:append(point)
-    self.points[#self.points+1] = point
+    self.points[#self.points + 1] = point
 end
 
 ---Return number of points in the group
@@ -174,8 +174,8 @@ local function test()
     -- PointGroup:iterVal()
     -- PointGroup:iterFlat()
     -- PointGroup:iterProjected()
-    for k, v in group:iterVal()       do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
-    for k, v in group:iterFlat()      do Assert.Equal(v, vec2(k, k),    "Incorrect flat point value returned") end
+    for k, v in group:iterVal() do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
+    for k, v in group:iterFlat() do Assert.Equal(v, vec2(k, k), "Incorrect flat point value returned") end
     for k, v in group:iterProjected() do Assert.Equal(v, vec3(k, 0, k), "Incorrect projected point value returned") end
 
     -- PointGroup:remove(idx)
