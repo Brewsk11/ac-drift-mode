@@ -2,9 +2,9 @@ local EventSystem = require('drift-mode/eventsystem')
 local Assert = require('drift-mode/assert')
 local Resources = require('drift-mode/Resources')
 
-local ScoringObjectState = require("drift-mode.models.TrackObjects.ScoringObject.ScoringObjectState")
+local ScoringObjectState = require("drift-mode.models.Elements.Scorables.ScoringObjectState")
 local Point = require("drift-mode.models.Common.Point")
-local ZoneScoringPoint = require("drift-mode.models.TrackObjects.ScoringObject.Zone.ZoneScoringPoint")
+local ZoneScoringPoint = require("drift-mode.models.Elements.Scorables.Zone.ZoneScoringPoint")
 
 ---@class ZoneState : ScoringObjectState
 ---@field zone Zone
@@ -13,7 +13,7 @@ local ZoneScoringPoint = require("drift-mode.models.TrackObjects.ScoringObject.Z
 ---@field finished boolean
 ---@field private performace number
 local ZoneState = class("ZoneState", ScoringObjectState)
-ZoneState.__model_path = "TrackObjects.ScoringObject.Zone.ZoneState"
+ZoneState.__model_path = "Elements.Scorables.Zone.ZoneState"
 
 function ZoneState:initialize(zone)
     self.zone = zone

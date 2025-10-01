@@ -3,10 +3,10 @@ local Assert = require('drift-mode/assert')
 
 local EventSystem = require('drift-mode/eventsystem')
 local DriftState = require("drift-mode.models.Misc.DriftState")
-local Zone = require("drift-mode.models.TrackObjects.ScoringObject.Zone.Zone")
-local ZoneState = require("drift-mode.models.TrackObjects.ScoringObject.Zone.ZoneState")
-local Clip = require("drift-mode.models.TrackObjects.ScoringObject.Clip.Clip")
-local ClipState = require("drift-mode.models.TrackObjects.ScoringObject.Clip.ClipState")
+local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
+local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")
+local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
+local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 
 ---@class RunState : ClassBase
 ---@field trackConfig TrackConfig
@@ -14,7 +14,7 @@ local ClipState = require("drift-mode.models.TrackObjects.ScoringObject.Clip.Cli
 ---@field scoringObjectStates ScoringObjectState[]
 ---@field private finished boolean
 local RunState = class("RunState", ModelBase)
-RunState.__model_path = "TrackObjects.Course.RunState"
+RunState.__model_path = "Elements.Course.RunState"
 
 function RunState:initialize(track_config)
     self.trackConfig = track_config

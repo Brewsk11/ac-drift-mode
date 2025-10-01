@@ -1,9 +1,9 @@
 local Resources = require('drift-mode/Resources')
 local Assert = require('drift-mode/Assert')
 
-local ScoringObjectState = require("drift-mode.models.TrackObjects.ScoringObject.ScoringObjectState")
-local ZoneState = require("drift-mode.models.TrackObjects.ScoringObject.Zone.ZoneState")
-local ClipState = require("drift-mode.models.TrackObjects.ScoringObject.Clip.ClipState")
+local ScoringObjectState = require("drift-mode.models.Elements.Scorables.ScoringObjectState")
+local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")
+local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 
 local ScoresLayout = {}
 

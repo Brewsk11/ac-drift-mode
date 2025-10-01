@@ -1,7 +1,7 @@
 local Resources = require('drift-mode/Resources')
 
 local ModelBase = require('drift-mode.models.ModelBase')
-local ScoringRanges = require("drift-mode.models.TrackObjects.ScoringObject.ScoringRanges")
+local ScoringRanges = require("drift-mode.models.Elements.Scorables.ScoringRanges")
 local Range = require("drift-mode.models.Range")
 local Point = require("drift-mode.models.Common.Point")
 
@@ -16,7 +16,7 @@ local Point = require("drift-mode.models.Common.Point")
 ---@field startingPoint StartingPoint
 ---@field scoringRanges ScoringRanges
 local TrackConfig = class("TrackConfig", ModelBase)
-TrackConfig.__model_path = "TrackObjects.Course.TrackConfig"
+TrackConfig.__model_path = "Elements.Course.TrackConfig"
 
 
 function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, respawnLine, startingPoint, scoringRanges)

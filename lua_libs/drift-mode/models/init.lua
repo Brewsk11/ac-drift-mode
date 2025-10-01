@@ -5,12 +5,12 @@ local models = {
     Common        = require('drift-mode.models.Common'),
     Drawers       = require('drift-mode.models.Drawers'),
     Editor        = require('drift-mode.models.Editor'),
+    Elements      = require('drift-mode.models.Elements'),
     Misc          = require('drift-mode.models.Misc'),
     ModelBase     = require('drift-mode.models.ModelBase'),
     Range         = require('drift-mode.models.Range'),
     StartingPoint = require('drift-mode.models.StartingPoint'),
     Tests         = require('drift-mode.models.Tests'),
-    TrackObjects  = require('drift-mode.models.TrackObjects'),
 }
 
 return models

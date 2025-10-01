@@ -1,7 +1,7 @@
 local Assert = require('drift-mode/assert')
 
 local Point = require('drift-mode.models.Common.Point')
-local ScoringObject = require("drift-mode.models.TrackObjects.ScoringObject.ScoringObject")
+local ScoringObject = require("drift-mode.models.Elements.Scorables.ScoringObject")
 local Segment = require("drift-mode.models.Common.Segment")
 
 ---@class Clip : ScoringObject Class representing a drift scoring zone
@@ -13,7 +13,7 @@ local Segment = require("drift-mode.models.Common.Segment")
 ---@field private collide boolean Whether to enable colliders for this clip
 ---@field private lastPoint Point To calculate where crossed
 local Clip = class("Clip", ScoringObject)
-Clip.__model_path = "TrackObjects.ScoringObject.Clip.Clip"
+Clip.__model_path = "Elements.Scorables.Clip.Clip"
 
 ---@param name string
 ---@param origin Point
