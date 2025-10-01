@@ -2,10 +2,10 @@
 -- Do not edit manually
 
 local models = {
-    Box2D              = require('drift-mode.models.Box2D'),
     CarConfig          = require('drift-mode.models.CarConfig'),
     Clip               = require('drift-mode.models.Clip'),
     ClipState          = require('drift-mode.models.ClipState'),
+    Common             = require('drift-mode.models.Common'),
     CourseEditorUtils  = require('drift-mode.models.CourseEditorUtils'),
     Cursor             = require('drift-mode.models.Cursor'),
     CursorObject       = require('drift-mode.models.CursorObject'),
