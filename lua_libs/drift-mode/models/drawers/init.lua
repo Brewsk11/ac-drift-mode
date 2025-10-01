@@ -2,11 +2,6 @@
 -- Do not edit manually
 
 local Drawers = {
-    DrawerClip                = require('drift-mode.models.Drawers.DrawerClip'),
-    DrawerClipPlay            = require('drift-mode.models.Drawers.DrawerClipPlay'),
-    DrawerClipSetup           = require('drift-mode.models.Drawers.DrawerClipSetup'),
-    DrawerClipState           = require('drift-mode.models.Drawers.DrawerClipState'),
-    DrawerClipStatePlay       = require('drift-mode.models.Drawers.DrawerClipStatePlay'),
     DrawerObjectEditorPoi     = require('drift-mode.models.Drawers.DrawerObjectEditorPoi'),
     DrawerPoint               = require('drift-mode.models.Drawers.DrawerPoint'),
     DrawerPointGroup          = require('drift-mode.models.Drawers.DrawerPointGroup'),

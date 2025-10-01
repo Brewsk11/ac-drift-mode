@@ -1,14 +1,14 @@
-local Resources = require('drift-mode/Resources')
+local Resources = require('drift-mode.Resources')
 
-local DrawerClipState = require('drift-mode/models/Drawers/DrawerClipState')
-local DrawerClipPlay = require('drift-mode/models/Drawers/DrawerClipPlay')
+local DrawerClipState = require('drift-mode.models.Elements.Scorables.Clip.Drawers.State.Base')
+local DrawerClipPlay = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.Simple')
 
 ---@class DrawerClipStatePlay : DrawerClipState
 ---@field drawerClip DrawerClip
 ---@field protected drawerInactive DrawerClip
 ---@field protected drawerDone DrawerClip
 local DrawerClipStatePlay = class("DrawerClipStatePlay", DrawerClipState)
-DrawerClipStatePlay.__model_path = "Drawers.DrawerClipStatePlay"
+DrawerClipStatePlay.__model_path = "Elements.Scorables.Clip.Drawers.State.Simple"
 
 function DrawerClipStatePlay:initialize()
     self.drawerInactive = DrawerClipPlay(Resources.Colors.ScoringObjectInactive)

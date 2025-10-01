@@ -4,6 +4,7 @@
 local Clip = {
     Clip      = require('drift-mode.models.Elements.Scorables.Clip.Clip'),
     ClipState = require('drift-mode.models.Elements.Scorables.Clip.ClipState'),
+    Drawers   = require('drift-mode.models.Elements.Scorables.Clip.Drawers'),
 }
 
 return Clip

@@ -1,9 +1,9 @@
-local Drawer = require('drift-mode/models/Drawer')
+local Drawer = require('drift-mode.models.Drawer')
 
 ---@class DrawerClipState : Drawer
 ---@field drawerClip DrawerClip
 local DrawerClipState = class("DrawerClipState", Drawer)
-DrawerClipState.__model_path = "Drawers.DrawerClipState"
+DrawerClipState.__model_path = "Elements.Scorables.Clip.Drawers.State.Base"
 
 function DrawerClipState:initialize()
 end

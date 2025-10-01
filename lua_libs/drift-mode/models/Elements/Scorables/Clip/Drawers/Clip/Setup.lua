@@ -1,5 +1,5 @@
-local DrawerClip = require('drift-mode/models/Drawers/DrawerClip')
-local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
+local DrawerClip = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.Base')
+local DrawerSegmentLine = require('drift-mode.models.Drawers.DrawerSegmentLine')
 
 ---@class DrawerClipSetup : DrawerClip
 ---@field draw_name boolean
@@ -8,7 +8,7 @@ local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
 ---@field color_pole rgbm
 ---@field color_arrow rgbm
 local DrawerClipSetup = class("DrawerClipSetup", DrawerClip)
-DrawerClipSetup.__model_path = "Drawers.DrawerClipSetup"
+DrawerClipSetup.__model_path = "Elements.Scorables.Clip.Drawers.Clip.Setup"
 
 function DrawerClipSetup:initialize(draw_name, custom_label, color_origin, color_pole, color_arrow)
     self.draw_name = draw_name or true

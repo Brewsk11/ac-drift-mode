@@ -1,9 +1,9 @@
-local DrawerClip = require('drift-mode/models/Drawers/DrawerClip')
+local DrawerClip = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.Base')
 
 ---@class DrawerClipPlay : DrawerClip
 ---@field color rgbm
 local DrawerClipPlay = class("DrawerClipPlay", DrawerClip)
-DrawerClipPlay.__model_path = "Drawers.DrawerClipPlay"
+DrawerClipPlay.__model_path = "Elements.Scorables.Clip.Drawers.Clip.Simple"
 
 function DrawerClipPlay:initialize(color, flag_height)
     self.color = color or rgbm(1, 1, 1, 3)

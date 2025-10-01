@@ -113,11 +113,11 @@ end
 -- Map for migration from classes saved on v2.7.1 version and before
 MAP_271_MIGRATION = {
     Drawer = "Drawer",
-    DrawerClip = "Drawers.DrawerClip",
-    DrawerClipPlay = "Drawers.DrawerClipPlay",
-    DrawerClipSetup = "Drawers.DrawerClipSetup",
-    DrawerClipState = "Drawers.DrawerClipState",
-    DrawerClipStatePlay = "Drawers.DrawerClipStatePlay",
+    DrawerClip = "Elements.Scorables.Clip.Drawers.Clip.Base",
+    DrawerClipPlay = "Elements.Scorables.Clip.Drawers.Clip.Simple",
+    DrawerClipSetup = "Elements.Scorables.Clip.Drawers.Clip.Setup",
+    DrawerClipState = "Elements.Scorables.Clip.Drawers.State.Base",
+    DrawerClipStatePlay = "Elements.Scorables.Clip.Drawers.State.Simple",
     DrawerCourse = "Elements.Course.Drawers.DrawerCourse",
     DrawerCoursePlay = "Elements.Course.Drawers.DrawerCoursePlay",
     DrawerCourseSetup = "Elements.Course.Drawers.DrawerCourseSetup",
