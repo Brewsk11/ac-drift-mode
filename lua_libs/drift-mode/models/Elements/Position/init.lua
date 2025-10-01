@@ -2,6 +2,7 @@
 -- Do not edit manually
 
 local Position = {
+    StartingPoint = require('drift-mode.models.Elements.Position.StartingPoint'),
 }
 
 return Position

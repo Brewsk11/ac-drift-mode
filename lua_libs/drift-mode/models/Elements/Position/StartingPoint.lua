@@ -5,7 +5,7 @@ local Point = require("drift-mode.models.Common.Point")
 ---@field origin Point
 ---@field direction vec3
 local StartingPoint = class("StartingPoint", ModelBase)
-StartingPoint.__model_path = "StartingPoint"
+StartingPoint.__model_path = "Elements.Position.StartingPoint"
 
 ---@param origin Point
 ---@param direction vec3

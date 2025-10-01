@@ -165,6 +165,7 @@ MAP_271_MIGRATION = {
     ScoringRanges = "Elements.Scorables.ScoringRanges",
     ScoringObject = "Elements.Scorables.ScoringObject",
     ScoringObjectState = "Elements.Scorables.ScoringObjectState",
+    StartingPoint = "Elements.Position.StartingPoint",
 }
 
 local M = nil
