@@ -1,0 +1,27 @@
+-Box2D
+-CarConfig
+-Clip
+-ClipState
+-CourseEditorUtils/
+-Cursor
+-CursorObject
+-Drawers/
+ DriftState
+-EditorsState
+-ModelBase
+-Point
+-PointGroup
+-Range
+-RunState
+-ScoringObject
+-ScoringObjectState
+-ScoringRanges
+-Segment
+-SegmentGroup
+-StartingPoint <- Position
+-Tests/
+-TrackConfig
+-TrackConfigInfo
+-Zone
+-ZoneScoringPoint
+-ZoneState

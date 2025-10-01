@@ -1,0 +1,44 @@
+ModelBase
+
+Common/
+    Box2D
+    Collection
+    Point
+    Segment
+    Range
+
+TrackObjects/
+    Models/  # Data heavy, from setup
+        ScoringObject
+        Course <- TrackConfig
+        Zone
+        Clip
+        Position <- StartingPoint
+        Gate
+        ScoringRanges : I don't like. Rethink its use and tree location.
+    States/  # Easy to serialize, from run
+        ScoringObject
+        Course <- RunState
+        Zone
+        Clip
+        Gate
+        Drift <- DriftState : Add a method for pure output without ranges? May replace ZoneScoringPoint
+        ScoreHit <- ZoneScoringPoint : To be refactored into something general for other scoring objects to use
+    Drawers/
+        Course/ [Setup, Run]
+        Clip/ [Setup, Run]
+        Zone/ [Setup, Run]
+        Position/
+            StartingPoint/ [Setup, Run]
+        Gate/
+            CourseStart/ [Setup, Run]
+            CourseEnd/ [Setup, Run]
+            CourseRestart/ [Setup, Run]
+
+Editor/
+    Context <- EditorsState
+    CarBoundary <- CarConfig
+    CourseFileMetadata <- TrackConfigInfo
+    DrawableObject
+
+Tests/

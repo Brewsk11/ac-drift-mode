@@ -1,0 +1,80 @@
+ModelBase
+
+Common/
+    Box2D
+    Collection
+    Point
+    Segment
+    Range
+
+TrackObjects/
+    Course/
+        FileMetadata
+        Model
+        State
+        Drawers/
+            Model/
+                Base
+                Setup
+                Basic
+            State
+                Base
+                Basic
+
+    Position/
+        Model
+        Drawers/
+            Model/
+                Base
+                Setup
+                Basic
+    Gate/
+        Model
+        State
+        Drawers/
+            Model
+            State
+
+    ScoringObject/
+        BaseModel
+        BaseState
+        BaseDrawers/
+            Model
+            State
+        ScoringRanges
+        Clip/
+            Model
+            State
+            Drawers/
+                Model/
+                    Base
+                    Setup
+                    Simple
+                State/
+                    Base
+                    Simple
+        Zone/
+            Model
+            State
+            Drawers/
+                Model/
+                    Base
+                    Setup
+                    Simple
+                State/
+                    Base
+                    Simple
+            ScorePoint
+
+Misc/
+    DriftState
+
+Editor/
+    Context <- EditorsState
+    CarBoundary <- CarConfig
+    Cursor
+    CursorObject
+    POIs/-
+    Routines/-
+
+TestClasses/
