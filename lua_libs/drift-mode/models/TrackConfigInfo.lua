@@ -1,4 +1,5 @@
 local ModelBase = require("drift-mode.models.ModelBase")
+
 ---@enum TrackConfigType
 TrackConfigType = {
     User = "User",

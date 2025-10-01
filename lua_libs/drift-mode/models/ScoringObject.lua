@@ -24,6 +24,8 @@ function ScoringObject:getBoundingBox()
     Assert.Error("Called abstract method!")
 end
 
+-- TODO: getStateObject()
+
 local function test()
 end
 test()
