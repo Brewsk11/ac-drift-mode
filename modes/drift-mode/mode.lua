@@ -3,12 +3,12 @@ local listener_id = EventSystem.registerListener("mode")
 
 local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
+local Point = require("drift-mode.models.Common.Point")
 
 local Cursor = require("drift-mode.models.Editor.Cursor")
-local TrackConfig = require("drift-mode.models.Elements.Course.TrackConfig")
-local RunState = require("drift-mode.models.Elements.Course.RunState")
-local Drawers = require("drift-mode.models.Drawers")
-local Point = require("drift-mode.models.Common.Point")
+local Course = require("drift-mode.models.Elements.Course")
+local TrackConfig = Course.TrackConfig
+local RunState = Course.RunState
 
 local Teleporter = require('drift-mode/modes/Teleporter')
 local LineCrossDetector = require('drift-mode/modes/LineCrossDetector')
@@ -84,8 +84,8 @@ local function reactivateColliders()
   collider_body = physics.RigidBody(colliders, 1):setSemiDynamic(true, false)
 end
 
-local drawerSetup = Drawers.DrawerCourseSetup() ---@type DrawerCourseSetup
-local drawerRun = Drawers.DrawerRunStatePlay() ---@type DrawerRunStatePlay
+local drawerSetup = Course.Drawers.DrawerCourseSetup() ---@type DrawerCourseSetup
+local drawerRun = Course.Drawers.DrawerRunStatePlay() ---@type DrawerRunStatePlay
 
 
 local signalListeners = {

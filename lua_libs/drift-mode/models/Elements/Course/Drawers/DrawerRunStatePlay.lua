@@ -1,11 +1,11 @@
-local DrawerRunState = require('drift-mode/models/Drawers/DrawerRunState')
-local DrawerCoursePlay = require('drift-mode/models/Drawers/DrawerCoursePlay')
-local DrawerZoneStatePlay = require('drift-mode/models/Drawers/DrawerZoneStatePlay')
-local DrawerClipStatePlay = require('drift-mode/models/Drawers/DrawerClipStatePlay')
+local DrawerRunState = require('drift-mode.models.Drawers.DrawerRunState')
+local DrawerCoursePlay = require("drift-mode.models.Elements.Course.Drawers.DrawerCoursePlay")
+local DrawerZoneStatePlay = require('drift-mode.models.Drawers.DrawerZoneStatePlay')
+local DrawerClipStatePlay = require('drift-mode.models.Drawers.DrawerClipStatePlay')
 
 ---@class DrawerRunStatePlay : DrawerRunState
 local DrawerRunStatePlay = class("DrawerRunStatePlay", DrawerRunState)
-DrawerRunStatePlay.__model_path = "Drawers.DrawerRunStatePlay"
+DrawerRunStatePlay.__model_path = "Elements.Course.Drawers.DrawerRunStatePlay"
 
 function DrawerRunStatePlay:initialize()
     self.drawerCourse = DrawerCoursePlay()

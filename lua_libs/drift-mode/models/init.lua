@@ -3,6 +3,7 @@
 
 local models = {
     Common    = require('drift-mode.models.Common'),
+    Drawer    = require('drift-mode.models.Drawer'),
     Drawers   = require('drift-mode.models.Drawers'),
     Editor    = require('drift-mode.models.Editor'),
     Elements  = require('drift-mode.models.Elements'),

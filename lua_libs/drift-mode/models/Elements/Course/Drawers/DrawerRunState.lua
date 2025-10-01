@@ -1,6 +1,6 @@
 local Assert = require('drift-mode/assert')
 
-local Drawer = require("drift-mode.models.Drawers.Drawer")
+local Drawer = require("drift-mode.models.Drawer")
 local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")
 local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 
@@ -10,7 +10,7 @@ local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 ---@field drawerZoneState DrawerZoneState
 ---@field drawerClipState DrawerClipState
 local DrawerRunState = class("DrawerRunState", Drawer)
-DrawerRunState.__model_path = "Drawers.DrawerRunState"
+DrawerRunState.__model_path = "Elements.Course.Drawers.DrawerRunState"
 
 function DrawerRunState:initialize()
 end

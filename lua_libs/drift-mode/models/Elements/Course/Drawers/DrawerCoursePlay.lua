@@ -1,11 +1,11 @@
-local Resources = require('drift-mode/Resources')
+local Resources = require('drift-mode.Resources')
 
-local DrawerCourse = require('drift-mode/models/Drawers/DrawerCourse')
-local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
+local DrawerCourse = require("drift-mode.models.Elements.Course.Drawers.DrawerCourse")
+local DrawerSegmentLine = require('drift-mode.models.Drawers.DrawerSegmentLine')
 
 ---@class DrawerCoursePlay : DrawerCourse
 local DrawerCoursePlay = class("DrawerCourse", DrawerCourse)
-DrawerCoursePlay.__model_path = "Drawers.DrawerCoursePlay"
+DrawerCoursePlay.__model_path = "Elements.Course.Drawers.DrawerCoursePlay"
 
 function DrawerCoursePlay:initialize()
     DrawerCourse.initialize(self)

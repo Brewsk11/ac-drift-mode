@@ -4,7 +4,7 @@ local ModelBase = require("drift-mode.models.ModelBase")
 ---Abstract class
 ---@class Drawer : ModelBase
 local Drawer = class("Drawer", ModelBase)
-Drawer.__model_path = "Drawers.Drawer"
+Drawer.__model_path = "Drawer"
 
 function Drawer:initialize()
     Assert.Error("Abstract object called")

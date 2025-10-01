@@ -1,4 +1,4 @@
-local Drawer = require('drift-mode/models/Drawers/Drawer')
+local Drawer = require('drift-mode/models/Drawer')
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 
@@ -10,7 +10,7 @@ local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 ---@field drawerZone DrawerZone?
 ---@field drawerStartingPoint DrawerStartingPoint?
 local DrawerCourse = class("DrawerCourse", Drawer)
-DrawerCourse.__model_path = "Drawers.DrawerCourse"
+DrawerCourse.__model_path = "Elements.Course.Drawers.DrawerCourse"
 
 function DrawerCourse:initialize()
 end
