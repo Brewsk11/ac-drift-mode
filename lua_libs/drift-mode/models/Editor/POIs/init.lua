@@ -2,11 +2,12 @@
 -- Do not edit manually
 
 local POIs = {
-    ObjectEditorPoi  = require('drift-mode.models.Editor.POIs.ObjectEditorPoi'),
-    PoiClip          = require('drift-mode.models.Editor.POIs.PoiClip'),
-    PoiSegment       = require('drift-mode.models.Editor.POIs.PoiSegment'),
-    PoiStartingPoint = require('drift-mode.models.Editor.POIs.PoiStartingPoint'),
-    PoiZone          = require('drift-mode.models.Editor.POIs.PoiZone'),
+    Base          = require('drift-mode.models.Editor.POIs.Base'),
+    Clip          = require('drift-mode.models.Editor.POIs.Clip'),
+    Drawers       = require('drift-mode.models.Editor.POIs.Drawers.init'),
+    Segment       = require('drift-mode.models.Editor.POIs.Segment'),
+    StartingPoint = require('drift-mode.models.Editor.POIs.StartingPoint'),
+    Zone          = require('drift-mode.models.Editor.POIs.Zone'),
 }
 
 return POIs

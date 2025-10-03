@@ -1,11 +1,11 @@
-local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.ObjectEditorPoi')
+local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.Base')
 local Point = require("drift-mode.models.Common.Point.Point")
 
 ---@class PoiClip : ObjectEditorPoi
 ---@field clip Clip
 ---@field point_type PoiClip.Type
 local PoiClip = class("PoiClip", ObjectEditorPoi)
-PoiClip.__model_path = "Editor.POIs.PoiClip"
+PoiClip.__model_path = "Editor.POIs.Clip"
 
 ---@enum PoiClip.Type
 PoiClip.Type = {

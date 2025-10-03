@@ -77,101 +77,101 @@ local function gatherPois()
     if obj.isInstanceOf(Zone) then
       local zone_obj = obj ---@type Zone
       for idx, inside_point in zone_obj:getInsideLine():iter() do
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiZone(
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
           inside_point,
           zone_obj,
-          CourseEditorUtils.POIs.PoiZone.Type.FromInsideLine,
+          CourseEditorUtils.POIs.Zone.Type.FromInsideLine,
           idx
         )
       end
       for idx, outside_point in zone_obj:getOutsideLine():iter() do
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiZone(
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
           outside_point,
           zone_obj,
-          CourseEditorUtils.POIs.PoiZone.Type.FromOutsideLine,
+          CourseEditorUtils.POIs.Zone.Type.FromOutsideLine,
           idx
         )
       end
       local zone_center = zone_obj:getCenter()
       if zone_center then
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiZone(
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
           zone_center,
           zone_obj,
-          CourseEditorUtils.POIs.PoiZone.Type.Center,
+          CourseEditorUtils.POIs.Zone.Type.Center,
           nil
         )
       end
     elseif obj.isInstanceOf(Clip) then
       local clip_obj = obj ---@type Clip
-      _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiClip(
+      _pois[#_pois + 1] = CourseEditorUtils.POIs.Clip(
         clip_obj.origin,
         clip_obj,
-        CourseEditorUtils.POIs.PoiClip.Type.Origin
+        CourseEditorUtils.POIs.Clip.Type.Origin
       )
-      _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiClip(
+      _pois[#_pois + 1] = CourseEditorUtils.POIs.Clip(
         clip_obj:getEnd(),
         clip_obj,
-        CourseEditorUtils.POIs.PoiClip.Type.Ending
+        CourseEditorUtils.POIs.Clip.Type.Ending
       )
     end
   end
 
   if course.startLine then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
       course.startLine.head,
       course.startLine,
-      CourseEditorUtils.POIs.PoiSegment.Type.StartLine,
-      CourseEditorUtils.POIs.PoiSegment.Part.Head
+      CourseEditorUtils.POIs.Segment.Type.StartLine,
+      CourseEditorUtils.POIs.Segment.Part.Head
     )
 
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
       course.startLine.tail,
       course.startLine,
-      CourseEditorUtils.POIs.PoiSegment.Type.StartLine,
-      CourseEditorUtils.POIs.PoiSegment.Part.Tail
+      CourseEditorUtils.POIs.Segment.Type.StartLine,
+      CourseEditorUtils.POIs.Segment.Part.Tail
     )
   end
 
   if course.finishLine then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
       course.finishLine.head,
       course.finishLine,
-      CourseEditorUtils.POIs.PoiSegment.Type.FinishLine,
-      CourseEditorUtils.POIs.PoiSegment.Part.Head
+      CourseEditorUtils.POIs.Segment.Type.FinishLine,
+      CourseEditorUtils.POIs.Segment.Part.Head
     )
 
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
       course.finishLine.tail,
       course.finishLine,
-      CourseEditorUtils.POIs.PoiSegment.Type.FinishLine,
-      CourseEditorUtils.POIs.PoiSegment.Part.Tail
+      CourseEditorUtils.POIs.Segment.Type.FinishLine,
+      CourseEditorUtils.POIs.Segment.Part.Tail
     )
   end
 
   if course.respawnLine then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
       course.respawnLine.head,
       course.respawnLine,
-      CourseEditorUtils.POIs.PoiSegment.Type.RespawnLine,
-      CourseEditorUtils.POIs.PoiSegment.Part.Head
+      CourseEditorUtils.POIs.Segment.Type.RespawnLine,
+      CourseEditorUtils.POIs.Segment.Part.Head
     )
 
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiSegment(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
       course.respawnLine.tail,
       course.respawnLine,
-      CourseEditorUtils.POIs.PoiSegment.Type.RespawnLine,
-      CourseEditorUtils.POIs.PoiSegment.Part.Tail
+      CourseEditorUtils.POIs.Segment.Type.RespawnLine,
+      CourseEditorUtils.POIs.Segment.Part.Tail
     )
   end
 
   if course.startingPoint then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.PoiStartingPoint(
+    _pois[#_pois + 1] = CourseEditorUtils.POIs.StartingPoint(
       course.startingPoint.origin,
       course.startingPoint
     )
   end
 
-  --cursor_data:registerObject("editor_pois", pois, Drawers.DrawerObjectEditorPoi(PointDir.Drawers.Simple()))
+  --cursor_data:registerObject("editor_pois", pois, CourseEditorUtils.POIs.Drawers.Simple(PointDir.Drawers.Simple()))
   return _pois
 end
 

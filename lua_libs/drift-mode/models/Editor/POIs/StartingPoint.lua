@@ -1,9 +1,9 @@
-local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.ObjectEditorPoi')
+local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.Base')
 
 ---@class PoiStartingPoint : ObjectEditorPoi
 ---@field starting_point StartingPoint
 local PoiStartingPoint = class("PoiStartingPoint", ObjectEditorPoi)
-PoiStartingPoint.__model_path = "Editor.POIs.PoiStartingPoint"
+PoiStartingPoint.__model_path = "Editor.POIs.StartingPoint"
 
 function PoiStartingPoint:initialize(point, starting_point)
   ObjectEditorPoi.initialize(self, point, ObjectEditorPoi.Type.StartingPoint)

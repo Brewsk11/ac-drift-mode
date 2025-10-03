@@ -2,6 +2,7 @@
 -- Do not edit manually
 
 local Drawers = {
+    Simple = require('drift-mode.models.Editor.POIs.Drawers.Simple'),
 }
 
 return Drawers
