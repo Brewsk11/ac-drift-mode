@@ -17,7 +17,7 @@ def visit_dir(dir_path: str) -> None:
                 # Build the require path (no .lua)
                 rel = os.path.relpath(obj.path, MODELS_DIR).replace("\\", "/")
                 require_path = rel.replace("/", ".")
-                entries.append((obj.name, require_path))
+                entries.append((obj.name, require_path, True))
 
             elif obj.is_file():
                 if obj.name == "init.lua":
@@ -29,7 +29,7 @@ def visit_dir(dir_path: str) -> None:
                 require_path = rel_no_ext.replace("/", ".")
 
                 name, _ = os.path.splitext(obj.name)
-                entries.append((name, require_path))
+                entries.append((name, require_path, False))
 
     # Write the init.lua for this directory
     init_path = os.path.join(dir_path, "init.lua")
@@ -42,10 +42,12 @@ def visit_dir(dir_path: str) -> None:
         if len(entries) > 0:
             entry_max_lenght = max([x[0] for x in entries], key=lambda x: len(x))
             max_entry_lenght = len(entry_max_lenght)
-            for name, req in entries:
+            for name, req, is_dir in entries:
                 space_count = max_entry_lenght - len(name)
                 spaces = space_count * " "
-                f.write(f"    {name}{spaces} = require('drift-mode.models.{req}'),\n")
+                f.write(
+                    f"    {name}{spaces} = require('drift-mode.models.{req}{'.init' if is_dir else ''}'),\n"
+                )
         f.write("}\n\n")
         f.write(f"return {dir_name}\n")
 
