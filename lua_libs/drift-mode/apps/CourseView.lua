@@ -1,4 +1,4 @@
-local EventSystem = require('drift-mode/eventsystem')
+local EventSystem = require('drift-mode.eventsystem')
 local listener_id = EventSystem.registerListener('app-courseview')
 
 local ScoresLayout = require('drift-mode.ui_layouts.scores')

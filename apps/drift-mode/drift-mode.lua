@@ -1,7 +1,7 @@
-local ControlApp = require('drift-mode/apps/ControlApp')
-local ScoresApp = require('drift-mode/apps/ScoresApp')
-local DriftStatusApp = require('drift-mode/apps/DriftStatusApp')
-local CourseView = require('drift-mode/apps/CourseView')
+local ControlApp = require('drift-mode.apps.ControlApp')
+local ScoresApp = require('drift-mode.apps.ScoresApp')
+local DriftStatusApp = require('drift-mode.apps.DriftStatusApp')
+local CourseView = require('drift-mode.apps.CourseView')
 
 local dt = 0
 

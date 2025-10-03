@@ -1,6 +1,6 @@
-local DataBroker = require('drift-mode/databroker')
-local EventSystem = require('drift-mode/eventsystem')
-require('drift-mode/ui_layouts/infobars')
+local DataBroker = require('drift-mode.databroker')
+local EventSystem = require('drift-mode.eventsystem')
+require('drift-mode.ui_layouts.infobars')
 
 local listener_id = EventSystem.registerListener('app-driftstatus')
 

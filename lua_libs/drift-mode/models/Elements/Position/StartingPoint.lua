@@ -36,7 +36,7 @@ function StartingPoint:drawFlat(coord_transformer, scale, color)
     )
 end
 
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 local function test()
 end
 test()

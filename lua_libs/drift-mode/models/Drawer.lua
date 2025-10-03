@@ -1,4 +1,4 @@
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 local ModelBase = require("drift-mode.models.ModelBase")
 
 ---Abstract class

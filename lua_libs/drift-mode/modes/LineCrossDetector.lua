@@ -1,4 +1,4 @@
-local EventSystem = require('drift-mode/eventsystem')
+local EventSystem = require('drift-mode.eventsystem')
 local listener_id = EventSystem.registerListener("mode-linecrossdetector")
 
 local LineCrossDetector = {}

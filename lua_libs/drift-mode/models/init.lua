@@ -4,7 +4,6 @@
 local models = {
     Common    = require('drift-mode.models.Common.init'),
     Drawer    = require('drift-mode.models.Drawer'),
-    Drawers   = require('drift-mode.models.Drawers.init'),
     Editor    = require('drift-mode.models.Editor.init'),
     Elements  = require('drift-mode.models.Elements.init'),
     Misc      = require('drift-mode.models.Misc.init'),

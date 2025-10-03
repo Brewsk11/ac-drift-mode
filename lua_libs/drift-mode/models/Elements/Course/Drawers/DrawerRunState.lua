@@ -1,4 +1,4 @@
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 
 local Drawer = require("drift-mode.models.Drawer")
 local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")

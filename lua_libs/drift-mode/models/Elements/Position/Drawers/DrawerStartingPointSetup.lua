@@ -1,4 +1,4 @@
-local Drawer = require('drift-mode/models/Drawer')
+local Drawer = require('drift-mode.models.Drawer')
 local DrawerStartingPoint = require('drift-mode.models.Elements.Position.Drawers.DrawerStartingPoint')
 
 ---@class DrawerStartingPointSetup : DrawerStartingPoint

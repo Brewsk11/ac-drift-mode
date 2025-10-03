@@ -1,4 +1,4 @@
-local Drawer = require('drift-mode/models/Drawer')
+local Drawer = require('drift-mode.models.Drawer')
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 

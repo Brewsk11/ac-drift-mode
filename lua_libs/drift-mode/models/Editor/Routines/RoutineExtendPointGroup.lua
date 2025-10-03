@@ -1,5 +1,5 @@
-local Assert = require('drift-mode/assert')
-local RaycastUtils = require('drift-mode/RaycastUtils')
+local Assert = require('drift-mode.assert')
+local RaycastUtils = require('drift-mode.RaycastUtils')
 
 local EditorRoutine = require('drift-mode.models.Editor.Routines.EditorRoutine')
 local PointDir = require("drift-mode.models.Common.Point.init")

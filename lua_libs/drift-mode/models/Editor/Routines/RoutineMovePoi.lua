@@ -1,4 +1,4 @@
-local RaycastUtils = require('drift-mode/RaycastUtils')
+local RaycastUtils = require('drift-mode.RaycastUtils')
 local Resources = require('drift-mode.Resources')
 
 local Drawers = require("drift-mode.models.Drawers.init")

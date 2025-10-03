@@ -1,6 +1,6 @@
-local EventSystem = require('drift-mode/eventsystem')
-local Assert = require('drift-mode/assert')
-local Resources = require('drift-mode/Resources')
+local EventSystem = require('drift-mode.eventsystem')
+local Assert = require('drift-mode.assert')
+local Resources = require('drift-mode.Resources')
 
 local ScoringObjectState = require("drift-mode.models.Elements.Scorables.ScoringObjectState")
 local Point = require("drift-mode.models.Common.Point.Point")

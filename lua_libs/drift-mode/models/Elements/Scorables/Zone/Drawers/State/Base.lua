@@ -1,4 +1,4 @@
-local Drawer = require('drift-mode/models/Drawer')
+local Drawer = require('drift-mode.models.Drawer')
 
 ---@class DrawerZoneState : Drawer
 ---@field drawerZone DrawerZone

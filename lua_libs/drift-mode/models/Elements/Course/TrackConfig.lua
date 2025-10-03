@@ -1,4 +1,4 @@
-local Resources = require('drift-mode/Resources')
+local Resources = require('drift-mode.Resources')
 
 local ModelBase = require('drift-mode.models.ModelBase')
 local ScoringRanges = require("drift-mode.models.Elements.Scorables.ScoringRanges")

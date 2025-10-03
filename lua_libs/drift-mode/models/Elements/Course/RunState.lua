@@ -1,7 +1,7 @@
 local ModelBase = require("drift-mode.models.ModelBase")
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 
-local EventSystem = require('drift-mode/eventsystem')
+local EventSystem = require('drift-mode.eventsystem')
 local DriftState = require("drift-mode.models.Misc.DriftState")
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")

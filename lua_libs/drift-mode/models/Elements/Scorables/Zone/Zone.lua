@@ -1,6 +1,6 @@
-local Assert = require('drift-mode/assert')
-local RaycastUtils = require('drift-mode/RaycastUtils')
-local Resources = require('drift-mode/Resources')
+local Assert = require('drift-mode.assert')
+local RaycastUtils = require('drift-mode.RaycastUtils')
+local Resources = require('drift-mode.Resources')
 
 local Point = require("drift-mode.models.Common.Point.Point")
 local Segment = require("drift-mode.models.Common.Segment.Segment")
@@ -33,7 +33,7 @@ end
 
 function Zone:__serialize()
     -- Custom serializer prevents redundant self.polygon serialization
-    local S = require('drift-mode/serializer')
+    local S = require('drift-mode.serializer')
     return {
         name = S.serialize(self.name),
         maxPoints = S.serialize(self.maxPoints),
@@ -44,7 +44,7 @@ function Zone:__serialize()
 end
 
 function Zone.__deserialize(data)
-    local S = require('drift-mode/serializer')
+    local S = require('drift-mode.serializer')
     return Zone(
         S.deserialize(data.name),
         S.deserialize(data.outsideLine),
@@ -435,7 +435,7 @@ function Zone:drawFlat(coord_transformer, scale)
     end
 end
 
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 local function test()
     -- Zone.isSegmentInZone
     --   For debugging these it'd be best to draw a coordinate plane (x, z) and check

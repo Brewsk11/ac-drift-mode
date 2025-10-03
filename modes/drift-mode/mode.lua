@@ -1,8 +1,8 @@
-local EventSystem = require('drift-mode/eventsystem')
+local EventSystem = require('drift-mode.eventsystem')
 local listener_id = EventSystem.registerListener("mode")
 
-local Timer = require('drift-mode/timer')
-local ConfigIO = require('drift-mode/configio')
+local Timer = require('drift-mode.timer')
+local ConfigIO = require('drift-mode.configio')
 local Point = require("drift-mode.models.Common.Point.Point")
 
 local Cursor = require("drift-mode.models.Editor.Cursor")
@@ -10,8 +10,8 @@ local Course = require("drift-mode.models.Elements.Course")
 local TrackConfig = Course.TrackConfig
 local RunState = Course.RunState
 
-local Teleporter = require('drift-mode/modes/Teleporter')
-local LineCrossDetector = require('drift-mode/modes/LineCrossDetector')
+local Teleporter = require('drift-mode.modes.Teleporter')
+local LineCrossDetector = require('drift-mode.modes.LineCrossDetector')
 
 local TestHarness = require('drift-mode.TestHarness')
 TestHarness:runTesting()

@@ -1,6 +1,6 @@
-local DataBroker = require('drift-mode/databroker')
-local EventSystem = require('drift-mode/eventsystem')
-local ConfigIO = require('drift-mode/configio')
+local DataBroker = require('drift-mode.databroker')
+local EventSystem = require('drift-mode.eventsystem')
+local ConfigIO = require('drift-mode.configio')
 
 local listener_id = EventSystem.registerListener("apptab-carsetup")
 

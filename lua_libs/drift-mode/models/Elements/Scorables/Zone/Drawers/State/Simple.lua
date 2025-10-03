@@ -1,4 +1,4 @@
-local Resources = require('drift-mode/Resources')
+local Resources = require('drift-mode.Resources')
 
 local DrawerZoneState = require('drift-mode.models.Elements.Scorables.Zone.Drawers.State.Base')
 local DrawerZonePlay = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Simple')

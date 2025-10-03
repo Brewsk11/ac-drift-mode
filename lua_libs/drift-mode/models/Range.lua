@@ -1,5 +1,5 @@
 local ModelBase = require("drift-mode.models.ModelBase")
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 
 ---@class Range : ClassBase Simple range of two numbers
 ---@field start number

@@ -1,6 +1,6 @@
 local model_path = ...
 local ModelBase = require("drift-mode.models.ModelBase")
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 
 ---A class for describing a rectangle on a 2D coordinate system.
 ---Useful for minimap calculations.

@@ -1,11 +1,11 @@
-local Assert = require('drift-mode/assert')
+local Assert                   = require('drift-mode.assert')
 
-local PhysicsPatcher = {}
+local PhysicsPatcher           = {}
 
 PhysicsPatcher.PATCH_TAG_BEGIN = '; DRIFT_MODE_PATCH_BEGIN'
 PhysicsPatcher.PATCH_TAG_END   = '; DRIFT_MODE_PATCH_END'
 
-PhysicsPatcher.PATCH_CONTENT = "\n\n" .. PhysicsPatcher.PATCH_TAG_BEGIN .. [[
+PhysicsPatcher.PATCH_CONTENT   = "\n\n" .. PhysicsPatcher.PATCH_TAG_BEGIN .. [[
 
 [SURFACE_0]
 WAV_PITCH=extended-0
@@ -23,7 +23,8 @@ end
 function PhysicsPatcher.getSurfacesBackupPath()
     local layout_subpath = ac.getTrackLayout()
     if layout_subpath ~= "" then layout_subpath = "\\" .. layout_subpath end
-    return ac.getFolder(ac.FolderID.ContentTracks) .. "\\" .. ac.getTrackID() .. layout_subpath .. "\\data\\surfaces.driftmode_patch_backup.ini"
+    return ac.getFolder(ac.FolderID.ContentTracks) ..
+    "\\" .. ac.getTrackID() .. layout_subpath .. "\\data\\surfaces.driftmode_patch_backup.ini"
 end
 
 function PhysicsPatcher.backupExists()

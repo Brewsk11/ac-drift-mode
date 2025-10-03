@@ -1,4 +1,4 @@
-local Assert = require('drift-mode/assert')
+local Assert = require('drift-mode.assert')
 
 local gui_dir = ac.getFolder(ac.FolderID.Root) .. "/content/gui/drift-mode"
 

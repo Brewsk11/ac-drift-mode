@@ -1,7 +1,7 @@
-local EventSystem = require('drift-mode/eventsystem')
+local EventSystem = require('drift-mode.eventsystem')
 local listener_id = EventSystem.registerListener("app-debug-tab")
 
-local ConfigIO = require('drift-mode/configio')
+local ConfigIO = require('drift-mode.configio')
 
 local Debug = {}
 

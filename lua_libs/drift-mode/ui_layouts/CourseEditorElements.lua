@@ -1,5 +1,5 @@
-local Resources = require('drift-mode/Resources')
-local Utils = require('drift-mode/CourseEditorUtils')
+local Resources = require('drift-mode.Resources')
+local Utils = require('drift-mode.CourseEditorUtils')
 
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")

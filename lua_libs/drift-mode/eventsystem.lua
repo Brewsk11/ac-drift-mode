@@ -1,4 +1,4 @@
-local DataBroker = require('drift-mode/databroker')
+local DataBroker = require('drift-mode.databroker')
 
 local EventSystem = {}
 
