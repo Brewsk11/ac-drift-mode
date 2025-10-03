@@ -1,10 +1,10 @@
 local Drawer = require('drift-mode/models/Drawer')
-local DrawerStartingPoint = require('drift-mode/models/Drawers/DrawerStartingPoint')
+local DrawerStartingPoint = require('drift-mode.models.Elements.Position.Drawers.DrawerStartingPoint')
 
 ---@class DrawerStartingPointSetup : DrawerStartingPoint
 ---@field color rgbm
 local DrawerStartingPointSetup = class("DrawerStartingPointSetup", Drawer)
-DrawerStartingPointSetup.__model_path = "Drawers.DrawerStartingPointSetup"
+DrawerStartingPointSetup.__model_path = "Elements.Position.Drawers.DrawerStartingPointSetup"
 
 function DrawerStartingPointSetup:initialize(color)
     DrawerStartingPoint.initialize(self)

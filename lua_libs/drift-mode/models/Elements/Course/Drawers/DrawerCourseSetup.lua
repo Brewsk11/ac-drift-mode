@@ -2,7 +2,7 @@ local DrawerCourse = require('drift-mode.models.Elements.Course.Drawers.DrawerCo
 local DrawerSegmentLine = require('drift-mode.models.Drawers.DrawerSegmentLine')
 local DrawerClipSetup = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.Setup')
 local DrawerZoneSetup = require('drift-mode.models.Drawers.DrawerZoneSetup')
-local DrawerStartingPointSetup = require('drift-mode.models.Drawers.DrawerStartingPointSetup')
+local DrawerStartingPointSetup = require('drift-mode.models.Elements.Position.Drawers.DrawerStartingPointSetup')
 
 ---@class DrawerCourseSetup : DrawerCourse
 local DrawerCourseSetup = class("DrawerCourse", DrawerCourse)
