@@ -1,5 +1,5 @@
 local DrawerClip = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.Base')
-local DrawerSegmentLine = require('drift-mode.models.Drawers.DrawerSegmentLine')
+local DrawerSegmentLine = require('drift-mode.models.Common.Segment.Drawers.Base')
 
 ---@class DrawerClipSetup : DrawerClip
 ---@field draw_name boolean

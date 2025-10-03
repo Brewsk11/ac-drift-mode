@@ -1,9 +1,9 @@
-local DrawerPointSimple = require('drift-mode/models/Drawers/DrawerPointSimple')
-local DrawerPointGroup = require('drift-mode/models/Drawers/DrawerPointGroup')
+local DrawerPointSimple = require('drift-mode.models.Common.Point.Drawers.Simple')
+local DrawerPointGroup = require('drift-mode.models.Common.Point.Drawers.BaseGroup')
 
 ---@class DrawerPointGroupSimple : DrawerPointGroup
 local DrawerPointGroupSimple = class("DrawerPointGroupSimple", DrawerPointGroup)
-DrawerPointGroupSimple.__model_path = "Drawers.DrawerPointGroupSimple"
+DrawerPointGroupSimple.__model_path = "Common.Point.Drawers.GroupSimple"
 
 function DrawerPointGroupSimple:initialize(drawerPoint)
     self.drawerPoint = drawerPoint or DrawerPointSimple()

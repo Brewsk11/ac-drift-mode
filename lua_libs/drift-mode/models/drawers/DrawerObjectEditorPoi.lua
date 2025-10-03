@@ -1,5 +1,5 @@
 local Drawer = require('drift-mode/models/Drawer')
-local DrawerPointSimple = require('drift-mode/models/Drawers/DrawerPointSimple')
+local DrawerPointSimple = require('drift-mode.models.Common.Point.Drawers.Simple')
 
 ---@class DrawerObjectEditorPoi : Drawer
 ---@field drawerPoint DrawerPoint[]?

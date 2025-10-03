@@ -1,5 +1,5 @@
 local DrawerZone = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Base')
-local DrawerSegmentLine = require('drift-mode/models/Drawers/DrawerSegmentLine')
+local DrawerSegmentLine = require('drift-mode.models.Common.Segment.Drawers.Line')
 
 ---@class DrawerZoneSetup : DrawerZone
 ---@field drawerOutsideLineWithCollision DrawerSegment

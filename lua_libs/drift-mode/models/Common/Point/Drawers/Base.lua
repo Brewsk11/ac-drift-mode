@@ -2,7 +2,7 @@ local Drawer = require("drift-mode.models.Drawer")
 
 ---@class DrawerPoint : Drawer
 local DrawerPoint = class("DrawerPoint", Drawer)
-DrawerPoint.__model_path = "Drawers.DrawerPoint"
+DrawerPoint.__model_path = "Common.Point.Drawers.Base"
 
 function DrawerPoint:initialize()
 end

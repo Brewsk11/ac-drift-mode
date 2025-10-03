@@ -2,7 +2,7 @@
 -- Do not edit manually
 
 local Tests = {
-    Serializer = require('drift-mode.models.Tests.Serializer'),
+    Serializer = require('drift-mode.models.Tests.Serializer.init'),
 }
 
 return Tests

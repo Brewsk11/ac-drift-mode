@@ -1,10 +1,10 @@
-local DrawerSegment = require("drift-mode.models.Drawers.DrawerSegment")
+local DrawerSegment = require("drift-mode.models.Common.Segment.Drawers.Base")
 
 ---@class DrawerSegmentWall : DrawerSegment
 ---@field color rgbm
 ---@field height number
 local DrawerSegmentWall = class("DrawerSegmentWall", DrawerSegment)
-DrawerSegmentWall.__model_path = "Drawers.DrawerSegmentWall"
+DrawerSegmentWall.__model_path = "Common.Segment.Drawers.Wall"
 
 function DrawerSegmentWall:initialize(color, height)
     self.color = color or rgbm(1, 1, 1, 3)

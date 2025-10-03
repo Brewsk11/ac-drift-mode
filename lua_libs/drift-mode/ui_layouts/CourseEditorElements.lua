@@ -3,10 +3,11 @@ local Utils = require('drift-mode/CourseEditorUtils')
 
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
-local Drawers = require("drift-mode.models.Drawers")
-local CourseEditorUtils = require("drift-mode.models.CourseEditorUtils")
-local PointGroup = require("drift-mode.models.Common.PointGroup")
-local Point = require("drift-mode.models.Common.Point")
+local SegmentDir = require("drift-mode.models.Common.Segment.init")
+local CourseEditorUtils = require("drift-mode.models.Editor.init")
+local PointDir = require("drift-mode.models.Common.Point.init")
+local PointGroup = PointDir.PointGroup
+local Point = PointDir.Point
 
 local CourseEditorElements = {}
 
@@ -20,9 +21,9 @@ function CourseEditorElements.ObjectConfigPanel(idx, object, is_disabled, cursor
     end
 end
 
-local generate_inside_drawer = Drawers.DrawerPointGroupConnected(
-    Drawers.DrawerSegmentLine(Resources.Colors.EditorActivePoi),
-    Drawers.DrawerPointSimple(Resources.Colors.EditorActivePoi, 0.2))
+local generate_inside_drawer = PointDir.Drawers.GroupConnected(
+    SegmentDir.Drawers.Line(Resources.Colors.EditorActivePoi),
+    PointDir.Drawers.Simple(Resources.Colors.EditorActivePoi, 0.2))
 
 ---comment
 ---@param idx any
@@ -45,7 +46,7 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
         ui.setTooltip("Enable pointer to extend the inner line")
         cursor_data:registerObject("ui_on_hover_to_extend_zone_inner_" .. tostring(idx),
             zone:getInsideLine():last(),
-            Drawers.DrawerPointSimple())
+            PointDir.Drawers.Simple())
     else
         cursor_data:unregisterObject("ui_on_hover_to_extend_zone_inner_" .. tostring(idx))
     end
@@ -59,7 +60,7 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
         ui.setTooltip("Enable pointer to extend the outer line")
         cursor_data:registerObject("ui_on_hover_to_extend_zone_outer_" .. tostring(idx),
             zone:getOutsideLine():last(),
-            Drawers.DrawerPointSimple())
+            PointDir.Drawers.Simple())
     else
         cursor_data:unregisterObject("ui_on_hover_to_extend_zone_outer_" .. tostring(idx))
     end

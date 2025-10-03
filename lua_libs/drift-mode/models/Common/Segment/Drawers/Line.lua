@@ -1,9 +1,9 @@
-local DrawerSegment = require('drift-mode/models/Drawers/DrawerSegment')
+local DrawerSegment = require('drift-mode.models.Common.Segment.Drawers.Base')
 
 ---@class DrawerSegmentLine : DrawerSegment
 ---@field color rgbm
 local DrawerSegmentLine = class("DrawerSegmentLine", DrawerSegment)
-DrawerSegmentLine.__model_path = "Drawers.DrawerSegmentLine"
+DrawerSegmentLine.__model_path = "Common.Segment.Drawers.Line"
 
 function DrawerSegmentLine:initialize(color, label)
     DrawerSegment.initialize(self)

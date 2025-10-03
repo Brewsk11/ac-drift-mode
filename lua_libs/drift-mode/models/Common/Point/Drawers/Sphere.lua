@@ -1,8 +1,8 @@
-local DrawerPoint = require("drift-mode.models.Drawers.DrawerPoint")
+local DrawerPoint = require("drift-mode.models.Common.Point.Drawers.Base")
 
 ---@class DrawerPointSphere : DrawerPoint
 local DrawerPointSphere = class("DrawerPointSphere", DrawerPoint)
-DrawerPointSphere.__model_path = "Drawers.DrawerPointSphere"
+DrawerPointSphere.__model_path = "Common.Point.Drawers.Sphere"
 
 function DrawerPointSphere:initialize(color, size)
     self.color = color or rgbm(1, 1, 1, 1)

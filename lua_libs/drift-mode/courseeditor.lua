@@ -9,12 +9,12 @@ local Cursor = require('drift-mode.models.Editor.Cursor')
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 local TrackConfig = require("drift-mode.models.Elements.Course.TrackConfig")
-local Drawers = require("drift-mode.models.Drawers")
 local StartingPoint = require("drift-mode.models.Elements.Position.StartingPoint")
-local CourseEditorUtils = require("drift-mode.models.CourseEditorUtils")
+local CourseEditorUtils = require("drift-mode.models.Editor.init")
 local ConfigIO = require("drift-mode.configio")
 local EventSystem = require("drift-mode.EventSystem")
 local MinimapHelper = require("drift-mode.MinimapHelper")
+local PointDir = require("drift-mode.models.Common.Point.init")
 
 
 -- #region Pre-script definitions
@@ -171,7 +171,7 @@ local function gatherPois()
     )
   end
 
-  --cursor_data:registerObject("editor_pois", pois, Drawers.DrawerObjectEditorPoi(Drawers.DrawerPointSimple()))
+  --cursor_data:registerObject("editor_pois", pois, Drawers.DrawerObjectEditorPoi(PointDir.Drawers.Simple()))
   return _pois
 end
 
@@ -449,7 +449,7 @@ function CourseEditor:drawUIScoringObjects(dt)
       cursor_data:registerObject(
         "on_ui_hover_highlight_scoringobject_" .. tostring(i),
         objects[i]:getCenter(),
-        Drawers.DrawerPointSphere()
+        PointDir.Drawers.Sphere()
       )
     else
       cursor_data:unregisterObject("on_ui_hover_highlight_scoringobject_" .. tostring(i))

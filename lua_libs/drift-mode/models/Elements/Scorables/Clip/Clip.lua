@@ -1,8 +1,8 @@
 local Assert = require('drift-mode/assert')
 
-local Point = require('drift-mode.models.Common.Point')
+local Point = require('drift-mode.models.Common.Point.Point')
 local ScoringObject = require("drift-mode.models.Elements.Scorables.ScoringObject")
-local Segment = require("drift-mode.models.Common.Segment")
+local Segment = require("drift-mode.models.Common.Segment.Segment")
 
 ---@class Clip : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone

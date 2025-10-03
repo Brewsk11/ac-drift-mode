@@ -1,5 +1,5 @@
 local DrawerZone = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Base')
-local DrawerSegmentWall = require('drift-mode/models/Drawers/DrawerSegmentWall')
+local DrawerSegmentWall = require('drift-mode.models.Common.Segment.Drawers.Wall')
 
 ---@class DrawerZonePlay : DrawerZone
 local DrawerZonePlay = class("DrawerZonePlay", DrawerZone)

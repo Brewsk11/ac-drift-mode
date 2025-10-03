@@ -2,15 +2,15 @@
 -- Do not edit manually
 
 local models = {
-    Common    = require('drift-mode.models.Common'),
+    Common    = require('drift-mode.models.Common.init'),
     Drawer    = require('drift-mode.models.Drawer'),
-    Drawers   = require('drift-mode.models.Drawers'),
-    Editor    = require('drift-mode.models.Editor'),
-    Elements  = require('drift-mode.models.Elements'),
-    Misc      = require('drift-mode.models.Misc'),
+    Drawers   = require('drift-mode.models.Drawers.init'),
+    Editor    = require('drift-mode.models.Editor.init'),
+    Elements  = require('drift-mode.models.Elements.init'),
+    Misc      = require('drift-mode.models.Misc.init'),
     ModelBase = require('drift-mode.models.ModelBase'),
     Range     = require('drift-mode.models.Range'),
-    Tests     = require('drift-mode.models.Tests'),
+    Tests     = require('drift-mode.models.Tests.init'),
 }
 
 return models

@@ -3,7 +3,7 @@ local Drawer = require("drift-mode.models.Drawer")
 ---@class DrawerPointGroup : Drawer
 ---@field drawerPoint DrawerPoint
 local DrawerPointGroup = class("DrawerPointGroup", Drawer)
-DrawerPointGroup.__model_path = "Drawers.DrawerPointGroup"
+DrawerPointGroup.__model_path = "Common.Point.Drawers.BaseGroup"
 
 function DrawerPointGroup:initialize()
 end

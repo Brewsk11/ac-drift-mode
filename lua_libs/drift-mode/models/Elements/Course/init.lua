@@ -2,7 +2,7 @@
 -- Do not edit manually
 
 local Course = {
-    Drawers         = require('drift-mode.models.Elements.Course.Drawers'),
+    Drawers         = require('drift-mode.models.Elements.Course.Drawers.init'),
     RunState        = require('drift-mode.models.Elements.Course.RunState'),
     TrackConfig     = require('drift-mode.models.Elements.Course.TrackConfig'),
     TrackConfigInfo = require('drift-mode.models.Elements.Course.TrackConfigInfo'),

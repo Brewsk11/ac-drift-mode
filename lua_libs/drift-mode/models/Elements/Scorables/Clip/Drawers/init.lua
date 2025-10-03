@@ -2,8 +2,8 @@
 -- Do not edit manually
 
 local Drawers = {
-    Clip  = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip'),
-    State = require('drift-mode.models.Elements.Scorables.Clip.Drawers.State'),
+    Clip  = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.init'),
+    State = require('drift-mode.models.Elements.Scorables.Clip.Drawers.State.init'),
 }
 
 return Drawers

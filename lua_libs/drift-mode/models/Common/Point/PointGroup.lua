@@ -1,14 +1,14 @@
 local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
 
-local Point = require('drift-mode.models.Common.Point')
-local Segment = require('drift-mode.models.Common.Segment')
-local SegmentGroup = require("drift-mode.models.Common.SegmentGroup")
+local Point = require('drift-mode.models.Common.Point.Point')
+local Segment = require('drift-mode.models.Common.Segment.Segment')
+local SegmentGroup = require("drift-mode.models.Common.Segment.SegmentGroup")
 
 ---@class PointGroup : ClassBase Ordered group of points in world space
 ---@field points Point[]
 local PointGroup = class("PointGroup", ModelBase)
-PointGroup.__model_path = "Common.PointGroup"
+PointGroup.__model_path = "Common.Point.PointGroup"
 
 ---@param points Point[]?
 function PointGroup:initialize(points)

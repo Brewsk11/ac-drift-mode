@@ -2,9 +2,10 @@ local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
 
 local EditorRoutine = require('drift-mode.models.Editor.Routines.EditorRoutine')
-local Point = require("drift-mode.models.Common.Point")
-local Drawers = require("drift-mode.models.Drawers")
-local Segment = require("drift-mode.models.Common.Segment")
+local PointDir = require("drift-mode.models.Common.Point.init")
+local Point = PointDir.Point
+local SegmentDir = require("drift-mode.models.Common.Segment.init")
+local Segment = SegmentDir.Segment
 
 ---@class RoutineExtendPointGroup : EditorRoutine
 ---@field point_group PointGroup
@@ -25,13 +26,13 @@ function RoutineExtendPointGroup:run(context)
         return
     end
 
-    context.cursor:registerObject("extend_routine_selector", Point(hit), Drawers.DrawerPointSphere(rgbm(1.5, 3, 0, 3)))
+    context.cursor:registerObject("extend_routine_selector", Point(hit), PointDir.Drawers.Sphere(rgbm(1.5, 3, 0, 3)))
 
     if self.point_group:count() > 0 then
         context.cursor:registerObject(
             "extend_routine_segment_to_last",
             Segment(self.point_group:last(), Point(hit)),
-            Drawers.DrawerSegmentLine(rgbm(0, 3, 0, 3))
+            SegmentDir.Drawers.Line(rgbm(0, 3, 0, 3))
         )
     end
 

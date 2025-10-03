@@ -1,10 +1,10 @@
-local DrawerPointGroup = require('drift-mode/models/Drawers/DrawerPointGroup')
+local DrawerPointGroup = require('drift-mode.models.Common.Point.Drawers.BaseGroup')
 
 ---@class DrawerPointGroupConnected : DrawerPointGroup
 ---@field drawerPoint DrawerPoint
 ---@field drawerSegment DrawerSegment
 local DrawerPointGroupConnected = class("DrawerPointGroupConnected", DrawerPointGroup)
-DrawerPointGroupConnected.__model_path = "Drawers.DrawerPointGroupConnected"
+DrawerPointGroupConnected.__model_path = "Common.Point.Drawers.GroupConnected"
 
 function DrawerPointGroupConnected:initialize(drawerSegment, drawerPoint)
     self.drawerSegment = drawerSegment

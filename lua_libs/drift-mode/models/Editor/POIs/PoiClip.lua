@@ -1,5 +1,5 @@
 local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.ObjectEditorPoi')
-local Point = require("drift-mode.models.Common.Point")
+local Point = require("drift-mode.models.Common.Point.Point")
 
 ---@class PoiClip : ObjectEditorPoi
 ---@field clip Clip

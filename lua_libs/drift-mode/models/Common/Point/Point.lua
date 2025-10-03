@@ -6,7 +6,7 @@ local Assert = require('drift-mode/assert')
 ---@field private _flat vec2
 ---@field private _projected vec3
 local Point = class("Point", ModelBase)
-Point.__model_path = "Common.Point"
+Point.__model_path = "Common.Point.Point"
 
 ---@param value vec3 World position
 function Point:initialize(value)

@@ -2,7 +2,7 @@ local Drawer = require('drift-mode/models/Drawer')
 
 ---@class DrawerSegment : Drawer
 local DrawerSegment = class("DrawerSegment", Drawer)
-DrawerSegment.__model_path = "Drawers.DrawerSegment"
+DrawerSegment.__model_path = "Common.Segment.Drawers.Base"
 
 function DrawerSegment:initialize()
 end

@@ -2,10 +2,10 @@
 -- Do not edit manually
 
 local Elements = {
-    Course    = require('drift-mode.models.Elements.Course'),
-    Gate      = require('drift-mode.models.Elements.Gate'),
-    Position  = require('drift-mode.models.Elements.Position'),
-    Scorables = require('drift-mode.models.Elements.Scorables'),
+    Course    = require('drift-mode.models.Elements.Course.init'),
+    Gate      = require('drift-mode.models.Elements.Gate.init'),
+    Position  = require('drift-mode.models.Elements.Position.init'),
+    Scorables = require('drift-mode.models.Elements.Scorables.init'),
 }
 
 return Elements

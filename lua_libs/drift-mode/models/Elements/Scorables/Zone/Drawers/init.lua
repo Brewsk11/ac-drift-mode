@@ -2,8 +2,8 @@
 -- Do not edit manually
 
 local Drawers = {
-    State = require('drift-mode.models.Elements.Scorables.Zone.Drawers.State'),
-    Zone  = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone'),
+    State = require('drift-mode.models.Elements.Scorables.Zone.Drawers.State.init'),
+    Zone  = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.init'),
 }
 
 return Drawers

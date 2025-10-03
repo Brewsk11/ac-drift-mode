@@ -2,8 +2,10 @@ local Assert = require('drift-mode/assert')
 local RaycastUtils = require('drift-mode/RaycastUtils')
 
 local EditorRoutine = require('drift-mode.models.Editor.Routines.EditorRoutine')
-local Segment = require("drift-mode.models.Common.Segment")
-local Point = require("drift-mode.models.Common.Point")
+local SegmentDir = require("drift-mode.models.Common.Segment.init")
+local Segment = SegmentDir.Segment
+local PointDir = require("drift-mode.models.Common.Point.init")
+local Point = PointDir.Point
 local Drawers = require("drift-mode.models.Drawers")
 
 ---@class RoutineSelectSegment : EditorRoutine
@@ -29,7 +31,7 @@ function RoutineSelectSegment:run(context)
     context.cursor:registerObject(
         "routine_select_selector",
         Point(hit),
-        Drawers.DrawerPointSphere(rgbm(1.5, 3, 0, 3))
+        PointDir.Drawers.Sphere(rgbm(1.5, 3, 0, 3))
     )
 
     -- When head has already been set
@@ -40,7 +42,7 @@ function RoutineSelectSegment:run(context)
         context.cursor:registerObject(
             "routine_select_segment",
             Segment(self.segment.head, Point(hit)),
-            Drawers.DrawerSegmentLine(rgbm(0, 0, 3, 1))
+            SegmentDir.Drawers.Line(rgbm(0, 0, 3, 1))
         )
     end
 

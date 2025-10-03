@@ -3,7 +3,7 @@ local listener_id = EventSystem.registerListener("mode")
 
 local Timer = require('drift-mode/timer')
 local ConfigIO = require('drift-mode/configio')
-local Point = require("drift-mode.models.Common.Point")
+local Point = require("drift-mode.models.Common.Point.Point")
 
 local Cursor = require("drift-mode.models.Editor.Cursor")
 local Course = require("drift-mode.models.Elements.Course")

@@ -1,7 +1,7 @@
 local Resources = require('drift-mode.Resources')
 
 local DrawerCourse = require("drift-mode.models.Elements.Course.Drawers.DrawerCourse")
-local DrawerSegmentLine = require('drift-mode.models.Drawers.DrawerSegmentLine')
+local DrawerSegmentLine = require('drift-mode.models.Common.Segment.Drawers.Line')
 
 ---@class DrawerCoursePlay : DrawerCourse
 local DrawerCoursePlay = class("DrawerCourse", DrawerCourse)

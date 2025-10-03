@@ -1,14 +1,14 @@
 local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode/assert')
-local Segment = require('drift-mode.models.Common.Segment')
+local Segment = require('drift-mode.models.Common.Segment.Segment')
 
-local Point = require("drift-mode.models.Common.Point")
+local Point = require("drift-mode.models.Common.Point.Point")
 
 
 ---@class SegmentGroup : ClassBase Ordered group of segments
 ---@field segments Segment[]
 local SegmentGroup = class("SegmentGroup", ModelBase)
-SegmentGroup.__model_path = "Common.SegmentGroup"
+SegmentGroup.__model_path = "Common.Segment.SegmentGroup"
 
 ---@param segments Segment[]?
 function SegmentGroup:initialize(segments)

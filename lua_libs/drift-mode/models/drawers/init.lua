@@ -2,16 +2,7 @@
 -- Do not edit manually
 
 local Drawers = {
-    DrawerObjectEditorPoi     = require('drift-mode.models.Drawers.DrawerObjectEditorPoi'),
-    DrawerPoint               = require('drift-mode.models.Drawers.DrawerPoint'),
-    DrawerPointGroup          = require('drift-mode.models.Drawers.DrawerPointGroup'),
-    DrawerPointGroupConnected = require('drift-mode.models.Drawers.DrawerPointGroupConnected'),
-    DrawerPointGroupSimple    = require('drift-mode.models.Drawers.DrawerPointGroupSimple'),
-    DrawerPointSimple         = require('drift-mode.models.Drawers.DrawerPointSimple'),
-    DrawerPointSphere         = require('drift-mode.models.Drawers.DrawerPointSphere'),
-    DrawerSegment             = require('drift-mode.models.Drawers.DrawerSegment'),
-    DrawerSegmentLine         = require('drift-mode.models.Drawers.DrawerSegmentLine'),
-    DrawerSegmentWall         = require('drift-mode.models.Drawers.DrawerSegmentWall'),
+    DrawerObjectEditorPoi = require('drift-mode.models.Drawers.DrawerObjectEditorPoi'),
 }
 
 return Drawers

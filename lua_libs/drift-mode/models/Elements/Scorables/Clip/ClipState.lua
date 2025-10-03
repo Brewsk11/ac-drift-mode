@@ -3,7 +3,7 @@ local EventSystem = require("drift-mode.eventsystem")
 local Resources = require('drift-mode.Resources')
 
 local ScoringObjectState = require("drift-mode.models.Elements.Scorables.ScoringObjectState")
-local Point = require("drift-mode.models.Common.Point")
+local Point = require("drift-mode.models.Common.Point.Point")
 
 ---@class ClipState : ScoringObjectState
 ---@field clip Clip
