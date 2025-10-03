@@ -5,7 +5,7 @@ local Drawer = require("drift-mode.models.Drawer")
 ---@field drawerInsideLine DrawerSegment
 ---@field drawerOutsideLine DrawerSegment
 local DrawerZone = class("DrawerZone", Drawer)
-DrawerZone.__model_path = "Drawers.DrawerZone"
+DrawerZone.__model_path = "Elements.Scorables.Zone.Drawers.Zone.Base"
 
 function DrawerZone:initialize()
 end

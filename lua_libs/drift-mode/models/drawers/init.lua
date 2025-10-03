@@ -12,11 +12,6 @@ local Drawers = {
     DrawerSegment             = require('drift-mode.models.Drawers.DrawerSegment'),
     DrawerSegmentLine         = require('drift-mode.models.Drawers.DrawerSegmentLine'),
     DrawerSegmentWall         = require('drift-mode.models.Drawers.DrawerSegmentWall'),
-    DrawerZone                = require('drift-mode.models.Drawers.DrawerZone'),
-    DrawerZonePlay            = require('drift-mode.models.Drawers.DrawerZonePlay'),
-    DrawerZoneSetup           = require('drift-mode.models.Drawers.DrawerZoneSetup'),
-    DrawerZoneState           = require('drift-mode.models.Drawers.DrawerZoneState'),
-    DrawerZoneStatePlay       = require('drift-mode.models.Drawers.DrawerZoneStatePlay'),
 }
 
 return Drawers

@@ -3,7 +3,7 @@ local Drawer = require('drift-mode/models/Drawer')
 ---@class DrawerZoneState : Drawer
 ---@field drawerZone DrawerZone
 local DrawerZoneState = class("DrawerZoneState", Drawer)
-DrawerZoneState.__model_path = "Drawers.DrawerZoneState"
+DrawerZoneState.__model_path = "Elements.Scorables.Zone.Drawers.State.Base"
 
 function DrawerZoneState:initialize()
 end

@@ -1,7 +1,7 @@
 local Resources = require('drift-mode/Resources')
 
-local DrawerZoneState = require('drift-mode/models/Drawers/DrawerZoneState')
-local DrawerZonePlay = require('drift-mode/models/Drawers/DrawerZonePlay')
+local DrawerZoneState = require('drift-mode.models.Elements.Scorables.Zone.Drawers.State.Base')
+local DrawerZonePlay = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Simple')
 
 ---@class DrawerZoneStatePlay : DrawerZoneState
 ---@field drawerZone DrawerZone
@@ -9,7 +9,7 @@ local DrawerZonePlay = require('drift-mode/models/Drawers/DrawerZonePlay')
 ---@field protected drawerActive DrawerZone
 ---@field protected drawerDone DrawerZone
 local DrawerZoneStatePlay = class("DrawerZoneStatePlay", DrawerZoneState)
-DrawerZoneStatePlay.__model_path = "Drawers.DrawerZoneStatePlay"
+DrawerZoneStatePlay.__model_path = "Elements.Scorables.Zone.Drawers.State.Simple"
 
 function DrawerZoneStatePlay:initialize(showZoneScorePoints)
     self.color_inactive = Resources.Colors.ScoringObjectInactive

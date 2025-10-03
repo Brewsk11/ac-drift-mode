@@ -1,9 +1,9 @@
-local DrawerZone = require('drift-mode/models/Drawers/DrawerZone')
+local DrawerZone = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Base')
 local DrawerSegmentWall = require('drift-mode/models/Drawers/DrawerSegmentWall')
 
 ---@class DrawerZonePlay : DrawerZone
 local DrawerZonePlay = class("DrawerZonePlay", DrawerZone)
-DrawerZonePlay.__model_path = "Drawers.DrawerZonePlay"
+DrawerZonePlay.__model_path = "Elements.Scorables.Zone.Drawers.Zone.Simple"
 
 function DrawerZonePlay:initialize(wall_color)
     DrawerZone.initialize(self)
