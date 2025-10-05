@@ -27,6 +27,7 @@ end
 ---@return string
 function ScoringObjectState:getName()
     Assert.Error("Called abstract method!")
+    return ""
 end
 
 function ScoringObjectState:getId()
@@ -63,7 +64,8 @@ function ScoringObjectState:registerCar(car_config, car, drift_state)
 end
 
 ---Draw itself using ui.* calls
----@param coord_transformer fun(point: Point): vec2, number Function converting true coordinate to canvas coordinate
+---@param coord_transformer fun(point: Point): vec2 Function converting true coordinate to canvas coordinate
+---@param scale number
 function ScoringObjectState:drawFlat(coord_transformer, scale)
     Assert.Error("Called abstract method!")
 end

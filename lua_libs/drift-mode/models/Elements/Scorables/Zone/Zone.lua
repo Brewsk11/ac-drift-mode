@@ -76,6 +76,7 @@ function Zone:recalculatePolygon()
     self.polygon = PointGroup(points)
 end
 
+---@return physics.ColliderType[]
 function Zone:gatherColliders()
     if not self.collide then return {} end
 

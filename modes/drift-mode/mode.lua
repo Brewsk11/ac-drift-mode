@@ -6,7 +6,7 @@ local ConfigIO = require('drift-mode.configio')
 local Point = require("drift-mode.models.Common.Point.Point")
 
 local Cursor = require("drift-mode.models.Editor.Cursor")
-local Course = require("drift-mode.models.Elements.Course")
+local Course = require("drift-mode.models.Elements.Course.init")
 local TrackConfig = Course.TrackConfig
 local RunState = Course.RunState
 
@@ -183,6 +183,7 @@ local timers = {
   end)
 }
 
+---@diagnostic disable-next-line duplicate-set-field
 function script.update(dt)
   for _, timer in pairs(timers) do
     timer:tick(dt)

@@ -46,6 +46,7 @@ function Clip:getCenter()
     return self:getSegment():getCenter()
 end
 
+---@return physics.ColliderType[]
 function Clip:gatherColliders()
     if not self.collide then return {} end
 

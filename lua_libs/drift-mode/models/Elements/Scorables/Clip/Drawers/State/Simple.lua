@@ -4,9 +4,9 @@ local DrawerClipState = require('drift-mode.models.Elements.Scorables.Clip.Drawe
 local DrawerClipPlay = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.Simple')
 
 ---@class DrawerClipStatePlay : DrawerClipState
----@field drawerClip DrawerClip
----@field protected drawerInactive DrawerClip
----@field protected drawerDone DrawerClip
+---@field drawerClip DrawerClipPlay
+---@field protected drawerInactive DrawerClipPlay
+---@field protected drawerDone DrawerClipPlay
 local DrawerClipStatePlay = class("DrawerClipStatePlay", DrawerClipState)
 DrawerClipStatePlay.__model_path = "Elements.Scorables.Clip.Drawers.State.Simple"
 

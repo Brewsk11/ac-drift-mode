@@ -14,8 +14,15 @@ function ScoringObject:getCenter()
     Assert.Error("Called abstract method!")
 end
 
+---@return physics.ColliderType[]
+function ScoringObject:gatherColliders()
+    Assert.Error("Called abstract method!")
+    return {}
+end
+
 ---Draw itself using ui.* calls
 ---@param coord_transformer fun(Point): vec2 Function converting true coordinate to canvas coordinate
+---@param scale number
 function ScoringObject:drawFlat(coord_transformer, scale)
     Assert.Error("Called abstract method!")
 end
