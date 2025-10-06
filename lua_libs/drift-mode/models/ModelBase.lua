@@ -10,12 +10,9 @@ ModelBase.PathToAbbrev = {}
 ModelBase.AbbrevToPath = {}
 
 function ModelBase:setModelPath(model_path)
-    self.__model_path = model_path
 end
 
 function ModelBase:setAbbrev(abbrev)
-    ModelBase.PathToAbbrev[self.__model_path] = abbrev
-    ModelBase.AbbrevToPath[abbrev] = self.__model_path
 end
 
 function ModelBase:subclassed(classDefinition)

@@ -7,17 +7,17 @@ local Point = PointDir.Point
 local SegmentDir = require("drift-mode.models.Common.Segment.init")
 local Segment = SegmentDir.Segment
 
----@class RoutineExtendPointGroup : EditorRoutine
----@field point_group PointGroup
-local RoutineExtendPointGroup = class("RoutineExtendPointGroup", EditorRoutine)
-RoutineExtendPointGroup.__model_path = "Editor.Routines.RoutineExtendPointGroup"
-function RoutineExtendPointGroup:initialize(point_group)
+---@class RoutineExtendPointArray : EditorRoutine
+---@field point_group PointArray
+local RoutineExtendPointArray = class("RoutineExtendPointArray", EditorRoutine)
+RoutineExtendPointArray.__model_path = "Editor.Routines.RoutineExtendPointArray"
+function RoutineExtendPointArray:initialize(point_group)
     EditorRoutine.initialize(self, nil)
     self.point_group = point_group
 end
 
 ---@param context EditorRoutine.Context
-function RoutineExtendPointGroup:run(context)
+function RoutineExtendPointArray:run(context)
     ---@type vec3?
     local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
@@ -42,13 +42,13 @@ function RoutineExtendPointGroup:run(context)
 end
 
 ---@param context EditorRoutine.Context
-function RoutineExtendPointGroup:attachCondition(context)
+function RoutineExtendPointArray:attachCondition(context)
     Assert.Error("Manually attachable")
 end
 
 ---@param context EditorRoutine.Context
-function RoutineExtendPointGroup:detachCondition(context)
+function RoutineExtendPointArray:detachCondition(context)
     return ui.mouseClicked(ui.MouseButton.Right)
 end
 
-return RoutineExtendPointGroup
+return RoutineExtendPointArray

@@ -6,7 +6,7 @@ local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 local SegmentDir = require("drift-mode.models.Common.Segment.init")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
 local PointDir = require("drift-mode.models.Common.Point.init")
-local PointGroup = PointDir.PointGroup
+local PointArray = PointDir.Array
 local Point = PointDir.Point
 
 local CourseEditorElements = {}
@@ -21,7 +21,7 @@ function CourseEditorElements.ObjectConfigPanel(idx, object, is_disabled, cursor
     end
 end
 
-local generate_inside_drawer = PointDir.Drawers.GroupConnected(
+local generate_inside_drawer = PointDir.Drawers.ArrayConnected(
     SegmentDir.Drawers.Line(Resources.Colors.EditorActivePoi),
     PointDir.Drawers.Simple(Resources.Colors.EditorActivePoi, 0.2))
 
@@ -40,7 +40,7 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
     ui.offsetCursorY(4)
 
     if ui.button(")  Inside Line", vec2(ui.availableSpaceX() / 2, line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
-        attachRoutine(CourseEditorUtils.Routines.RoutineExtendPointGroup(zone:getInsideLine()))
+        attachRoutine(CourseEditorUtils.Routines.RoutineExtendPointArray(zone:getInsideLine()))
     end
     if ui.itemHovered() then
         ui.setTooltip("Enable pointer to extend the inner line")
@@ -54,7 +54,7 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
     ui.sameLine(0, 8)
 
     if ui.button("Outside Line  )", vec2(ui.availableSpaceX(), line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
-        attachRoutine(CourseEditorUtils.Routines.RoutineExtendPointGroup(zone:getOutsideLine()))
+        attachRoutine(CourseEditorUtils.Routines.RoutineExtendPointArray(zone:getOutsideLine()))
     end
     if ui.itemHovered() then
         ui.setTooltip("Enable pointer to extend the outer line")
@@ -79,7 +79,7 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
         ui.itemPopup(ui.MouseButton.Left, function()
             popup_context.val1 = ui.slider("", popup_context.val1, -10, 10, 'Distance to outside: %.1f')
 
-            local pt_grp = PointGroup()
+            local pt_grp = PointArray()
             for _, segment in zone:getOutsideLine():segment():iter() do
                 local pt = Point(segment:getCenter():value() + segment:getNormal():value() * popup_context.val1)
                 pt_grp:append(pt)

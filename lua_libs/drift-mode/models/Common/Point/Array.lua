@@ -1,0 +1,108 @@
+local Array = require("drift-mode.models.Common.Array")
+local Assert = require('drift-mode.assert')
+
+local Segment = require('drift-mode.models.Common.Segment.Segment')
+local SegmentArray = require("drift-mode.models.Common.Segment.Array")
+
+---@class PointArray : Array<Point>
+local PointArray = class("PointArray", Array)
+PointArray.__model_path = "Common.Point.Array"
+
+-- Needed for 2.7.1 migration, remove afterwards.
+function PointArray.__deserialize(data)
+    local S = require('drift-mode.serializer')
+    local items = data.points or data._items
+    return PointArray(S.deserialize(items))
+end
+
+---Segment the group. For group with 1 points returns empty SegmentArray.
+---@param closed boolean? Whether to connect first with last point as last segment
+---@return SegmentArray
+function PointArray:segment(closed)
+    local _closed = closed or false
+
+    local segments = {}
+    for idx = 1, self:count() do
+        if idx < self:count() then
+            segments[idx] = Segment(self:get(idx), self:get(idx + 1))
+        elseif _closed then -- Connect last with first
+            segments[idx] = Segment(self:get(idx), self:get(1))
+        end
+    end
+
+    local res = SegmentArray(segments)
+    return res
+end
+
+---Return an iterator like `ipairs()` iterating over point vec3 values
+---@return (fun(): integer, vec3), vec3[], integer
+function PointArray:iterVal()
+    local points = {}
+    for k, v in self:iter() do
+        points[k] = v:value()
+    end
+    return ipairs(points)
+end
+
+---Return an iterator like `ipairs()` iterating over flatten vec2 point values
+---@return (fun(): integer, vec2), vec2[], integer
+function PointArray:iterFlat()
+    local flats = {}
+    for k, v in self:iter() do
+        flats[k] = v:flat()
+    end
+    return ipairs(flats)
+end
+
+---Return an iterator like `ipairs()` iterating over projected vec3 point values
+---@return (fun(): integer, vec3), vec3[], integer
+function PointArray:iterProjected()
+    local projects = {}
+    for k, v in self:iter() do
+        projects[k] = v:projected()
+    end
+    return ipairs(projects)
+end
+
+local function test()
+    local Point = require('drift-mode.models.Common.Point.Point')
+
+    local points = {}
+    points[1] = Point(vec3(1, 1, 1))
+    points[2] = Point(vec3(2, 2, 2))
+    points[3] = Point(vec3(3, 3, 3))
+
+    -- PointArray()
+    local group = PointArray()
+    Assert.NotEqual(group:getItems(), nil, "Group did not correctly initialize, points table is nil")
+
+    -- PointArray(points)
+    group = PointArray(points)
+    Assert.NotEqual(group:getItems(), nil, "Group did not correctly initialize, points table is nil")
+
+    -- PointArray:count()
+    Assert.Equal(group:count(), 3, "Group did not correctly initialize, incorrect number of points returned")
+
+    -- PointArray:append(point)
+    group:append(Point(vec3(4, 4, 4)))
+    Assert.Equal(group:count(), 4, "Point did not append correctly to the group")
+
+    -- PointArray:last()
+    -- PointArray:first()
+    Assert.Equal(Point(vec3(4, 4, 4)):value(), group:last():value())
+    Assert.Equal(Point(vec3(1, 1, 1)):value(), group:first():value())
+
+    -- PointArray:iterVal()
+    -- PointArray:iterFlat()
+    -- PointArray:iterProjected()
+    for k, v in group:iterVal() do Assert.Equal(v, vec3(k, k, k), "Incorrect point value returned") end
+    for k, v in group:iterFlat() do Assert.Equal(v, vec2(k, k), "Incorrect flat point value returned") end
+    for k, v in group:iterProjected() do Assert.Equal(v, vec3(k, 0, k), "Incorrect projected point value returned") end
+
+    -- PointArray:remove(idx)
+    group:remove(1)
+    Assert.Equal(group:get(1):value(), vec3(2, 2, 2))
+end
+test()
+
+return class.emmy(PointArray, PointArray.initialize)

@@ -7,29 +7,29 @@ local ScoringObject = require("drift-mode.models.Elements.Scorables.ScoringObjec
 local Common = require("drift-mode.models.Common")
 local Point = Common.Point.Point
 local Segment = Common.Segment.Segment
-local PointGroup = Common.Point.PointGroup
+local PointArray = Common.Point.Array
 
 ---@class Zone : ScoringObject Class representing a drift scoring zone
 ---@field name string Name of the zone
----@field private outsideLine PointGroup Outside zone line definition
----@field private insideLine PointGroup Inside zone line definition
----@field private polygon PointGroup Polygon created from inside and outside lines
+---@field private outsideLine PointArray Outside zone line definition
+---@field private insideLine PointArray Inside zone line definition
+---@field private polygon PointArray Polygon created from inside and outside lines
 ---@field private collide boolean Whether to enable colliders for this zone
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
 local Zone = class("Zone", ScoringObject)
 Zone.__model_path = "Elements.Scorables.Zone.Zone"
 
 ---@param name string
----@param outsideLine PointGroup|nil
----@param insideLine PointGroup|nil
+---@param outsideLine PointArray|nil
+---@param insideLine PointArray|nil
 ---@param maxPoints integer
 ---@param collide boolean|nil
 function Zone:initialize(name, outsideLine, insideLine, maxPoints, collide)
     self.name = name
     self.maxPoints = maxPoints
     self.collide = collide or false
-    self.outsideLine = outsideLine or PointGroup()
-    self.insideLine = insideLine or PointGroup()
+    self.outsideLine = outsideLine or PointArray()
+    self.insideLine = insideLine or PointArray()
     self:setDirty()
 end
 
@@ -75,7 +75,7 @@ function Zone:recalculatePolygon()
         rev_idx = rev_idx + 1
     end
 
-    self.polygon = PointGroup(points)
+    self.polygon = PointArray(points)
 end
 
 ---@return physics.ColliderType[]
@@ -136,7 +136,7 @@ end
 
 ---Joins outside and inside lines to form a closed polygon
 ---@param self Zone
----@return PointGroup?
+---@return PointArray?
 function Zone:getPolygon()
     return self.polygon
 end
@@ -423,8 +423,6 @@ function Zone:recalculateBoundingBox()
 end
 
 function Zone:drawFlat(coord_transformer, scale)
-    local color = Resources.Colors
-
     for _, seg in self:getOutsideLine():segment(false):iter() do
         local head_mapped = coord_transformer(seg.head)
         local tail_mapped = coord_transformer(seg.tail)
@@ -442,10 +440,10 @@ local Assert = require('drift-mode.assert')
 local function test()
     -- Zone.isSegmentInZone
     --   For debugging these it'd be best to draw a coordinate plane (x, z) and check
-    local inside = PointGroup({
+    local inside = PointArray({
         Point(vec3(0, 0, 0)),
         Point(vec3(1, 0, 0)) })
-    local outside = PointGroup({
+    local outside = PointArray({
         Point(vec3(0, 0, 1)),
         Point(vec3(1, 0, 1)) })
 

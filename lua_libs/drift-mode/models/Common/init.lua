@@ -2,6 +2,7 @@
 -- Do not edit manually
 
 local Common = {
+    Array   = require('drift-mode.models.Common.Array'),
     Box2D   = require('drift-mode.models.Common.Box2D'),
     Point   = require('drift-mode.models.Common.Point.init'),
     Segment = require('drift-mode.models.Common.Segment.init'),

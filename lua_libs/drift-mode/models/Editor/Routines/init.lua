@@ -3,7 +3,7 @@
 
 local Routines = {
     EditorRoutine           = require('drift-mode.models.Editor.Routines.EditorRoutine'),
-    RoutineExtendPointGroup = require('drift-mode.models.Editor.Routines.RoutineExtendPointGroup'),
+    RoutineExtendPointArray = require('drift-mode.models.Editor.Routines.RoutineExtendPointArray'),
     RoutineMovePoi          = require('drift-mode.models.Editor.Routines.RoutineMovePoi'),
     RoutineSelectSegment    = require('drift-mode.models.Editor.Routines.RoutineSelectSegment'),
 }

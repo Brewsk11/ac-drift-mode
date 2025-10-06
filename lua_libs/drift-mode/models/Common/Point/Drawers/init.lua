@@ -2,10 +2,10 @@
 -- Do not edit manually
 
 local Drawers = {
+    ArrayConnected = require('drift-mode.models.Common.Point.Drawers.ArrayConnected'),
+    ArraySimple    = require('drift-mode.models.Common.Point.Drawers.ArraySimple'),
     Base           = require('drift-mode.models.Common.Point.Drawers.Base'),
-    BaseGroup      = require('drift-mode.models.Common.Point.Drawers.BaseGroup'),
-    GroupConnected = require('drift-mode.models.Common.Point.Drawers.GroupConnected'),
-    GroupSimple    = require('drift-mode.models.Common.Point.Drawers.GroupSimple'),
+    BaseArray      = require('drift-mode.models.Common.Point.Drawers.BaseArray'),
     Simple         = require('drift-mode.models.Common.Point.Drawers.Simple'),
     Sphere         = require('drift-mode.models.Common.Point.Drawers.Sphere'),
 }

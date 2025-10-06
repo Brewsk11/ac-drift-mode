@@ -2,9 +2,9 @@
 -- Do not edit manually
 
 local Point = {
-    Drawers    = require('drift-mode.models.Common.Point.Drawers.init'),
-    Point      = require('drift-mode.models.Common.Point.Point'),
-    PointGroup = require('drift-mode.models.Common.Point.PointGroup'),
+    Array   = require('drift-mode.models.Common.Point.Array'),
+    Drawers = require('drift-mode.models.Common.Point.Drawers.init'),
+    Point   = require('drift-mode.models.Common.Point.Point'),
 }
 
 return Point

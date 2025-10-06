@@ -2,9 +2,9 @@
 -- Do not edit manually
 
 local Segment = {
-    Drawers      = require('drift-mode.models.Common.Segment.Drawers.init'),
-    Segment      = require('drift-mode.models.Common.Segment.Segment'),
-    SegmentGroup = require('drift-mode.models.Common.Segment.SegmentGroup'),
+    Array   = require('drift-mode.models.Common.Segment.Array'),
+    Drawers = require('drift-mode.models.Common.Segment.Drawers.init'),
+    Segment = require('drift-mode.models.Common.Segment.Segment'),
 }
 
 return Segment
