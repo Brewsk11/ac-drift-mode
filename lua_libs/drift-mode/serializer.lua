@@ -40,7 +40,12 @@ function Serializer.serialize(data)
             obj = data:__serialize()
         end
 
-        obj.__class = data.__model_path
+        if ModelBase.PathToAbbrev[data.__model_path] ~= nil then
+            obj.__class = ModelBase.PathToAbbrev[data.__model_path]
+        else
+            obj.__class = data.__model_path
+        end
+
         return obj
     end
 
@@ -174,15 +179,19 @@ local M = nil
 ---@param model_path string
 ---@return ModelDefinition
 function Serializer.getModelDefinition(model_path)
-    if M == nil then
-        M = require('drift-mode.models.init') -- TODO : For some reason does not work without init
-    end
-
-    local parts = {}
-
     if MAP_271_MIGRATION[model_path] ~= nil then
         model_path = MAP_271_MIGRATION[model_path]
     end
+
+    if ModelBase.AbbrevToPath[model_path] ~= nil then
+        model_path = ModelBase.AbbrevToPath[model_path]
+    end
+
+    if M == nil then
+        M = require('drift-mode.models.init')
+    end
+
+    local parts = {}
 
     -- Split on '.'
     for part in string.gmatch(model_path, "([^.]+)") do
