@@ -65,29 +65,29 @@ function Point:draw(size, color)
     render.debugPoint(self:value(), size, color)
 end
 
--- local function test()
---     -- Point()
---     local point = Point(vec3(1, 2, 3))
---     assert(point:value() == vec3(1, 2, 3), tostring(point:value()) .. " vs. " .. tostring(vec3(1, 2, 3)))
+local function test()
+    -- Point()
+    local point = Point(vec3(1, 2, 3))
+    assert(point:value() == vec3(1, 2, 3), tostring(point:value()) .. " vs. " .. tostring(vec3(1, 2, 3)))
 
---     -- Point:value()
---     -- Point:flat()
---     -- Point:projected()
---     local point = Point(vec3(1, 2, 3))
---     assert(point:value() == vec3(1, 2, 3))
---     assert(point:flat() == vec2(1, 3))
---     assert(point:projected() == vec3(1, 0, 3))
+    -- Point:value()
+    -- Point:flat()
+    -- Point:projected()
+    local point = Point(vec3(1, 2, 3))
+    assert(point:value() == vec3(1, 2, 3))
+    assert(point:flat() == vec2(1, 3))
+    assert(point:projected() == vec3(1, 0, 3))
 
---     -- Point:set()
---     point:set(vec3(4, 5, 6))
---     assert(point:value() == vec3(4, 5, 6), tostring(point:value()) .. " vs. " .. tostring(vec3(4, 5, 6)))
+    -- Point:set()
+    point:set(vec3(4, 5, 6))
+    assert(point:value() == vec3(4, 5, 6), tostring(point:value()) .. " vs. " .. tostring(vec3(4, 5, 6)))
 
---     -- Serialization
---     local pt = Point(vec3(1, 2, 3))
---     local serialized = pt:__serialize()
---     local deserialized = Point.__deserialize(serialized)
---     Assert.Equal(deserialized:flat(), vec2(1, 3))
--- end
--- test()
+    -- Serialization
+    local pt = Point(vec3(1, 2, 3))
+    local serialized = pt:__serialize()
+    local deserialized = Point.__deserialize(serialized)
+    Assert.Equal(deserialized:flat(), vec2(1, 3))
+end
+test()
 
 return Point
