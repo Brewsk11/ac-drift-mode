@@ -7,6 +7,7 @@ local Scorables = {
     ScorableState = require('drift-mode.models.Elements.Scorables.ScorableState'),
     ScoringRanges = require('drift-mode.models.Elements.Scorables.ScoringRanges'),
     Zone          = require('drift-mode.models.Elements.Scorables.Zone.init'),
+    ZoneArc       = require('drift-mode.models.Elements.Scorables.ZoneArc.init'),
 }
 
 return Scorables
