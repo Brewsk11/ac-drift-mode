@@ -2,10 +2,10 @@ local Assert = require('drift-mode.assert')
 local EventSystem = require("drift-mode.eventsystem")
 local Resources = require('drift-mode.Resources')
 
-local ScoringObjectState = require("drift-mode.models.Elements.Scorables.ScoringObjectState")
+local ScorableState = require("drift-mode.models.Elements.Scorables.ScorableState")
 local Point = require("drift-mode.models.Common.Point.Point")
 
----@class ClipState : ScoringObjectState
+---@class ClipState : ScorableState
 ---@field clip Clip
 ---@field private hitPoint Point Point at which the clip was crossed
 ---@field private hitSpeedMult number
@@ -14,7 +14,7 @@ local Point = require("drift-mode.models.Common.Point.Point")
 ---@field private finalScore number Final score after multipliers `(maxScore * perf)`
 ---@field private finalMultiplier number Final multiplier
 ---@field private lastPoint Point To calculate where crossed
-local ClipState = class("ClipState", ScoringObjectState)
+local ClipState = class("ClipState", ScorableState)
 ClipState.__model_path = "Elements.Scorables.Clip.ClipState"
 
 function ClipState:initialize(clip)
@@ -45,7 +45,7 @@ function ClipState:registerCar(car_config, car, drift_state)
     local res = self:registerPosition(clip_scoring_point, drift_state)
 
     if res then
-        EventSystem.emit(EventSystem.Signal.ScoringObjectStateChanged,
+        EventSystem.emit(EventSystem.Signal.ScorableStateChanged,
             {
                 name = self.clip.name,
                 payload = self
@@ -119,8 +119,8 @@ function ClipState:drawFlat(coord_transformer, scale)
     if self.hitPoint == nil then return end
 
     local point_color =
-        Resources.Colors.ScoringObjectGood * self:getSpeed() +
-        Resources.Colors.ScoringObjectBad * (1 - self:getSpeed())
+        Resources.Colors.ScorableGood * self:getSpeed() +
+        Resources.Colors.ScorableBad * (1 - self:getSpeed())
 
     point_color.mult = 1
 

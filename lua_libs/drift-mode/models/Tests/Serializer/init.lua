@@ -4,6 +4,7 @@
 local Serializer = {
     CustomSerializerClass = require('drift-mode.models.Tests.Serializer.CustomSerializerClass'),
     MainClass             = require('drift-mode.models.Tests.Serializer.MainClass'),
+    ModeFieldsOnly        = require('drift-mode.models.Tests.Serializer.ModeFieldsOnly'),
     NestedClass           = require('drift-mode.models.Tests.Serializer.NestedClass'),
 }
 

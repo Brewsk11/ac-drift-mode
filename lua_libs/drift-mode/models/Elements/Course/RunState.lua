@@ -11,7 +11,7 @@ local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 ---@class RunState : ClassBase
 ---@field trackConfig TrackConfig
 ---@field driftState DriftState
----@field scoringObjectStates ScoringObjectState[]
+---@field scoringObjectStates ScorableState[]
 ---@field private finished boolean
 local RunState = class("RunState", ModelBase)
 RunState.__model_path = "Elements.Course.RunState"
@@ -21,7 +21,7 @@ function RunState:initialize(track_config)
     self.scoringObjectStates = {}
     self.driftState = DriftState(0, 0, 0, 0)
     self.finished = false
-    for idx, obj in ipairs(self.trackConfig.scoringObjects) do
+    for idx, obj in ipairs(self.trackConfig.scorables) do
         if Zone.isInstanceOf(obj) then
             self.scoringObjectStates[idx] = ZoneState(obj)
         elseif Clip.isInstanceOf(obj) then
@@ -31,7 +31,7 @@ function RunState:initialize(track_config)
         end
     end
 
-    EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, self.scoringObjectStates)
+    EventSystem.emit(EventSystem.Signal.ScorableStatesReset, self.scoringObjectStates)
 end
 
 function RunState:calcDriftState(car)

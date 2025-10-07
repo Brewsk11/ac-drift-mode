@@ -168,8 +168,8 @@ MAP_271_MIGRATION = {
     Clip = "Elements.Scorables.Clip.Clip",
     ClipState = "Elements.Scorables.Clip.ClipState",
     ScoringRanges = "Elements.Scorables.ScoringRanges",
-    ScoringObject = "Elements.Scorables.ScoringObject",
-    ScoringObjectState = "Elements.Scorables.ScoringObjectState",
+    ScoringObject = "Elements.Scorables.Scorable",
+    ScoringObjectState = "Elements.Scorables.ScorableState",
     StartingPoint = "Elements.Position.StartingPoint",
 }
 

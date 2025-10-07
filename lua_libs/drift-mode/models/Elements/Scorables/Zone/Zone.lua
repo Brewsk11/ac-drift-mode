@@ -2,21 +2,21 @@ local Assert = require('drift-mode.assert')
 local RaycastUtils = require('drift-mode.RaycastUtils')
 local Resources = require('drift-mode.Resources')
 
-local ScoringObject = require("drift-mode.models.Elements.Scorables.ScoringObject")
+local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")
 
 local Common = require("drift-mode.models.Common")
 local Point = Common.Point.Point
 local Segment = Common.Segment.Segment
 local PointArray = Common.Point.Array
 
----@class Zone : ScoringObject Class representing a drift scoring zone
+---@class Zone : Scorable Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field private outsideLine PointArray Outside zone line definition
 ---@field private insideLine PointArray Inside zone line definition
 ---@field private polygon PointArray Polygon created from inside and outside lines
 ---@field private collide boolean Whether to enable colliders for this zone
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
-local Zone = class("Zone", ScoringObject)
+local Zone = class("Zone", Scorable)
 Zone.__model_path = "Elements.Scorables.Zone.Zone"
 
 ---@param name string

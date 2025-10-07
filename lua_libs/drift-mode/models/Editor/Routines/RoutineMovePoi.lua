@@ -79,13 +79,13 @@ function RoutineMovePoi:deletePoi(context, poi)
                 "Deleting zone",
                 "Are you sure you want to delete the zone?",
                 function()
-                    table.removeItem(context.course.scoringObjects, poi_zone.zone)
+                    table.removeItem(context.course.scorables, poi_zone.zone)
                 end
             )
         end
     elseif poi.poi_type == POIs.Base.Type.Clip then
         local poi_clip = poi ---@type PoiClip
-        table.removeItem(context.course.scoringObjects, poi_clip.clip)
+        table.removeItem(context.course.scorables, poi_clip.clip)
     elseif poi.poi_type == POIs.Base.Type.StartingPoint then
         context.course.startingPoint = nil
     elseif poi.poi_type == POIs.Base.Type.Segment then

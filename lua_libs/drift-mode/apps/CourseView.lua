@@ -12,7 +12,7 @@ local track_data = nil
 ---@type CarConfig?
 local car_config = nil
 
----@type ScoringObjectState[]?
+---@type ScorableState[]?
 local scoring_object_states = nil
 
 local app_map_canvas = ui.ExtraCanvas(vec2(1024, 1024)):clear(rgbm(0, 0, 0, 0)):setName("Testing")
@@ -30,7 +30,7 @@ function CourseView.Main(dt)
     EventSystem.listen(listener_id, EventSystem.Signal.CarConfigChanged, function(payload)
         car_config = payload;
     end)
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
+    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
         if scoring_object_states == nil then return end
         for idx, obj in ipairs(scoring_object_states) do
             if obj:getName() == payload.name then
@@ -43,7 +43,7 @@ function CourseView.Main(dt)
             end
         end
     end)
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
+    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStatesReset, function(payload)
         scoring_object_states = payload;
     end)
 

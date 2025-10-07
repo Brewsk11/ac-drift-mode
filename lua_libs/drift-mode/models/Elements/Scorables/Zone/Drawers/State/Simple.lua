@@ -12,12 +12,12 @@ local DrawerZoneStatePlay = class("DrawerZoneStatePlay", DrawerZoneState)
 DrawerZoneStatePlay.__model_path = "Elements.Scorables.Zone.Drawers.State.Simple"
 
 function DrawerZoneStatePlay:initialize(showZoneScorePoints)
-    self.color_inactive = Resources.Colors.ScoringObjectInactive
-    self.color_active = Resources.Colors.ScoringObjectActive
-    self.color_done = Resources.Colors.ScoringObjectDone
-    self.color_bad = Resources.Colors.ScoringObjectBad
-    self.color_good = Resources.Colors.ScoringObjectGood
-    self.color_outside = Resources.Colors.ScoringObjectOutside
+    self.color_inactive = Resources.Colors.ScorableInactive
+    self.color_active = Resources.Colors.ScorableActive
+    self.color_done = Resources.Colors.ScorableDone
+    self.color_bad = Resources.Colors.ScorableBad
+    self.color_good = Resources.Colors.ScorableGood
+    self.color_outside = Resources.Colors.ScorableOutside
 
     self.showZoneScorePoints = showZoneScorePoints or false
 

@@ -11,14 +11,14 @@ local DrawerClipStatePlay = class("DrawerClipStatePlay", DrawerClipState)
 DrawerClipStatePlay.__model_path = "Elements.Scorables.Clip.Drawers.State.Simple"
 
 function DrawerClipStatePlay:initialize()
-    self.drawerInactive = DrawerClipPlay(Resources.Colors.ScoringObjectInactive)
-    self.drawerDone = DrawerClipPlay(Resources.Colors.ScoringObjectDone)
+    self.drawerInactive = DrawerClipPlay(Resources.Colors.ScorableInactive)
+    self.drawerDone = DrawerClipPlay(Resources.Colors.ScorableDone)
 
     self.drawerClip = self.drawerInactive
 
     -- TODO: Migrate to ClipStateHit?
-    self.color_bad = Resources.Colors.ScoringObjectBad
-    self.color_good = Resources.Colors.ScoringObjectGood
+    self.color_bad = Resources.Colors.ScorableBad
+    self.color_good = Resources.Colors.ScorableGood
 
     self.height_collide = 1
     self.height_no_collide = 0.4

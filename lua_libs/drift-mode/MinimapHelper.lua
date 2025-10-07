@@ -195,7 +195,7 @@ function MinimapHelper:drawTrackConfig(origin, track_config)
     end, scale)
 end
 
----@param scoring_objects_states ScoringObjectState[]?
+---@param scoring_objects_states ScorableState[]?
 function MinimapHelper:drawRunState(origin, scoring_objects_states)
     if scoring_objects_states == nil then
         return

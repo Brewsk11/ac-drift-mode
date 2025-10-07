@@ -73,7 +73,7 @@ local function gatherPois()
     return _pois
   end
 
-  for _, obj in ipairs(course.scoringObjects) do
+  for _, obj in ipairs(course.scorables) do
     if obj.isInstanceOf(Zone) then
       local zone_obj = obj ---@type Zone
       for idx, inside_point in zone_obj:getInsideLine():iter() do
@@ -192,7 +192,7 @@ local CourseEditor = class('CourseEditor')
 
 function CourseEditor:initialize()
   self.__tabs = {
-    { 'Scoring objects', self.drawUIScoringObjects },
+    { 'Scoring objects', self.drawUIScorables },
     { 'Other',           self.drawUIOther },
     { 'Help',            self.drawUIHelp },
   }
@@ -323,8 +323,8 @@ local smoothers = {}
 local config_initial_height = 38
 local config_final_heights = {}
 
-function CourseEditor:drawUIScoringObjects(dt)
-  local objects = course.scoringObjects
+function CourseEditor:drawUIScorables(dt)
+  local objects = course.scorables
   ui.pushFont(ui.Font.Small)
 
   ui.beginChild(
@@ -496,7 +496,7 @@ function CourseEditor:drawUIScoringObjects(dt)
     current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
       local new_clip = Clip(course:getNextClipName(), segment.head, nil, nil, 1000)
       new_clip:setEnd(segment.tail)
-      course.scoringObjects[#course.scoringObjects + 1] = new_clip
+      course.scorables[#course.scorables + 1] = new_clip
     end)
   end
 end

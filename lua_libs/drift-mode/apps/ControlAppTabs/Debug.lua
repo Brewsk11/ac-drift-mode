@@ -5,11 +5,11 @@ local ConfigIO = require('drift-mode.configio')
 
 local Debug = {}
 
----@type ScoringObjectState[]?
+---@type ScorableState[]?
 local scoring_object_states = nil
 
 function Debug.drawUIDebug()
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
+    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
         if scoring_object_states == nil then return end
         for idx, obj in ipairs(scoring_object_states) do
             if obj:getName() == payload.name then
@@ -23,7 +23,7 @@ function Debug.drawUIDebug()
         end
     end)
 
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
+    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStatesReset, function(payload)
         scoring_object_states = payload
     end)
 
@@ -33,7 +33,7 @@ function Debug.drawUIDebug()
 
     if ui.button("Load scoring objects") then
         scoring_object_states = ConfigIO.loadConfig(ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/scoring.json")
-        EventSystem.emit(EventSystem.Signal.ScoringObjectStatesReset, scoring_object_states)
+        EventSystem.emit(EventSystem.Signal.ScorableStatesReset, scoring_object_states)
     end
 end
 

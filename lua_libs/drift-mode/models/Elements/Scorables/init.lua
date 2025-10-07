@@ -2,11 +2,11 @@
 -- Do not edit manually
 
 local Scorables = {
-    Clip               = require('drift-mode.models.Elements.Scorables.Clip.init'),
-    ScoringObject      = require('drift-mode.models.Elements.Scorables.ScoringObject'),
-    ScoringObjectState = require('drift-mode.models.Elements.Scorables.ScoringObjectState'),
-    ScoringRanges      = require('drift-mode.models.Elements.Scorables.ScoringRanges'),
-    Zone               = require('drift-mode.models.Elements.Scorables.Zone.init'),
+    Clip          = require('drift-mode.models.Elements.Scorables.Clip.init'),
+    Scorable      = require('drift-mode.models.Elements.Scorables.Scorable'),
+    ScorableState = require('drift-mode.models.Elements.Scorables.ScorableState'),
+    ScoringRanges = require('drift-mode.models.Elements.Scorables.ScoringRanges'),
+    Zone          = require('drift-mode.models.Elements.Scorables.Zone.init'),
 }
 
 return Scorables

@@ -8,7 +8,7 @@ local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 
 local ScoresPrint = {}
 
----@param scoring_objects_states ScoringObjectState[]
+---@param scoring_objects_states ScorableState[]
 local function compactObjectList(scoring_objects_states)
     local entry_height = 18
     local entry_gap = 8
@@ -129,7 +129,7 @@ local function compactObjectList(scoring_objects_states)
     end
 end
 
----@param scoring_objects_state_data ScoringObjectState[]
+---@param scoring_objects_state_data ScorableState[]
 ---@param track_data TrackConfig
 function ScoresPrint.appScoresLayout(scoring_objects_state_data, track_data)
     if not scoring_objects_state_data or not track_data then return end

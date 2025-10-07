@@ -6,14 +6,14 @@ local listener_id = EventSystem.registerListener('app-scores')
 
 local ScoresApp = {}
 
----@type ScoringObjectState[]?
+---@type ScorableState[]?
 local scoring_object_states = nil
 
 ---@type TrackConfig?
 local track_data = nil
 
 function ScoresApp.Main(dt)
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStateChanged, function(payload)
+    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
         if scoring_object_states == nil then return end
         for idx, obj in ipairs(scoring_object_states) do
             if obj:getName() == payload.name then
@@ -27,8 +27,8 @@ function ScoresApp.Main(dt)
         end
     end)
 
-    EventSystem.listen(listener_id, EventSystem.Signal.ScoringObjectStatesReset, function(payload)
-        ---@cast payload ScoringObjectState[]
+    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStatesReset, function(payload)
+        ---@cast payload ScorableState[]
         scoring_object_states = payload
     end)
 

@@ -1,13 +1,13 @@
 local Resources = require('drift-mode.Resources')
 local Assert = require('drift-mode.Assert')
 
-local ScoringObjectState = require("drift-mode.models.Elements.Scorables.ScoringObjectState")
+local ScorableState = require("drift-mode.models.Elements.Scorables.ScorableState")
 local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")
 local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 
 local ScoresLayout = {}
 
----@param scoring_objects_states ScoringObjectState[]
+---@param scoring_objects_states ScorableState[]
 local function compactObjectList(scoring_objects_states)
     local entry_height = 18
     local entry_gap = 8
@@ -137,7 +137,7 @@ local function compactObjectList(scoring_objects_states)
     end
 end
 
----@param scoring_objects_states ScoringObjectState[]
+---@param scoring_objects_states ScorableState[]
 ---@param track_data TrackConfig
 function ScoresLayout.appScoresLayout(scoring_objects_states, track_data, window_size)
     if not scoring_objects_states or not track_data then return end
@@ -154,8 +154,8 @@ function ScoresLayout.appScoresLayout(scoring_objects_states, track_data, window
     end
 
     -- TOTAL SCORE
-    local total_score_str = ScoringObjectState.aggrScore(scoring_objects_states)
-    local max_score_str = ScoringObjectState.aggrMaxScore(scoring_objects_states)
+    local total_score_str = ScorableState.aggrScore(scoring_objects_states)
+    local max_score_str = ScorableState.aggrMaxScore(scoring_objects_states)
     ui.sameLine(0, 0)
     ui.pushFont(ui.Font.Huge)
     ui.beginGroup()
@@ -174,7 +174,7 @@ Max score for this course: %d]]
         -- AVERAGE SCORE
 
         ui.beginGroup()
-        ui.textAligned(string.format("%.2f%%", ScoringObjectState.aggrAvgScore(scoring_objects_states) * 100),
+        ui.textAligned(string.format("%.2f%%", ScorableState.aggrAvgScore(scoring_objects_states) * 100),
             vec2(1, 0),
             vec2(ui.availableSpaceX(), 20), true)
         ui.endGroup()

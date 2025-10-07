@@ -2,17 +2,17 @@ local EventSystem = require('drift-mode.eventsystem')
 local Assert = require('drift-mode.assert')
 local Resources = require('drift-mode.Resources')
 
-local ScoringObjectState = require("drift-mode.models.Elements.Scorables.ScoringObjectState")
+local ScorableState = require("drift-mode.models.Elements.Scorables.ScorableState")
 local Point = require("drift-mode.models.Common.Point.Point")
 local ZoneScoringPoint = require("drift-mode.models.Elements.Scorables.Zone.ZoneScoringPoint")
 
----@class ZoneState : ScoringObjectState
+---@class ZoneState : ScorableState
 ---@field zone Zone
 ---@field scores ZoneScoringPoint[]
 ---@field started boolean
 ---@field finished boolean
 ---@field private performace number
-local ZoneState = class("ZoneState", ScoringObjectState)
+local ZoneState = class("ZoneState", ScorableState)
 ZoneState.__model_path = "Elements.Scorables.Zone.ZoneState"
 
 function ZoneState:initialize(zone)
@@ -116,7 +116,7 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
 
     self:calculateFields()
 
-    EventSystem.emit(EventSystem.Signal.ScoringObjectStateChanged,
+    EventSystem.emit(EventSystem.Signal.ScorableStateChanged,
         {
             name = self.zone.name,
             payload = {
@@ -145,10 +145,10 @@ end
 function ZoneState:drawFlat(coord_transformer, scale)
     for _, score in ipairs(self.scores) do
         local point_color =
-            Resources.Colors.ScoringObjectGood * score.speed_mult +
-            Resources.Colors.ScoringObjectBad * (1 - score.speed_mult)
+            Resources.Colors.ScorableGood * score.speed_mult +
+            Resources.Colors.ScorableBad * (1 - score.speed_mult)
         if not score.inside then
-            point_color = Resources.Colors.ScoringObjectOutside
+            point_color = Resources.Colors.ScorableOutside
         end
 
         point_color.mult = 1
@@ -187,7 +187,7 @@ end
 ---@private
 function ZoneState:setFinished(value)
     self.finished = value
-    EventSystem.emit(EventSystem.Signal.ScoringObjectStateChanged,
+    EventSystem.emit(EventSystem.Signal.ScorableStateChanged,
         {
             name = self.zone.name,
             payload = {

@@ -1,10 +1,10 @@
 local Assert = require('drift-mode.assert')
 
 local Point = require('drift-mode.models.Common.Point.Point')
-local ScoringObject = require("drift-mode.models.Elements.Scorables.ScoringObject")
+local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")
 local Segment = require("drift-mode.models.Common.Segment.Segment")
 
----@class Clip : ScoringObject Class representing a drift scoring zone
+---@class Clip : Scorable Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field origin Point
 ---@field direction vec3
@@ -12,7 +12,7 @@ local Segment = require("drift-mode.models.Common.Segment.Segment")
 ---@field maxPoints integer Maximum points possible to score for the clip (in a perfect run)
 ---@field private collide boolean Whether to enable colliders for this clip
 ---@field private lastPoint Point To calculate where crossed
-local Clip = class("Clip", ScoringObject)
+local Clip = class("Clip", Scorable)
 Clip.__model_path = "Elements.Scorables.Clip.Clip"
 
 ---@param name string

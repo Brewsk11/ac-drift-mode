@@ -9,7 +9,7 @@ local Point = require("drift-mode.models.Common.Point.Point")
 
 ---@class TrackConfig : ModelBase
 ---@field name string Configuration name
----@field scoringObjects ScoringObject[]
+---@field scorables Scorable[]
 ---@field startLine Segment
 ---@field respawnLine Segment
 ---@field finishLine Segment
@@ -19,9 +19,9 @@ local TrackConfig = class("TrackConfig", ModelBase)
 TrackConfig.__model_path = "Elements.Course.TrackConfig"
 
 
-function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
+function TrackConfig:initialize(name, scorables, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
     self.name = name or 'default'
-    self.scoringObjects = scoringObjects or {}
+    self.scorables = scorables or {}
     self.startLine = startLine
     self.finishLine = finishLine
     self.respawnLine = respawnLine
@@ -36,20 +36,23 @@ function TrackConfig.__deserialize(data)
     -- Use FieldsVerbatim so that deserialize() call ignores this __deserialize() method
     -- avoiding circural call.
     local obj = S.deserialize(data, S.Mode.FieldsVerbatim)
+    if obj.scoringObjects ~= nil then
+        obj.scorables = obj.scoringObjects
+    end
     return obj
 end
 
 function TrackConfig:getNextZoneName()
-    return "zone_" .. string.format('%03d', #self.scoringObjects + 1)
+    return "zone_" .. string.format('%03d', #self.scorables + 1)
 end
 
 function TrackConfig:getNextClipName()
-    return "clip_" .. string.format('%03d', #self.scoringObjects + 1)
+    return "clip_" .. string.format('%03d', #self.scorables + 1)
 end
 
 function TrackConfig:gatherColliders()
     local colliders = {}
-    for _, obj in ipairs(self.scoringObjects) do
+    for _, obj in ipairs(self.scorables) do
         colliders = table.chain(colliders, obj:gatherColliders())
     end
     return colliders
@@ -61,7 +64,7 @@ function TrackConfig:getBoundingBox(padding)
     local pMin = vec3(9999, 9999, 9999)
     local pMax = vec3(-9999, -9999, -9999)
 
-    for _, obj in ipairs(self.scoringObjects) do
+    for _, obj in ipairs(self.scorables) do
         local obj_bounding_box = obj:getBoundingBox()
 
         if obj_bounding_box == nil then
@@ -116,7 +119,7 @@ function TrackConfig:getBoundingBox(padding)
 end
 
 function TrackConfig:drawFlat(coord_transformer, scale)
-    for _, obj in ipairs(self.scoringObjects) do
+    for _, obj in ipairs(self.scorables) do
         obj:drawFlat(coord_transformer, scale)
     end
 

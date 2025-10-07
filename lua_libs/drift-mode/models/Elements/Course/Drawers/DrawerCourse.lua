@@ -17,7 +17,7 @@ end
 
 ---@param course TrackConfig
 function DrawerCourse:draw(course)
-    for _, obj in ipairs(course.scoringObjects) do
+    for _, obj in ipairs(course.scorables) do
         if obj.isInstanceOf(Zone) and self.drawerZone then
             self.drawerZone:draw(obj)
         elseif obj.isInstanceOf(Clip) and self.drawerClip then

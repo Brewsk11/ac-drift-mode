@@ -16,8 +16,8 @@ EventSystem.Signal = {
     EditorsStateChanged = "EditorsStateChanged", ---Signal for when car or track editor state changes
 
     DriftStateChanged = "DriftStateChanged",
-    ScoringObjectStateChanged = "ScoringObjectStateChanged", -- TODO: Document these
-    ScoringObjectStatesReset = "ScoringObjectStatesReset",   -- TODO: Document these
+    ScorableStateChanged = "ScorableStateChanged", -- TODO: Document these
+    ScorableStatesReset = "ScorableStatesReset",   -- TODO: Document these
 }
 
 local charset = "abcdefghijklmnopqrstuvwxyz1234567890"

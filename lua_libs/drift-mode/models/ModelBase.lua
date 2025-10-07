@@ -9,6 +9,12 @@ ModelBase.__model_path = "ModelBase"
 ModelBase.PathToAbbrev = {}
 ModelBase.AbbrevToPath = {}
 
+---@overload fun()
+---@overload fun(self: ModelBase)
+function ModelBase:initialize()
+
+end
+
 function ModelBase:setModelPath(model_path)
 end
 
