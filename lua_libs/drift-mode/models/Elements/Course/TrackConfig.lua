@@ -29,6 +29,16 @@ function TrackConfig:initialize(name, scoringObjects, startLine, finishLine, res
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
 end
 
+---2.7.1 migration
+function TrackConfig.__deserialize(data)
+    local S = require('drift-mode.serializer')
+
+    -- Use FieldsVerbatim so that deserialize() call ignores this __deserialize() method
+    -- avoiding circural call.
+    local obj = S.deserialize(data, S.Mode.FieldsVerbatim)
+    return obj
+end
+
 function TrackConfig:getNextZoneName()
     return "zone_" .. string.format('%03d', #self.scoringObjects + 1)
 end

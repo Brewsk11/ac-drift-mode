@@ -209,10 +209,23 @@ function Serializer.getModelDefinition(model_path)
     return obj
 end
 
+---@alias Serializer.Mode
+---| `AllowCustom` @Value: 0.
+---| `FieldsVerbatim` @Value: 1.
+Serializer.Mode = {
+    AllowCustom = 0, ---@type Serializer.Mode The default, uses __deserialize() methods when available.
+    FieldsVerbatim = 1, ---@type Serializer.Mode This will ignore __deserialize() method and run the default by-fields algorithm.
+}
+
 ---Use it to deserialize previously serialized data
 ---@param data any
+---@param mode Serializer.Mode? FieldsVerbatim will ignore __deserialize() method
 ---@return any
-function Serializer.deserialize(data)
+function Serializer.deserialize(data, mode)
+    if mode == nil then
+        mode = Serializer.Mode.AllowCustom
+    end
+
     -- nil
     if data == nil then return nil end
 
@@ -224,16 +237,16 @@ function Serializer.deserialize(data)
 
         -- Classes inheirting from ModelBase
         -- can have custom serializers
-        if ModelClass.__deserialize == nil then
+        if ModelClass.__deserialize ~= nil and mode == Serializer.Mode.AllowCustom then
+            -- Classes with customized deserializer
+            Assert.Equal(type(ModelClass.__deserialize), "function")
+            obj = ModelClass.__deserialize(data)
+        else
             -- Classes with no custom deserializer
             obj = ModelClass()
             for k, v in pairs(data) do
                 obj[k] = Serializer.deserialize(v)
             end
-        else
-            -- Classes with customized deserializer
-            Assert.Equal(type(ModelClass.__deserialize), "function")
-            obj = ModelClass.__deserialize(data)
         end
 
         return obj
@@ -302,6 +315,7 @@ end
 function Serializer.test()
     local TestClass = require("drift-mode.models.Tests.Serializer.MainClass")
     local TestClassCustomSerializer = require("drift-mode.models.Tests.Serializer.CustomSerializerClass")
+    local TestClassModeFieldsOnly = require('drift-mode.models.Tests.Serializer.ModeFieldsOnly')
 
     local c = TestClass()
     c.string = "changed"
@@ -319,7 +333,8 @@ function Serializer.test()
         },
         array = { "a", "b" },
         class = c,
-        class_custom_serializer = TestClassCustomSerializer()
+        class_custom_serializer = TestClassCustomSerializer(),
+        class_field_only = TestClassModeFieldsOnly()
     }
 
     local serialized = Serializer.serialize(test_payload)
