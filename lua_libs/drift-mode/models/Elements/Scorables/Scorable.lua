@@ -6,6 +6,11 @@ local Scorable = class("ScoringObject", ModelBase)
 Scorable.__model_path = "Elements.Scorables.Scorable"
 
 
+function Scorable:initialize(name, maxPoints)
+    self.name = name
+    self.maxPoints = maxPoints
+end
+
 ---Get visual center of the object.
 ---Used mainly for visualization, so doesn't need to be accurate.
 function Scorable:getCenter()
