@@ -26,9 +26,9 @@ function Array:count()
     return #self._items
 end
 
----Get a point from the group
+---Get an item from the group
 ---@generic T
----@param idx integer Index of the point in the group
+---@param idx integer Index of the item in the group
 ---@return T
 function Array:get(idx)
     assert(self:count() >= idx, "Index (" .. tostring(idx) .. ") out of range (" .. self:count() .. ")")
@@ -58,7 +58,7 @@ function Array:last()
     return self._items[#self._items]
 end
 
----Return an iterator like `ipairs()` iterating over points
+---Return an iterator like `ipairs()` iterating over items
 ---@generic T
 ---@return (fun(): integer, T), T[], integer
 function Array:iter()
@@ -73,7 +73,7 @@ function Array:pop()
     return item
 end
 
----Remove point at index
+---Remove item at index
 ---@generic T
 ---@param idx integer
 ---@return T
@@ -87,7 +87,7 @@ end
 ---Remove item equal to `item`
 ---@generic T
 ---@param item T
----@return boolean deleted True if deleted any point
+---@return boolean deleted True if deleted any item
 function Array:delete(item)
     return table.removeItem(self._items, item)
 end
