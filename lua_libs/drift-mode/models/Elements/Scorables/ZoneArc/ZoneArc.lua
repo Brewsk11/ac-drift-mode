@@ -1,6 +1,5 @@
 local Assert = require('drift-mode.assert')
 local RaycastUtils = require('drift-mode.RaycastUtils')
-local Resources = require('drift-mode.Resources')
 
 local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")
 
@@ -8,6 +7,8 @@ local Common = require("drift-mode.models.Common.init")
 local Point = Common.Point.Point
 local Segment = Common.Segment.Segment
 local PointArray = Common.Point.Array
+
+---@alias ArcPoints { head: Point, control: Point, tail: Point }
 
 ---@class ZoneArc : Scorable Class representing a drift scoring zone
 ---@field name string Name of the zone
@@ -25,8 +26,7 @@ ZoneArc.__model_path = "Elements.Scorables.ZoneArc.ZoneArc"
 ---@param maxPoints integer
 ---@param collide boolean|nil
 function ZoneArc:initialize(name, outsideLine, insideLine, maxPoints, collide)
-    self.name = name
-    self.maxPoints = maxPoints
+    Scorable.initialize(self, name, maxPoints)
     self.collide = collide or false
     self.outsideLine = outsideLine or PointArray()
     self.insideLine = insideLine or PointArray()

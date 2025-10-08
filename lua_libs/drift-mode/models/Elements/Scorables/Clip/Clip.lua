@@ -21,11 +21,10 @@ Clip.__model_path = "Elements.Scorables.Clip.Clip"
 ---@param length number
 ---@param maxPoints integer
 function Clip:initialize(name, origin, direction, length, maxPoints, collide)
-    self.name = name
+    Scorable.initialize(self, name, maxPoints)
     self.origin = origin
     self.direction = direction
     self.length = length
-    self.maxPoints = maxPoints
     self.collide = collide or true
 end
 
