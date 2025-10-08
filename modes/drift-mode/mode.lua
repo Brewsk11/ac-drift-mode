@@ -4,6 +4,10 @@ local listener_id = EventSystem.registerListener("mode")
 local Timer = require('drift-mode.timer')
 local ConfigIO = require('drift-mode.configio')
 local Point = require("drift-mode.models.Common.Point.Point")
+local Circle = require("drift-mode.models.Common.Circle")
+local Arc = require("drift-mode.models.Common.Arc")
+
+
 
 local Cursor = require("drift-mode.models.Editor.Cursor")
 local Course = require("drift-mode.models.Elements.Course.init")
@@ -162,6 +166,10 @@ local function registerPosition()
   run_state:registerCar(car_data, car)
 end
 
+math.randomseed(8762431)
+local c = Circle(Point(vec3(0.83333, 9.66667, 4.66667)), 2.5, vec3(0.1, 1, 0.2))
+local arc = Arc(c, math.pi * 3 / 4, math.pi)
+local q = quat.fromAngleAxis(0.025, (vec3(0, 1, 0)))
 
 local timers = {
   data_brokered = Timer(0.05, function() listenForSignals() end),
@@ -180,8 +188,12 @@ local timers = {
     local car = ac.getCar(0)
     local current_pos = Point(car.position + car.look * car_data.frontOffset)
     LineCrossDetector.registerPoint(current_pos)
+  end),
+  circle_modulate = Timer(0.01, function()
+    c._normal:rotate(q)
   end)
 }
+
 
 ---@diagnostic disable-next-line duplicate-set-field
 function script.update(dt)
@@ -200,6 +212,7 @@ function script.update(dt)
 end
 
 function script.draw3D()
+  arc:drawDebug()
   if car_data and editors_state and editors_state.isCarSetup then car_data:drawAlignment() end
 
   if editors_state and editors_state:anyEditorEnabled() then
