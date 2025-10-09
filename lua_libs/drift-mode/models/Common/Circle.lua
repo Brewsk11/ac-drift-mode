@@ -4,9 +4,9 @@ local PointArray = require("drift-mode.models.Common.Point.Array")
 
 
 ---@class Circle : ModelBase
----@field private _center Point
----@field private _radius number
----@field private _normal vec3
+---@field protected _center Point
+---@field protected _radius number
+---@field protected _normal vec3
 local Circle = class("Circle", ModelBase)
 Circle.__model_path = "Common.Circle"
 
@@ -37,8 +37,9 @@ end
 ---@param vec vec3
 ---@param axis vec3
 ---@param alpha number
+---@protected
 ---@return vec3
-local function rotateVectorAroundAxis(vec, axis, alpha)
+function Circle._rotateVectorAroundAxis(vec, axis, alpha)
     axis:normalize()
     local quatRot = quat.fromAngleAxis(alpha, axis)
     return vec:clone():rotate(quatRot)
@@ -51,7 +52,7 @@ function Circle:toPointArray(n)
     local planar = self._normal:clone():cross(vec3(1, 0, 0))
     local points = PointArray()
     for i = 0, n - 1 do
-        local v_from_center = rotateVectorAroundAxis(planar, self._normal, angle * i)
+        local v_from_center = Circle._rotateVectorAroundAxis(planar, self._normal, angle * i)
         local new_v = self._center:value() + v_from_center:normalize() * self._radius
         points:append(Point(new_v))
     end
@@ -72,7 +73,7 @@ end
 ---@param p1 vec3
 ---@param p2 vec3
 ---@param p3 vec3
----@return Circle
+---@return Circle?, string? err
 function Circle.fromTriplet(p1, p2, p3)
     -- Define vectors from the points
     local v12 = p2:clone():sub(p1)
@@ -143,7 +144,7 @@ function Circle.fromTriplet(p1, p2, p3)
     -- The radius is the distance from the center to any of the arc's points.
     local radius = p1:clone():sub(center):length()
 
-    return Circle(center, radius, n_plane)
+    return Circle(center, radius, n_plane), nil
 end
 
 function Circle:__tostring()
@@ -159,7 +160,9 @@ function Circle:drawDebug(mult)
         self._center:value() + self._normal:clone():cross(vec3(1, 0, 0)):normalize() * self._radius, 0.1,
         rgbm(3, 0, 0, 1))
 
-    local segments = self:toPointArray(36):segment(true)
+    -- self:toPointArray() would cause this call to route to Arc:toPointArray()
+    -- if called from Arc:drawDebug()
+    local segments = Circle.toPointArray(self, 36):segment(true)
 
     for _, seg in segments:iter() do
         render.debugLine(seg.head:value(), seg.tail:value(), rgbm(3, 0, 0, 1) * _mult)
