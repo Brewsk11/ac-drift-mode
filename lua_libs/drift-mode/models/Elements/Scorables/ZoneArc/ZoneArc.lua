@@ -1,4 +1,3 @@
-local Assert = require('drift-mode.assert')
 local RaycastUtils = require('drift-mode.RaycastUtils')
 
 local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")
@@ -28,6 +27,10 @@ function ZoneArc:initialize(name, maxPoints, collide, arc, width)
     self.collide = collide or false
     self.arc = arc
     self.width = width
+end
+
+function ZoneArc:getArc()
+    return self.arc
 end
 
 ---@return physics.ColliderType[]

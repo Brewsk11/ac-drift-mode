@@ -1,6 +1,7 @@
 local Drawer = require('drift-mode.models.Drawer')
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
+local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc")
 
 ---@class DrawerCourse : Drawer
 ---@field drawerStartLine DrawerSegment?
@@ -8,6 +9,7 @@ local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 ---@field drawerRespawnLine DrawerSegment?
 ---@field drawerClip DrawerClip?
 ---@field drawerZone DrawerZone?
+---@field drawerZoneArc DrawerZoneArc?
 ---@field drawerStartingPoint DrawerStartingPoint?
 local DrawerCourse = class("DrawerCourse", Drawer)
 DrawerCourse.__model_path = "Elements.Course.Drawers.DrawerCourse"
@@ -22,6 +24,8 @@ function DrawerCourse:draw(course)
             self.drawerZone:draw(obj)
         elseif obj.isInstanceOf(Clip) and self.drawerClip then
             self.drawerClip:draw(obj)
+        elseif obj.isInstanceOf(ZoneArc) and self.drawerZoneArc then
+            self.drawerZoneArc:draw(obj)
         end
     end
 

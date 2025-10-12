@@ -2,6 +2,7 @@ local DrawerCourse = require('drift-mode.models.Elements.Course.Drawers.DrawerCo
 local DrawerSegmentLine = require('drift-mode.models.Common.Segment.Drawers.Line')
 local DrawerClipSetup = require('drift-mode.models.Elements.Scorables.Clip.Drawers.Clip.Setup')
 local DrawerZoneSetup = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Setup')
+local DrawerZoneArcSetup = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.ZoneArc.Setup')
 local DrawerStartingPointSetup = require('drift-mode.models.Elements.Position.Drawers.DrawerStartingPointSetup')
 
 ---@class DrawerCourseSetup : DrawerCourse
@@ -15,6 +16,7 @@ function DrawerCourseSetup:initialize()
     self.drawerRespawnLine = DrawerSegmentLine(rgbm(3, 0.5, 1, 3), "Respawn line")
     self.drawerClip = DrawerClipSetup()
     self.drawerZone = DrawerZoneSetup()
+    self.drawerZoneArc = DrawerZoneArcSetup()
     self.drawerStartingPoint = DrawerStartingPointSetup()
 end
 
