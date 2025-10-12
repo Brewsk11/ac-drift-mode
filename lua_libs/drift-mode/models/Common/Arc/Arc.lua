@@ -9,17 +9,18 @@ local PointArray = require("drift-mode.models.Common.Point.Array")
 ---@class Arc : Circle
 ---@field private _start_angle Angle
 ---@field private _end_angle Angle
-local Arc = class("Arc", ModelBase)
-Arc.__model_path = "Common.Arc"
+local Arc = class("Arc", Circle)
+Arc.__model_path = "Common.Arc.Arc"
 
 
----@overload fun(self, center, start_angle, end_angle) : Arc -- For emmy lua
----@overload fun(center: Circle, start_angle: Angle, end_angle: Angle) : Arc
+---@overload fun(self, circle, start_angle, end_angle) : Arc -- For emmy lua
+---@overload fun(circle: Circle, start_angle: Angle, end_angle: Angle) : Arc
 ---@param circle Circle
 ---@param start_angle Angle
 ---@param end_angle Angle
 function Arc:initialize(circle, start_angle, end_angle)
-    Circle.initialize(self, circle:getCenter(), circle:getRadius(), circle:getNormal())
+    Circle.initialize(self, circle)
+
     self._start_angle = start_angle
     self._end_angle = end_angle
 end
@@ -53,17 +54,23 @@ end
 Arc._planarVecBase = vec3(1, 0, 0)
 
 ---@private
----@param self Arc|Circle
-function Arc._getPlanar(self)
+function Arc:getPlanar()
     return self:getNormal():clone():cross(Arc._planarVecBase):normalize()
 end
 
+---@param from Point
+---@param to Point
+---@param midpoint Point
+---@return Arc?
 function Arc.fromTriplet(from, to, midpoint)
     local arc_circle = Circle.fromTriplet(from, to, midpoint)
-    local base_planar = Arc._getPlanar(arc_circle)
+    if arc_circle == nil then return nil end
 
-    local from_angle = base_planar:angle(from)
-    local to_angle = base_planar:angle(to)
+    local normal = arc_circle:getNormal()
+    local base_planar = normal:clone():cross(Arc._planarVecBase):normalize()
+
+    local from_angle = base_planar:angle(from:value())
+    local to_angle = base_planar:angle(to:value())
 
     return Arc(arc_circle, from_angle, to_angle)
 end
@@ -77,11 +84,11 @@ function Arc:getEndAngle()
 end
 
 function Arc:getStartDirection()
-    return Circle._rotateVectorAroundAxis(self:_getPlanar(), self:getNormal(), self._start_angle)
+    return Circle._rotateVectorAroundAxis(self:getPlanar(), self:getNormal(), self._start_angle)
 end
 
 function Arc:getEndDirection()
-    return Circle._rotateVectorAroundAxis(self:_getPlanar(), self:getNormal(), self._end_angle)
+    return Circle._rotateVectorAroundAxis(self:getPlanar(), self:getNormal(), self._end_angle)
 end
 
 function Arc:getStartPoint()
@@ -102,19 +109,17 @@ function Arc:drawDebug()
 end
 
 function Arc.test()
-    local point1 = vec3(-1, 10, 3)
-    local point2 = vec3(0, 12, 5)
-    local point3 = vec3(1, 10, 5)
+    -- local point1 = Point(vec3(-1, 10, 3))
+    -- local point2 = Point(vec3(0, 12, 5))
+    -- local point3 = Point(vec3(1, 10, 5))
 
-    local arc1 = Arc.fromTriplet(point1, point2, point3)
+    -- local arc1 = Arc.fromTriplet(point1, point2, point3)
 
-    local circle_data1 = arc1._circle
-
-    if circle_data1 then
-        print(string.format("Calculated Circle -> Center: (%g, %g, %g), Radius: %g, Normal: (%g, %g, %g)",
-            circle_data1._center.x, circle_data1._center.y, circle_data1._center.z, circle_data1._radius,
-            circle_data1._normal.x, circle_data1._normal.y, circle_data1._normal.z))
-    end
+    -- if arc1 then
+    --     print(string.format("Calculated Circle -> Center: (%g, %g, %g), Radius: %g, Normal: (%g, %g, %g)",
+    --         arc1._center.x, arc1._center.y, arc1._center.z, arc1._radius,
+    --         arc1._normal.x, arc1._normal.y, arc1._normal.z))
+    -- end
 end
 
 return class.emmy(Arc, Arc.initialize)
