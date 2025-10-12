@@ -7,7 +7,7 @@ local Common = require("drift-mode.models.Common.init")
 local Point = Common.Point.Point
 local Segment = Common.Segment.Segment
 local PointArray = Common.Point.Array
-local Arc = require("drift-mode.models.Common.Arc")
+local Arc = require("drift-mode.models.Common.Arc.Arc")
 
 ---@class ZoneArc : Scorable Class representing a drift scoring zone
 ---@field name string Name of the zone
@@ -105,8 +105,10 @@ function ZoneArc:getStartGate()
 end
 
 function ZoneArc:getCenter()
-    --NOT IMPLEMENTED
-    return nil
+    local dir = (self.arc:getStartDirection() - self.arc:getEndDirection()) / 2
+    local dist = self.arc:getRadius() - self.width / 2
+    local center = self.arc:getCenter()
+    return Point(center:value() + dir * dist)
 end
 
 ---Moves all zone points such that the passed point
@@ -141,10 +143,7 @@ local function test()
     local p_on_plane = Point(vec3(9999, 10, -9999))
     local res = projectToPlane(p, p_on_plane, normal)
     Assert.Equal(res:value(), vec3(10, 10, -5))
-
-
-    local a = Arc()
 end
 test()
 
-return ZoneArc
+return class.emmy(ZoneArc, ZoneArc.initialize)

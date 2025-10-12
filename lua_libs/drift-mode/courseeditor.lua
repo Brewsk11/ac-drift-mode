@@ -7,6 +7,7 @@ local CourseEditorElements = require('drift-mode.ui_layouts.CourseEditorElements
 
 local Cursor = require('drift-mode.models.Editor.Cursor')
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
+local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 local TrackConfig = require("drift-mode.models.Elements.Course.TrackConfig")
 local StartingPoint = require("drift-mode.models.Elements.Position.StartingPoint")
@@ -113,6 +114,17 @@ local function gatherPois()
         clip_obj,
         CourseEditorUtils.POIs.Clip.Type.Ending
       )
+    elseif obj.isInstanceOf(ZoneArc) then
+      local zonearc_obj = obj ---@type ZoneArc
+      local zone_center = zonearc_obj:getCenter()
+      if zone_center then
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
+          zone_center,
+          zonearc_obj,
+          CourseEditorUtils.POIs.Zone.Type.Center,
+          nil
+        )
+      end
     end
   end
 
@@ -491,6 +503,13 @@ function CourseEditor:drawUIScorables(dt)
   end
 
   ui.sameLine(0, button_gap)
+
+  if ui.button("Create new arc", vec2(button_width, 40), button_global_flags) then
+    current_routine = CourseEditorUtils.Routines.SelectArc(function(arc)
+      local new_zonearc = ZoneArc(course:getNextZoneName(), 1000, false, arc, 5)
+      course.scorables[#course.scorables + 1] = new_zonearc
+    end)
+  end
 
   if ui.button("Create new clip", vec2(button_width, 40), button_global_flags) then
     current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)

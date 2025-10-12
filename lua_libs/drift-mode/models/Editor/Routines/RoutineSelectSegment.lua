@@ -6,7 +6,7 @@ local SegmentDir = require("drift-mode.models.Common.Segment.init")
 local Segment = SegmentDir.Segment
 local PointDir = require("drift-mode.models.Common.Point.init")
 local Point = PointDir.Point
-local Drawers = require("drift-mode.models.Drawers")
+
 
 ---@class RoutineSelectSegment : EditorRoutine
 ---@field private segment Segment

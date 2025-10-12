@@ -1,5 +1,5 @@
 local DrawerPointSimple = require('drift-mode.models.Common.Point.Drawers.Simple')
-local DrawerPointArray = require('drift-mode.models.Common.Point.Drawers.BaseGroup')
+local DrawerPointArray = require('drift-mode.models.Common.Point.Drawers.BaseArray')
 
 ---@class DrawerPointArraySimple : DrawerPointArray
 local DrawerPointArraySimple = class("DrawerPointGroupSimple", DrawerPointArray)

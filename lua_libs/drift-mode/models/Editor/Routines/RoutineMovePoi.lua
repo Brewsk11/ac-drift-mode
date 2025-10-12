@@ -1,7 +1,6 @@
 local RaycastUtils = require('drift-mode.RaycastUtils')
 local Resources = require('drift-mode.Resources')
 
-local Drawers = require("drift-mode.models.Drawers.init")
 local PointDir = require("drift-mode.models.Common.Point.init")
 local Point = PointDir.Point
 local POIs = require("drift-mode.models.Editor.POIs.init")

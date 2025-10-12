@@ -16,7 +16,7 @@ end
 function Point:__serialize()
     local S = require('drift-mode.serializer')
     local data = {
-        _value = S.serialize(self:value())
+        _value = S.serialize(self:value()),
     }
     return data
 end
@@ -65,7 +65,7 @@ function Point:draw(size, color)
     render.debugPoint(self:value(), size, color)
 end
 
-local function test()
+function Point.test()
     -- Point()
     local point = Point(vec3(1, 2, 3))
     assert(point:value() == vec3(1, 2, 3), tostring(point:value()) .. " vs. " .. tostring(vec3(1, 2, 3)))
@@ -83,11 +83,11 @@ local function test()
     assert(point:value() == vec3(4, 5, 6), tostring(point:value()) .. " vs. " .. tostring(vec3(4, 5, 6)))
 
     -- Serialization
+    local S = require('drift-mode.serializer')
     local pt = Point(vec3(1, 2, 3))
-    local serialized = pt:__serialize()
-    local deserialized = Point.__deserialize(serialized)
+    local serialized = S.serialize(pt)
+    local deserialized = S.deserialize(serialized)
     Assert.Equal(deserialized:flat(), vec2(1, 3))
 end
-test()
 
 return Point

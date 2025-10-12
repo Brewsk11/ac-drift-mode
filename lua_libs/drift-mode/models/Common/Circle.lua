@@ -10,12 +10,20 @@ local PointArray = require("drift-mode.models.Common.Point.Array")
 local Circle = class("Circle", ModelBase)
 Circle.__model_path = "Common.Circle"
 
+---@overload fun(self, circle: Circle) : Circle -- For emmy lua
 ---@overload fun(self, center, radius, normal) : Circle -- For emmy lua
 ---@overload fun(center: Point, radius: number, normal: vec3) : Circle
 function Circle:initialize(center, radius, normal)
-    self._center = center or Point(vec3(0, 0, 0))
-    self._radius = radius or 0
-    self._normal = normal or vec3(0, 1, 0)
+    if Circle.isInstanceOf(center) then
+        local c = center ---@type Circle
+        self._center = c:getCenter() or Point(vec3(0, 0, 0))
+        self._normal = c:getNormal() or 0
+        self._radius = c:getRadius() or vec3(0, 1, 0)
+    else
+        self._center = center or Point(vec3(0, 0, 0))
+        self._radius = radius or 0
+        self._normal = normal or vec3(0, 1, 0)
+    end
     self._normal:normalize()
 end
 
@@ -70,14 +78,18 @@ end
 -- 2. The perpendicular bisector plane of the segment p1-p2.
 -- 3. The perpendicular bisector plane of the segment p2-p3.
 -- This is solved by setting up and solving a 3x3 system of linear equations.
----@param p1 vec3
----@param p2 vec3
----@param p3 vec3
+---@param p1 Point
+---@param p2 Point
+---@param p3 Point
 ---@return Circle?, string? err
 function Circle.fromTriplet(p1, p2, p3)
+    local v1 = p1:value()
+    local v2 = p2:value()
+    local v3 = p3:value()
+
     -- Define vectors from the points
-    local v12 = p2:clone():sub(p1)
-    local v13 = p3:clone():sub(p1)
+    local v12 = v2:clone():sub(v1)
+    local v13 = v3:clone():sub(v1)
 
     -- The normal to the plane containing the arc is the cross product of two vectors on that plane.
     local n_plane = v12:clone():cross(v13)
@@ -89,11 +101,11 @@ function Circle.fromTriplet(p1, p2, p3)
 
     -- Normals to the perpendicular bisector planes are the vectors between the points.
     local n_bisect1 = v12
-    local n_bisect2 = p3:clone():sub(p2)
+    local n_bisect2 = v3:clone():sub(v2)
 
     -- Midpoints of the segments
-    local m1 = p1:clone():add(v12:clone():scale(0.5))
-    local m2 = p1:clone():add(n_bisect2:clone():scale(0.5))
+    local m1 = v1:clone():add(v12:clone():scale(0.5))
+    local m2 = v2:clone():add(n_bisect2:clone():scale(0.5))
 
     -- Set up the system of linear equations Ax = b to find the center (x,y,z).
     -- The matrix A contains the normals of the three intersecting planes.
@@ -105,7 +117,7 @@ function Circle.fromTriplet(p1, p2, p3)
 
     -- The vector b contains the dot product of each normal with a point on its plane.
     local b = {
-        n_plane:clone():dot(p1),
+        n_plane:clone():dot(v1),
         n_bisect1:clone():dot(m1),
         n_bisect2:clone():dot(m2)
     }
@@ -135,14 +147,14 @@ function Circle.fromTriplet(p1, p2, p3)
         A[1][2] * (A[2][1] * b[3] - A[3][1] * b[2]) +
         b[1] * (A[2][1] * A[3][2] - A[3][1] * A[2][2])
 
-    local center = {
-        x = det_Ax / det_A,
-        y = det_Ay / det_A,
-        z = det_Az / det_A
-    }
+    local center = Point(vec3(
+        det_Ax / det_A,
+        det_Ay / det_A,
+        det_Az / det_A
+    ))
 
     -- The radius is the distance from the center to any of the arc's points.
-    local radius = p1:clone():sub(center):length()
+    local radius = v1:clone():sub(center:value()):length()
 
     return Circle(center, radius, n_plane), nil
 end

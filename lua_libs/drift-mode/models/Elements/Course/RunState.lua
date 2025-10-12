@@ -7,6 +7,9 @@ local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
+local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc")
+local ZoneArcState = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArcState")
+
 
 ---@class RunState : ClassBase
 ---@field trackConfig TrackConfig
@@ -26,6 +29,8 @@ function RunState:initialize(track_config)
             self.scoringObjectStates[idx] = ZoneState(obj)
         elseif Clip.isInstanceOf(obj) then
             self.scoringObjectStates[idx] = ClipState(obj)
+        elseif ZoneArc.isInstanceOf(obj) then
+
         else
             Assert.Error("")
         end

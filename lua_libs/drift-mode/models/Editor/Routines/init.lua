@@ -6,6 +6,7 @@ local Routines = {
     RoutineExtendPointArray = require('drift-mode.models.Editor.Routines.RoutineExtendPointArray'),
     RoutineMovePoi          = require('drift-mode.models.Editor.Routines.RoutineMovePoi'),
     RoutineSelectSegment    = require('drift-mode.models.Editor.Routines.RoutineSelectSegment'),
+    SelectArc               = require('drift-mode.models.Editor.Routines.SelectArc'),
 }
 
 return Routines
