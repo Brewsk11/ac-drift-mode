@@ -8,6 +8,19 @@ local SegmentArray = require("drift-mode.models.Common.Segment.Array")
 local PointArray = class("PointArray", Array)
 PointArray.__model_path = "Common.Point.Array"
 
+function PointArray:initialize(items)
+    Array.initialize(self, items)
+
+    self._segmented_closed = nil
+    self._segmented_opened = nil
+end
+
+function PointArray:setDirty()
+    Array.setDirty(self)
+    self._segment_closed = self:recalcSegment(true)
+    self._segmented_opened = self:recalcSegment(false)
+end
+
 -- Needed for 2.7.1 migration, remove afterwards.
 function PointArray.__deserialize(data)
     local S = require('drift-mode.serializer')
@@ -15,10 +28,24 @@ function PointArray.__deserialize(data)
     return PointArray(S.deserialize(items))
 end
 
+function PointArray:segment(closed)
+    if closed then
+        if self._segment_closed == nil then
+            self._segment_closed = self:recalcSegment(closed)
+        end
+        return self._segment_closed
+    else
+        if self._segmented_opened == nil then
+            self._segmented_opened = self:recalcSegment(closed)
+        end
+        return self._segmented_opened
+    end
+end
+
 ---Segment the group. For group with 1 points returns empty SegmentArray.
 ---@param closed boolean? Whether to connect first with last point as last segment
 ---@return SegmentArray
-function PointArray:segment(closed)
+function PointArray:recalcSegment(closed)
     local _closed = closed or false
 
     local segments = {}

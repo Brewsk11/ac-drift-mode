@@ -11,7 +11,6 @@ Point.__model_path = "Common.Point.Point"
 ---@param value vec3 World position
 function Point:initialize(value)
     self:set(value)
-    ac.log(tostring(self))
 end
 
 function Point:__serialize()

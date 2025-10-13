@@ -15,10 +15,15 @@ function Array:initialize(items)
     self._items = items or {}
 end
 
+function Array:setDirty()
+
+end
+
 ---@generic T
 ---@param item T
 function Array:append(item)
     self._items[#self._items + 1] = item
+    self:setDirty()
 end
 
 ---@return integer
@@ -70,6 +75,7 @@ end
 function Array:pop()
     local item = self._items[self:count()]
     self._items[self:count()] = nil
+    self:setDirty()
     return item
 end
 
@@ -81,6 +87,7 @@ function Array:remove(idx)
     Assert.LessOrEqual(idx, self:count(), "Out-of-bounds error")
     local item = self._items[idx]
     table.remove(self._items, idx)
+    self:setDirty()
     return item
 end
 
@@ -89,7 +96,9 @@ end
 ---@param item T
 ---@return boolean deleted True if deleted any item
 function Array:delete(item)
-    return table.removeItem(self._items, item)
+    local removed = table.removeItem(self._items, item)
+    self:setDirty()
+    return removed
 end
 
 local function test()
