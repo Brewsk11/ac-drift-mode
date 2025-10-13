@@ -10,20 +10,13 @@ local PointArray = require("drift-mode.models.Common.Point.Array")
 local Circle = class("Circle", ModelBase)
 Circle.__model_path = "Common.Circle"
 
----@overload fun(self, circle: Circle) : Circle -- For emmy lua
 ---@overload fun(self, center, radius, normal) : Circle -- For emmy lua
----@overload fun(center: Point, radius: number, normal: vec3) : Circle
+---@overload fun(center: Point?, radius: number?, normal: vec3?) : Circle
 function Circle:initialize(center, radius, normal)
-    if Circle.isInstanceOf(center) then
-        local c = center ---@type Circle
-        self._center = c:getCenter() or Point(vec3(0, 0, 0))
-        self._normal = c:getNormal() or 0
-        self._radius = c:getRadius() or vec3(0, 1, 0)
-    else
-        self._center = center or Point(vec3(0, 0, 0))
-        self._radius = radius or 0
-        self._normal = normal or vec3(0, 1, 0)
-    end
+    self._center = center or Point(vec3(0, 0, 0))
+    self._radius = radius or 0
+    self._normal = normal or vec3(0, 1, 0)
+
     self._normal:normalize()
 end
 

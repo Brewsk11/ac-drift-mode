@@ -29,6 +29,14 @@ function DrawerArcDebug:draw(arc)
     for _, segment in segments2:iter() do
         render.debugLine(segment.head:value(), segment.tail:value(), rgbm(0, 0, 3, 1))
     end
+
+    render.debugArrow(arc:getCenter():value(), arc:getCenter():value() + arc:getStartDirection() * arc:getRadius(),
+        -1, rgbm(0, 0, 3, 1))
+    render.debugArrow(arc:getCenter():value(), arc:getCenter():value() + arc:getEndDirection() * arc:getRadius(), -1,
+        rgbm(0, 1, 3, 1))
+
+    render.debugPoint(arc:getStartPoint():value())
+    render.debugPoint(arc:getEndPoint():value())
 end
 
 return DrawerArcDebug
