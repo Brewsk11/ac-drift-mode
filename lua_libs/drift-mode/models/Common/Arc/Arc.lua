@@ -7,32 +7,32 @@ local PointArray = require("drift-mode.models.Common.Point.Array")
 ---@alias Angle number
 
 ---@class Arc : Circle
----@field private _start_angle Angle
----@field private _end_angle Angle
+---@field private start_angle Angle
+---@field private sweep_angle Angle
 local Arc = class("Arc", Circle)
 Arc.__model_path = "Common.Arc.Arc"
 
 
----@overload fun(self, circle, start_angle, end_angle) : Arc -- For emmy lua
----@overload fun(circle: Circle, start_angle: Angle, end_angle: Angle) : Arc
+---@overload fun(self, circle, start_angle, sweep_angle) : Arc -- For emmy lua
+---@overload fun(circle: Circle, start_angle: Angle, sweep_angle: Angle) : Arc
 ---@param center Point?
 ---@param radius number?
 ---@param normal vec3?
 ---@param start_angle Angle?
----@param end_angle Angle?
-function Arc:initialize(center, radius, normal, start_angle, end_angle)
+---@param sweep_angle Angle?
+function Arc:initialize(center, radius, normal, start_angle, sweep_angle)
     Circle.initialize(self, center, radius, normal)
 
-    self._start_angle = start_angle or 0
-    self._end_angle = end_angle or 0
+    self.start_angle = start_angle or 0
+    self.sweep_angle = sweep_angle or 0
 end
 
 ---@param circle Circle
----@param start_angle Angle
----@param end_angle Angle
+---@param start_angle Angle?
+---@param sweep_angle Angle?
 ---@return Arc
-function Arc.fromCircle(circle, start_angle, end_angle)
-    return Arc(circle:getCenter(), circle:getRadius(), circle:getNormal(), start_angle, end_angle)
+function Arc.fromCircle(circle, start_angle, sweep_angle)
+    return Arc(circle:getCenter(), circle:getRadius(), circle:getNormal(), start_angle, sweep_angle)
 end
 
 ---Used for Arc to be consistently defined.
@@ -48,11 +48,11 @@ function Arc.getPlanar(self)
 end
 
 function Arc:getStartAngle()
-    return self._start_angle
+    return self.start_angle
 end
 
-function Arc:getEndAngle()
-    return self._end_angle
+function Arc:getSweepAngle()
+    return self.sweep_angle
 end
 
 function Arc:getStartDirection()
@@ -60,7 +60,7 @@ function Arc:getStartDirection()
 end
 
 function Arc:getEndDirection()
-    return Circle._rotateVectorAroundAxis(self:getPlanar(), self:getNormal(), self:getEndAngle())
+    return Circle._rotateVectorAroundAxis(self:getPlanar(), self:getNormal(), self:getStartAngle() + self:getSweepAngle())
 end
 
 function Arc:getStartPoint()
@@ -74,13 +74,13 @@ end
 ---@param n integer
 ---@return PointArray
 function Arc:toPointArray(n)
-    local angle = (self._end_angle - self._start_angle) / n
+    local angle = (self.sweep_angle - self.start_angle) / n
     local normal = self._normal
     local radius = self._radius
     local center = self._center
 
     local planar = self:getPlanar()
-    planar = Circle._rotateVectorAroundAxis(planar, normal, self._start_angle)
+    planar = Circle._rotateVectorAroundAxis(planar, normal, self.start_angle)
 
     local points = PointArray()
     for i = 0, n do

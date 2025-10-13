@@ -78,7 +78,7 @@ function ZoneArc:isInZoneArc(point)
     local point_projected_on_arc_plane = projectToPlane(point, self.arc:getCenter(), self.arc:getNormal())
     local angle_between = start_direction:angle(point_projected_on_arc_plane:value())
     if angle_between > self.arc:getStartAngle() and
-        angle_between < self.arc:getEndAngle() then
+        angle_between < self.arc:getSweepAngle() then
         return true
     end
 
