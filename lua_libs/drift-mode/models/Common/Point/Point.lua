@@ -11,6 +11,7 @@ Point.__model_path = "Common.Point.Point"
 ---@param value vec3 World position
 function Point:initialize(value)
     self:set(value)
+    ac.log(tostring(self))
 end
 
 function Point:__serialize()
@@ -63,6 +64,10 @@ end
 
 function Point:draw(size, color)
     render.debugPoint(self:value(), size, color)
+end
+
+function Point:__tostring()
+    return "Point" .. tostring(self:value())
 end
 
 function Point.test()
