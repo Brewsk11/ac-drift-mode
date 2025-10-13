@@ -28,27 +28,28 @@ function Arc:initialize(center, radius, normal, start_angle, sweep_angle)
 end
 
 ---@param circle Circle
----@param start_angle Angle?
----@param sweep_angle Angle?
 ---@return Arc
-function Arc.fromCircle(circle, start_angle, sweep_angle)
-    return Arc(circle:getCenter(), circle:getRadius(), circle:getNormal(), start_angle, sweep_angle)
+function Arc.fromCircle(circle)
+    return Arc(circle:getCenter(), circle:getRadius(), circle:getNormal())
 end
 
----Used for Arc to be consistently defined.
----Use this vector and cross with the circle normal.
----This gives a consistent vector that is planar to the circle.
----Arc uses this vector to define the direction of 0 deg angle.
----@private
-Arc._planarVecBase = vec3(1, 0, 0)
+---@param start_point Point
+---@param end_point Point
+---@param control_point Point?
+function Arc:calculateAngles(start_point, end_point, control_point)
+    local start_angle = self:getAngleForPoint(start_point)
+    self.start_angle = start_angle
 
----@param self Arc|Circle
-function Arc.getU(self)
-    return self:getNormal():clone():cross(Arc._planarVecBase):normalize()
-end
+    local end_angle = self:getAngleForPoint(end_point)
+    local control_point_angle = self:getAngleForPoint(control_point)
 
-function Arc.getV(self)
-    return self:getNormal():clone():cross(self:getU())
+    local relative_end = (end_angle - start_angle + 2 * math.pi) % (2 * math.pi)
+    local relative_control = (control_point_angle - start_angle + 2 * math.pi) % (2 * math.pi)
+    if relative_control < relative_end then
+        self.sweep_angle = relative_end
+    else
+        self.sweep_angle = relative_end - 2 * math.pi
+    end
 end
 
 function Arc:getStartAngle()
@@ -75,7 +76,6 @@ function Arc:getPointOnArc(t)
     local point_on_arc = Point(self:getCenter():value() + (self:getRadius() * (math.cos(alpha) * u +
         math.sin(alpha) * v)))
 
-    ac.log(point_on_arc)
     return point_on_arc
 end
 
@@ -107,12 +107,11 @@ function Arc.fromTriplet(from, to, midpoint)
     local arc_circle = Circle.fromTriplet(from, to, midpoint)
     if arc_circle == nil then return nil end
 
-    local base_planar = Arc.getU(arc_circle)
+    local arc = Arc.fromCircle(arc_circle)
 
-    local from_angle = base_planar:angle(from:value() - arc_circle:getCenter():value())
-    local to_angle = base_planar:angle(to:value() - arc_circle:getCenter():value())
+    arc:calculateAngles(from, to, midpoint)
 
-    return Arc.fromCircle(arc_circle, from_angle, to_angle)
+    return arc
 end
 
 function Arc.test()

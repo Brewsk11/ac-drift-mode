@@ -35,6 +35,28 @@ function Circle:getRadius()
     return self._radius
 end
 
+---Used for circle (and arc) to be consistently defined.
+---Use this vector and cross with the circle normal.
+---This gives a consistent vector that is planar to the circle.
+---Circle uses this vector to define the direction of 0 deg angle.
+---@private
+Circle._planarVecBase = vec3(1, 0, 0)
+
+function Circle.getU(self)
+    return self:getNormal():clone():cross(Circle._planarVecBase):normalize()
+end
+
+function Circle.getV(self)
+    return self:getNormal():clone():cross(self:getU())
+end
+
+function Circle:getAngleForPoint(point)
+    local vec_to_point = (point:value() - self:getCenter():value()):normalize()
+    local local_x = vec_to_point:dot(self:getU())
+    local local_y = vec_to_point:dot(self:getV())
+    return math.atan2(local_y, local_x)
+end
+
 ---@param vec vec3
 ---@param axis vec3
 ---@param alpha number
