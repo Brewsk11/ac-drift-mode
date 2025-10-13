@@ -43,8 +43,12 @@ end
 Arc._planarVecBase = vec3(1, 0, 0)
 
 ---@param self Arc|Circle
-function Arc.getPlanar(self)
+function Arc.getU(self)
     return self:getNormal():clone():cross(Arc._planarVecBase):normalize()
+end
+
+function Arc.getV(self)
+    return self:getNormal():clone():cross(self:getU())
 end
 
 function Arc:getStartAngle()
@@ -56,37 +60,40 @@ function Arc:getSweepAngle()
 end
 
 function Arc:getStartDirection()
-    return Circle._rotateVectorAroundAxis(self:getPlanar(), self:getNormal(), self:getStartAngle())
+    return Circle._rotateVectorAroundAxis(self:getU(), self:getNormal(), self:getStartAngle())
 end
 
 function Arc:getEndDirection()
-    return Circle._rotateVectorAroundAxis(self:getPlanar(), self:getNormal(), self:getStartAngle() + self:getSweepAngle())
+    return Circle._rotateVectorAroundAxis(self:getU(), self:getNormal(), self:getStartAngle() + self:getSweepAngle())
+end
+
+function Arc:getPointOnArc(t)
+    local u = self:getU()
+    local v = self:getV()
+
+    local alpha = self:getStartAngle() + t * self:getSweepAngle()
+    local point_on_arc = Point(self:getCenter():value() + (self:getRadius() * (math.cos(alpha) * u +
+        math.sin(alpha) * v)))
+
+    ac.log(point_on_arc)
+    return point_on_arc
 end
 
 function Arc:getStartPoint()
-    return Point(self:getCenter():value() + self:getStartDirection() * self:getRadius())
+    return self:getPointOnArc(1.0)
 end
 
 function Arc:getEndPoint()
-    return Point(self:getCenter():value() + self:getEndDirection() * self:getRadius())
+    return self:getPointOnArc(0.0)
 end
 
 ---@param n integer
 ---@return PointArray
 function Arc:toPointArray(n)
-    local angle = (self.sweep_angle - self.start_angle) / n
-    local normal = self._normal
-    local radius = self._radius
-    local center = self._center
-
-    local planar = self:getPlanar()
-    planar = Circle._rotateVectorAroundAxis(planar, normal, self.start_angle)
-
     local points = PointArray()
+    local t = 1 / n
     for i = 0, n do
-        local v_from_center = Circle._rotateVectorAroundAxis(planar, normal, angle * i)
-        local new_v = center:value() + v_from_center:normalize() * radius
-        points:append(Point(new_v))
+        points:append(self:getPointOnArc(i * t))
     end
 
     return points
@@ -100,7 +107,7 @@ function Arc.fromTriplet(from, to, midpoint)
     local arc_circle = Circle.fromTriplet(from, to, midpoint)
     if arc_circle == nil then return nil end
 
-    local base_planar = Arc.getPlanar(arc_circle)
+    local base_planar = Arc.getU(arc_circle)
 
     local from_angle = base_planar:angle(from:value() - arc_circle:getCenter():value())
     local to_angle = base_planar:angle(to:value() - arc_circle:getCenter():value())

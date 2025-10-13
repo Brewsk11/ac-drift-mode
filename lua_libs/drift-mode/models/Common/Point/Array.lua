@@ -8,6 +8,8 @@ local SegmentArray = require("drift-mode.models.Common.Segment.Array")
 local PointArray = class("PointArray", Array)
 PointArray.__model_path = "Common.Point.Array"
 
+---@overload fun(): PointArray
+---@overload fun(items: T[]): PointArray
 function PointArray:initialize(items)
     Array.initialize(self, items)
 
