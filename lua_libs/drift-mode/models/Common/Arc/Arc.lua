@@ -60,6 +60,10 @@ function Arc:getSweepAngle()
     return self.sweep_angle
 end
 
+function Arc:getDistance()
+    return math.abs(2 * math.pi * self:getRadius() * self:getSweepAngle())
+end
+
 function Arc:getStartDirection()
     return Circle._rotateVectorAroundAxis(self:getU(), self:getNormal(), self:getStartAngle())
 end
@@ -112,6 +116,12 @@ function Arc.fromTriplet(from, to, midpoint)
     arc:calculateAngles(from, to, midpoint)
 
     return arc
+end
+
+function Arc:__tostring()
+    return string.format("Arc[center=(%g, %g, %g), radius=%g, normal=(%g, %g, %g), start_angle=%g, sweep_angle=%g]",
+        self._center:value().x, self._center:value().y, self._center:value().z, self._radius, self._normal.x,
+        self._normal.y, self._normal.z, self.start_angle, self.sweep_angle)
 end
 
 function Arc.test()

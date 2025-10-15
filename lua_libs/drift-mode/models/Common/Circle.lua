@@ -30,6 +30,10 @@ function Circle:getCenter()
     return self._center
 end
 
+function Circle:setCenter(value)
+    self._center = value
+end
+
 ---@return number
 function Circle:getRadius()
     return self._radius
