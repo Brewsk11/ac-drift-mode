@@ -13,7 +13,7 @@ local Point = require("drift-mode.models.Common.Point.Point")
 ---@field startLine Segment
 ---@field respawnLine Segment
 ---@field finishLine Segment
----@field startingPoint StartingPoint
+---@field startingPoint Position
 ---@field scoringRanges ScoringRanges
 local TrackConfig = class("TrackConfig", ModelBase)
 TrackConfig.__model_path = "Elements.Course.TrackConfig"

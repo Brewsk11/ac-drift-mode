@@ -3,7 +3,7 @@ local Point = require("drift-mode.models.Common.Point.Point")
 
 
 ---@class PoisitionHandle : Handle
----@field position StartingPoint
+---@field position Position
 local PoisitionHandle = class("PoisitionHandle", Handle)
 PoisitionHandle.__model_path = "Elements.Position.Handle"
 

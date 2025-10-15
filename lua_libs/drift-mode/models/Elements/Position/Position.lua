@@ -2,25 +2,25 @@ local Element = require("drift-mode.models.Elements.Element")
 local Point = require("drift-mode.models.Common.Point.Point")
 local Handle = require("drift-mode.models.Elements.Position.Handle")
 
----@class StartingPoint : Element
+---@class Position : Element
 ---@field origin Point
 ---@field direction vec3
-local StartingPoint = class("StartingPoint", Element)
-StartingPoint.__model_path = "Elements.Position.StartingPoint"
+local Position = class("Position", Element)
+Position.__model_path = "Elements.Position.Position"
 
 ---@param origin Point
 ---@param direction vec3
-function StartingPoint:initialize(origin, direction)
-    Element.initialize(self, "Starting point")
+function Position:initialize(name, origin, direction)
+    Element.initialize(self, name)
     self.origin = origin
     self.direction = direction
 end
 
-function StartingPoint:setEnd(new_end_point)
+function Position:setEnd(new_end_point)
     self.direction = (new_end_point:value() - self.origin:value()):normalize()
 end
 
-function StartingPoint:drawFlat(coord_transformer, scale, color)
+function Position:drawFlat(coord_transformer, scale, color)
     -- TODO: Dep injection
     ui.drawCircleFilled(coord_transformer(self.origin), scale * 1, color)
     ui.drawLine(
@@ -31,7 +31,7 @@ function StartingPoint:drawFlat(coord_transformer, scale, color)
     )
 end
 
-function StartingPoint:gatherHandles()
+function Position:gatherHandles()
     local handles = {}
 
     handles[#handles + 1] = Handle(
@@ -54,4 +54,4 @@ local function test()
 end
 test()
 
-return StartingPoint
+return Position

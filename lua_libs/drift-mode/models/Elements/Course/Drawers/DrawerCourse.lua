@@ -10,7 +10,7 @@ local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc")
 ---@field drawerClip DrawerClip?
 ---@field drawerZone DrawerZone?
 ---@field drawerZoneArc DrawerZoneArc?
----@field drawerStartingPoint DrawerStartingPoint?
+---@field drawerStartingPoint DrawerPosition?
 local DrawerCourse = class("DrawerCourse", Drawer)
 DrawerCourse.__model_path = "Elements.Course.Drawers.DrawerCourse"
 

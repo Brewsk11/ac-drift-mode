@@ -138,8 +138,8 @@ MAP_271_MIGRATION = {
     DrawerSegment = "Common.Segment.Drawers.Base",
     DrawerSegmentLine = "Common.Segment.Drawers.Line",
     DrawerSegmentWall = "Common.Segment.Drawers.Wall",
-    DrawerStartingPoint = "Elements.Position.Drawers.DrawerStartingPoint",
-    DrawerStartingPointSetup = "Elements.Position.Drawers.DrawerStartingPointSetup",
+    DrawerStartingPoint = "Elements.Position.Drawers.Base",
+    DrawerStartingPointSetup = "Elements.Position.Drawers.Setup",
     DrawerZone = "Elements.Scorables.Zone.Drawers.Zone.Base",
     DrawerZonePlay = "Elements.Scorables.Zone.Drawers.Zone.Simple",
     DrawerZoneSetup = "Elements.Scorables.Zone.Drawers.Zone.Setup",
@@ -170,7 +170,7 @@ MAP_271_MIGRATION = {
     ScoringRanges = "Elements.Scorables.ScoringRanges",
     ScoringObject = "Elements.Scorables.Scorable",
     ScoringObjectState = "Elements.Scorables.ScorableState",
-    StartingPoint = "Elements.Position.StartingPoint",
+    StartingPoint = "Elements.Position.Position",
 }
 
 local M = nil

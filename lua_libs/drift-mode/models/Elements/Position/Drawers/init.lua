@@ -2,8 +2,8 @@
 -- Do not edit manually
 
 local Drawers = {
-    DrawerStartingPoint      = require('drift-mode.models.Elements.Position.Drawers.DrawerStartingPoint'),
-    DrawerStartingPointSetup = require('drift-mode.models.Elements.Position.Drawers.DrawerStartingPointSetup'),
+    Base  = require('drift-mode.models.Elements.Position.Drawers.Base'),
+    Setup = require('drift-mode.models.Elements.Position.Drawers.Setup'),
 }
 
 return Drawers

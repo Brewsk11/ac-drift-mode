@@ -10,7 +10,7 @@ local Zone = require("drift-mode.models.Elements.Scorables.Zone")
 local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip")
 local TrackConfig = require("drift-mode.models.Elements.Course.TrackConfig")
-local StartingPoint = require("drift-mode.models.Elements.Position.StartingPoint")
+local Position = require("drift-mode.models.Elements.Position.Position")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
 local ConfigIO = require("drift-mode.configio")
 local EventSystem = require("drift-mode.EventSystem")
@@ -541,7 +541,7 @@ function CourseEditor:drawUIOther(dt)
   else
     if ui.button("Define###startingpoint", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.startingPoint = StartingPoint(segment.head, nil)
+        course.startingPoint = Position("Starting point", segment.head, nil)
         course.startingPoint:setEnd(segment.tail)
       end)
     end

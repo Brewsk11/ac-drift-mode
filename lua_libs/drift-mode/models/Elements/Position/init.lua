@@ -2,9 +2,9 @@
 -- Do not edit manually
 
 local Position = {
-    Drawers       = require('drift-mode.models.Elements.Position.Drawers.init'),
-    Handle        = require('drift-mode.models.Elements.Position.Handle'),
-    StartingPoint = require('drift-mode.models.Elements.Position.StartingPoint'),
+    Drawers  = require('drift-mode.models.Elements.Position.Drawers.init'),
+    Handle   = require('drift-mode.models.Elements.Position.Handle'),
+    Position = require('drift-mode.models.Elements.Position.Position'),
 }
 
 return Position
