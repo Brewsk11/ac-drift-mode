@@ -108,7 +108,7 @@ function ZoneArc:getStartGate()
 end
 
 function ZoneArc:getCenter()
-    local dir = (self.arc:getStartDirection() - self.arc:getEndDirection()) / 2
+    local dir = (self.arc:getStartDirection() + self.arc:getEndDirection()) / 2
     local dist = self.arc:getRadius() - self.width / 2
     local center = self.arc:getCenter()
     return Point(center:value() + dir * dist)
