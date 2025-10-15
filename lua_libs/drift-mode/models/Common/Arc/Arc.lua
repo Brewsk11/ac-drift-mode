@@ -80,11 +80,11 @@ function Arc:getPointOnArc(t)
 end
 
 function Arc:getStartPoint()
-    return self:getPointOnArc(1.0)
+    return self:getPointOnArc(0.0)
 end
 
 function Arc:getEndPoint()
-    return self:getPointOnArc(0.0)
+    return self:getPointOnArc(1.0)
 end
 
 ---@param n integer
