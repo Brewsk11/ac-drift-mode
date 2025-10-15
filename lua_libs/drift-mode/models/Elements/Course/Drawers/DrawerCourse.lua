@@ -4,9 +4,9 @@ local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
 local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc")
 
 ---@class DrawerCourse : Drawer
----@field drawerStartLine DrawerSegment?
----@field drawerFinishLine DrawerSegment?
----@field drawerRespawnLine DrawerSegment?
+---@field drawerStartLine DrawerGate?
+---@field drawerFinishLine DrawerGate?
+---@field drawerRespawnLine DrawerGate?
 ---@field drawerClip DrawerClip?
 ---@field drawerZone DrawerZone?
 ---@field drawerZoneArc DrawerZoneArc?

@@ -11,11 +11,13 @@ local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip")
 local TrackConfig = require("drift-mode.models.Elements.Course.TrackConfig")
 local Position = require("drift-mode.models.Elements.Position.Position")
+local Gate = require("drift-mode.models.Elements.Gate.Gate")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
 local ConfigIO = require("drift-mode.configio")
 local EventSystem = require("drift-mode.EventSystem")
 local MinimapHelper = require("drift-mode.MinimapHelper")
 local PointDir = require("drift-mode.models.Common.Point.init")
+
 
 
 -- #region Pre-script definitions
@@ -81,51 +83,21 @@ local function gatherHandles()
   end
 
   if course.startLine then
-    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
-      course.startLine.head,
-      course.startLine,
-      CourseEditorUtils.POIs.Segment.Type.StartLine,
-      CourseEditorUtils.POIs.Segment.Part.Head
-    )
-
-    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
-      course.startLine.tail,
-      course.startLine,
-      CourseEditorUtils.POIs.Segment.Type.StartLine,
-      CourseEditorUtils.POIs.Segment.Part.Tail
-    )
+    for _, poi in ipairs(course.startLine:gatherHandles()) do
+      handles[#handles + 1] = poi
+    end
   end
 
   if course.finishLine then
-    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
-      course.finishLine.head,
-      course.finishLine,
-      CourseEditorUtils.POIs.Segment.Type.FinishLine,
-      CourseEditorUtils.POIs.Segment.Part.Head
-    )
-
-    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
-      course.finishLine.tail,
-      course.finishLine,
-      CourseEditorUtils.POIs.Segment.Type.FinishLine,
-      CourseEditorUtils.POIs.Segment.Part.Tail
-    )
+    for _, poi in ipairs(course.finishLine:gatherHandles()) do
+      handles[#handles + 1] = poi
+    end
   end
 
   if course.respawnLine then
-    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
-      course.respawnLine.head,
-      course.respawnLine,
-      CourseEditorUtils.POIs.Segment.Type.RespawnLine,
-      CourseEditorUtils.POIs.Segment.Part.Head
-    )
-
-    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
-      course.respawnLine.tail,
-      course.respawnLine,
-      CourseEditorUtils.POIs.Segment.Type.RespawnLine,
-      CourseEditorUtils.POIs.Segment.Part.Tail
-    )
+    for _, poi in ipairs(course.respawnLine:gatherHandles()) do
+      handles[#handles + 1] = poi
+    end
   end
 
   if course.startingPoint then
@@ -491,7 +463,7 @@ function CourseEditor:drawUIOther(dt)
   else
     if ui.button("Define###startline", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.startLine = segment
+        course.startLine = Gate("Start line", segment)
       end)
     end
   end
@@ -507,7 +479,7 @@ function CourseEditor:drawUIOther(dt)
   else
     if ui.button("Define###finishline", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.finishLine = segment
+        course.finishLine = Gate("Finish line", segment)
       end)
     end
   end
@@ -523,7 +495,7 @@ function CourseEditor:drawUIOther(dt)
   else
     if ui.button("Define###respawnLine", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.respawnLine = segment
+        course.respawnLine = Gate("Respawn line", segment)
       end)
     end
   end

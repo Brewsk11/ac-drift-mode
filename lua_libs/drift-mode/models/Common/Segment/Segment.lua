@@ -54,8 +54,20 @@ function Segment:getCenter()
     return Point((self.head:value() + self.tail:value()) / 2)
 end
 
+function Segment:getDirection()
+    return (self.tail:value() - self.head:value()):normalize()
+end
+
 function Segment:getNormal()
     return Point(vec3():set(self.tail:value() - self.head:value()):cross(vec3(0, 1, 0)):normalize())
+end
+
+---Move segment such that its center is at `point`
+function Segment:moveTo(point)
+    local lenght = self:lenght()
+    local direction = self:getDirection()
+    self.head:set(point:value() - direction * lenght / 2)
+    self.tail:set(point:value() + direction * lenght / 2)
 end
 
 function Segment:drawFlat(coord_transformer, scale, color)

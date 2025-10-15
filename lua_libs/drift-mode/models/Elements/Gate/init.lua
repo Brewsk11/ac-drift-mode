@@ -2,6 +2,9 @@
 -- Do not edit manually
 
 local Gate = {
+    Drawers = require('drift-mode.models.Elements.Gate.Drawers.init'),
+    Gate    = require('drift-mode.models.Elements.Gate.Gate'),
+    Handle  = require('drift-mode.models.Elements.Gate.Handle'),
 }
 
 return Gate

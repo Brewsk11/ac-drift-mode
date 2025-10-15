@@ -102,16 +102,16 @@ local signalListeners = {
         reactivateColliders()
 
         LineCrossDetector.clear()
-        if track_data.startLine then
-          LineCrossDetector.registerLine(track_data.startLine,
+        if track_data.startLine and track_data.startLine.segment then
+          LineCrossDetector.registerLine(track_data.startLine.segment,
             EventSystem.Signal.CrossedStart, 5)
         end
-        if track_data.finishLine then
-          LineCrossDetector.registerLine(track_data.finishLine,
+        if track_data.finishLine and track_data.startLine.segment then
+          LineCrossDetector.registerLine(track_data.finishLine.segment,
             EventSystem.Signal.CrossedFinish, 5)
         end
-        if track_data.respawnLine then
-          LineCrossDetector.registerLine(track_data.respawnLine,
+        if track_data.respawnLine and track_data.startLine.segment then
+          LineCrossDetector.registerLine(track_data.respawnLine.segment,
             EventSystem.Signal.CrossedRespawn, 5)
         end
       end

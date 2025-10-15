@@ -4,15 +4,19 @@ local ModelBase = require('drift-mode.models.ModelBase')
 local ScoringRanges = require("drift-mode.models.Elements.Scorables.ScoringRanges")
 local Range = require("drift-mode.models.Range")
 local Point = require("drift-mode.models.Common.Point.Point")
+local Segment = require("drift-mode.models.Common.Segment.Segment")
+
+local Gate = require("drift-mode.models.Elements.Gate.Gate")
+
 
 -- Track configration data
 
 ---@class TrackConfig : ModelBase
 ---@field name string Configuration name
 ---@field scorables Scorable[]
----@field startLine Segment
----@field respawnLine Segment
----@field finishLine Segment
+---@field startLine Gate
+---@field respawnLine Gate
+---@field finishLine Gate
 ---@field startingPoint Position
 ---@field scoringRanges ScoringRanges
 local TrackConfig = class("TrackConfig", ModelBase)
@@ -39,6 +43,19 @@ function TrackConfig.__deserialize(data)
     if obj.scoringObjects ~= nil then
         obj.scorables = obj.scoringObjects
     end
+
+    if Segment.isInstanceOf(obj.startLine) then
+        obj.startLine = Gate("Start line", obj.startLine)
+    end
+
+    if Segment.isInstanceOf(obj.finishLine) then
+        obj.finishLine = Gate("Finish line", obj.finishLine)
+    end
+
+    if Segment.isInstanceOf(obj.respawnLine) then
+        obj.respawnLine = Gate("Respawn line", obj.respawnLine)
+    end
+
     return obj
 end
 
@@ -78,27 +95,27 @@ function TrackConfig:getBoundingBox(padding)
         ::continue::
     end
 
-    if self.startLine then
-        pMin:min(self.startLine.head:value())
-        pMax:max(self.startLine.head:value())
-        pMin:min(self.startLine.tail:value())
-        pMax:max(self.startLine.tail:value())
+    if self.startLine and self.startLine.segment then
+        pMin:min(self.startLine.segment.head:value())
+        pMax:max(self.startLine.segment.head:value())
+        pMin:min(self.startLine.segment.tail:value())
+        pMax:max(self.startLine.segment.tail:value())
         changed = true
     end
 
-    if self.finishLine then
-        pMin:min(self.finishLine.head:value())
-        pMax:max(self.finishLine.head:value())
-        pMin:min(self.finishLine.tail:value())
-        pMax:max(self.finishLine.tail:value())
+    if self.finishLine and self.startLine.segment then
+        pMin:min(self.finishLine.segment.head:value())
+        pMax:max(self.finishLine.segment.head:value())
+        pMin:min(self.finishLine.segment.tail:value())
+        pMax:max(self.finishLine.segment.tail:value())
         changed = true
     end
 
-    if self.respawnLine then
-        pMin:min(self.respawnLine.head:value())
-        pMax:max(self.respawnLine.head:value())
-        pMin:min(self.respawnLine.tail:value())
-        pMax:max(self.respawnLine.tail:value())
+    if self.respawnLine and self.startLine.segment then
+        pMin:min(self.respawnLine.segment.head:value())
+        pMax:max(self.respawnLine.segment.head:value())
+        pMin:min(self.respawnLine.segment.tail:value())
+        pMax:max(self.respawnLine.segment.tail:value())
         changed = true
     end
 
@@ -122,10 +139,18 @@ function TrackConfig:drawFlat(coord_transformer, scale)
     for _, obj in ipairs(self.scorables) do
         obj:drawFlat(coord_transformer, scale)
     end
-
-    if self.startLine then self.startLine:drawFlat(coord_transformer, scale, Resources.Colors.Start) end
-    if self.finishLine then self.finishLine:drawFlat(coord_transformer, scale, Resources.Colors.Finish) end
-    if self.respawnLine then self.respawnLine:drawFlat(coord_transformer, scale, Resources.Colors.Respawn) end
+    if self.startLine and self.startLine.segment then
+        self.startLine.segment:drawFlat(coord_transformer, scale,
+            Resources.Colors.Start)
+    end
+    if self.finishLine and self.startLine.segment then
+        self.finishLine.segment:drawFlat(coord_transformer, scale,
+            Resources.Colors.Finish)
+    end
+    if self.respawnLine and self.startLine.segment then
+        self.respawnLine.segment:drawFlat(coord_transformer, scale,
+            Resources.Colors.Respawn)
+    end
     if self.startingPoint then self.startingPoint:drawFlat(coord_transformer, scale, Resources.Colors.Respawn) end
 end
 
