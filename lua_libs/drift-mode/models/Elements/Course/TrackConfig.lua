@@ -103,7 +103,7 @@ function TrackConfig:getBoundingBox(padding)
         changed = true
     end
 
-    if self.finishLine and self.startLine.segment then
+    if self.finishLine and self.finishLine.segment then
         pMin:min(self.finishLine.segment.head:value())
         pMax:max(self.finishLine.segment.head:value())
         pMin:min(self.finishLine.segment.tail:value())
@@ -111,7 +111,7 @@ function TrackConfig:getBoundingBox(padding)
         changed = true
     end
 
-    if self.respawnLine and self.startLine.segment then
+    if self.respawnLine and self.respawnLine.segment then
         pMin:min(self.respawnLine.segment.head:value())
         pMax:max(self.respawnLine.segment.head:value())
         pMin:min(self.respawnLine.segment.tail:value())
@@ -143,11 +143,11 @@ function TrackConfig:drawFlat(coord_transformer, scale)
         self.startLine.segment:drawFlat(coord_transformer, scale,
             Resources.Colors.Start)
     end
-    if self.finishLine and self.startLine.segment then
+    if self.finishLine and self.finishLine.segment then
         self.finishLine.segment:drawFlat(coord_transformer, scale,
             Resources.Colors.Finish)
     end
-    if self.respawnLine and self.startLine.segment then
+    if self.respawnLine and self.respawnLine.segment then
         self.respawnLine.segment:drawFlat(coord_transformer, scale,
             Resources.Colors.Respawn)
     end
