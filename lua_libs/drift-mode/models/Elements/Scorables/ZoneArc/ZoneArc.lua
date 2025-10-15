@@ -71,8 +71,26 @@ end
 
 ---@return physics.ColliderType[]
 function ZoneArc:gatherColliders()
-    -- NOT IMPLEMENTED: For now return nothing
-    return {}
+    if not self.collide then return {} end
+
+    local colliders = {}
+
+    for idx, segment in self:getArc():toPointArray(8):segment(false) do
+        local parallel = (segment.tail:value() - segment.head:value()):normalize()
+        local look = parallel:clone():cross(vec3(0, 1, 0))
+        local up = parallel:clone():cross(look)
+
+        local collider = physics.Collider.Box(
+            vec3(segment:lenght(), 1, 0.01),
+            segment:getCenter():value() + vec3(0, 0.5),
+            look,
+            up,
+            false
+        )
+        colliders[idx] = collider
+    end
+
+    return colliders
 end
 
 function ZoneArc:setCollide(value)
@@ -100,38 +118,43 @@ local function projectToPlane(point, on_plane, normal)
 end
 
 ---Check if the point is inside the zone
----@param self ZoneArc
 ---@param point Point
 ---@return boolean
 function ZoneArc:isInZoneArc(point)
-    local distance_to_center = point:flat():distance(self.arc:getCenter():flat())
+    local distance_to_center = point:value():distance(self.arc:getCenter():value())
     if distance_to_center > self.arc:getRadius() or
         distance_to_center < self.arc:getRadius() - self.width then
         return false
     end
 
-    local start_direction = self.arc:getStartDirection()
-    local point_projected_on_arc_plane = projectToPlane(point, self.arc:getCenter(), self.arc:getNormal())
-    local angle_between = start_direction:angle(point_projected_on_arc_plane:value())
-    if angle_between > self.arc:getStartAngle() and
-        angle_between < self.arc:getSweepAngle() then
-        return true
+    -- Grab the geometric data
+    local center          = self.arc:getCenter()
+    local normal          = self.arc:getNormal()
+    local startAngle      = self.arc:getStartAngle()
+    local sweepAngle      = self.arc:getSweepAngle()
+
+    -- 1. Project the point onto the arc's plane
+    local projected_point = projectToPlane(point, center, normal)
+
+    -- 2. Vector from centre to projected point & its length
+    local radial          = (projected_point:value() - center:value()):normalize() -- assumes vector subtraction
+
+    -- 4. Build an orthonormal basis in the plane
+    local u               = self.arc:getU() -- first basis vector
+    local v               = self.arc:getV()
+
+    -- 5. Signed angle between start direction and radial vector
+    local alpha           = math.atan2(radial:dot(v), radial:dot(u)) -- in (-π,π]
+
+    -- 6. Signed sweep test
+    local delta           = alpha - startAngle
+    if sweepAngle > 0 then
+        if delta < 0 then delta = delta + 2 * math.pi end
+        return delta >= 0 and delta <= sweepAngle
+    else -- sweepAngle < 0
+        if delta > 0 then delta = delta - 2 * math.pi end
+        return delta <= 0 and delta >= sweepAngle
     end
-
-    return false
-end
-
----Check if a segment is inside the zone. Relatively expensive to compute.
----
----Naively assumes there's only one intersection. If both segment end-points are either in
----or out it assumes the whole segment is in or out.
----@param self ZoneArc
----@param segment Segment
----@param custom_origin Point? Custom origin point, to check corretly it must be outside the zone
----@return number fraction Fraction of the segment inside the zone: `1.0` fully inside, `0.0` fully outside
-function ZoneArc:isSegmentInZoneArc(segment, custom_origin)
-    -- NOT IMPLEMENTED
-    return 0.0
 end
 
 ---Return a segment that is the entry gate of the zone, ie. segment between first
@@ -139,8 +162,7 @@ end
 ---@param self ZoneArc
 ---@return Segment?
 function ZoneArc:getStartGate()
-    -- NOT IMPLEMENTED
-    return nil
+    return Segment(self:getArc():getPointOnArc(0.0), self:getInsideArc():getPointOnArc(1.0))
 end
 
 ---@return Point
@@ -155,7 +177,11 @@ end
 ---becomes the zones centroid (visual center).
 ---@param point Point
 function ZoneArc:setZoneArcPosition(point)
-    -- NOT IMPLEMENTED
+    local center = self:getCenter()
+    local offset = self:getArc():getCenter():value() - center:value()
+
+    self:getArc():setCenter(Point(point:value() + offset))
+    self:recalcInsideArc()
 end
 
 function ZoneArc:realignZoneArcPointOnTrack()
@@ -163,8 +189,41 @@ function ZoneArc:realignZoneArcPointOnTrack()
 end
 
 function ZoneArc:getBoundingBox()
-    -- NOT IMPLEMENTED
-    return nil
+    -- If there's no geometry, we cannot provide a bounding box
+    if not self.arc then return nil end
+
+    -- The zone arc is an annular sector bounded by the outer arc (`self.arc`)
+    -- and the inner arc (`self._inside_arc`).  For simplicity we approximate
+    -- the bounding box by sampling points along both arcs.
+    local samples = 5 -- number of samples – enough for a smooth result
+
+    -- Initial extreme values
+    local pMin = vec3(math.huge, math.huge, math.huge)
+    local pMax = vec3(-math.huge, -math.huge, -math.huge)
+
+    -- Helper to update min/max from a point
+    local function upd(point)
+        local v = point:value()
+        pMin = vec3(math.min(pMin.x, v.x), math.min(pMin.y, v.y), math.min(pMin.z, v.z))
+        pMax = vec3(math.max(pMax.x, v.x), math.max(pMax.y, v.y), math.max(pMax.z, v.z))
+    end
+
+    -- Sample points on the outer arc
+    for i = 0, samples do
+        local t = i / samples
+        upd(self.arc:getPointOnArc(t))
+    end
+
+    -- Sample points on the inner arc if it exists
+    local inside = self:getInsideArc()
+    if inside then
+        for i = 0, samples do
+            local t = i / samples
+            upd(inside:getPointOnArc(t))
+        end
+    end
+
+    return { p1 = Point(pMin), p2 = Point(pMax) }
 end
 
 function ZoneArc:isEmpty()
@@ -172,15 +231,17 @@ function ZoneArc:isEmpty()
 end
 
 function ZoneArc:drawFlat(coord_transformer, scale)
-    -- NOT IMPLEMENTED
-end
+    for _, seg in self:getArc():toPointArray(8):segment(false):iter() do
+        local head_mapped = coord_transformer(seg.head)
+        local tail_mapped = coord_transformer(seg.tail)
+        ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 1 * scale)
+    end
 
-function ZoneArc:setCenter(point)
-    local center = self:getCenter()
-    local offset = self:getArc():getCenter():value() - center:value()
-
-    self:getArc():setCenter(Point(point:value() + offset))
-    self:recalcInsideArc()
+    for _, seg in self:getInsideArc():toPointArray(8):segment(false):iter() do
+        local head_mapped = coord_transformer(seg.head)
+        local tail_mapped = coord_transformer(seg.tail)
+        ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 0.5 * scale)
+    end
 end
 
 ---@return ZoneArcHandle[]

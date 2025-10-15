@@ -25,7 +25,7 @@ end
 ---@param new_pos vec3
 function PoiZoneArc:set(new_pos)
     if self.point_type == PoiZoneArc.Type.Center then
-        self.zonearc:setCenter(Point(new_pos))
+        self.zonearc:setZoneArcPosition(Point(new_pos))
         return
     end
 
