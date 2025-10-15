@@ -1,37 +1,13 @@
-local ModelBase = require("drift-mode.models.ModelBase")
+local Element = require("drift-mode.models.Elements.Element")
 local Assert = require('drift-mode.assert')
 
----@class Scorable : ModelBase
-local Scorable = class("ScoringObject", ModelBase)
+---@class Scorable : Element
+local Scorable = class("ScoringObject", Element)
 Scorable.__model_path = "Elements.Scorables.Scorable"
 
-
 function Scorable:initialize(name, maxPoints)
-    self.name = name
+    Element.initialize(self, name)
     self.maxPoints = maxPoints
-end
-
----Get visual center of the object.
----Used mainly for visualization, so doesn't need to be accurate.
-function Scorable:getCenter()
-    Assert.Error("Called abstract method!")
-end
-
----@return physics.ColliderType[]
-function Scorable:gatherColliders()
-    Assert.Error("Called abstract method!")
-    return {}
-end
-
----Draw itself using ui.* calls
----@param coord_transformer fun(Point): vec2 Function converting true coordinate to canvas coordinate
----@param scale number
-function Scorable:drawFlat(coord_transformer, scale)
-    Assert.Error("Called abstract method!")
-end
-
-function Scorable:getBoundingBox()
-    Assert.Error("Called abstract method!")
 end
 
 -- TODO: getStateObject()
