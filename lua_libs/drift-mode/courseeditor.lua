@@ -77,30 +77,8 @@ local function gatherPois()
   for _, obj in ipairs(course.scorables) do
     if obj.isInstanceOf(Zone) then
       ---@cast obj Zone
-      for idx, inside_point in obj:getInsideLine():iter() do
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
-          inside_point,
-          obj,
-          CourseEditorUtils.POIs.Zone.Type.FromInsideLine,
-          idx
-        )
-      end
-      for idx, outside_point in obj:getOutsideLine():iter() do
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
-          outside_point,
-          obj,
-          CourseEditorUtils.POIs.Zone.Type.FromOutsideLine,
-          idx
-        )
-      end
-      local zone_center = obj:getCenter()
-      if zone_center then
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
-          zone_center,
-          obj,
-          CourseEditorUtils.POIs.Zone.Type.Center,
-          nil
-        )
+      for _, poi in ipairs(CourseEditorUtils.POIs.Zone.gatherPois(obj)) do
+        _pois[#_pois + 1] = poi
       end
     elseif obj.isInstanceOf(Clip) then
       ---@cast obj Clip
@@ -109,31 +87,8 @@ local function gatherPois()
       end
     elseif obj.isInstanceOf(ZoneArc) then
       ---@cast obj ZoneArc
-      local arc = obj:getArc()
-      if arc ~= nil then
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
-          obj:getArc():getCenter(),
-          obj,
-          CourseEditorUtils.POIs.ZoneArc.Type.Center
-        )
-
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
-          arc:getStartPoint(),
-          obj,
-          CourseEditorUtils.POIs.ZoneArc.Type.ArcStart
-        )
-
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
-          arc:getEndPoint(),
-          obj,
-          CourseEditorUtils.POIs.ZoneArc.Type.ArcEnd
-        )
-
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
-          arc:getPointOnArc(0.5),
-          obj,
-          CourseEditorUtils.POIs.ZoneArc.Type.ArcControl
-        )
+      for _, poi in ipairs(CourseEditorUtils.POIs.ZoneArc.gatherPois(obj)) do
+        _pois[#_pois + 1] = poi
       end
     end
   end

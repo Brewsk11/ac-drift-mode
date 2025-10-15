@@ -23,6 +23,39 @@ function PoiZoneArc:initialize(point, zone_arc, zone_obj_type)
     self.point_type = zone_obj_type
 end
 
+---@param zonearc ZoneArc
+---@return PoiZoneArc[]
+function PoiZoneArc.gatherPois(zonearc)
+    local pois = {}
+    local arc = zonearc:getArc()
+    if arc ~= nil then
+        pois[#pois + 1] = PoiZoneArc(
+            zonearc:getArc():getCenter(),
+            zonearc,
+            PoiZoneArc.Type.Center
+        )
+
+        pois[#pois + 1] = PoiZoneArc(
+            arc:getStartPoint(),
+            zonearc,
+            PoiZoneArc.Type.ArcStart
+        )
+
+        pois[#pois + 1] = PoiZoneArc(
+            arc:getEndPoint(),
+            zonearc,
+            PoiZoneArc.Type.ArcEnd
+        )
+
+        pois[#pois + 1] = PoiZoneArc(
+            arc:getPointOnArc(0.5),
+            zonearc,
+            PoiZoneArc.Type.ArcControl
+        )
+    end
+    return pois
+end
+
 function PoiZoneArc:set(new_pos)
     if self.point_type == PoiZoneArc.Type.Center then
         self.zone_arc:getArc():setCenter(Point(new_pos))
