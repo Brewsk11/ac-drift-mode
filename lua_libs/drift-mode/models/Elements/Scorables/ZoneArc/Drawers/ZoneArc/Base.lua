@@ -2,20 +2,22 @@ local Drawer = require("drift-mode.models.Drawer")
 
 
 ---@class DrawerZoneArc : Drawer
----@field drawerInsideLine DrawerSegment
----@field drawerOutsideLine DrawerSegment
+---@field drawerArcOutside DrawerArc
+---@field drawerArcInside DrawerArc
 local DrawerZoneArc = class("DrawerZoneArc", Drawer)
 DrawerZoneArc.__model_path = "Elements.Scorables.ZoneArc.Drawers.ZoneArc.Base"
 
 function DrawerZoneArc:initialize()
 end
 
----@param zone ZoneArc
-function DrawerZoneArc:draw(zone)
-    for _, segment in zone:getArc():toPointArray(8):segment(false):iter() do
-        if self.drawerOutsideLine then
-            self.drawerOutsideLine:draw(segment)
-        end
+---@param zonearc ZoneArc
+function DrawerZoneArc:draw(zonearc)
+    if self.drawerArcOutside then
+        self.drawerArcOutside:draw(zonearc:getArc())
+    end
+
+    if self.drawerArcInside then
+        self.drawerArcInside:draw(zonearc:getInsideArc())
     end
 
     -- TODO : insideline

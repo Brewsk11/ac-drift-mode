@@ -13,6 +13,7 @@ local Handle = require("drift-mode.models.Elements.Scorables.ZoneArc.Handle")
 ---@class ZoneArc : Scorable Class representing a drift scoring zone
 ---@field name string Name of the zone
 ---@field private arc Arc
+---@field private _inside_arc Arc?
 ---@field private width number
 ---@field private collide boolean Whether to enable colliders for this zone
 ---@field maxPoints integer Maximum points possible to score in the zone (in a perfect run)
@@ -28,11 +29,44 @@ function ZoneArc:initialize(name, maxPoints, collide, arc, width)
     Scorable.initialize(self, name, maxPoints)
     self.collide = collide or false
     self.arc = arc
-    self.width = width
+    self.width = width or 3
+    self:recalcInsideArc()
 end
 
 function ZoneArc:getArc()
     return self.arc
+end
+
+function ZoneArc:recalcArcFromTriplet(from, to, midpoint)
+    self:getArc():recalcFromTriplet(from, to, midpoint)
+    self:recalcInsideArc()
+end
+
+function ZoneArc:setWidth(width)
+    self.width = width
+    self:recalcInsideArc()
+end
+
+function ZoneArc:recalcInsideArc()
+    local arc = self:getArc()
+    if arc == nil then return nil end
+
+    local inside_arc = Arc(
+        arc:getCenter(),
+        arc:getRadius() - self.width,
+        arc:getNormal(),
+        arc:getStartAngle(),
+        arc:getSweepAngle()
+    )
+    self._inside_arc = inside_arc
+end
+
+function ZoneArc:getInsideArc()
+    if self._inside_arc == nil then
+        self:recalcInsideArc()
+        return
+    end
+    return self._inside_arc
 end
 
 ---@return physics.ColliderType[]
@@ -109,6 +143,7 @@ function ZoneArc:getStartGate()
     return nil
 end
 
+---@return Point
 function ZoneArc:getCenter()
     local dir = (self.arc:getStartDirection() + self.arc:getEndDirection()) / 2
     local dist = self.arc:getRadius() - self.width / 2
@@ -140,13 +175,21 @@ function ZoneArc:drawFlat(coord_transformer, scale)
     -- NOT IMPLEMENTED
 end
 
+function ZoneArc:setCenter(point)
+    local center = self:getCenter()
+    local offset = self:getArc():getCenter():value() - center:value()
+
+    self:getArc():setCenter(Point(point:value() + offset))
+    self:recalcInsideArc()
+end
+
 ---@return ZoneArcHandle[]
 function ZoneArc:gatherHandles()
     local pois = {}
     local arc = self:getArc()
     if arc ~= nil then
         pois[#pois + 1] = Handle(
-            self:getArc():getCenter(),
+            self:getCenter(),
             self,
             Handle.Type.Center
         )
@@ -164,10 +207,18 @@ function ZoneArc:gatherHandles()
         )
 
         pois[#pois + 1] = Handle(
-            arc:getPointOnArc(0.5),
+            arc:getPointOnArc(0.35),
             self,
             Handle.Type.ArcControl
         )
+
+        if self._inside_arc then
+            pois[#pois + 1] = Handle(
+                self:getInsideArc():getPointOnArc(0.10),
+                self,
+                Handle.Type.WidthHandle
+            )
+        end
     end
     return pois
 end

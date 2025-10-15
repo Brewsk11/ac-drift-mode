@@ -9,9 +9,13 @@ end
 
 function DrawerArc:getN(arc, maxDistance)
     if maxDistance == nil then
-        maxDistance = 4
+        maxDistance = 10
     end
-    return math.min(math.ceil(arc:getDistance() / maxDistance), 64)
+
+    local maxN = 16
+    local res = math.min(math.ceil(arc:getDistance() / maxDistance), maxN)
+
+    return res
 end
 
 ---@param arc Arc

@@ -1,39 +1,30 @@
 local DrawerZoneArc = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.ZoneArc.Base')
-local DrawerSegmentLine = require('drift-mode.models.Common.Segment.Drawers.Line')
+local DrawerArcSimple = require("drift-mode.models.Common.Arc.Drawers.Simple")
+
 
 ---@class DrawerZoneArcSetup : DrawerZoneArc
----@field drawerOutsideLineWithCollision DrawerSegment
----@field drawerOutsideLineNoCollision DrawerSegment
 local DrawerZoneArcSetup = class("DrawerZoneArcSetup", DrawerZoneArc)
 DrawerZoneArcSetup.__model_path = "Elements.Scorables.ZoneArc.Drawers.ZoneArc.Setup"
 
 function DrawerZoneArcSetup:initialize()
     DrawerZoneArc.initialize(self)
-    self.drawerInsideLine = DrawerSegmentLine(rgbm(0.5, 2, 1.5, 3))
-    self.drawerOutsideLineWithCollision = DrawerSegmentLine(rgbm(0.2, 0.1, 2.7, 3))
-    self.drawerOutsideLineNoCollision = DrawerSegmentLine(rgbm(0.4, 0.4, 2.2, 3))
-    self.drawerOutsideLine = nil
+    self.drawerArcInside = DrawerArcSimple()
+    self.drawerArcOutside = DrawerArcSimple()
 end
 
----@param zone ZoneArc
-function DrawerZoneArcSetup:draw(zone)
-    if zone:getCollide() then
-        self.drawerOutsideLine = self.drawerOutsideLineWithCollision
-    else
-        self.drawerOutsideLine = self.drawerOutsideLineNoCollision
-    end
-
-    DrawerZoneArc.draw(self, zone)
+---@param zonearc ZoneArc
+function DrawerZoneArcSetup:draw(zonearc)
+    DrawerZoneArc.draw(self, zonearc)
 
     local zone_name_location = nil
 
-    local gate = zone:getStartGate()
+    local gate = zonearc:getStartGate()
     if gate then
         zone_name_location = gate:getCenter():value()
     end
 
     if zone_name_location then
-        render.debugText(zone_name_location + vec3(0, 0.5, 0), zone.name)
+        render.debugText(zone_name_location + vec3(0, 0.5, 0), zonearc.name)
     end
 end
 
