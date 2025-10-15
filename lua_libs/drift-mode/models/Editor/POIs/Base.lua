@@ -10,6 +10,7 @@ ObjectEditorPoi.__model_path = "Editor.POIs.Base"
 ---@enum ObjectEditorPoi.Type
 ObjectEditorPoi.Type = {
     Zone = "Zone",
+    ZoneArc = "ZoneArc",
     Clip = "Clip",
     Segment = "Segment",
     StartingPoint = "StartingPoint"
