@@ -1,6 +1,7 @@
 local Assert = require('drift-mode.assert')
 local RaycastUtils = require('drift-mode.RaycastUtils')
 local Resources = require('drift-mode.Resources')
+local Handle = require("drift-mode.models.Elements.Scorables.Zone.Handle")
 
 local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")
 
@@ -53,6 +54,37 @@ function Zone.__deserialize(data)
         S.deserialize(data.maxPoints),
         S.deserialize(data.collide)
     )
+end
+
+---@return ZoneHandle[]
+function Zone:gatherHandles()
+    local handles = {}
+    for idx, inside_point in self:getInsideLine():iter() do
+        handles[#handles + 1] = Handle(
+            inside_point,
+            self,
+            Handle.Type.FromInsideLine,
+            idx
+        )
+    end
+    for idx, outside_point in self:getOutsideLine():iter() do
+        handles[#handles + 1] = Handle(
+            outside_point,
+            self,
+            Handle.Type.FromOutsideLine,
+            idx
+        )
+    end
+    local zone_center = self:getCenter()
+    if zone_center then
+        handles[#handles + 1] = Handle(
+            zone_center,
+            self,
+            Handle.Type.Center,
+            nil
+        )
+    end
+    return handles
 end
 
 ---@private

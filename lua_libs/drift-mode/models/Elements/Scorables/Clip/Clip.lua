@@ -3,6 +3,8 @@ local Assert = require('drift-mode.assert')
 local Point = require('drift-mode.models.Common.Point.Point')
 local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")
 local Segment = require("drift-mode.models.Common.Segment.Segment")
+local Handle = require("drift-mode.models.Elements.Scorables.Clip.Handle")
+
 
 ---@class Clip : Scorable Class representing a drift scoring zone
 ---@field name string Name of the zone
@@ -64,6 +66,22 @@ function Clip:gatherColliders()
     }
 
     return collider
+end
+
+---@return ClipHandle[]
+function Clip:gatherHandles()
+    local handles = {}
+    handles[#handles + 1] = Handle(
+        self.origin,
+        self,
+        Handle.Type.Origin
+    )
+    handles[#handles + 1] = Handle(
+        self:getEnd(),
+        self,
+        Handle.Type.Ending
+    )
+    return handles
 end
 
 function Clip:setCollide(value)

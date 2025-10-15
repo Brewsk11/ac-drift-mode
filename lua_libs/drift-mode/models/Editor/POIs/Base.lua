@@ -23,7 +23,7 @@ end
 
 ---@param element Scorable -- TODO: this should be of type `Element`, as non-scorable course objects may be added in the future (such as a wall). Currently `Element` has no base class.
 ---@return ObjectEditorPoi[]
-function ObjectEditorPoi:gatherPois(element)
+function ObjectEditorPoi:gatherHandles(element)
     Assert.Error("Abstract method called")
     return {}
 end

@@ -59,13 +59,13 @@ function RoutineMovePoi:run(context)
         PointDir.Drawers.Sphere(rgbm(1.5, 3, 0, 3)))
 
     if self.poi.isInstanceOf(POIs.Zone) then
-        local poi_zone = self.poi ---@type PoiZone # TODO: clean up class names
+        local poi_zone = self.poi ---@type ZoneHandle # TODO: clean up class names
         poi_zone.zone:setDirty()
     end
 end
 
 ---@param context EditorRoutine.Context
----@param poi ObjectEditorPoi|Poi
+---@param poi ObjectEditorPoi|Handle
 function RoutineMovePoi:deletePoi(context, poi)
     if poi.poi_type == POIs.Base.Type.StartingPoint then
         context.course.startingPoint = nil
@@ -77,7 +77,7 @@ function RoutineMovePoi:deletePoi(context, poi)
             context.course.finishLine = nil
         end
     else
-        ---@cast poi Poi
+        ---@cast poi Handle
         poi:onDelete(context)
     end
     self.callback()

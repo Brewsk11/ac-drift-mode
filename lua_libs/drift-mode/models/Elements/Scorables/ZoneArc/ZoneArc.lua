@@ -7,6 +7,8 @@ local Point = Common.Point.Point
 local Segment = Common.Segment.Segment
 local PointArray = Common.Point.Array
 local Arc = require("drift-mode.models.Common.Arc.Arc")
+local Handle = require("drift-mode.models.Elements.Scorables.ZoneArc.Handle")
+
 
 ---@class ZoneArc : Scorable Class representing a drift scoring zone
 ---@field name string Name of the zone
@@ -136,6 +138,38 @@ end
 
 function ZoneArc:drawFlat(coord_transformer, scale)
     -- NOT IMPLEMENTED
+end
+
+---@return ZoneArcHandle[]
+function ZoneArc:gatherHandles()
+    local pois = {}
+    local arc = self:getArc()
+    if arc ~= nil then
+        pois[#pois + 1] = Handle(
+            self:getArc():getCenter(),
+            self,
+            Handle.Type.Center
+        )
+
+        pois[#pois + 1] = Handle(
+            arc:getStartPoint(),
+            self,
+            Handle.Type.ArcStart
+        )
+
+        pois[#pois + 1] = Handle(
+            arc:getEndPoint(),
+            self,
+            Handle.Type.ArcEnd
+        )
+
+        pois[#pois + 1] = Handle(
+            arc:getPointOnArc(0.5),
+            self,
+            Handle.Type.ArcControl
+        )
+    end
+    return pois
 end
 
 local Assert = require('drift-mode.assert')

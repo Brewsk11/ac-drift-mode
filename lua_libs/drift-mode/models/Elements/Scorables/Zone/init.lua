@@ -3,7 +3,7 @@
 
 local Zone = {
     Drawers          = require('drift-mode.models.Elements.Scorables.Zone.Drawers.init'),
-    Poi              = require('drift-mode.models.Elements.Scorables.Zone.Poi'),
+    Handle           = require('drift-mode.models.Elements.Scorables.Zone.Handle'),
     Zone             = require('drift-mode.models.Elements.Scorables.Zone.Zone'),
     ZoneScoringPoint = require('drift-mode.models.Elements.Scorables.Zone.ZoneScoringPoint'),
     ZoneState        = require('drift-mode.models.Elements.Scorables.Zone.ZoneState'),

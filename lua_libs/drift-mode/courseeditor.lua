@@ -66,42 +66,29 @@ local function attachRoutine(routine)
   current_routine = routine
 end
 
----@return ObjectEditorPoi[]
-local function gatherPois()
-  local _pois = {} ---@type ObjectEditorPoi[]
+---@return Handle[]
+local function gatherHandles()
+  local handles = {} ---@type Handle[]
 
   if not course then
-    return _pois
+    return handles
   end
 
   for _, obj in ipairs(course.scorables) do
-    if obj.isInstanceOf(Zone.Zone) then
-      ---@cast obj Zone
-      for _, poi in ipairs(Zone.Poi.gatherPois(obj)) do
-        _pois[#_pois + 1] = poi
-      end
-    elseif obj.isInstanceOf(Clip.Clip) then
-      ---@cast obj Clip
-      for _, poi in ipairs(Clip.Poi.gatherPois(obj)) do
-        _pois[#_pois + 1] = poi
-      end
-    elseif obj.isInstanceOf(ZoneArc.ZoneArc) then
-      ---@cast obj ZoneArc
-      for _, poi in ipairs(ZoneArc.Poi.gatherPois(obj)) do
-        _pois[#_pois + 1] = poi
-      end
+    for _, poi in ipairs(obj:gatherHandles()) do
+      handles[#handles + 1] = poi
     end
   end
 
   if course.startLine then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
+    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
       course.startLine.head,
       course.startLine,
       CourseEditorUtils.POIs.Segment.Type.StartLine,
       CourseEditorUtils.POIs.Segment.Part.Head
     )
 
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
+    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
       course.startLine.tail,
       course.startLine,
       CourseEditorUtils.POIs.Segment.Type.StartLine,
@@ -110,14 +97,14 @@ local function gatherPois()
   end
 
   if course.finishLine then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
+    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
       course.finishLine.head,
       course.finishLine,
       CourseEditorUtils.POIs.Segment.Type.FinishLine,
       CourseEditorUtils.POIs.Segment.Part.Head
     )
 
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
+    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
       course.finishLine.tail,
       course.finishLine,
       CourseEditorUtils.POIs.Segment.Type.FinishLine,
@@ -126,14 +113,14 @@ local function gatherPois()
   end
 
   if course.respawnLine then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
+    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
       course.respawnLine.head,
       course.respawnLine,
       CourseEditorUtils.POIs.Segment.Type.RespawnLine,
       CourseEditorUtils.POIs.Segment.Part.Head
     )
 
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.Segment(
+    handles[#handles + 1] = CourseEditorUtils.POIs.Segment(
       course.respawnLine.tail,
       course.respawnLine,
       CourseEditorUtils.POIs.Segment.Type.RespawnLine,
@@ -142,21 +129,21 @@ local function gatherPois()
   end
 
   if course.startingPoint then
-    _pois[#_pois + 1] = CourseEditorUtils.POIs.StartingPoint(
+    handles[#handles + 1] = CourseEditorUtils.POIs.StartingPoint(
       course.startingPoint.origin,
       course.startingPoint
     )
   end
 
   --cursor_data:registerObject("editor_pois", pois, CourseEditorUtils.POIs.Drawers.Simple(PointDir.Drawers.Simple()))
-  return _pois
+  return handles
 end
 
 
 ---Called when editor changes the course in any way
 local function onCourseEdited()
   Assert.NotNil(course, "Course was edited but simultaneously was nil")
-  pois = gatherPois()
+  pois = gatherHandles()
   unsaved_changes = true
   EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
 end
@@ -173,7 +160,7 @@ function CourseEditor:initialize()
     { 'Other',           self.drawUIOther },
     { 'Help',            self.drawUIHelp },
   }
-  pois = gatherPois()
+  pois = gatherHandles()
 end
 
 ---Main function drawing app UI

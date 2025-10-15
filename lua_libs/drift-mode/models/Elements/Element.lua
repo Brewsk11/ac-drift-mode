@@ -32,6 +32,11 @@ function Element:getBoundingBox()
     Assert.Error("Called abstract method!")
 end
 
+---@return Handle[]
+function Element:gatherHandles()
+    return {}
+end
+
 local function test()
 end
 test()

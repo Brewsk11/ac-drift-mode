@@ -5,7 +5,7 @@ local Elements = {
     Course    = require('drift-mode.models.Elements.Course.init'),
     Element   = require('drift-mode.models.Elements.Element'),
     Gate      = require('drift-mode.models.Elements.Gate.init'),
-    Poi       = require('drift-mode.models.Elements.Poi'),
+    Handle    = require('drift-mode.models.Elements.Handle'),
     Position  = require('drift-mode.models.Elements.Position.init'),
     Scorables = require('drift-mode.models.Elements.Scorables.init'),
 }
