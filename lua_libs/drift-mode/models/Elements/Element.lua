@@ -3,7 +3,7 @@ local Assert = require('drift-mode.assert')
 
 ---@class Element : ModelBase
 local Element = class("ScoringObject", ModelBase)
-Element.__model_path = "Elements.Elements.Element"
+Element.__model_path = "Elements.Element"
 
 function Element:initialize(name)
     self.name = name

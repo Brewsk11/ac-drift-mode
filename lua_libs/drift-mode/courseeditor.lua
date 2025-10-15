@@ -6,9 +6,9 @@ local ConfigIO = require("drift-mode.configio")
 local CourseEditorElements = require('drift-mode.ui_layouts.CourseEditorElements')
 
 local Cursor = require('drift-mode.models.Editor.Cursor')
-local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
-local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc")
-local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
+local Zone = require("drift-mode.models.Elements.Scorables.Zone")
+local ZoneArc = require("drift-mode.models.Elements.Scorables.ZoneArc")
+local Clip = require("drift-mode.models.Elements.Scorables.Clip")
 local TrackConfig = require("drift-mode.models.Elements.Course.TrackConfig")
 local StartingPoint = require("drift-mode.models.Elements.Position.StartingPoint")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
@@ -75,19 +75,19 @@ local function gatherPois()
   end
 
   for _, obj in ipairs(course.scorables) do
-    if obj.isInstanceOf(Zone) then
+    if obj.isInstanceOf(Zone.Zone) then
       ---@cast obj Zone
-      for _, poi in ipairs(CourseEditorUtils.POIs.Zone.gatherPois(obj)) do
+      for _, poi in ipairs(Zone.Poi.gatherPois(obj)) do
         _pois[#_pois + 1] = poi
       end
-    elseif obj.isInstanceOf(Clip) then
+    elseif obj.isInstanceOf(Clip.Clip) then
       ---@cast obj Clip
-      for _, poi in ipairs(CourseEditorUtils.POIs.Clip.gatherPois(obj)) do
+      for _, poi in ipairs(Clip.Poi.gatherPois(obj)) do
         _pois[#_pois + 1] = poi
       end
-    elseif obj.isInstanceOf(ZoneArc) then
+    elseif obj.isInstanceOf(ZoneArc.ZoneArc) then
       ---@cast obj ZoneArc
-      for _, poi in ipairs(CourseEditorUtils.POIs.ZoneArc.gatherPois(obj)) do
+      for _, poi in ipairs(ZoneArc.Poi.gatherPois(obj)) do
         _pois[#_pois + 1] = poi
       end
     end
@@ -354,12 +354,12 @@ function CourseEditor:drawUIScorables(dt)
 
     ui.childWindow("object" .. tostring(i), vec2(ui.availableSpaceX() - 32, config_height), true,
       bit.bor(ui.WindowFlags.NoScrollbar, ui.WindowFlags.NoScrollWithMouse), function()
-        if objects[i].isInstanceOf(Zone) then
+        if objects[i].isInstanceOf(Zone.Zone) then
           ui.image(Resources.IconZoneWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
           if ui.itemHovered() then
             ui.setTooltip("Zone")
           end
-        elseif objects[i].isInstanceOf(Clip) then
+        elseif objects[i].isInstanceOf(Clip.Clip) then
           ui.image(Resources.IconClipWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
           if ui.itemHovered() then
             ui.setTooltip("Clip")
@@ -463,7 +463,7 @@ function CourseEditor:drawUIScorables(dt)
   end
 
   if ui.button("Create new zone", vec2(button_width, 40), button_global_flags) then
-    objects[#objects + 1] = Zone(course:getNextZoneName(), nil, nil, 1000)
+    objects[#objects + 1] = Zone.Zone(course:getNextZoneName(), nil, nil, 1000)
     onCourseEdited()
   end
 
@@ -471,14 +471,14 @@ function CourseEditor:drawUIScorables(dt)
 
   if ui.button("Create new arc", vec2(button_width, 40), button_global_flags) then
     current_routine = CourseEditorUtils.Routines.SelectArc(function(arc)
-      local new_zonearc = ZoneArc(course:getNextZoneName(), 1000, false, arc, 5)
+      local new_zonearc = ZoneArc.ZoneArc(course:getNextZoneName(), 1000, false, arc, 5)
       course.scorables[#course.scorables + 1] = new_zonearc
     end)
   end
 
   if ui.button("Create new clip", vec2(button_width, 40), button_global_flags) then
     current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-      local new_clip = Clip(course:getNextClipName(), segment.head, nil, nil, 1000)
+      local new_clip = Clip.Clip(course:getNextClipName(), segment.head, nil, nil, 1000)
       new_clip:setEnd(segment.tail)
       course.scorables[#course.scorables + 1] = new_clip
     end)

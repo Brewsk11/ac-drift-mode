@@ -3,6 +3,7 @@
 
 local ZoneArc = {
     Drawers             = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.init'),
+    Poi                 = require('drift-mode.models.Elements.Scorables.ZoneArc.Poi'),
     ZoneArc             = require('drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc'),
     ZoneArcScoringPoint = require('drift-mode.models.Elements.Scorables.ZoneArc.ZoneArcScoringPoint'),
     ZoneArcState        = require('drift-mode.models.Elements.Scorables.ZoneArc.ZoneArcState'),

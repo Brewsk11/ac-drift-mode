@@ -3,12 +3,9 @@
 
 local POIs = {
     Base          = require('drift-mode.models.Editor.POIs.Base'),
-    Clip          = require('drift-mode.models.Editor.POIs.Clip'),
     Drawers       = require('drift-mode.models.Editor.POIs.Drawers.init'),
     Segment       = require('drift-mode.models.Editor.POIs.Segment'),
     StartingPoint = require('drift-mode.models.Editor.POIs.StartingPoint'),
-    Zone          = require('drift-mode.models.Editor.POIs.Zone'),
-    ZoneArc       = require('drift-mode.models.Editor.POIs.ZoneArc'),
 }
 
 return POIs

@@ -65,27 +65,9 @@ function RoutineMovePoi:run(context)
 end
 
 ---@param context EditorRoutine.Context
----@param poi ObjectEditorPoi
+---@param poi ObjectEditorPoi|Poi
 function RoutineMovePoi:deletePoi(context, poi)
-    if poi.poi_type == POIs.Base.Type.Zone then
-        local poi_zone = poi ---@type PoiZone
-        if poi_zone.point_type == POIs.Zone.Type.FromInsideLine then
-            poi_zone.zone:getInsideLine():remove(poi_zone.point_index)
-        elseif poi_zone.point_type == POIs.Zone.Type.FromOutsideLine then
-            poi_zone.zone:getOutsideLine():remove(poi_zone.point_index)
-        elseif poi_zone.point_type == POIs.Zone.Type.Center then
-            ui.modalPopup(
-                "Deleting zone",
-                "Are you sure you want to delete the zone?",
-                function()
-                    table.removeItem(context.course.scorables, poi_zone.zone)
-                end
-            )
-        end
-    elseif poi.poi_type == POIs.Base.Type.Clip then
-        local poi_clip = poi ---@type PoiClip
-        table.removeItem(context.course.scorables, poi_clip.clip)
-    elseif poi.poi_type == POIs.Base.Type.StartingPoint then
+    if poi.poi_type == POIs.Base.Type.StartingPoint then
         context.course.startingPoint = nil
     elseif poi.poi_type == POIs.Base.Type.Segment then
         local poi_segment = poi ---@type PoiSegment
@@ -94,6 +76,9 @@ function RoutineMovePoi:deletePoi(context, poi)
         elseif poi_segment.segment_type == POIs.Segment.Type.FinishLine then
             context.course.finishLine = nil
         end
+    else
+        ---@cast poi Poi
+        poi:onDelete(context)
     end
     self.callback()
 end

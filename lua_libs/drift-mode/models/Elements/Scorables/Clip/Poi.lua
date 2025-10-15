@@ -1,11 +1,11 @@
-local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.Base')
+local Poi = require('drift-mode.models.Elements.Poi')
 local Point = require("drift-mode.models.Common.Point.Point")
 
----@class PoiClip : ObjectEditorPoi
+---@class PoiClip : Poi
 ---@field clip Clip
 ---@field point_type PoiClip.Type
-local PoiClip = class("PoiClip", ObjectEditorPoi)
-PoiClip.__model_path = "Editor.POIs.Clip"
+local PoiClip = class("PoiClip", Poi)
+PoiClip.__model_path = "Elements.Scorables.Clip.Poi"
 
 ---@enum PoiClip.Type
 PoiClip.Type = {
@@ -14,7 +14,7 @@ PoiClip.Type = {
 }
 
 function PoiClip:initialize(point, clip, clip_obj_type)
-    ObjectEditorPoi.initialize(self, point, ObjectEditorPoi.Type.Clip)
+    Poi.initialize(self, point)
     self.clip = clip
     self.point_type = clip_obj_type
 end
@@ -42,6 +42,11 @@ function PoiClip.gatherPois(clip)
         PoiClip.Type.Ending
     )
     return pois
+end
+
+---@param context EditorRoutine.Context
+function PoiClip:onDelete(context)
+    table.removeItem(context.course.scorables, self.clip)
 end
 
 return PoiClip

@@ -1,11 +1,11 @@
-local ObjectEditorPoi = require('drift-mode.models.Editor.POIs.Base')
+local Poi = require('drift-mode.models.Elements.Poi')
 
----@class PoiZone : ObjectEditorPoi
+---@class PoiZone : Poi
 ---@field zone Zone
 ---@field point_type PoiZone.Type
 ---@field point_index integer
-local PoiZone = class("PoiZone", ObjectEditorPoi)
-PoiZone.__model_path = "Editor.POIs.Zone"
+local PoiZone = class("PoiZone", Poi)
+PoiZone.__model_path = "Elements.Scorables.Zone.Poi"
 
 ---@enum PoiZone.Type
 PoiZone.Type = {
@@ -15,7 +15,7 @@ PoiZone.Type = {
 }
 
 function PoiZone:initialize(point, zone, zone_obj_type, point_index)
-    ObjectEditorPoi.initialize(self, point, ObjectEditorPoi.Type.Zone)
+    Poi.initialize(self, point)
     self.zone = zone
     self.point_type = zone_obj_type
     self.point_index = point_index
@@ -59,6 +59,24 @@ function PoiZone:set(new_pos)
     else
         self.point:set(new_pos)
     end
+end
+
+---@param context EditorRoutine.Context
+function PoiZone:onDelete(context)
+    if self.point_type == PoiZone.Type.FromInsideLine then
+        self.zone:getInsideLine():remove(self.point_index)
+    elseif self.point_type == PoiZone.Type.FromOutsideLine then
+        self.zone:getOutsideLine():remove(self.point_index)
+    elseif self.point_type == PoiZone.Type.Center then
+        ui.modalPopup(
+            "Deleting zone",
+            "Are you sure you want to delete the zone?",
+            function()
+                table.removeItem(context.course.scorables, self.zone)
+            end
+        )
+    end
+    ac.log("onDeleteZone")
 end
 
 return PoiZone
