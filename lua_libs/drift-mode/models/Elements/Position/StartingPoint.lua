@@ -1,15 +1,16 @@
-local ModelBase = require("drift-mode.models.ModelBase")
+local Element = require("drift-mode.models.Elements.Element")
 local Point = require("drift-mode.models.Common.Point.Point")
 
----@class StartingPoint : ClassBase
+---@class StartingPoint : Element
 ---@field origin Point
 ---@field direction vec3
-local StartingPoint = class("StartingPoint", ModelBase)
+local StartingPoint = class("StartingPoint", Element)
 StartingPoint.__model_path = "Elements.Position.StartingPoint"
 
 ---@param origin Point
 ---@param direction vec3
 function StartingPoint:initialize(origin, direction)
+    Element.initialize(self, "Starting point")
     self.origin = origin
     self.direction = direction
 end
