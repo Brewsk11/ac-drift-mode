@@ -104,16 +104,9 @@ local function gatherPois()
       end
     elseif obj.isInstanceOf(Clip) then
       ---@cast obj Clip
-      _pois[#_pois + 1] = CourseEditorUtils.POIs.Clip(
-        obj.origin,
-        obj,
-        CourseEditorUtils.POIs.Clip.Type.Origin
-      )
-      _pois[#_pois + 1] = CourseEditorUtils.POIs.Clip(
-        obj:getEnd(),
-        obj,
-        CourseEditorUtils.POIs.Clip.Type.Ending
-      )
+      for _, poi in ipairs(CourseEditorUtils.POIs.Clip.gatherPois(obj)) do
+        _pois[#_pois + 1] = poi
+      end
     elseif obj.isInstanceOf(ZoneArc) then
       ---@cast obj ZoneArc
       local arc = obj:getArc()

@@ -27,4 +27,21 @@ function PoiClip:set(new_pos)
     end
 end
 
+---@param clip Clip
+---@return PoiClip[]
+function PoiClip.gatherPois(clip)
+    local pois = {}
+    pois[#pois + 1] = PoiClip(
+        clip.origin,
+        clip,
+        PoiClip.Type.Origin
+    )
+    pois[#pois + 1] = PoiClip(
+        clip:getEnd(),
+        clip,
+        PoiClip.Type.Ending
+    )
+    return pois
+end
+
 return PoiClip

@@ -21,6 +21,13 @@ function ObjectEditorPoi:initialize(point, poi_type)
     self.poi_type = poi_type
 end
 
+---@param element Scorable -- TODO: this should be of type `Element`, as non-scorable course objects may be added in the future (such as a wall). Currently `Element` has no base class.
+---@return ObjectEditorPoi[]
+function ObjectEditorPoi:gatherPois(element)
+    Assert.Error("Abstract method called")
+    return {}
+end
+
 function ObjectEditorPoi:set(new_pos)
     Assert.Error("Abstract method called")
 end
