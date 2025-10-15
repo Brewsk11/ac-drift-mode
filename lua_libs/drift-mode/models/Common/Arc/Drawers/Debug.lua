@@ -6,6 +6,7 @@ local DrawerArcDebug = class("DrawerArcDebug", DrawerArc)
 DrawerArcDebug.__model_path = "Common.Arc.Drawers.Debug"
 
 function DrawerArcDebug:initialize(color)
+    DrawerArc.initialize(self)
     self.color = color or rgbm(1, 1, 1, 1)
 end
 
@@ -18,13 +19,13 @@ function DrawerArcDebug:draw(arc)
 
     -- self:toPointArray() would cause this call to route to Arc:toPointArray()
     -- if called from Arc:drawDebug()
-    local segments = Circle.toPointArray(arc, 36):segment(true)
+    local segments = Circle.toPointArray(arc, self:getN(arc)):segment(true)
 
     for _, seg in segments:iter() do
         render.debugLine(seg.head:value(), seg.tail:value(), rgbm(3, 0, 0, 1) * 0.4)
     end
 
-    local segments2 = arc:toPointArray(8):segment(false)
+    local segments2 = arc:toPointArray(self:getN(arc)):segment(false)
 
     for _, segment in segments2:iter() do
         render.debugLine(segment.head:value(), segment.tail:value(), rgbm(0, 0, 3, 1))

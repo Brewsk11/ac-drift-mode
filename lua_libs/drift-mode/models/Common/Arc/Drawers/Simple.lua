@@ -10,7 +10,7 @@ end
 
 ---@param arc Arc
 function DrawerArcSimple:draw(arc)
-    local seg_array = arc:toPointArray(8):segment(false)
+    local seg_array = arc:toPointArray(self:getN(arc)):segment(false)
     for _, seg in seg_array:iter() do
         render.debugLine(seg.head:value(), seg.tail:value())
     end
