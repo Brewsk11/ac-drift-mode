@@ -76,53 +76,70 @@ local function gatherPois()
 
   for _, obj in ipairs(course.scorables) do
     if obj.isInstanceOf(Zone) then
-      local zone_obj = obj ---@type Zone
-      for idx, inside_point in zone_obj:getInsideLine():iter() do
+      ---@cast obj Zone
+      for idx, inside_point in obj:getInsideLine():iter() do
         _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
           inside_point,
-          zone_obj,
+          obj,
           CourseEditorUtils.POIs.Zone.Type.FromInsideLine,
           idx
         )
       end
-      for idx, outside_point in zone_obj:getOutsideLine():iter() do
+      for idx, outside_point in obj:getOutsideLine():iter() do
         _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
           outside_point,
-          zone_obj,
+          obj,
           CourseEditorUtils.POIs.Zone.Type.FromOutsideLine,
           idx
         )
       end
-      local zone_center = zone_obj:getCenter()
+      local zone_center = obj:getCenter()
       if zone_center then
         _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
           zone_center,
-          zone_obj,
+          obj,
           CourseEditorUtils.POIs.Zone.Type.Center,
           nil
         )
       end
     elseif obj.isInstanceOf(Clip) then
-      local clip_obj = obj ---@type Clip
+      ---@cast obj Clip
       _pois[#_pois + 1] = CourseEditorUtils.POIs.Clip(
-        clip_obj.origin,
-        clip_obj,
+        obj.origin,
+        obj,
         CourseEditorUtils.POIs.Clip.Type.Origin
       )
       _pois[#_pois + 1] = CourseEditorUtils.POIs.Clip(
-        clip_obj:getEnd(),
-        clip_obj,
+        obj:getEnd(),
+        obj,
         CourseEditorUtils.POIs.Clip.Type.Ending
       )
     elseif obj.isInstanceOf(ZoneArc) then
-      local zonearc_obj = obj ---@type ZoneArc
-      local zone_center = zonearc_obj:getCenter()
-      if zone_center then
-        _pois[#_pois + 1] = CourseEditorUtils.POIs.Zone(
-          zone_center,
-          zonearc_obj,
-          CourseEditorUtils.POIs.Zone.Type.Center,
-          nil
+      ---@cast obj ZoneArc
+      local arc = obj:getArc()
+      if arc ~= nil then
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
+          obj:getArc():getCenter(),
+          obj,
+          CourseEditorUtils.POIs.ZoneArc.Type.Center
+        )
+
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
+          arc:getStartPoint(),
+          obj,
+          CourseEditorUtils.POIs.ZoneArc.Type.ArcStart
+        )
+
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
+          arc:getEndPoint(),
+          obj,
+          CourseEditorUtils.POIs.ZoneArc.Type.ArcEnd
+        )
+
+        _pois[#_pois + 1] = CourseEditorUtils.POIs.ZoneArc(
+          arc:getPointOnArc(0.5),
+          obj,
+          CourseEditorUtils.POIs.ZoneArc.Type.ArcControl
         )
       end
     end
