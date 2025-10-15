@@ -52,6 +52,17 @@ function Arc:calculateAngles(start_point, end_point, control_point)
     end
 end
 
+function Arc:recalcFromTriplet(from, to, midpoint)
+    -- TODO: This one can probably be optimized not to create a new object
+    local a = Arc.fromTriplet(from, to, midpoint)
+    if a == nil then return end
+    self._center = a:getCenter()
+    self._radius = a:getRadius()
+    self._normal = a:getNormal()
+    self.start_angle = a:getStartAngle()
+    self.sweep_angle = a:getSweepAngle()
+end
+
 function Arc:getStartAngle()
     return self.start_angle
 end
