@@ -30,7 +30,7 @@ function RunState:initialize(track_config)
         elseif Clip.isInstanceOf(obj) then
             self.scoringObjectStates[idx] = ClipState(obj)
         elseif ZoneArc.isInstanceOf(obj) then
-
+            self.scoringObjectStates[idx] = ZoneArcState(obj)
         else
             Assert.Error("")
         end

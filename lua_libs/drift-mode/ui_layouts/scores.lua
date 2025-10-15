@@ -3,6 +3,7 @@ local Assert = require('drift-mode.Assert')
 
 local ScorableState = require("drift-mode.models.Elements.Scorables.ScorableState")
 local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")
+local ZoneArcState = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArcState")
 local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
 
 local ScoresLayout = {}
@@ -25,6 +26,8 @@ local function compactObjectList(scoring_objects_states)
             icon = Resources.IconZoneWhite
         elseif object_state.isInstanceOf(ClipState) then
             icon = Resources.IconClipWhite
+        elseif object_state.isInstanceOf(ZoneArcState) then
+            icon = Resources.IconZoneWhite
         else
             Assert.Error("")
         end

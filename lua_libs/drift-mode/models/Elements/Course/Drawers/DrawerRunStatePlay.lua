@@ -1,6 +1,7 @@
 local DrawerRunState = require('drift-mode.models.Elements.Course.Drawers.DrawerRunState')
 local DrawerCoursePlay = require("drift-mode.models.Elements.Course.Drawers.DrawerCoursePlay")
 local DrawerZoneStatePlay = require('drift-mode.models.Elements.Scorables.Zone.Drawers.State.Simple')
+local DrawerZoneArcStatePlay = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.State.Simple')
 local DrawerClipStatePlay = require('drift-mode.models.Elements.Scorables.Clip.Drawers.State.Simple')
 
 ---@class DrawerRunStatePlay : DrawerRunState
@@ -11,6 +12,7 @@ function DrawerRunStatePlay:initialize()
     self.drawerCourse = DrawerCoursePlay()
     self.drawerZoneState = DrawerZoneStatePlay()
     self.drawerClipState = DrawerClipStatePlay()
+    self.drawerZoneArcState = DrawerZoneArcStatePlay()
 
     self.courseDone = false
 end

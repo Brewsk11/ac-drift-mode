@@ -7,7 +7,7 @@ local Point = require("drift-mode.models.Common.Point.Point")
 local ZoneArcScoringPoint = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArcScoringPoint")
 
 ---@class ZoneArcState : ScorableState
----@field zone Zone
+---@field zonearc ZoneArc
 ---@field scores ZoneArcScoringPoint[]
 ---@field started boolean
 ---@field finished boolean
@@ -15,8 +15,8 @@ local ZoneArcScoringPoint = require("drift-mode.models.Elements.Scorables.ZoneAr
 local ZoneArcState = class("ZoneArcState", ScorableState)
 ZoneArcState.__model_path = "Elements.Scorables.ZoneArc.ZoneArcState"
 
-function ZoneArcState:initialize(zone)
-    self.zone = zone
+function ZoneArcState:initialize(zonearc)
+    self.zonearc = zonearc
     self.scores = {}
     self.started = false
     self.finished = false
@@ -25,7 +25,7 @@ function ZoneArcState:initialize(zone)
 end
 
 function ZoneArcState:getName()
-    return self.zone.name
+    return self.zonearc.name
 end
 
 function ZoneArcState:getId()
@@ -37,94 +37,14 @@ end
 ---@param drift_state DriftState
 ---@return number|nil
 function ZoneArcState:registerCar(car_config, car, drift_state)
-    -- If zone has already been finished, ignore call
-    if self:isDone() then return nil end
-
-    local zone_scoring_point = Point(car.position - car.look * car_config.rearOffset +
-        car.side * drift_state.side_drifting * car_config.rearSpan)
-
-    -- Check if the registering point belongs to the zone
-    if not self.zone:isInZone(zone_scoring_point) then
-        -- If zone was started then check if center point
-        -- is still in for small buffer
-        if self.started then
-            local rear_bumper_center = Point(car.position - car.look * car_config.rearOffset)
-            if not self.zone:isInZone(rear_bumper_center) then
-                self:setFinished(true)
-                return nil
-            else
-                return self:registerPosition(zone_scoring_point, drift_state, false)
-            end
-        else
-            return nil
-        end
-    else
-        self.started = true
-    end
-
-    return self:registerPosition(zone_scoring_point, drift_state, true)
+    return nil
 end
 
 ---@param point Point
 ---@param drift_state DriftState
 ---@return number
 function ZoneArcState:registerPosition(point, drift_state, is_inside)
-    -- Calculate the ratio multiplier
-    -- inhit and outhit are not always colinear due to imperfect logic in shortestCrossline()..
-    local cross_line = self.zone:shortestCrossline(point)
-
-    -- In limited number of rays there may not be a hit for a valid point inside the zone
-    -- In such case for now unfortunatelly we'll assume the score did not happen
-    if cross_line.segment == nil then
-        ac.warn("Didn't find a crossline for valid point!"); return 0.0
-    end
-
-    local ratio_mult = 0.0
-    -- In case of calculating for point in safety buffer (when player slightly ran outside
-    -- but we keep scoring 0 to allow coming back to the zone)
-    if is_inside then
-        local cross_distance =
-            cross_line.segment.tail:projected():distance(point:projected()) +
-            cross_line.segment.head:projected():distance(point:projected())
-        local point_distance =
-            cross_line.segment.tail:projected():distance(point:projected())
-        ratio_mult = point_distance / cross_distance
-    end
-
-    -- Calculate how far the point is in the zone as a fraction
-    -- dependent on which segments the shortest cross line has hit
-    local out_segments = self.zone:getOutsideLine():count() - 1 -- There are 1 less segments than points in group
-    local in_segments  = self.zone:getInsideLine():count() - 1
-    local out_distance = cross_line.out_no / out_segments
-    local in_distance  = cross_line.in_no / in_segments
-    local distance     = (out_distance + in_distance) / 2 -- Simple average, there may be a better way
-
-    -- Workaround for first segment
-    -- If any of out or in segment hit number is 1, set the distance to 0
-    -- as it's most likely player entered the zone exactly at the start.
-    -- Setting the distance to 0 will allow to report 100% zone completion.
-    if cross_line.in_no == 1 or cross_line.out_no == 1 then distance = 0 end
-
-    self.scores[#self.scores + 1] = ZoneArcScoringPoint(
-        point,
-        drift_state.speed_mult,
-        drift_state.angle_mult,
-        ratio_mult,
-        distance,
-        is_inside
-    )
-
-    self:calculateFields()
-
-    EventSystem.emit(EventSystem.Signal.ScorableStateChanged,
-        {
-            name = self.zone.name,
-            payload = {
-                new_scoring_point = self.scores[#self.scores]
-            }
-        })
-
-    return ratio_mult
+    return 0.0
 end
 
 function ZoneArcState:updatesFully()
@@ -189,7 +109,7 @@ function ZoneArcState:setFinished(value)
     self.finished = value
     EventSystem.emit(EventSystem.Signal.ScorableStateChanged,
         {
-            name = self.zone.name,
+            name = self.zonearc.name,
             payload = {
                 finished = value
             }
@@ -250,7 +170,7 @@ function ZoneArcState:getTimeInZone()
 end
 
 function ZoneArcState:getScore()
-    return self:getMultiplier() * self.zone.maxPoints
+    return self:getMultiplier() * self.zonearc.maxPoints
 end
 
 function ZoneArcState:getSpeed()
@@ -266,7 +186,7 @@ function ZoneArcState:getDepth()
 end
 
 function ZoneArcState:getMaxScore()
-    return self.zone.maxPoints
+    return self.zonearc.maxPoints
 end
 
 function ZoneArcState:isActive()
@@ -281,4 +201,4 @@ local function test()
 end
 test()
 
-return ZoneArcState
+return class.emmy(ZoneArcState, ZoneArcState.initialize)

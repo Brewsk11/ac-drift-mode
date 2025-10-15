@@ -3,12 +3,14 @@ local Assert = require('drift-mode.assert')
 local Drawer = require("drift-mode.models.Drawer")
 local ZoneState = require("drift-mode.models.Elements.Scorables.Zone.ZoneState")
 local ClipState = require("drift-mode.models.Elements.Scorables.Clip.ClipState")
+local ZoneArcState = require("drift-mode.models.Elements.Scorables.ZoneArc.ZoneArcState")
 
 ---@class DrawerRunState : Drawer
 ---@field drawerCourse DrawerCourse
 -- ---@field drawerDriftState DrawerDriftState
 ---@field drawerZoneState DrawerZoneState
 ---@field drawerClipState DrawerClipState
+---@field drawerZoneArcState DrawerZoneArcState
 local DrawerRunState = class("DrawerRunState", Drawer)
 DrawerRunState.__model_path = "Elements.Course.Drawers.DrawerRunState"
 
@@ -24,6 +26,8 @@ function DrawerRunState:draw(run_state)
             self.drawerZoneState:draw(scoring_object_state)
         elseif scoring_object_state.isInstanceOf(ClipState) then
             self.drawerClipState:draw(scoring_object_state)
+        elseif scoring_object_state.isInstanceOf(ZoneArcState) then
+            self.drawerZoneArcState:draw(scoring_object_state)
         else
             Assert.Error("")
         end
