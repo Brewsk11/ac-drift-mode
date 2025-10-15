@@ -129,10 +129,9 @@ local function gatherHandles()
   end
 
   if course.startingPoint then
-    handles[#handles + 1] = CourseEditorUtils.POIs.StartingPoint(
-      course.startingPoint.origin,
-      course.startingPoint
-    )
+    for _, handle in ipairs(course.startingPoint:gatherHandles()) do
+      handles[#handles + 1] = handle
+    end
   end
 
   --cursor_data:registerObject("editor_pois", pois, CourseEditorUtils.POIs.Drawers.Simple(PointDir.Drawers.Simple()))

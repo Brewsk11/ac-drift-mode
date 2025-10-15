@@ -1,5 +1,6 @@
 local Element = require("drift-mode.models.Elements.Element")
 local Point = require("drift-mode.models.Common.Point.Point")
+local Handle = require("drift-mode.models.Elements.Position.Handle")
 
 ---@class StartingPoint : Element
 ---@field origin Point
@@ -28,6 +29,24 @@ function StartingPoint:drawFlat(coord_transformer, scale, color)
         color,
         scale * 0.5
     )
+end
+
+function StartingPoint:gatherHandles()
+    local handles = {}
+
+    handles[#handles + 1] = Handle(
+        self.origin,
+        self,
+        Handle.Type.Origin
+    )
+
+    handles[#handles + 1] = Handle(
+        Point(self.origin:value() + self.direction),
+        self,
+        Handle.Type.Ending
+    )
+
+    return handles
 end
 
 local Assert = require('drift-mode.assert')
