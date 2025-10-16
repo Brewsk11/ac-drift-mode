@@ -1,5 +1,6 @@
 local EventSystem = require('drift-mode.eventsystem')
 local listener_id = EventSystem.registerListener('app-courseview')
+local Timer = require('drift-mode.timer')
 
 local ScoresLayout = require('drift-mode.ui_layouts.scores')
 local MinimapHelper = require('drift-mode.MinimapHelper')
@@ -23,29 +24,40 @@ local CourseView = {}
 ---@type MinimapHelper
 local minimap_helper = MinimapHelper(ac.getFolder(ac.FolderID.CurrentTrackLayout), vec2(1024, 1024))
 
-function CourseView.Main(dt)
-    EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
-        track_data = payload;
-    end)
-    EventSystem.listen(listener_id, EventSystem.Signal.CarConfigChanged, function(payload)
-        car_config = payload;
-    end)
-    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
-        if scoring_object_states == nil then return end
-        for idx, obj in ipairs(scoring_object_states) do
-            if obj:getName() == payload.name then
-                if obj:updatesFully() then
-                    scoring_object_states[idx] = payload.payload
-                else
-                    obj:consumeUpdate(payload.payload)
+
+local timers = {
+    slow_listeners = Timer(0.1, function()
+        EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
+            track_data = payload;
+        end)
+        EventSystem.listen(listener_id, EventSystem.Signal.CarConfigChanged, function(payload)
+            car_config = payload;
+        end)
+        EventSystem.listen(listener_id, EventSystem.Signal.ScorableStatesReset, function(payload)
+            scoring_object_states = payload;
+        end)
+    end),
+    fast_listeners = Timer(0.01, function(payload)
+        EventSystem.listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
+            if scoring_object_states == nil then return end
+            for idx, obj in ipairs(scoring_object_states) do
+                if obj:getName() == payload.name then
+                    if obj:updatesFully() then
+                        scoring_object_states[idx] = payload.payload
+                    else
+                        obj:consumeUpdate(payload.payload)
+                    end
+                    break
                 end
-                break
             end
-        end
+        end)
     end)
-    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStatesReset, function(payload)
-        scoring_object_states = payload;
-    end)
+}
+
+function CourseView.Main(dt)
+    for _, timer in pairs(timers) do
+        timer:tick(dt)
+    end
 
     local window_size = ui.windowSize()
 

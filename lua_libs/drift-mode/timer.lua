@@ -8,7 +8,7 @@ local Timer = class("Timer")
 
 function Timer:initialize(period, task)
     self.period = period
-    self.timer = 0
+    self.timer = period
     self.task = task
 end
 
