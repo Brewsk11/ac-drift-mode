@@ -25,6 +25,9 @@ function Arc:initialize(center, radius, normal, start_angle, sweep_angle)
 
     self.start_angle = start_angle or 0
     self.sweep_angle = sweep_angle or 0
+
+    self:cacheMethod("toPointArray")
+    self:cacheMethod("getPointOnArc")
 end
 
 ---@param circle Circle
