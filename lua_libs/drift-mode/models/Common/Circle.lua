@@ -32,6 +32,7 @@ end
 
 function Circle:setCenter(value)
     self._center = value
+    self:setDirty()
 end
 
 ---@return number

@@ -30,30 +30,12 @@ function Zone:initialize(name, outsideLine, insideLine, maxPoints, collide)
     self.collide = collide or false
     self.outsideLine = outsideLine or PointArray()
     self.insideLine = insideLine or PointArray()
-    self:setDirty()
-end
 
-function Zone:__serialize()
-    -- Custom serializer prevents redundant self.polygon serialization
-    local S = require('drift-mode.serializer')
-    return {
-        name = S.serialize(self.name),
-        maxPoints = S.serialize(self.maxPoints),
-        collide = S.serialize(self.collide),
-        outsideLine = S.serialize(self.outsideLine),
-        insideLine = S.serialize(self.insideLine)
-    }
-end
-
-function Zone.__deserialize(data)
-    local S = require('drift-mode.serializer')
-    return Zone(
-        S.deserialize(data.name),
-        S.deserialize(data.outsideLine),
-        S.deserialize(data.insideLine),
-        S.deserialize(data.maxPoints),
-        S.deserialize(data.collide)
-    )
+    self:cacheMethod("getPolygon")
+    self:cacheMethod("getBoundingBox")
+    self:cacheMethod("gatherHandles")
+    self:cacheMethod("gatherColliders")
+    self:cacheMethod("getCenter")
 end
 
 ---@return ZoneHandle[]
@@ -87,28 +69,6 @@ function Zone:gatherHandles()
     return handles
 end
 
----@private
-function Zone:recalculatePolygon()
-    if not self.outsideLine or not self.insideLine then
-        self.polygon = nil
-        return
-    end
-
-    local points = {}
-    for _, insidePoint in self:getInsideLine():iter() do
-        points[#points + 1] = insidePoint
-    end
-
-    local rev_idx = 0
-    for _, outsidePoint in self:getOutsideLine():iter() do
-        local idx = self:getInsideLine():count() + self:getOutsideLine():count() - rev_idx
-        points[idx] = outsidePoint
-        rev_idx = rev_idx + 1
-    end
-
-    self.polygon = PointArray(points)
-end
-
 ---@return physics.ColliderType[]
 function Zone:gatherColliders()
     if not self.collide then return {} end
@@ -134,9 +94,8 @@ function Zone:gatherColliders()
 end
 
 function Zone:setDirty()
+    Scorable.setDirty(self)
     self:realignZonePointOnTrack()
-    self:recalculatePolygon()
-    self:recalculateBoundingBox()
 end
 
 function Zone:setCollide(value)
@@ -157,11 +116,13 @@ end
 
 function Zone:setOutsideLine(outside_line)
     self.outsideLine = outside_line
+    self.outsideLine:registerObserver(self, function() self:setDirty() end)
     self:setDirty()
 end
 
 function Zone:setInsideLine(inside_line)
     self.insideLine = inside_line
+    self.insideLine:registerObserver(self, function() self:setDirty() end)
     self:setDirty()
 end
 
@@ -169,7 +130,26 @@ end
 ---@param self Zone
 ---@return PointArray?
 function Zone:getPolygon()
-    return self.polygon
+    if not self.outsideLine or not self.insideLine then
+        self.polygon = nil
+        return
+    end
+
+    local points = {}
+    for _, insidePoint in self:getInsideLine():iter() do
+        points[#points + 1] = insidePoint
+    end
+
+    local rev_idx = 0
+    for _, outsidePoint in self:getOutsideLine():iter() do
+        local idx = self:getInsideLine():count() + self:getOutsideLine():count() - rev_idx
+        points[idx] = outsidePoint
+        rev_idx = rev_idx + 1
+    end
+
+    local polygon = PointArray(points)
+    polygon:registerObserver(self, function() self:setDirty() end)
+    return polygon
 end
 
 ---Check if the point is inside the zone
@@ -178,16 +158,17 @@ end
 ---@param custom_origin Point? Custom origin point, to check corretly it must be outside the zone
 ---@return boolean
 function Zone:isInZone(point, custom_origin)
-    -- TODO: Cache bounding_box in class
-    local bounding_box = self:getBoundingBox()
-    if bounding_box ~= nil and
-        point:flat().x < bounding_box.p1:flat().x or
-        point:flat().y < bounding_box.p1:flat().y or
-        point:flat().y > bounding_box.p2:flat().y or
-        point:flat().y > bounding_box.p2:flat().y
-    then
-        return false
-    end
+    -- local bounding_box = self:getBoundingBox()
+    -- ac.log(bounding_box)
+
+    -- if bounding_box ~= nil and (
+    --         point:flat().x < bounding_box.p1:flat().x or
+    --         point:flat().y < bounding_box.p1:flat().y or
+    --         point:flat().x > bounding_box.p2:flat().x or
+    --         point:flat().y > bounding_box.p2:flat().y)
+    -- then
+    --     return false
+    -- end
 
     local origin = custom_origin or Point(vec3(0, 0, 0))
 
@@ -413,26 +394,7 @@ function Zone:getBoundingBox()
     if self:isEmpty() then
         return nil
     end
-    if self.bounding_box == nil then
-        self:recalculateBoundingBox()
-    end
 
-    return self.bounding_box
-end
-
-function Zone:isEmpty()
-    if self.insideLine == nil and self.outsideLine == nil then return true end
-
-    if self.insideLine and self.insideLine:count() == 0 and
-        self.outsideLine and self.outsideLine:count() == 0 then
-        return true
-    end
-
-    return false
-end
-
-function Zone:recalculateBoundingBox()
-    -- TODO: Add padding for inZone detection
     local pMin = vec3(9999, 9999, 9999)
     local pMax = vec3(-9999, -9999, -9999)
 
@@ -451,6 +413,17 @@ function Zone:recalculateBoundingBox()
     end
 
     self.bounding_box = { p1 = Point(pMin), p2 = Point(pMax) }
+end
+
+function Zone:isEmpty()
+    if self.insideLine == nil and self.outsideLine == nil then return true end
+
+    if self.insideLine and self.insideLine:count() == 0 and
+        self.outsideLine and self.outsideLine:count() == 0 then
+        return true
+    end
+
+    return false
 end
 
 function Zone:drawFlat(coord_transformer, scale)

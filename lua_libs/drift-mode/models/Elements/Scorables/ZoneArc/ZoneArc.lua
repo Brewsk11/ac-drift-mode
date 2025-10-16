@@ -33,6 +33,10 @@ function ZoneArc:initialize(name, maxPoints, collide, arc, width)
     self:setArc(arc)
     self:cacheMethod("getInsideArc")
     self:cacheMethod("gatherColliders")
+    self:cacheMethod("gatherHandles")
+    self:cacheMethod("getStartGate")
+    self:cacheMethod("getCenter")
+    self:cacheMethod("getBoundingBox")
 end
 
 function ZoneArc:getArc()
@@ -41,7 +45,10 @@ end
 
 function ZoneArc:setArc(arc)
     self.arc = arc
-    self.arc:registerObserver(self, function() self:setDirty() end)
+    if self.arc ~= nil then
+        self.arc:registerObserver(self, function() self:setDirty() end)
+    end
+
     self:setDirty()
 end
 
@@ -93,6 +100,7 @@ end
 
 function ZoneArc:setCollide(value)
     self.collide = value
+    self:setDirty()
 end
 
 function ZoneArc:getCollide()
@@ -179,7 +187,6 @@ function ZoneArc:setZoneArcPosition(point)
     local offset = self:getArc():getCenter():value() - center:value()
 
     self:getArc():setCenter(Point(point:value() + offset))
-    self:recalcInsideArc()
 end
 
 function ZoneArc:realignZoneArcPointOnTrack()

@@ -18,8 +18,6 @@ end
 
 function PointArray:setDirty()
     Array.setDirty(self)
-    self._segment_closed = self:recalcSegment(true)
-    self._segmented_opened = self:recalcSegment(false)
 end
 
 -- Needed for 2.7.1 migration, remove afterwards.

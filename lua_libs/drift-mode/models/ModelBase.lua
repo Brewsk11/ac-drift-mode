@@ -64,7 +64,7 @@ local NIL = {}
 -- must return a string that uniquely represents the call.
 function ModelBase:cacheMethod(method_name, key_builder)
     self.__cache = self.__cache or {}
-    self.__cache[method_name] = {}
+
     local original_method = self[method_name]
 
     Assert.NotNil(original_method, "Method " .. tostring(method_name) .. " does not exist")
@@ -77,18 +77,27 @@ function ModelBase:cacheMethod(method_name, key_builder)
     end
 
     local function wrapped_method(_self, ...)
+        self.__cache[method_name] = self.__cache[method_name] or {}
+
         local call_key = _key_builder(_self, ...)
         local method_cache = self.__cache[method_name]
         local cached = method_cache[call_key]
 
         if cached ~= nil then -- hit
-            return cached == NIL and nil or cached
+            if cached == NIL then
+                return nil
+            else
+                return cached
+            end
         end
 
         local res = original_method(self, ...)
 
-        -- Store the result, replacing `nil` with the sentinel
-        method_cache[call_key] = (res == nil) and NIL or res
+        if res == nil then
+            method_cache[call_key] = NIL
+        else
+            method_cache[call_key] = res
+        end
         return res
     end
 
@@ -102,6 +111,23 @@ function ModelBase:setAbbrev(abbrev)
 end
 
 function ModelBase:subclassed(classDefinition)
+end
+
+function ModelBase.test()
+    ---@class TestClass : ModelBase
+    local TestClass = class('test_class', ModelBase)
+    function TestClass:initialize()
+        self:cacheMethod("test_method")
+    end
+
+    function TestClass:test_method()
+        return nil
+    end
+
+    local obj = TestClass()
+
+    Assert.Nil(obj:test_method())
+    Assert.Nil(obj:test_method())
 end
 
 return ModelBase
