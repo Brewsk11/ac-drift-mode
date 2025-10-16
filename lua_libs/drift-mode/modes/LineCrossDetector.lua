@@ -39,8 +39,8 @@ function LineCrossDetector.registerPoint(point)
         end
 
         local res = vec2.intersect(
-            v.segment.head:flat(),
-            v.segment.tail:flat(),
+            v.segment:getHead():flat(),
+            v.segment:getTail():flat(),
             last_point:flat(),
             point:flat()
         )

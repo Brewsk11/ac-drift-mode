@@ -35,13 +35,13 @@ function Gate:gatherHandles()
 
     if self.segment ~= nil then
         handles[#handles + 1] = Handle(
-            self.segment.head,
+            self.segment:getHead(),
             self,
             Handle.Type.Head
         )
 
         handles[#handles + 1] = Handle(
-            self.segment.tail,
+            self.segment:getTail(),
             self,
             Handle.Type.Tail
         )

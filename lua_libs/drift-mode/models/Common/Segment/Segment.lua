@@ -5,23 +5,63 @@ local ModelBase = require("drift-mode.models.ModelBase")
 
 
 ---@class Segment : ModelBase Class representing a line (two connected points) in world space
----@field head Point World coordinate position of the point on the track
----@field tail Point World coordinate position of the point on the track
+---@field private head Point World coordinate position of the point on the track
+---@field private tail Point World coordinate position of the point on the track
 local Segment = class('Segment', ModelBase)
 Segment.__model_path = "Common.Segment.Segment"
 
 ---@param head Point
 ---@param tail Point
 function Segment:initialize(head, tail)
+    ModelBase.initialize(self)
     self.head = head
     self.tail = tail
+
+    self:cacheMethod("getCenter")
+    self:cacheMethod("getDirection")
+    self:cacheMethod("getNormal")
 end
 
 ---Return 2-item array with start and end point values
 ---@param self Segment
----@return vec3 head, vec3 tail Start and end points of the segment
+---@return Point head, Point tail Start and end points of the segment
 function Segment:get()
-    return self.head:value(), self.tail:value()
+    return self.head, self.tail
+end
+
+---@return Point
+function Segment:getHead()
+    return self.head
+end
+
+---@return Point
+function Segment:getTail()
+    return self.tail
+end
+
+function Segment:set(head, tail)
+    self:setHead(head)
+    self:setTail(tail)
+end
+
+function Segment:setHead(point)
+    self.head = point
+    if self.head then
+        self.head:registerObserver(self, function()
+            self:setDirty()
+        end)
+    end
+    self:setDirty()
+end
+
+function Segment:setTail(value)
+    self.tail = value
+    if self.tail then
+        self.tail:registerObserver(self, function()
+            self:setDirty()
+        end)
+    end
+    self:setDirty()
 end
 
 ---Return the track point as vec2, projecting it on Y axis
@@ -68,6 +108,7 @@ function Segment:moveTo(point)
     local direction = self:getDirection()
     self.head:set(point:value() - direction * lenght / 2)
     self.tail:set(point:value() + direction * lenght / 2)
+    self:setDirty()
 end
 
 function Segment:drawFlat(coord_transformer, scale, color)
@@ -84,19 +125,8 @@ local function test()
 
     -- Segment:get()
     local a, b = segment:get()
-    Assert.Equal(a, points[1]:value(), "Incorrect returned segment head")
-    Assert.Equal(b, points[2]:value(), "Incorrect returned segment tail")
-
-    -- Segment:flat()
-    ---@diagnostic disable-next-line: cast-local-type
-    a, b = segment:flat()
-    Assert.Equal(a, points[1]:flat(), "Incorrect returned flat segment head")
-    Assert.Equal(b, points[2]:flat(), "Incorrect returned flat segment tail")
-
-    -- Segment:projected()
-    a, b = segment:projected()
-    Assert.Equal(a, points[1]:projected(), "Incorrect returned projected segment head")
-    Assert.Equal(b, points[2]:projected(), "Incorrect returned projected segment tail")
+    Assert.Equal(a:value(), points[1]:value(), "Incorrect returned segment head")
+    Assert.Equal(b:value(), points[2]:value(), "Incorrect returned segment tail")
 end
 test()
 

@@ -16,8 +16,8 @@ function DrawerSegmentLine:draw(segment)
     DrawerSegment.draw(self, segment)
 
     render.debugLine(
-        segment.head:value() + vec3(0, 0.05, 0),
-        segment.tail:value() + vec3(0, 0.05, 0),
+        segment:getHead():value() + vec3(0, 0.05, 0),
+        segment:getTail():value() + vec3(0, 0.05, 0),
         self.color
     )
 

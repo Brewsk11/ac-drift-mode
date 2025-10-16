@@ -81,7 +81,7 @@ function ZoneArc:gatherColliders()
     local colliders = {}
 
     for idx, segment in self:getArc():toPointArray(8):segment(false) do
-        local parallel = (segment.tail:value() - segment.head:value()):normalize()
+        local parallel = (segment:getTail():value() - segment:getHead():value()):normalize()
         local look = parallel:clone():cross(vec3(0, 1, 0))
         local up = parallel:clone():cross(look)
 
@@ -237,14 +237,14 @@ end
 
 function ZoneArc:drawFlat(coord_transformer, scale)
     for _, seg in self:getArc():toPointArray(8):segment(false):iter() do
-        local head_mapped = coord_transformer(seg.head)
-        local tail_mapped = coord_transformer(seg.tail)
+        local head_mapped = coord_transformer(seg:getHead())
+        local tail_mapped = coord_transformer(seg:getTail())
         ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 1 * scale)
     end
 
     for _, seg in self:getInsideArc():toPointArray(8):segment(false):iter() do
-        local head_mapped = coord_transformer(seg.head)
-        local tail_mapped = coord_transformer(seg.tail)
+        local head_mapped = coord_transformer(seg:getHead())
+        local tail_mapped = coord_transformer(seg:getTail())
         ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 0.5 * scale)
     end
 end

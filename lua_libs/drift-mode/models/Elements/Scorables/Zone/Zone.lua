@@ -76,7 +76,7 @@ function Zone:gatherColliders()
     local colliders = {}
 
     for idx, segment in self:getOutsideLine():segment():iter() do
-        local parallel = (segment.tail:value() - segment.head:value()):normalize()
+        local parallel = (segment:getTail():value() - segment:getHead():value()):normalize()
         local look = parallel:clone():cross(vec3(0, 1, 0))
         local up = parallel:clone():cross(look)
 
@@ -179,8 +179,8 @@ function Zone:isInZone(point, custom_origin)
         local hit = vec2.intersect(
             origin:flat(),
             point:flat(),
-            segment.head:flat(),
-            segment.tail:flat()
+            segment:getHead():flat(),
+            segment:getTail():flat()
         )
 
         if hit then
@@ -201,8 +201,8 @@ end
 ---@param custom_origin Point? Custom origin point, to check corretly it must be outside the zone
 ---@return number fraction Fraction of the segment inside the zone: `1.0` fully inside, `0.0` fully outside
 function Zone:isSegmentInZone(segment, custom_origin)
-    local is_head_in_zone = self:isInZone(segment.head, custom_origin)
-    local is_tail_in_zone = self:isInZone(segment.tail, custom_origin)
+    local is_head_in_zone = self:isInZone(segment:getHead(), custom_origin)
+    local is_tail_in_zone = self:isInZone(segment:getTail(), custom_origin)
 
     if not is_head_in_zone and not is_tail_in_zone then return 0.0 end
     if is_head_in_zone and is_tail_in_zone then return 1.0 end
@@ -210,17 +210,17 @@ function Zone:isSegmentInZone(segment, custom_origin)
     -- Find which zone part is crossing the segment
     for _, zone_segment in self:getPolygon():segment(true):iter() do
         local hit = vec2.intersect(
-            segment.head:flat(),
-            segment.tail:flat(),
-            zone_segment.head:flat(),
-            zone_segment.tail:flat()
+            segment:getHead():flat(),
+            segment:getTail():flat(),
+            zone_segment:getHead():flat(),
+            zone_segment:getTail():flat()
         )
 
         if hit then
             if is_head_in_zone then
-                return segment.head:flat():distance(hit) / segment:lengthFlat()
+                return segment:getHead():flat():distance(hit) / segment:lengthFlat()
             else -- is_tail_in_zone then
-                return segment.tail:flat():distance(hit) / segment:lengthFlat()
+                return segment:getTail():flat():distance(hit) / segment:lengthFlat()
             end
         end
     end
@@ -263,14 +263,14 @@ function Zone:shortestCrossline(point)
         local in_hit = { hit = nil, distance = 999, segment_no = 0 }
 
         for idx, segment in self.outsideLine:segment():iter() do
-            local segment_center = (segment.head:flat() + segment.tail:flat()) / 2
+            local segment_center = (segment:getHead():flat() + segment:getTail():flat()) / 2
             local segment_distance = point:flat():distance(segment_center)
             if segment_distance < out_hit.distance then
                 local segment_hit = vec2.intersect(
                     point:flat() + dir,
                     point:flat() - dir,
-                    segment.head:flat(),
-                    segment.tail:flat()
+                    segment:getHead():flat(),
+                    segment:getTail():flat()
                 )
                 if segment_hit ~= nil then
                     out_hit.hit = segment_hit
@@ -281,14 +281,14 @@ function Zone:shortestCrossline(point)
         end
 
         for idx, segment in self.insideLine:segment():iter() do
-            local segment_center = (segment.head:flat() + segment.tail:flat()) / 2
+            local segment_center = (segment:getHead():flat() + segment:getTail():flat()) / 2
             local segment_distance = point:flat():distance(segment_center)
             if segment_distance < in_hit.distance then
                 local segment_hit = vec2.intersect(
                     point:flat() + dir,
                     point:flat() - dir,
-                    segment.head:flat(),
-                    segment.tail:flat()
+                    segment:getHead():flat(),
+                    segment:getTail():flat()
                 )
                 if segment_hit ~= nil then
                     in_hit.hit = segment_hit
@@ -308,7 +308,7 @@ function Zone:shortestCrossline(point)
                     in_no = in_hit.segment_no
                 }
             else
-                local shortest_lenght = shortest.segment.head:flat():distance(shortest.segment.tail:flat())
+                local shortest_lenght = shortest.segment:getHead():flat():distance(shortest.segment:getTail():flat())
                 local new_lenght = out_hit.hit:distance(in_hit.hit)
 
                 if shortest_lenght > new_lenght then
@@ -342,19 +342,19 @@ end
 function Zone:getCenter()
     local segment = Segment()
     if self:getInsideLine():count() > 0 then
-        segment.head = self:getInsideLine():get(math.floor(self:getInsideLine():count() / 2 + 0.5))
+        segment:setHead(self:getInsideLine():get(math.floor(self:getInsideLine():count() / 2 + 0.5)))
     end
 
     if self:getOutsideLine():count() > 0 then
-        segment.tail = self:getOutsideLine():get(math.floor(self:getOutsideLine():count() / 2 + 0.5))
+        segment:setTail(self:getOutsideLine():get(math.floor(self:getOutsideLine():count() / 2 + 0.5)))
     end
 
-    if segment.head and segment.tail then
+    if segment:getHead() and segment:getTail() then
         return segment:getCenter()
-    elseif segment.head then
-        return segment.head
-    elseif segment.tail then
-        return segment.tail
+    elseif segment:getHead() then
+        return segment:getHead()
+    elseif segment:getTail() then
+        return segment:getTail()
     else
         return nil
     end
@@ -428,14 +428,14 @@ end
 
 function Zone:drawFlat(coord_transformer, scale)
     for _, seg in self:getOutsideLine():segment(false):iter() do
-        local head_mapped = coord_transformer(seg.head)
-        local tail_mapped = coord_transformer(seg.tail)
+        local head_mapped = coord_transformer(seg:getHead())
+        local tail_mapped = coord_transformer(seg:getTail())
         ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 1 * scale)
     end
 
     for _, seg in self:getInsideLine():segment(false):iter() do
-        local head_mapped = coord_transformer(seg.head)
-        local tail_mapped = coord_transformer(seg.tail)
+        local head_mapped = coord_transformer(seg:getHead())
+        local tail_mapped = coord_transformer(seg:getTail())
         ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 0.5 * scale)
     end
 end

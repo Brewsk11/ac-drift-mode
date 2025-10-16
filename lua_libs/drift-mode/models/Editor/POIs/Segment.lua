@@ -29,9 +29,9 @@ end
 
 function PoiSegment:set(new_pos)
     if self.segment_point_type == PoiSegment.Part.Head then
-        self.segment.head:set(new_pos)
+        self.segment:getHead():set(new_pos)
     elseif self.segment_point_type == PoiSegment.Part.Tail then
-        self.segment.tail:set(new_pos)
+        self.segment:getTail():set(new_pos)
     end
 end
 

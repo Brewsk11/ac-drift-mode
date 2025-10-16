@@ -84,10 +84,10 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
     -- but we keep scoring 0 to allow coming back to the zone)
     if is_inside then
         local cross_distance =
-            cross_line.segment.tail:projected():distance(point:projected()) +
-            cross_line.segment.head:projected():distance(point:projected())
+            cross_line.segment:getTail():projected():distance(point:projected()) +
+            cross_line.segment:getHead():projected():distance(point:projected())
         local point_distance =
-            cross_line.segment.tail:projected():distance(point:projected())
+            cross_line.segment:getTail():projected():distance(point:projected())
         ratio_mult = point_distance / cross_distance
     end
 

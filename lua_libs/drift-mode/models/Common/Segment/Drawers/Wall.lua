@@ -14,10 +14,10 @@ end
 ---@param segment Segment
 function DrawerSegmentWall.draw(self, segment)
     render.quad(
-        segment.head:value(),
-        segment.tail:value(),
-        segment.tail:value() + vec3(0, self.height, 0),
-        segment.head:value() + vec3(0, self.height, 0),
+        segment:getHead():value(),
+        segment:getTail():value(),
+        segment:getTail():value() + vec3(0, self.height, 0),
+        segment:getHead():value() + vec3(0, self.height, 0),
         self.color
     )
 end

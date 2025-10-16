@@ -96,26 +96,26 @@ function TrackConfig:getBoundingBox(padding)
     end
 
     if self.startLine and self.startLine.segment then
-        pMin:min(self.startLine.segment.head:value())
-        pMax:max(self.startLine.segment.head:value())
-        pMin:min(self.startLine.segment.tail:value())
-        pMax:max(self.startLine.segment.tail:value())
+        pMin:min(self.startLine.segment:getHead():value())
+        pMax:max(self.startLine.segment:getHead():value())
+        pMin:min(self.startLine.segment:getTail():value())
+        pMax:max(self.startLine.segment:getTail():value())
         changed = true
     end
 
     if self.finishLine and self.finishLine.segment then
-        pMin:min(self.finishLine.segment.head:value())
-        pMax:max(self.finishLine.segment.head:value())
-        pMin:min(self.finishLine.segment.tail:value())
-        pMax:max(self.finishLine.segment.tail:value())
+        pMin:min(self.finishLine.segment:getHead():value())
+        pMax:max(self.finishLine.segment:getHead():value())
+        pMin:min(self.finishLine.segment:getTail():value())
+        pMax:max(self.finishLine.segment:getTail():value())
         changed = true
     end
 
     if self.respawnLine and self.respawnLine.segment then
-        pMin:min(self.respawnLine.segment.head:value())
-        pMax:max(self.respawnLine.segment.head:value())
-        pMin:min(self.respawnLine.segment.tail:value())
-        pMax:max(self.respawnLine.segment.tail:value())
+        pMin:min(self.respawnLine.segment:getHead():value())
+        pMax:max(self.respawnLine.segment:getHead():value())
+        pMin:min(self.respawnLine.segment:getTail():value())
+        pMax:max(self.respawnLine.segment:getTail():value())
         changed = true
     end
 

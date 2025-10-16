@@ -197,7 +197,7 @@ function Circle:drawDebug(mult)
     local segments = Circle.toPointArray(self, 36):segment(true)
 
     for _, seg in segments:iter() do
-        render.debugLine(seg.head:value(), seg.tail:value(), rgbm(3, 0, 0, 1) * _mult)
+        render.debugLine(seg:getHead():value(), seg:getTail():value(), rgbm(3, 0, 0, 1) * _mult)
     end
 end
 

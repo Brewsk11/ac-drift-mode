@@ -436,8 +436,8 @@ function CourseEditor:drawUIScorables(dt)
 
   if ui.button("Create new clip", vec2(button_width, 40), button_global_flags) then
     current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-      local new_clip = Clip.Clip(course:getNextClipName(), segment.head, nil, nil, 1000)
-      new_clip:setEnd(segment.tail)
+      local new_clip = Clip.Clip(course:getNextClipName(), segment:getHead(), nil, nil, 1000)
+      new_clip:setEnd(segment:getTail())
       course.scorables[#course.scorables + 1] = new_clip
     end)
   end
@@ -513,8 +513,8 @@ function CourseEditor:drawUIOther(dt)
   else
     if ui.button("Define###startingpoint", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.startingPoint = Position("Starting point", segment.head, nil)
-        course.startingPoint:setEnd(segment.tail)
+        course.startingPoint = Position("Starting point", segment:getHead(), nil)
+        course.startingPoint:setEnd(segment:getTail())
       end)
     end
   end

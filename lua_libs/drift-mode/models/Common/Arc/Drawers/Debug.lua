@@ -22,13 +22,13 @@ function DrawerArcDebug:draw(arc)
     local segments = Circle.toPointArray(arc, self:getN(arc)):segment(true)
 
     for _, seg in segments:iter() do
-        render.debugLine(seg.head:value(), seg.tail:value(), rgbm(3, 0, 0, 1) * 0.4)
+        render.debugLine(seg:getHead():value(), seg:getTail():value(), rgbm(3, 0, 0, 1) * 0.4)
     end
 
     local segments2 = arc:toPointArray(self:getN(arc)):segment(false)
 
     for _, segment in segments2:iter() do
-        render.debugLine(segment.head:value(), segment.tail:value(), rgbm(0, 0, 3, 1))
+        render.debugLine(segment:getHead():value(), segment:getTail():value(), rgbm(0, 0, 3, 1))
     end
 
     render.debugArrow(arc:getCenter():value(), arc:getCenter():value() + arc:getStartDirection() * arc:getRadius(),

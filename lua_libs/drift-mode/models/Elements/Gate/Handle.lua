@@ -22,9 +22,9 @@ end
 
 function GateHandle:set(new_pos)
     if self.type == GateHandle.Type.Head then
-        self.gate.segment.head:set(new_pos)
+        self.gate.segment:getHead():set(new_pos)
     elseif self.type == GateHandle.Type.Tail then
-        self.gate.segment.tail:set(new_pos)
+        self.gate.segment:getTail():set(new_pos)
     elseif self.type == GateHandle.Type.Center then
         self.gate.segment:moveTo(Point(new_pos))
     end
