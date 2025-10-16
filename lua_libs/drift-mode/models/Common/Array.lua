@@ -14,17 +14,24 @@ Array.__model_path = "Common.Array"
 function Array:initialize(items)
     ModelBase.initialize(self)
     self._items = items or {}
+    self:registerObservers()
 end
 
-function Array:setDirty()
-
+function Array:registerObservers()
+    for _, item in self:iter() do
+        ---@cast item ModelBase
+        item:registerObserver(self, function() self:setDirty() end)
+    end
 end
 
 ---@generic T
 ---@param item T
 function Array:append(item)
     self._items[#self._items + 1] = item
-    self:setDirty()
+
+    ---@cast item ModelBase
+    item:registerObserver(self, function() self:setDirty() end)
+    self:notifyDirty()
 end
 
 ---@return integer
@@ -76,7 +83,8 @@ end
 function Array:pop()
     local item = self._items[self:count()]
     self._items[self:count()] = nil
-    self:setDirty()
+    item:unregisterObserver(self)
+    self:notifyDirty()
     return item
 end
 
@@ -88,7 +96,8 @@ function Array:remove(idx)
     Assert.LessOrEqual(idx, self:count(), "Out-of-bounds error")
     local item = self._items[idx]
     table.remove(self._items, idx)
-    self:setDirty()
+    item:unregisterObserver(self)
+    self:notifyDirty()
     return item
 end
 
@@ -98,7 +107,10 @@ end
 ---@return boolean deleted True if deleted any item
 function Array:delete(item)
     local removed = table.removeItem(self._items, item)
-    self:setDirty()
+    if removed then
+        item:unregisterObserver(self)
+        self:notifyDirty()
+    end
     return removed
 end
 
