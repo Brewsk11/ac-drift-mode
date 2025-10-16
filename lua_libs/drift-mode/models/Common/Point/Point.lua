@@ -32,7 +32,7 @@ end
 ---@param value vec3 New point position
 function Point:set(value)
     self._value = value
-    self:notifyDirty()
+    self:setDirty()
 end
 
 ---Return the point value

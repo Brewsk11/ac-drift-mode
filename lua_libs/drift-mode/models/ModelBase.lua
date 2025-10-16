@@ -42,11 +42,19 @@ function ModelBase:unregisterObserver(observer)
     return table.removeItem(self.__observers, observer)
 end
 
----@protected
-function ModelBase:notifyDirty()
+---@private
+function ModelBase:notifyObservers()
     for _, callback in ipairs(self.__observers) do
         callback()
     end
+end
+
+-- Base dirty flag – called by observers.
+-- Sub‑classes override to reset their own caches.
+function ModelBase:setDirty()
+    -- Clears *all* caches of this instance
+    self.__cache = {}
+    self:notifyObservers()
 end
 
 local NIL = {}
@@ -85,13 +93,6 @@ function ModelBase:cacheMethod(method_name, key_builder)
     end
 
     self[method_name] = wrapped_method
-end
-
--- Base dirty flag – called by observers.
--- Sub‑classes override to reset their own caches.
-function ModelBase:setDirty()
-    -- Clears *all* caches of this instance
-    self._cache = {}
 end
 
 function ModelBase:setModelPath(model_path)

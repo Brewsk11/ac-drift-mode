@@ -28,26 +28,32 @@ ZoneArc.__model_path = "Elements.Scorables.ZoneArc.ZoneArc"
 function ZoneArc:initialize(name, maxPoints, collide, arc, width)
     Scorable.initialize(self, name, maxPoints)
     self.collide = collide or false
-    self.arc = arc
     self.width = width or 3
-    self:recalcInsideArc()
+
+    self:setArc(arc)
+    self:cacheMethod("getInsideArc")
+    self:cacheMethod("gatherColliders")
 end
 
 function ZoneArc:getArc()
     return self.arc
 end
 
+function ZoneArc:setArc(arc)
+    self.arc = arc
+    self.arc:registerObserver(self, function() self:setDirty() end)
+    self:setDirty()
+end
+
 function ZoneArc:recalcArcFromTriplet(from, to, midpoint)
     self:getArc():recalcFromTriplet(from, to, midpoint)
-    self:recalcInsideArc()
 end
 
 function ZoneArc:setWidth(width)
     self.width = width
-    self:recalcInsideArc()
 end
 
-function ZoneArc:recalcInsideArc()
+function ZoneArc:getInsideArc()
     local arc = self:getArc()
     if arc == nil then return nil end
 
@@ -58,15 +64,7 @@ function ZoneArc:recalcInsideArc()
         arc:getStartAngle(),
         arc:getSweepAngle()
     )
-    self._inside_arc = inside_arc
-end
-
-function ZoneArc:getInsideArc()
-    if self._inside_arc == nil then
-        self:recalcInsideArc()
-        return
-    end
-    return self._inside_arc
+    return inside_arc
 end
 
 ---@return physics.ColliderType[]

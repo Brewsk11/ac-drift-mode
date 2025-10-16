@@ -64,6 +64,7 @@ function Arc:recalcFromTriplet(from, to, midpoint)
     self._normal = a:getNormal()
     self.start_angle = a:getStartAngle()
     self.sweep_angle = a:getSweepAngle()
+    self:setDirty()
 end
 
 function Arc:getStartAngle()

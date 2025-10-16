@@ -31,7 +31,7 @@ function Array:append(item)
 
     ---@cast item ModelBase
     item:registerObserver(self, function() self:setDirty() end)
-    self:notifyDirty()
+    self:setDirty()
 end
 
 ---@return integer
@@ -84,7 +84,7 @@ function Array:pop()
     local item = self._items[self:count()]
     self._items[self:count()] = nil
     item:unregisterObserver(self)
-    self:notifyDirty()
+    self:setDirty()
     return item
 end
 
@@ -97,7 +97,7 @@ function Array:remove(idx)
     local item = self._items[idx]
     table.remove(self._items, idx)
     item:unregisterObserver(self)
-    self:notifyDirty()
+    self:setDirty()
     return item
 end
 
@@ -109,7 +109,7 @@ function Array:delete(item)
     local removed = table.removeItem(self._items, item)
     if removed then
         item:unregisterObserver(self)
-        self:notifyDirty()
+        self:setDirty()
     end
     return removed
 end
