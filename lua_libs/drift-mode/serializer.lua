@@ -26,12 +26,15 @@ function Serializer.serialize(data)
 
     -- ModelBase class
     if ModelBase.isInstanceOf(data) then
+        ---@cast data ModelBase
         local obj = {}
 
         if data.__serialize == nil then
             -- Classes with no custom de/serializer
-            for k, v in pairs(data) do
-                obj[k] = Serializer.serialize(v)
+            for field_name, field_value in pairs(data) do
+                if not data:isSerializerExempt(field_name) then
+                    obj[field_name] = Serializer.serialize(field_value)
+                end
             end
         else
             -- Classes with customized de/serializer
