@@ -26,11 +26,21 @@ TrackConfig.__model_path = "Elements.Course.TrackConfig"
 function TrackConfig:initialize(name, scorables, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
     self.name = name or 'default'
     self.scorables = scorables or {}
+
+    for _, scorable in ipairs(self.scorables) do
+        scorable:registerObserver(self, function()
+            self:setDirty()
+        end)
+    end
+
     self.startLine = startLine
     self.finishLine = finishLine
     self.respawnLine = respawnLine
     self.startingPoint = startingPoint
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
+
+    self:cacheMethod("gatherHandles")
+    self:cacheMethod("gatherColliders")
 end
 
 ---2.7.1 migration
@@ -73,6 +83,28 @@ function TrackConfig:gatherColliders()
         colliders = table.chain(colliders, obj:gatherColliders())
     end
     return colliders
+end
+
+---@return Handle[]
+function TrackConfig:gatherHandles()
+    local handles = {}
+
+    local table_concat = function(t1, t2)
+        for _, item in ipairs(t2) do
+            t1[#t1 + 1] = item
+        end
+    end
+
+    for _, obj in ipairs(self.scorables) do
+        table_concat(handles, obj:gatherHandles())
+    end
+
+    table_concat(handles, self.startLine:gatherHandles())
+    table_concat(handles, self.finishLine:gatherHandles())
+    table_concat(handles, self.respawnLine:gatherHandles())
+    table_concat(handles, self.startingPoint:gatherHandles())
+
+    return handles
 end
 
 function TrackConfig:getBoundingBox(padding)

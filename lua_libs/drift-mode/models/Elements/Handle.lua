@@ -22,4 +22,8 @@ function Handle:set(new_pos)
     Assert.Error("Abstract method called")
 end
 
+function Handle:getPoint()
+    return self.point
+end
+
 return Handle

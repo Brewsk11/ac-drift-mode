@@ -76,38 +76,7 @@ local function gatherHandles()
     return handles
   end
 
-  for _, obj in ipairs(course.scorables) do
-    for _, poi in ipairs(obj:gatherHandles()) do
-      handles[#handles + 1] = poi
-    end
-  end
-
-  if course.startLine then
-    for _, poi in ipairs(course.startLine:gatherHandles()) do
-      handles[#handles + 1] = poi
-    end
-  end
-
-  if course.finishLine then
-    for _, poi in ipairs(course.finishLine:gatherHandles()) do
-      handles[#handles + 1] = poi
-    end
-  end
-
-  if course.respawnLine then
-    for _, poi in ipairs(course.respawnLine:gatherHandles()) do
-      handles[#handles + 1] = poi
-    end
-  end
-
-  if course.startingPoint then
-    for _, handle in ipairs(course.startingPoint:gatherHandles()) do
-      handles[#handles + 1] = handle
-    end
-  end
-
-  --cursor_data:registerObject("editor_pois", pois, CourseEditorUtils.POIs.Drawers.Simple(PointDir.Drawers.Simple()))
-  return handles
+  return course:gatherHandles()
 end
 
 
