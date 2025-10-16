@@ -13,8 +13,7 @@ PointArray.__model_path = "Common.Point.Array"
 function PointArray:initialize(items)
     Array.initialize(self, items)
 
-    self._segmented_closed = nil
-    self._segmented_opened = nil
+    self:cacheMethod("segment")
 end
 
 function PointArray:setDirty()
@@ -31,23 +30,6 @@ function PointArray.__deserialize(data)
 end
 
 function PointArray:segment(closed)
-    if closed then
-        if self._segment_closed == nil then
-            self._segment_closed = self:recalcSegment(closed)
-        end
-        return self._segment_closed
-    else
-        if self._segmented_opened == nil then
-            self._segmented_opened = self:recalcSegment(closed)
-        end
-        return self._segmented_opened
-    end
-end
-
----Segment the group. For group with 1 points returns empty SegmentArray.
----@param closed boolean? Whether to connect first with last point as last segment
----@return SegmentArray
-function PointArray:recalcSegment(closed)
     local _closed = closed or false
 
     local segments = {}
