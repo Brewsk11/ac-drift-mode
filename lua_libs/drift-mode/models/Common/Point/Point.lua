@@ -3,8 +3,6 @@ local Assert = require('drift-mode.assert')
 
 ---@class Point : ModelBase Class representing a point in the world space
 ---@field private _value vec3 World coordinate position of the point on the track
----@field private _flat vec2
----@field private _projected vec3
 local Point = class("Point", ModelBase)
 Point.__model_path = "Common.Point.Point"
 
@@ -12,6 +10,8 @@ Point.__model_path = "Common.Point.Point"
 function Point:initialize(value)
     ModelBase.initialize(self)
     self:set(value)
+    self:cacheMethod("flat")
+    self:cacheMethod("projected")
 end
 
 function Point:__serialize()
@@ -27,18 +27,11 @@ function Point.__deserialize(data)
     return Point(S.deserialize(data._value))
 end
 
----@private
-function Point:generateVariants()
-    self._flat = vec2(self:value().x, self:value().z)
-    self._projected = vec3(self:value().x, 0, self:value().z)
-end
-
 ---Set the point value
 ---@param self Point
 ---@param value vec3 New point position
 function Point:set(value)
     self._value = value
-    self:generateVariants()
     self:notifyDirty()
 end
 
@@ -53,14 +46,14 @@ end
 ---@param self Point
 ---@return vec2
 function Point:flat()
-    return self._flat
+    return vec2(self:value().x, self:value().z)
 end
 
 ---Return 2D projected track point in 3D world space
 ---@param self Point
 ---@return vec3
 function Point:projected()
-    return self._projected
+    return vec3(self:value().x, 0, self:value().z)
 end
 
 function Point:draw(size, color)
