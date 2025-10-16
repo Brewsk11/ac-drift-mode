@@ -38,6 +38,11 @@ function Zone:initialize(name, outsideLine, insideLine, maxPoints, collide)
     self:cacheMethod("getCenter")
 end
 
+function Zone:registerDefaultObservers()
+    if self.outsideLine then self.outsideLine:registerObserver(self) end
+    if self.insideLine then self.insideLine:registerObserver(self) end
+end
+
 ---@return ZoneHandle[]
 function Zone:gatherHandles()
     local handles = {}
@@ -93,11 +98,6 @@ function Zone:gatherColliders()
     return colliders
 end
 
-function Zone:setDirty()
-    Scorable.setDirty(self)
-    self:realignZonePointOnTrack()
-end
-
 function Zone:setCollide(value)
     self.collide = value
 end
@@ -116,13 +116,13 @@ end
 
 function Zone:setOutsideLine(outside_line)
     self.outsideLine = outside_line
-    self.outsideLine:registerObserver(self, function() self:setDirty() end)
+    self.outsideLine:registerObserver(self)
     self:setDirty()
 end
 
 function Zone:setInsideLine(inside_line)
     self.insideLine = inside_line
-    self.insideLine:registerObserver(self, function() self:setDirty() end)
+    self.insideLine:registerObserver(self)
     self:setDirty()
 end
 
@@ -147,9 +147,7 @@ function Zone:getPolygon()
         rev_idx = rev_idx + 1
     end
 
-    local polygon = PointArray(points)
-    polygon:registerObserver(self, function() self:setDirty() end)
-    return polygon
+    return PointArray(points)
 end
 
 ---Check if the point is inside the zone

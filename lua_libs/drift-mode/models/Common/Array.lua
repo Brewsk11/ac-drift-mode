@@ -17,10 +17,14 @@ function Array:initialize(items)
     self:registerObservers()
 end
 
+function Array:registerDefaultObservers()
+    self:registerObservers()
+end
+
 function Array:registerObservers()
     for _, item in self:iter() do
         ---@cast item ModelBase
-        item:registerObserver(self, function() self:setDirty() end)
+        item:registerObserver(self)
     end
 end
 
@@ -30,7 +34,7 @@ function Array:append(item)
     self._items[#self._items + 1] = item
 
     ---@cast item ModelBase
-    item:registerObserver(self, function() self:setDirty() end)
+    item:registerObserver(self)
     self:setDirty()
 end
 

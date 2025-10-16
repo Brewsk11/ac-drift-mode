@@ -13,6 +13,8 @@ Circle.__model_path = "Common.Circle"
 ---@overload fun(self, center, radius, normal) : Circle -- For emmy lua
 ---@overload fun(center: Point?, radius: number?, normal: vec3?) : Circle
 function Circle:initialize(center, radius, normal)
+    ModelBase.initialize(self)
+
     self._center = center or Point(vec3(0, 0, 0))
     self._radius = radius or 0
     self._normal = normal or vec3(0, 1, 0)

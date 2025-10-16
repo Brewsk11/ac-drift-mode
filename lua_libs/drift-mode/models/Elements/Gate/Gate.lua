@@ -3,8 +3,7 @@ local Point = require("drift-mode.models.Common.Point.Point")
 local Handle = require("drift-mode.models.Elements.Gate.Handle")
 
 ---@class Gate : Element
----@field origin Point
----@field direction vec3
+---@field private segment Segment
 local Gate = class("Gate", Element)
 Gate.__model_path = "Elements.Gate.Gate"
 
@@ -12,6 +11,12 @@ Gate.__model_path = "Elements.Gate.Gate"
 function Gate:initialize(name, segment)
     Element.initialize(self, name)
     self.segment = segment
+
+    self:registerDefaultObservers()
+end
+
+function Gate:registerDefaultObservers()
+    if self.segment then self.segment:registerObserver(self) end
 end
 
 function Gate:drawFlat(coord_transformer, scale, color)

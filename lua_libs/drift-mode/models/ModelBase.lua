@@ -31,14 +31,15 @@ function ModelBase:isSerializerExempt(field_name)
 end
 
 ---@param observer ModelBase
----@param callback fun() By default calls `self:setDirty()`
-function ModelBase:registerObserver(observer, callback)
-    self.__observers = self.__observers or {}
-    self.__observers[observer] = callback
+---Called after serialization
+---A model should register every dependent object
+---here, so after deserialization new observers
+---can be registered.
+function ModelBase:registerDefaultObservers()
+
 end
 
 function ModelBase:unregisterObserver(observer)
-    if self.__observers == nil then return false end
     return table.removeItem(self.__observers, observer)
 end
 

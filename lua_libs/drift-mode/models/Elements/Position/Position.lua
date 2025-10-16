@@ -18,6 +18,7 @@ end
 
 function Position:setEnd(new_end_point)
     self.direction = (new_end_point:value() - self.origin:value()):normalize()
+    self:setDirty()
 end
 
 function Position:drawFlat(coord_transformer, scale, color)

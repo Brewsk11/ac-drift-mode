@@ -18,8 +18,11 @@ function Segment:initialize(head, tail)
     self.tail = tail
 
     self:cacheMethod("getCenter")
-    self:cacheMethod("getDirection")
-    self:cacheMethod("getNormal")
+end
+
+function Segment:registerDefaultObservers()
+    if self.head then self.head:registerObserver(self) end
+    if self.tail then self.tail:registerObserver(self) end
 end
 
 ---Return 2-item array with start and end point values

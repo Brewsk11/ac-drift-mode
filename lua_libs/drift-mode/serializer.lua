@@ -258,6 +258,8 @@ function Serializer.deserialize(data, mode)
             end
         end
 
+        obj:registerDefaultObservers()
+
         return obj
     end
 

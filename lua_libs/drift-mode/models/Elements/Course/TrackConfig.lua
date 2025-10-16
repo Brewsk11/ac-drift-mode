@@ -40,7 +40,16 @@ function TrackConfig:initialize(name, scorables, startLine, finishLine, respawnL
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
 
     self:cacheMethod("gatherHandles")
-    self:cacheMethod("gatherColliders")
+
+function TrackConfig:registerDefaultObservers()
+    for _, scorable in ipairs(self.scorables) do
+        scorable:registerObserver(self)
+    end
+
+    if self.startLine then self.startLine:registerObserver(self) end
+    if self.finishLine then self.finishLine:registerObserver(self) end
+    if self.respawnLine then self.respawnLine:registerObserver(self) end
+    if self.startingPoint then self.startingPoint:registerObserver(self) end
 end
 
 ---2.7.1 migration

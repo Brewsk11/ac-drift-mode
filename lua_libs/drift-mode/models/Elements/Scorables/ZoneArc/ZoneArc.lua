@@ -39,6 +39,10 @@ function ZoneArc:initialize(name, maxPoints, collide, arc, width)
     self:cacheMethod("getBoundingBox")
 end
 
+function ZoneArc:registerDefaultObservers()
+    if self.arc then self.arc:registerObserver(self) end
+end
+
 function ZoneArc:getArc()
     return self.arc
 end
