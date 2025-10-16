@@ -14,7 +14,7 @@ local Position = require("drift-mode.models.Elements.Position.Position")
 local Gate = require("drift-mode.models.Elements.Gate.Gate")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
 local ConfigIO = require("drift-mode.configio")
-local EventSystem = require("drift-mode.EventSystem")
+local EventSystem = require("drift-mode.eventsystem")
 local MinimapHelper = require("drift-mode.MinimapHelper")
 local PointDir = require("drift-mode.models.Common.Point.init")
 
@@ -31,7 +31,7 @@ local course = (loaded_course_info and ConfigIO.loadTrackConfig(loaded_course_in
 local activeTab = nil
 
 ---Event system listener ID
-local listener_id = EventSystem.registerListener('app-editor-courses')
+local listener_id = EventSystem:registerListener('app-editor-courses')
 
 ---Cursor
 local cursor_data = Cursor() ---@type Cursor
@@ -116,7 +116,7 @@ local function onCourseEdited()
   Assert.NotNil(course, "Course was edited but simultaneously was nil")
   pois = gatherHandles()
   unsaved_changes = true
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, course)
+  EventSystem:emit(EventSystem.Signal.TrackConfigChanged, course)
 end
 
 

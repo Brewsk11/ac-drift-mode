@@ -2,7 +2,7 @@ local DataBroker = require('drift-mode.databroker')
 local EventSystem = require('drift-mode.eventsystem')
 local ConfigIO = require('drift-mode.configio')
 
-local listener_id = EventSystem.registerListener("apptab-carsetup")
+local listener_id = EventSystem:registerListener("apptab-carsetup")
 
 local CameraHelper = require('drift-mode.modes.CameraHelper')
 local CarConfig = require("drift-mode.models.Editor.CarConfig")
@@ -18,7 +18,7 @@ local car_data = nil
 local function loadCar()
     car_data = ConfigIO.loadCarConfig()
     if car_data == nil then car_data = CarConfig() end
-    EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
+    EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
 end
 loadCar()
 
@@ -26,7 +26,7 @@ loadCar()
 local is_helper_cam_active = false
 
 function CarSetup.drawUICarSetup()
-    EventSystem.listen(listener_id, EventSystem.Signal.EditorsStateChanged, function(payload)
+    EventSystem:listen(listener_id, EventSystem.Signal.EditorsStateChanged, function(payload)
         editors_state = payload
     end)
 
@@ -37,7 +37,7 @@ function CarSetup.drawUICarSetup()
     -- [CHECKBOX] Enable configuration
     if ui.checkbox("Show guides", editors_state.isCarSetup) then
         editors_state.isCarSetup = not editors_state.isCarSetup
-        EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
+        EventSystem:emit(EventSystem.Signal.EditorsStateChanged, editors_state)
     end
 
     -- [CHECKBOX] Enable helper camera
@@ -77,7 +77,7 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##foffset", car_data.frontOffset, 0.5, 3, 'Offset: %.2f')
     if changed then
         car_data.frontOffset = tonumber(string.format("%.3f", value))
-        EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
+        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
 
     -- [SLIDER] Front span
@@ -85,7 +85,7 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##fwidth", car_data.frontSpan, 0.05, 1.5, 'Span: %.2f')
     if changed then
         car_data.frontSpan = tonumber(string.format("%.3f", value))
-        EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
+        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
     ui.popFont()
     ui.popItemWidth()
@@ -103,7 +103,7 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##roffset", car_data.rearOffset, 0.5, 3, 'Offset: %.2f')
     if changed then
         car_data.rearOffset = tonumber(string.format("%.3f", value))
-        EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
+        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
 
     -- [SLIDER] Rear span
@@ -111,7 +111,7 @@ function CarSetup.drawUICarSetup()
     local value, changed = ui.slider("##rwidth", car_data.rearSpan, 0.05, 1.5, 'Span: %.2f')
     if changed then
         car_data.rearSpan = tonumber(string.format("%.3f", value))
-        EventSystem.emit(EventSystem.Signal.CarConfigChanged, car_data)
+        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
     ui.popFont()
     ui.popItemWidth()

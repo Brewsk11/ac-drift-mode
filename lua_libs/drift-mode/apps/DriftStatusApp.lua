@@ -4,7 +4,7 @@ local DriftState = require("drift-mode.models.Misc.DriftState")
 
 require('drift-mode.ui_layouts.infobars')
 
-local listener_id = EventSystem.registerListener('app-driftstatus')
+local listener_id = EventSystem:registerListener('app-driftstatus')
 
 local DriftStatusApp = {}
 
@@ -15,7 +15,7 @@ local drift_state = DriftState()
 local track_data = nil
 
 function DriftStatusApp.Main(dt)
-    EventSystem.listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
+    EventSystem:listen(listener_id, EventSystem.Signal.TrackConfigChanged, function(payload)
         track_data = payload;
     end)
 

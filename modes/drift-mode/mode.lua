@@ -1,5 +1,5 @@
 local EventSystem = require('drift-mode.eventsystem')
-local listener_id = EventSystem.registerListener("mode")
+local listener_id = EventSystem:registerListener("mode")
 
 local Timer = require('drift-mode.timer')
 local ConfigIO = require('drift-mode.configio')
@@ -24,7 +24,7 @@ local config_list = ConfigIO.listTrackConfigs()
 
 ---@type Cursor
 local cursor_data = Cursor()
-EventSystem.emit(EventSystem.Signal.CursorChanged, cursor_data)
+EventSystem:emit(EventSystem.Signal.CursorChanged, cursor_data)
 
 ---@type CarConfig?
 local car_data = nil
@@ -45,7 +45,7 @@ local track_data = TrackConfig()
 ---@param track_cfg_info TrackConfigInfo
 local function loadTrack(track_cfg_info)
   track_data = ConfigIO.loadTrackConfig(track_cfg_info)
-  EventSystem.emit(EventSystem.Signal.TrackConfigChanged, track_data)
+  EventSystem:emit(EventSystem.Signal.TrackConfigChanged, track_data)
 end
 
 track_config_info = ConfigIO.getLastUsedTrackConfigInfo()
@@ -98,7 +98,7 @@ local signalListeners = {
     function(payload)
       track_data = payload
       if track_data ~= nil then
-        EventSystem.emit(EventSystem.Signal.ResetScore)
+        EventSystem:emit(EventSystem.Signal.ResetScore)
         reactivateColliders()
 
         LineCrossDetector.clear()
@@ -135,7 +135,7 @@ local signalListeners = {
   },
   {
     EventSystem.Signal.CrossedStart,
-    function(payload) EventSystem.emit(EventSystem.Signal.ResetScore) end
+    function(payload) EventSystem:emit(EventSystem.Signal.ResetScore) end
   },
   {
     EventSystem.Signal.CrossedFinish,
@@ -147,13 +147,13 @@ local signalListeners = {
   },
   {
     EventSystem.Signal.CrossedRespawn,
-    function(payload) EventSystem.emit(EventSystem.Signal.TeleportToStart) end
+    function(payload) EventSystem:emit(EventSystem.Signal.TeleportToStart) end
   }
 }
 
 local function listenForSignals()
   for _, v in ipairs(signalListeners) do
-    EventSystem.listen(listener_id, v[1], v[2])
+    EventSystem:listen(listener_id, v[1], v[2])
   end
 end
 
@@ -197,7 +197,7 @@ function script.update(dt)
 
   if ac.getCar(0).extraF then
     ac.setExtraSwitch(5, false)
-    EventSystem.emit(EventSystem.Signal.TeleportToStart, {})
+    EventSystem:emit(EventSystem.Signal.TeleportToStart, {})
   end
 
   if not run_state and track_data then resetScore() end

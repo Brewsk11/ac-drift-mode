@@ -1,5 +1,5 @@
 local EventSystem = require('drift-mode.eventsystem')
-local listener_id = EventSystem.registerListener("mode-linecrossdetector")
+local listener_id = EventSystem:registerListener("mode-linecrossdetector")
 
 local LineCrossDetector = {}
 -- The line detector projects Points to vec2 on XZ plane
@@ -45,7 +45,7 @@ function LineCrossDetector.registerPoint(point)
             point:flat()
         )
         if res then
-            EventSystem.emit(v.signal, {})
+            EventSystem:emit(v.signal, {})
         end
         ::continue::
     end

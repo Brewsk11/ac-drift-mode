@@ -23,7 +23,7 @@ function Cursor:registerObject(id, object, drawer)
 
     if not are_same then
         self.objects[id] = CursorObject(object, drawer)
-        EventSystem.emit(EventSystem.Signal.CursorChanged, self)
+        EventSystem:emit(EventSystem.Signal.CursorChanged, self)
     end
 end
 
@@ -31,7 +31,7 @@ function Cursor:unregisterObject(id)
     -- Check if new object is the same and skip for performance (~10ms)
     if self.objects[id] ~= nil then
         self.objects[id] = nil
-        EventSystem.emit(EventSystem.Signal.CursorChanged, self)
+        EventSystem:emit(EventSystem.Signal.CursorChanged, self)
     end
 end
 

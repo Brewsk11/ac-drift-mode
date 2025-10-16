@@ -1,5 +1,5 @@
 local EventSystem = require('drift-mode.eventsystem')
-local listener_id = EventSystem.registerListener("app-debug-tab")
+local listener_id = EventSystem:registerListener("app-debug-tab")
 
 local ConfigIO = require('drift-mode.configio')
 
@@ -9,7 +9,7 @@ local Debug = {}
 local scoring_object_states = nil
 
 function Debug.drawUIDebug()
-    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
+    EventSystem:listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
         if scoring_object_states == nil then return end
         for idx, obj in ipairs(scoring_object_states) do
             if obj:getName() == payload.name then
@@ -23,7 +23,7 @@ function Debug.drawUIDebug()
         end
     end)
 
-    EventSystem.listen(listener_id, EventSystem.Signal.ScorableStatesReset, function(payload)
+    EventSystem:listen(listener_id, EventSystem.Signal.ScorableStatesReset, function(payload)
         scoring_object_states = payload
     end)
 
@@ -33,7 +33,7 @@ function Debug.drawUIDebug()
 
     if ui.button("Load scoring objects") then
         scoring_object_states = ConfigIO.loadConfig(ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/scoring.json")
-        EventSystem.emit(EventSystem.Signal.ScorableStatesReset, scoring_object_states)
+        EventSystem:emit(EventSystem.Signal.ScorableStatesReset, scoring_object_states)
     end
 end
 

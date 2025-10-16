@@ -1,6 +1,7 @@
 local DataBroker = require('drift-mode.databroker')
 
-local EventSystem = {}
+---@class EventSystem
+local EventSystem = class("EventSystem", ClassBase)
 
 ---@enum EventSystem.Signal
 EventSystem.Signal = {
@@ -19,30 +20,18 @@ EventSystem.Signal = {
     ScorableStatesReset = "ScorableStatesReset",   -- TODO: Document these
 }
 
-local charset = "abcdefghijklmnopqrstuvwxyz1234567890"
-local function randomString(length)
-    local result = {}
-    for _ = 1, length do
-        local idx = math.random(1, #charset)
-        table.insert(result, charset:sub(idx, idx))
+function EventSystem:initialize()
+    self.listeners = {}
+    self.signal_log = ac.connect(self:createSignalLayout("signal_log"))
+end
+
+function EventSystem:createSignalLayout(listener_id)
+    local layout = { ac.StructItem.key("drift-mode.events." .. listener_id) }
+    for key, _ in pairs(EventSystem.Signal) do
+        layout[key] = ac.StructItem.uint32()
     end
-    return table.concat(result)
-end
 
-local listeners = {}
-local function storeListeners()
-    DataBroker.store("eventsystem_listeners", listeners)
-end
-local function loadListeners()
-    listeners = DataBroker.read("eventsystem_listeners") or {}
-end
-
-local signal_log = {}
-local function storeSignalLog()
-    DataBroker.store("eventsystem_signal_log", signal_log)
-end
-local function loadSignalLog()
-    signal_log = DataBroker.read("eventsystem_signal_log") or {}
+    return layout
 end
 
 local function storePayload(signal, payload)
@@ -52,51 +41,38 @@ local function loadPayload(signal)
     return DataBroker.read("eventsystem_payload__" .. signal) or {}
 end
 
----@param name string
-function EventSystem.registerListener(name)
-    loadListeners()
-    listeners[name] = {
-        signals_read = {}
-    }
-    storeListeners()
-    return name
+---@param listener_id string
+function EventSystem:registerListener(listener_id)
+    self.listeners[listener_id] = ac.connect(self:createSignalLayout(listener_id))
+    return listener_id
 end
 
 ---@param listener_id string
 ---@param signal EventSystem.Signal
 ---@param callback fun(payload: table|number|boolean|nil)
-function EventSystem.listen(listener_id, signal, callback)
-    loadListeners()
-    loadSignalLog()
-
-    local last_signal_id = signal_log[signal]
-    local last_listeners_signal_id_read = listeners[listener_id].signals_read[signal]
+function EventSystem:listen(listener_id, signal, callback)
+    local last_signal_id = self.signal_log[signal]
+    local last_listeners_signal_id_read = self.listeners[listener_id][signal]
 
     if last_listeners_signal_id_read == last_signal_id then
         return false
     end
 
     local payload = loadPayload(signal)
-
     callback(payload)
 
-    listeners[listener_id].signals_read[signal] = last_signal_id
-    storeListeners()
-    storeSignalLog()
-
+    self.listeners[listener_id][signal] = last_signal_id
     return true
 end
 
+local UINT32_MAX = 4294967295
+
 ---@param signal EventSystem.Signal
 ---@param payload any
-function EventSystem.emit(signal, payload)
-    loadSignalLog()
-
-    local emit_id = randomString(8)
-    signal_log[signal] = emit_id
-
-    storeSignalLog()
+function EventSystem:emit(signal, payload)
+    local emit_id = math.random(0, UINT32_MAX - 1)
+    self.signal_log[signal] = emit_id
     storePayload(signal, payload)
 end
 
-return EventSystem
+return EventSystem()

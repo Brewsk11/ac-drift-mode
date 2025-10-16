@@ -36,7 +36,7 @@ function RunState:initialize(track_config)
         end
     end
 
-    EventSystem.emit(EventSystem.Signal.ScorableStatesReset, self.scoringObjectStates)
+    EventSystem:emit(EventSystem.Signal.ScorableStatesReset, self.scoringObjectStates)
 end
 
 function RunState:calcDriftState(car)

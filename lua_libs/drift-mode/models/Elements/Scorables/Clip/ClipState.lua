@@ -36,7 +36,7 @@ end
 function ClipState:registerCar(car_config, car, drift_state)
     local clip_scoring_point = Point(
         car.position + car.look * car_config.frontOffset +
-        car.side * car_config.frontSpan * -drift_state.side_drifting
+        car.side * car_config.frontSpan * -drift_state.shared_data.side_drifting
     )
     if clip_scoring_point:value():distance(self.clip.origin:value()) > self.clip:getLength() + 2 then
         return nil
@@ -45,7 +45,7 @@ function ClipState:registerCar(car_config, car, drift_state)
     local res = self:registerPosition(clip_scoring_point, drift_state)
 
     if res then
-        EventSystem.emit(EventSystem.Signal.ScorableStateChanged,
+        EventSystem:emit(EventSystem.Signal.ScorableStateChanged,
             {
                 name = self.clip.name,
                 payload = self
@@ -95,8 +95,8 @@ function ClipState:registerPosition(point, drift_state)
         return nil
     end
 
-    self.hitAngleMult = drift_state.angle_mult
-    self.hitSpeedMult = drift_state.speed_mult
+    self.hitAngleMult = drift_state.shared_data.angle_mult
+    self.hitSpeedMult = drift_state.shared_data.speed_mult
 
     local end_to_hit = self.clip:getEnd():flat():distance(res)
     self.hitRatioMult = end_to_hit / self.clip.length

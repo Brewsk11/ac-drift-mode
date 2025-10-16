@@ -108,7 +108,7 @@ end
 ---@private
 function ZoneArcState:setFinished(value)
     self.finished = value
-    EventSystem.emit(EventSystem.Signal.ScorableStateChanged,
+    EventSystem:emit(EventSystem.Signal.ScorableStateChanged,
         {
             name = self.zonearc.name,
             payload = {

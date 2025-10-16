@@ -1,5 +1,5 @@
 local EventSystem = require('drift-mode.eventsystem')
-local listener_id = EventSystem.registerListener('app-control')
+local listener_id = EventSystem:registerListener('app-control')
 
 local Resources = require('drift-mode.Resources')
 local EditorsState = require("drift-mode.models.Editor.EditorsState")
@@ -10,7 +10,7 @@ local ControlApp = {}
 
 ---@type EditorsState
 local editors_state = EditorsState()
-EventSystem.emit(EventSystem.Signal.EditorsStateChanged, editors_state)
+EventSystem:emit(EventSystem.Signal.EditorsStateChanged, editors_state)
 
 
 local EditorTab = require('drift-mode.apps.ControlAppTabs.Editor')
