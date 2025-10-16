@@ -5,6 +5,10 @@ local Assert = require('drift-mode.assert')
 local SegmentArray = class("SegmentArray", Array)
 SegmentArray.__model_path = "Common.Segment.Array"
 
+function SegmentArray:initialize(items)
+    Array.initialize(self, items)
+end
+
 -- Needed for 2.7.1 migration, remove afterwards.
 function SegmentArray.__deserialize(data)
     local S = require('drift-mode.serializer')

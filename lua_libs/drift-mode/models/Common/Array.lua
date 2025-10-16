@@ -12,6 +12,7 @@ Array.__model_path = "Common.Array"
 ---@overload fun(items: T[]): Array<T>
 ---@return Array<T>
 function Array:initialize(items)
+    ModelBase.initialize(self)
     self._items = items or {}
 end
 

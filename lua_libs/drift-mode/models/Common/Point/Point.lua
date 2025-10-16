@@ -10,7 +10,7 @@ Point.__model_path = "Common.Point.Point"
 
 ---@param value vec3 World position
 function Point:initialize(value)
-    ModelBase:initialize()
+    ModelBase.initialize(self)
     self:set(value)
 end
 

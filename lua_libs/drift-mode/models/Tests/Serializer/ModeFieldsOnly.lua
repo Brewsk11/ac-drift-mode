@@ -5,7 +5,7 @@ local TestClassSerializerModeFieldsOnly = class("TestClassSerializerModeFieldsOn
 TestClassSerializerModeFieldsOnly.__model_path = "Tests.Serializer.ModeFieldsOnly"
 
 function TestClassSerializerModeFieldsOnly:initialize()
-    ModelBase:initialize()
+    ModelBase.initialize(self)
     self.number = math.random(1000)
 end
 

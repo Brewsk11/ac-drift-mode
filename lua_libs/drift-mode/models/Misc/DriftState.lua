@@ -16,7 +16,7 @@ DriftState.Side = {
 }
 
 function DriftState:initialize(speed_mult, angle_mult, ratio_mult, side_drifting)
-    ModelBase:initialize()
+    ModelBase.initialize(self)
     self.speed_mult = speed_mult
     self.angle_mult = angle_mult
     self.ratio_mult = ratio_mult

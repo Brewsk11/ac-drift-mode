@@ -8,7 +8,7 @@ local DrawerZoneArc = class("DrawerZoneArc", Drawer)
 DrawerZoneArc.__model_path = "Elements.Scorables.ZoneArc.Drawers.ZoneArc.Base"
 
 function DrawerZoneArc:initialize()
-    Drawer:initialize()
+    Drawer.initialize(self)
 end
 
 ---@param zonearc ZoneArc

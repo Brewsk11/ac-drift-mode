@@ -6,7 +6,7 @@ local ScorableState = class("ScorableState", ModelBase)
 ScorableState.__model_path = "Elements.Scorables.ScorableState"
 
 function ScorableState:initialize()
-    ModelBase:initialize()
+    ModelBase.initialize(self)
 end
 
 function ScorableState:getScore()

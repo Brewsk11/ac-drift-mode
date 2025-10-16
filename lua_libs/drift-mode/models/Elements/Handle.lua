@@ -8,7 +8,7 @@ local Handle = class("Handle", ModelBase)
 Handle.__model_path = "Elements.Handle"
 
 function Handle:initialize(point)
-    ModelBase:initialize()
+    ModelBase.initialize(self)
     self.point = point
 end
 

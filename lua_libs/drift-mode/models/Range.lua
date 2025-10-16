@@ -8,7 +8,7 @@ local Range = class("Range", ModelBase)
 Range.__model_path = "Range"
 
 function Range:initialize(start, finish)
-    ModelBase:initialize()
+    ModelBase.initialize(self)
     self:setStart(start)
     self:setFinish(finish)
 end
