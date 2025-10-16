@@ -14,8 +14,9 @@ Segment.__model_path = "Common.Segment.Segment"
 ---@param tail Point
 function Segment:initialize(head, tail)
     ModelBase.initialize(self)
-    self.head = head
-    self.tail = tail
+
+    self:setHead(head)
+    self:setTail(tail)
 
     self:cacheMethod("getCenter")
 end
@@ -50,19 +51,15 @@ end
 function Segment:setHead(point)
     self.head = point
     if self.head then
-        self.head:registerObserver(self, function()
-            self:setDirty()
-        end)
+        self.head:registerObserver(self)
     end
     self:setDirty()
 end
 
-function Segment:setTail(value)
-    self.tail = value
+function Segment:setTail(point)
+    self.tail = point
     if self.tail then
-        self.tail:registerObserver(self, function()
-            self:setDirty()
-        end)
+        self.tail:registerObserver(self)
     end
     self:setDirty()
 end

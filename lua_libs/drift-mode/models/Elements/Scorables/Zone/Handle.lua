@@ -44,7 +44,6 @@ function ZoneHandle:onDelete(context)
             end
         )
     end
-    ac.log("onDeleteZone")
 end
 
 return ZoneHandle

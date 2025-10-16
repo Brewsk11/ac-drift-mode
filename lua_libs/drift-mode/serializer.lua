@@ -109,10 +109,6 @@ function Serializer.serialize(data)
         return color
     end
 
-    if type(data) == "function" then
-        ac.log(data)
-    end
-
     assert(
         type(data) == "nil" or
         type(data) == "number" or
@@ -240,7 +236,7 @@ function Serializer.deserialize(data, mode)
 
     -- ModelBase classes
     if data['__class'] ~= nil then
-        local obj = nil
+        local obj = nil ---@type ModelBase?
 
         local ModelClass = Serializer.getModelDefinition(data.__class)
 

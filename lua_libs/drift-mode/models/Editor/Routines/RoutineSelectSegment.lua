@@ -35,21 +35,22 @@ function RoutineSelectSegment:run(context)
     )
 
     -- When head has already been set
-    if self.segment:getHead() then
+    if self.segment:getHead() ~= nil then
         if ui.mouseClicked() then
             self.segment:setTail(Point(hit))
+            return true
         end
         context.cursor:registerObject(
             "routine_select_segment",
             Segment(self.segment:getHead(), Point(hit)),
             SegmentDir.Drawers.Line(rgbm(0, 0, 3, 1))
         )
+    elseif ui.mouseClicked() then
+        self.segment:setHead(Point(hit))
+        return true
     end
 
-    -- To set the head
-    if self.segment:getHead() == nil and ui.mouseClicked() then
-        self.segment = Point(hit)
-    end
+    return false
 end
 
 ---@param context EditorRoutine.Context

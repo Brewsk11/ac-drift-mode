@@ -32,7 +32,7 @@ function RoutineSelectArc:run(context)
         context.cursor:unregisterObject("routine_select_selector")
         context.cursor:unregisterObject("routine_select_arc")
         context.cursor:unregisterObject("routine_select_arc_points")
-        return
+        return false
     end
 
     context.cursor:registerObject(
@@ -44,12 +44,12 @@ function RoutineSelectArc:run(context)
     if self._start == nil then
         if ui.mouseClicked() then
             self._start = Point(hit)
-            return
+            return false
         end
     elseif self._end == nil then
         if ui.mouseClicked() then
             self._end = Point(hit)
-            return
+            return false
         end
         context.cursor:registerObject(
             "routine_select_arc",
@@ -62,7 +62,7 @@ function RoutineSelectArc:run(context)
         if ui.mouseClicked() then
             self._midpoint = Point(hit)
             self._arc = arc
-            return
+            return true
         end
         local arr = PointDir.Array()
         arr:append(self._start)

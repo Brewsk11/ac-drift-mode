@@ -2,7 +2,7 @@ local Assert = require('drift-mode.assert')
 
 ---Base class for model classes that are expected to be serialized.
 ---@class ModelBase : ClassBase
----@field __cache { [string]: { [string]: any }} Cache table for the cache system; non-serializable
+---@field __cache { [string]: { [string]: any }} # Cache table for the cache system; non-serializable
 ---@field __observers table<ModelBase, function> of observers for changes for the cache system; non-serializable
 ---@field __serialize function?
 ---@field __deserialize function?
@@ -31,6 +31,10 @@ function ModelBase:isSerializerExempt(field_name)
 end
 
 ---@param observer ModelBase
+function ModelBase:registerObserver(observer)
+    self.__observers[#self.__observers + 1] = observer
+end
+
 ---Called after serialization
 ---A model should register every dependent object
 ---here, so after deserialization new observers
@@ -45,8 +49,8 @@ end
 
 ---@private
 function ModelBase:notifyObservers()
-    for _, callback in ipairs(self.__observers) do
-        callback()
+    for _, observer in ipairs(self.__observers) do
+        observer:setDirty()
     end
 end
 
@@ -115,20 +119,45 @@ function ModelBase:subclassed(classDefinition)
 end
 
 function ModelBase.test()
+    ---@class ObserverTestClass : ModelBase
+    local ObserverTestClass = class("observer", ModelBase)
+
+    function ObserverTestClass:initialize()
+        ModelBase.initialize(self)
+    end
+
     ---@class TestClass : ModelBase
     local TestClass = class('test_class', ModelBase)
     function TestClass:initialize()
-        self:cacheMethod("test_method")
+        ModelBase.initialize(self)
+        self.value = 1
+
+        self.obs = ObserverTestClass()
+        self.obs:registerObserver(self)
+
+        self:cacheMethod("getValue")
     end
 
-    function TestClass:test_method()
-        return nil
+    function TestClass:getValue()
+        return self.value
     end
 
     local obj = TestClass()
+    Assert.Equal(obj:getValue(), 1)
+    obj.value = 2
+    Assert.Equal(obj:getValue(), 1)
+    obj:setDirty()
+    Assert.Equal(obj:getValue(), 2)
 
-    Assert.Nil(obj:test_method())
-    Assert.Nil(obj:test_method())
+    obj.value = 3
+    Assert.Equal(obj:getValue(), 2)
+    obj.obs:setDirty()
+    Assert.Equal(obj:getValue(), 3)
+
+    obj.obs:unregisterObserver(obj)
+    obj.value = 4
+    obj.obs:setDirty()
+    Assert.Equal(obj:getValue(), 3)
 end
 
 return ModelBase

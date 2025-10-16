@@ -85,6 +85,7 @@ local function onCourseEdited()
   Assert.NotNil(course, "Course was edited but simultaneously was nil")
   pois = gatherHandles()
   unsaved_changes = true
+  course:setDirty()
   EventSystem:emit(EventSystem.Signal.TrackConfigChanged, course)
 end
 
@@ -432,7 +433,7 @@ function CourseEditor:drawUIOther(dt)
   else
     if ui.button("Define###startline", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.startLine = Gate("Start line", segment)
+        course:setStartLine(Gate("Start line", segment))
       end)
     end
   end
@@ -441,14 +442,14 @@ function CourseEditor:drawUIOther(dt)
   ui.sameLine(0, 4)
   if is_finish_defined then
     if ui.button("Clear###finishline", vec2(120, 30), button_global_flags) then
-      course.finishLine = nil
+      course:setFinishLine(nil)
       is_finish_defined = false
       onCourseEdited()
     end
   else
     if ui.button("Define###finishline", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.finishLine = Gate("Finish line", segment)
+        course:setFinishLine(Gate("Finish line", segment))
       end)
     end
   end
@@ -457,14 +458,14 @@ function CourseEditor:drawUIOther(dt)
   ui.sameLine(0, 4)
   if is_respawn_defined then
     if ui.button("Clear###respawnLine", vec2(120, 30), button_global_flags) then
-      course.respawnLine = nil
+      course:setRespawnLine(nil)
       is_respawn_defined = false
       onCourseEdited()
     end
   else
     if ui.button("Define###respawnLine", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.respawnLine = Gate("Respawn line", segment)
+        course:setRespawnLine(Gate("Respawn line", segment))
       end)
     end
   end
@@ -475,14 +476,14 @@ function CourseEditor:drawUIOther(dt)
   ui.sameLine(0, 4)
   if is_starting_point_defined then
     if ui.button("Clear###startingpoint", vec2(120, 30), button_global_flags) then
-      course.startingPoint = nil
+      course:setStartingPoint(nil)
       is_starting_point_defined = false
       onCourseEdited()
     end
   else
     if ui.button("Define###startingpoint", vec2(120, 30), button_global_flags) then
       current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
-        course.startingPoint = Position("Starting point", segment:getHead(), nil)
+        course:setStartingPoint(Position("Starting point", segment:getHead(), nil))
         course.startingPoint:setEnd(segment:getTail())
       end)
     end
@@ -622,6 +623,7 @@ function CourseEditor:runEditor(dt)
     if current_routine:detachCondition(context) then
       current_routine = nil
       cursor_data:reset()
+      onCourseEdited()
     else
       local changed = current_routine:run(context)
       if changed then

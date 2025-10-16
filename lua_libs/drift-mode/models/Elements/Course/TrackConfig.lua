@@ -24,22 +24,20 @@ TrackConfig.__model_path = "Elements.Course.TrackConfig"
 
 
 function TrackConfig:initialize(name, scorables, startLine, finishLine, respawnLine, startingPoint, scoringRanges)
+    ModelBase.initialize(self)
+
     self.name = name or 'default'
     self.scorables = scorables or {}
 
-    for _, scorable in ipairs(self.scorables) do
-        scorable:registerObserver(self, function()
-            self:setDirty()
-        end)
-    end
+    self:setStartLine(startLine)
+    self:setFinishLine(finishLine)
+    self:setRespawnLine(respawnLine)
+    self:setStartingPoint(startingPoint)
 
-    self.startLine = startLine
-    self.finishLine = finishLine
-    self.respawnLine = respawnLine
-    self.startingPoint = startingPoint
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
 
     self:cacheMethod("gatherHandles")
+end
 
 function TrackConfig:registerDefaultObservers()
     for _, scorable in ipairs(self.scorables) do
@@ -108,10 +106,21 @@ function TrackConfig:gatherHandles()
         table_concat(handles, obj:gatherHandles())
     end
 
-    table_concat(handles, self.startLine:gatherHandles())
-    table_concat(handles, self.finishLine:gatherHandles())
-    table_concat(handles, self.respawnLine:gatherHandles())
-    table_concat(handles, self.startingPoint:gatherHandles())
+    if self.startLine then
+        table_concat(handles, self.startLine:gatherHandles())
+    end
+
+    if self.finishLine then
+        table_concat(handles, self.finishLine:gatherHandles())
+    end
+
+    if self.respawnLine then
+        table_concat(handles, self.respawnLine:gatherHandles())
+    end
+
+    if self.startingPoint then
+        table_concat(handles, self.startingPoint:gatherHandles())
+    end
 
     return handles
 end
@@ -174,6 +183,43 @@ function TrackConfig:getBoundingBox(padding)
     else
         return nil
     end
+end
+
+---@param gate Gate
+function TrackConfig:setStartLine(gate)
+    self.startLine = gate
+
+    if self.startLine then
+        self.startLine:registerObserver(self)
+    end
+    self:setDirty()
+end
+
+---@param gate Gate
+function TrackConfig:setFinishLine(gate)
+    self.finishLine = gate
+    if self.finishLine then
+        self.finishLine:registerObserver(self)
+    end
+    self:setDirty()
+end
+
+---@param gate Gate
+function TrackConfig:setRespawnLine(gate)
+    self.respawnLine = gate
+    if self.respawnLine then
+        self.respawnLine:registerObserver(self)
+    end
+    self:setDirty()
+end
+
+---@param position Position
+function TrackConfig:setStartingPoint(position)
+    self.startingPoint = position
+    if self.startingPoint then
+        self.startingPoint:registerObserver(self)
+    end
+    self:setDirty()
 end
 
 function TrackConfig:drawFlat(coord_transformer, scale)

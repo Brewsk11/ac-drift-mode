@@ -50,7 +50,7 @@ end
 function ZoneArc:setArc(arc)
     self.arc = arc
     if self.arc ~= nil then
-        self.arc:registerObserver(self, function() self:setDirty() end)
+        self.arc:registerObserver(self)
     end
 
     self:setDirty()
@@ -62,6 +62,7 @@ end
 
 function ZoneArc:setWidth(width)
     self.width = width
+    self:setDirty()
 end
 
 function ZoneArc:getInsideArc()
@@ -191,6 +192,7 @@ function ZoneArc:setZoneArcPosition(point)
     local offset = self:getArc():getCenter():value() - center:value()
 
     self:getArc():setCenter(Point(point:value() + offset))
+    self:setDirty()
 end
 
 function ZoneArc:realignZoneArcPointOnTrack()
@@ -282,7 +284,7 @@ function ZoneArc:gatherHandles()
             Handle.Type.ArcControl
         )
 
-        if self._inside_arc then
+        if self:getInsideArc() then
             pois[#pois + 1] = Handle(
                 self:getInsideArc():getPointOnArc(0.10),
                 self,
