@@ -2,8 +2,8 @@ local Assert = require('drift-mode.assert')
 
 ---Base class for model classes that are expected to be serialized.
 ---@class ModelBase : ClassBase
----@field __cache table<string, { [string]: any }> Cache table for the cache system; non-serializable
----@field __observers ModelBase[] Table of observers for changes for the cache system; non-serializable
+---@field __cache { [string]: { [string]: any }} Cache table for the cache system; non-serializable
+---@field __observers table<ModelBase, function> of observers for changes for the cache system; non-serializable
 ---@field __serialize function?
 ---@field __deserialize function?
 local ModelBase = class("ModelBase", ClassBase)
@@ -30,18 +30,16 @@ function ModelBase:isSerializerExempt(field_name)
     return false
 end
 
----@param callback fun(observer: ModelBase)? By default calls `self:setDirty()`
-function ModelBase:registerObserver(callback)
-    table.insert(self.__observers, callback)
+---@param observer ModelBase
+---@param callback fun() By default calls `self:setDirty()`
+function ModelBase:registerObserver(observer, callback)
+    self.__observers = self.__observers or {}
+    self.__observers[observer] = callback
 end
 
-function ModelBase:unregisterObserver(callback)
-    for idx, c in ipairs(self.__observers) do
-        if c == callback then
-            table.remove(self.__observers, idx)
-            break
-        end
-    end
+function ModelBase:unregisterObserver(observer)
+    if self.__observers == nil then return false end
+    return table.removeItem(self.__observers, observer)
 end
 
 ---@protected
@@ -51,28 +49,38 @@ function ModelBase:notifyDirty()
     end
 end
 
+local NIL = {}
+
 -- Wrap a method so that its return value is cached.
 -- `keyBuilder` receives the original arguments (including `self`) and
 -- must return a string that uniquely represents the call.
 function ModelBase:cacheMethod(method_name, key_builder)
+    self.__cache = self.__cache or {}
     self.__cache[method_name] = {}
     local original_method = self[method_name]
 
     Assert.NotNil(original_method, "Method " .. tostring(method_name) .. " does not exist")
 
-    --  local key_builder = function(_self, ...) return tostring(select(1, ...)) end
+    local _key_builder = key_builder or function(_self, ...)
+        if select('#', ...) == 0 then
+            return "__no_args"
+        end
+        return tostring(select(1, ...))
+    end
 
     local function wrapped_method(_self, ...)
-        ac.log("calling wrapped " .. method_name)
-
-        local call_key = key_builder(_self, ...)
+        local call_key = _key_builder(_self, ...)
         local method_cache = self.__cache[method_name]
-        if method_cache and method_cache[call_key] ~= nil then
-            return method_cache[call_key]
+        local cached = method_cache[call_key]
+
+        if cached ~= nil then -- hit
+            return cached == NIL and nil or cached
         end
+
         local res = original_method(self, ...)
 
-        self.__cache[method_name][call_key] = res
+        -- Store the result, replacing `nil` with the sentinel
+        method_cache[call_key] = (res == nil) and NIL or res
         return res
     end
 
