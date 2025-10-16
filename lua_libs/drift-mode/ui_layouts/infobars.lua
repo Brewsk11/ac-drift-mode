@@ -57,14 +57,14 @@ function drawModifiers(ranges, drift_state)
     ui.dwriteTextAligned(rect.max, 10, ui.Alignment.End, ui.Alignment.End, rect.size)
   end
 
-  local ratio_nil = drift_state.ratio_mult
-  if drift_state.ratio_mult == nil then ratio_nil = 0 end
+  local ratio_nil = drift_state.shared_data.ratio_mult
+  if drift_state.shared_data.ratio_mult == nil then ratio_nil = 0 end
 
   ui.beginChild('infobars', widgetSize, true)
   ui.pushDWriteFont("ACRoboto700.ttf")
   ui.drawRectFilled(vec2(10, 2), widgetSize - vec2(10, 2), rgbm(0.3, 0.3, 0.3, 0.5), 10)
-  drawInfobar(speedRect, drift_state.speed_mult)
-  drawInfobar(angleRect, drift_state.angle_mult)
+  drawInfobar(speedRect, drift_state.shared_data.speed_mult)
+  drawInfobar(angleRect, drift_state.shared_data.angle_mult)
   drawInfobar(ratioRect, ratio_nil)
   drawInfobar(compoundRect, drift_state:getFinalMult())
   ui.endChild()

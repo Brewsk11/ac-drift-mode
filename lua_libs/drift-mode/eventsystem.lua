@@ -4,18 +4,17 @@ local EventSystem = {}
 
 ---@enum EventSystem.Signal
 EventSystem.Signal = {
-    CrossedFinish = "CrossedFinish",             ---Crossed finish line
-    CrossedStart = "CrossedStart",               ---Crossed start line
-    CrossedRespawn = "CrossedRespawn",           ---Crossed respawn line
-    TeleportToStart = "TeleportToStart",         ---Request to teleport to starting point
-    ResetScore = "ResetScore",                   ---Requested run reset run scoring
+    CrossedFinish = "CrossedFinish",               ---Crossed finish line
+    CrossedStart = "CrossedStart",                 ---Crossed start line
+    CrossedRespawn = "CrossedRespawn",             ---Crossed respawn line
+    TeleportToStart = "TeleportToStart",           ---Request to teleport to starting point
+    ResetScore = "ResetScore",                     ---Requested run reset run scoring
 
-    CursorChanged = "CursorChanged",             ---Signal for UI to update cursor data
-    TrackConfigChanged = "TrackConfigChanged",   ---Signal for UI to update track data
-    CarConfigChanged = "CarConfigChanged",       ---Signal for UI to update car data
-    EditorsStateChanged = "EditorsStateChanged", ---Signal for when car or track editor state changes
+    CursorChanged = "CursorChanged",               ---Signal for UI to update cursor data
+    TrackConfigChanged = "TrackConfigChanged",     ---Signal for UI to update track data
+    CarConfigChanged = "CarConfigChanged",         ---Signal for UI to update car data
+    EditorsStateChanged = "EditorsStateChanged",   ---Signal for when car or track editor state changes
 
-    DriftStateChanged = "DriftStateChanged",
     ScorableStateChanged = "ScorableStateChanged", -- TODO: Document these
     ScorableStatesReset = "ScorableStatesReset",   -- TODO: Document these
 }

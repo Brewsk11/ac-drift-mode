@@ -41,7 +41,6 @@ end
 
 function RunState:calcDriftState(car)
     self.driftState:calcDriftState(car, self.trackConfig.scoringRanges)
-    EventSystem.emit(EventSystem.Signal.DriftStateChanged, self.driftState)
 end
 
 ---@param car_config CarConfig
@@ -49,12 +48,11 @@ end
 function RunState:registerCar(car_config, car)
     self.driftState:calcDriftState(car, self.trackConfig.scoringRanges)
 
-    self.driftState.ratio_mult = 0.0
+    self.driftState.shared_data.ratio_mult = 0.0
     for _, scoring_object in ipairs(self.scoringObjectStates) do
         local res = scoring_object:registerCar(car_config, car, self.driftState)
         if res ~= nil then
-            self.driftState.ratio_mult = res
-            EventSystem.emit(EventSystem.Signal.DriftStateChanged, self.driftState)
+            self.driftState.shared_data.ratio_mult = res
             break
         end
     end

@@ -41,7 +41,7 @@ function ZoneState:registerCar(car_config, car, drift_state)
     if self:isDone() then return nil end
 
     local zone_scoring_point = Point(car.position - car.look * car_config.rearOffset +
-        car.side * drift_state.side_drifting * car_config.rearSpan)
+        car.side * drift_state.shared_data.side_drifting * car_config.rearSpan)
 
     -- Check if the registering point belongs to the zone
     if not self.zone:isInZone(zone_scoring_point) then
@@ -107,8 +107,8 @@ function ZoneState:registerPosition(point, drift_state, is_inside)
 
     self.scores[#self.scores + 1] = ZoneScoringPoint(
         point,
-        drift_state.speed_mult,
-        drift_state.angle_mult,
+        drift_state.shared_data.speed_mult,
+        drift_state.shared_data.angle_mult,
         ratio_mult,
         distance,
         is_inside
