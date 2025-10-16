@@ -26,7 +26,7 @@ ZoneArc.__model_path = "Elements.Scorables.ZoneArc.ZoneArc"
 ---@param arc Arc
 ---@param width number
 function ZoneArc:initialize(name, maxPoints, collide, arc, width)
-    Scorable.initialize(self, name, maxPoints)
+    Scorable:initialize(name, maxPoints)
     self.collide = collide or false
     self.arc = arc
     self.width = width or 3

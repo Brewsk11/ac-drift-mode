@@ -11,6 +11,7 @@ local ZoneArcScoringPoint = class("ZoneArcScoringPoint", ModelBase)
 ZoneArcScoringPoint.__model_path = "Elements.Scorables.ZoneArc.ZoneArcScoringPoint"
 
 function ZoneArcScoringPoint:initialize(point, speed_mult, angle_mult, ratio_mult, location, inside)
+    ModelBase:initialize()
     self.point = point
     self.speed_mult = speed_mult
     self.angle_mult = angle_mult

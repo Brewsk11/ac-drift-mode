@@ -5,6 +5,7 @@ local TestClassCustomSerializer = class("TestClassCustomSerializer", ModelBase)
 TestClassCustomSerializer.__model_path = "Tests.Serializer.CustomSerializerClass"
 
 function TestClassCustomSerializer:initialize()
+    ModelBase:initialize()
     self.number = math.random(1000)
 end
 

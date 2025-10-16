@@ -7,7 +7,7 @@ local Drawer = class("Drawer", ModelBase)
 Drawer.__model_path = "Drawer"
 
 function Drawer:initialize()
-    Assert.Error("Abstract object called")
+    ModelBase:initialize()
 end
 
 ---@param obj any

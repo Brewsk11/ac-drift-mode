@@ -12,7 +12,7 @@ local DrawerZoneArcStatePlay = class("DrawerZoneArcStatePlay", DrawerZoneState)
 DrawerZoneArcStatePlay.__model_path = "Elements.Scorables.ZoneArc.Drawers.State.Simple"
 
 function DrawerZoneArcStatePlay:initialize(showZoneScorePoints)
-
+    DrawerZoneState:initialize()
 end
 
 ---@param zone_state ZoneState

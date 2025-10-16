@@ -17,7 +17,7 @@ PoiZoneArc.Type = {
 }
 
 function PoiZoneArc:initialize(point, zone_arc, zone_obj_type)
-    Handle.initialize(self, point)
+    Handle:initialize(point)
     self.zonearc = zone_arc
     self.point_type = zone_obj_type
 end

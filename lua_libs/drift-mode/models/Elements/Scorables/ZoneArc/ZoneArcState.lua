@@ -16,6 +16,7 @@ local ZoneArcState = class("ZoneArcState", ScorableState)
 ZoneArcState.__model_path = "Elements.Scorables.ZoneArc.ZoneArcState"
 
 function ZoneArcState:initialize(zonearc)
+    ScorableState:initialize()
     self.zonearc = zonearc
     self.scores = {}
     self.started = false

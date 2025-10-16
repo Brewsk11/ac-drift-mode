@@ -6,6 +6,7 @@ local Element = class("ScoringObject", ModelBase)
 Element.__model_path = "Elements.Element"
 
 function Element:initialize(name)
+    ModelBase:initialize()
     self.name = name
 end
 
