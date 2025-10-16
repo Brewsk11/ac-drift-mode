@@ -32,9 +32,11 @@ function Serializer.serialize(data)
         if data.__serialize == nil then
             -- Classes with no custom de/serializer
             for field_name, field_value in pairs(data) do
-                if not data:isSerializerExempt(field_name) then
-                    obj[field_name] = Serializer.serialize(field_value)
-                end
+                if type(field_value) == "function" then goto continue end
+                if data:isSerializerExempt(field_name) then goto continue end
+
+                obj[field_name] = Serializer.serialize(field_value)
+                ::continue::
             end
         else
             -- Classes with customized de/serializer
@@ -105,6 +107,10 @@ function Serializer.serialize(data)
         end
 
         return color
+    end
+
+    if type(data) == "function" then
+        ac.log(data)
     end
 
     assert(
