@@ -23,7 +23,7 @@ function RoutineExtendPointArray:run(context)
     if not hit then
         context.cursor:unregisterObject("extend_routine_selector")
         context.cursor:unregisterObject("extend_routine_segment_to_last")
-        return
+        return false
     end
 
     context.cursor:registerObject("extend_routine_selector", Point(hit), PointDir.Drawers.Sphere(rgbm(1.5, 3, 0, 3)))
@@ -38,7 +38,9 @@ function RoutineExtendPointArray:run(context)
 
     if ui.mouseClicked() then
         self.point_group:append(Point(hit))
+        return true
     end
+    return false
 end
 
 ---@param context EditorRoutine.Context

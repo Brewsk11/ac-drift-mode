@@ -18,6 +18,8 @@ function RoutineMovePoi:initialize(callback)
     self.poi = nil
     self.offset = nil
     self.drawerPoint = POIs.Drawers.Simple(PointDir.Drawers.Simple(Resources.Colors.EditorInactivePoi, 0.5))
+    self.last_pos = nil
+    self.min_change = 0.01
 end
 
 ---@param pois ObjectEditorPoi[]
@@ -48,10 +50,19 @@ function RoutineMovePoi:run(context)
     local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
         context.cursor:unregisterObject("move_poi_selector")
-        return
+        return false
     end
 
-    self.poi:set(hit + self.offset)
+    local new_pos = hit + self.offset
+    if self.last_pos ~= nil then
+        local dist_between = self.last_pos:distance(new_pos)
+        if dist_between < self.min_change then
+            return false
+        end
+    end
+
+    self.last_pos = new_pos
+    self.poi:set(new_pos)
 
     context.cursor:registerObject(
         "move_poi_selector",
@@ -62,6 +73,8 @@ function RoutineMovePoi:run(context)
         local poi_zone = self.poi ---@type ZoneHandle # TODO: clean up class names
         poi_zone.zone:setDirty()
     end
+
+    return true
 end
 
 ---@param context EditorRoutine.Context

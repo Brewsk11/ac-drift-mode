@@ -14,6 +14,7 @@ end
 ---@alias EditorRoutine.Context { course: TrackConfig?, cursor: Cursor?, pois: EditorRoutine.LightWeightPoiInfo[] }
 
 ---@param context EditorRoutine.Context
+---@return boolean changed
 function EditorRoutine:run(context)
     Assert.Error("Abstract method called")
 end
