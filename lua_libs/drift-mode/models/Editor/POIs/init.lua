@@ -4,7 +4,6 @@
 local POIs = {
     Base    = require('drift-mode.models.Editor.POIs.Base'),
     Drawers = require('drift-mode.models.Editor.POIs.Drawers.init'),
-    Segment = require('drift-mode.models.Editor.POIs.Segment'),
 }
 
 return POIs

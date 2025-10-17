@@ -38,9 +38,10 @@ function Zone:initialize(name, outsideLine, insideLine, maxPoints, collide)
     self:cacheMethod("getCenter")
 end
 
-function Zone:registerDefaultObservers()
-    if self.outsideLine then self.outsideLine:registerObserver(self) end
-    if self.insideLine then self.insideLine:registerObserver(self) end
+function Zone:setDirty()
+    Scorable.setDirty(self)
+    if self.insideLine then self.insideLine:setDirty() end
+    if self.outsideLine then self.outsideLine:setDirty() end
 end
 
 ---@return ZoneHandle[]
@@ -116,13 +117,11 @@ end
 
 function Zone:setOutsideLine(outside_line)
     self.outsideLine = outside_line
-    self.outsideLine:registerObserver(self)
     self:setDirty()
 end
 
 function Zone:setInsideLine(inside_line)
     self.insideLine = inside_line
-    self.insideLine:registerObserver(self)
     self:setDirty()
 end
 

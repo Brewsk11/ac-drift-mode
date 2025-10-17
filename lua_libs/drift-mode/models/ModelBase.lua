@@ -3,7 +3,6 @@ local Assert = require('drift-mode.assert')
 ---Base class for model classes that are expected to be serialized.
 ---@class ModelBase : ClassBase
 ---@field __cache { [string]: { [string]: any }} # Cache table for the cache system; non-serializable
----@field __observers table<ModelBase, function> of observers for changes for the cache system; non-serializable
 ---@field __serialize function?
 ---@field __deserialize function?
 local ModelBase = class("ModelBase", ClassBase)
@@ -17,41 +16,16 @@ ModelBase.AbbrevToPath = {}
 
 ---@overload fun()
 function ModelBase:initialize()
-    self.__observers = {}
     self.__cache = {}
 end
 
 ---Defines fields not to be serialized
 ---Ignored for custom serializers
 function ModelBase:isSerializerExempt(field_name)
-    if field_name == "__cache" or field_name == "__observers" then
+    if field_name == "__cache" then
         return true
     end
     return false
-end
-
----@param observer ModelBase
-function ModelBase:registerObserver(observer)
-    self.__observers[#self.__observers + 1] = observer
-end
-
----Called after serialization
----A model should register every dependent object
----here, so after deserialization new observers
----can be registered.
-function ModelBase:registerDefaultObservers()
-
-end
-
-function ModelBase:unregisterObserver(observer)
-    return table.removeItem(self.__observers, observer)
-end
-
----@private
-function ModelBase:notifyObservers()
-    for _, observer in ipairs(self.__observers) do
-        observer:setDirty()
-    end
 end
 
 -- Base dirty flag – called by observers.
@@ -59,7 +33,6 @@ end
 function ModelBase:setDirty()
     -- Clears *all* caches of this instance
     self.__cache = {}
-    self:notifyObservers()
 end
 
 local NIL = {}
@@ -119,22 +92,12 @@ function ModelBase:subclassed(classDefinition)
 end
 
 function ModelBase.test()
-    ---@class ObserverTestClass : ModelBase
-    local ObserverTestClass = class("observer", ModelBase)
-
-    function ObserverTestClass:initialize()
-        ModelBase.initialize(self)
-    end
-
     ---@class TestClass : ModelBase
     local TestClass = class('test_class', ModelBase)
+TestClass.__model_path = "ModelBase"
     function TestClass:initialize()
         ModelBase.initialize(self)
         self.value = 1
-
-        self.obs = ObserverTestClass()
-        self.obs:registerObserver(self)
-
         self:cacheMethod("getValue")
     end
 
@@ -148,16 +111,6 @@ function ModelBase.test()
     Assert.Equal(obj:getValue(), 1)
     obj:setDirty()
     Assert.Equal(obj:getValue(), 2)
-
-    obj.value = 3
-    Assert.Equal(obj:getValue(), 2)
-    obj.obs:setDirty()
-    Assert.Equal(obj:getValue(), 3)
-
-    obj.obs:unregisterObserver(obj)
-    obj.value = 4
-    obj.obs:setDirty()
-    Assert.Equal(obj:getValue(), 3)
 end
 
 return ModelBase

@@ -4,9 +4,9 @@ local PointArray = require("drift-mode.models.Common.Point.Array")
 
 
 ---@class Circle : ModelBase
----@field protected _center Point
----@field protected _radius number
----@field protected _normal vec3
+---@field protected center Point
+---@field protected radius number
+---@field protected normal vec3
 local Circle = class("Circle", ModelBase)
 Circle.__model_path = "Common.Circle"
 
@@ -15,31 +15,36 @@ Circle.__model_path = "Common.Circle"
 function Circle:initialize(center, radius, normal)
     ModelBase.initialize(self)
 
-    self._center = center or Point(vec3(0, 0, 0))
-    self._radius = radius or 0
-    self._normal = normal or vec3(0, 1, 0)
+    self.center = center or Point(vec3(0, 0, 0))
+    self.radius = radius or 0
+    self.normal = normal or vec3(0, 1, 0)
 
-    self._normal:normalize()
+    self.normal:normalize()
+end
+
+function Circle:setDirty()
+    ModelBase.setDirty(self)
+    if self.center then self.center:setDirty() end
 end
 
 ---@return vec3
 function Circle:getNormal()
-    return self._normal
+    return self.normal
 end
 
 ---@return Point
 function Circle:getCenter()
-    return self._center
+    return self.center
 end
 
 function Circle:setCenter(value)
-    self._center = value
+    self.center = value
     self:setDirty()
 end
 
 ---@return number
 function Circle:getRadius()
-    return self._radius
+    return self.radius
 end
 
 ---Used for circle (and arc) to be consistently defined.
@@ -79,11 +84,11 @@ end
 ---@return PointArray
 function Circle:toPointArray(n)
     local angle = 2 * math.pi / n
-    local planar = self._normal:clone():cross(vec3(1, 0, 0))
+    local planar = self.normal:clone():cross(vec3(1, 0, 0))
     local points = PointArray()
     for i = 0, n - 1 do
-        local v_from_center = Circle._rotateVectorAroundAxis(planar, self._normal, angle * i)
-        local new_v = self._center:value() + v_from_center:normalize() * self._radius
+        local v_from_center = Circle._rotateVectorAroundAxis(planar, self.normal, angle * i)
+        local new_v = self.center:value() + v_from_center:normalize() * self.radius
         points:append(Point(new_v))
     end
 
@@ -183,15 +188,15 @@ end
 
 function Circle:__tostring()
     return string.format("Circle[center=(%g, %g, %g), radius=(%g, %g, %g), normal=(%g, %g, %g)]",
-        self._center, self._radius, self._normal)
+        self.center, self.radius, self.normal)
 end
 
 function Circle:drawDebug(mult)
     local _mult = mult or 1
 
-    render.debugArrow(self._center:value(), self._center:value() + self._normal, 0.1, rgbm(0, 3, 0, 1))
-    render.debugArrow(self._center:value(),
-        self._center:value() + self._normal:clone():cross(vec3(1, 0, 0)):normalize() * self._radius, 0.1,
+    render.debugArrow(self.center:value(), self.center:value() + self.normal, 0.1, rgbm(0, 3, 0, 1))
+    render.debugArrow(self.center:value(),
+        self.center:value() + self.normal:clone():cross(vec3(1, 0, 0)):normalize() * self.radius, 0.1,
         rgbm(3, 0, 0, 1))
 
     -- self:toPointArray() would cause this call to route to Arc:toPointArray()

@@ -44,7 +44,7 @@ local input_global_flags = ui.ButtonFlags.None
 
 local unsaved_changes = false
 
-local pois = {} ---@type ObjectEditorPoi[]
+local pois = {} ---@type Handle[]
 
 local current_routine = nil ---@type EditorRoutine?
 
@@ -391,7 +391,7 @@ function CourseEditor:drawUIScorables(dt)
   end
 
   if ui.button("Create new zone", vec2(button_width, 40), button_global_flags) then
-    objects[#objects + 1] = Zone.Zone(course:getNextZoneName(), nil, nil, 1000)
+    course:appendScorable(Zone.Zone(course:getNextZoneName(), nil, nil, 1000))
     onCourseEdited()
   end
 
@@ -400,7 +400,7 @@ function CourseEditor:drawUIScorables(dt)
   if ui.button("Create new arc", vec2(button_width, 40), button_global_flags) then
     current_routine = CourseEditorUtils.Routines.SelectArc(function(arc)
       local new_zonearc = ZoneArc.ZoneArc(course:getNextZoneName(), 1000, false, arc, 5)
-      course.scorables[#course.scorables + 1] = new_zonearc
+      course:appendScorable(new_zonearc)
     end)
   end
 
@@ -408,7 +408,7 @@ function CourseEditor:drawUIScorables(dt)
     current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
       local new_clip = Clip.Clip(course:getNextClipName(), segment:getHead(), nil, nil, 1000)
       new_clip:setEnd(segment:getTail())
-      course.scorables[#course.scorables + 1] = new_clip
+      course:appendScorable(new_clip)
     end)
   end
 end

@@ -10,7 +10,7 @@ function DrawerObjectEditorPoi:initialize(drawerPoint)
     self.drawerPoint = drawerPoint or DrawerPointSimple()
 end
 
----@param obj ObjectEditorPoi[]
+---@param obj Handle[]
 function DrawerObjectEditorPoi:draw(obj)
     if self.drawerPoint then
         for _, poi in ipairs(obj) do

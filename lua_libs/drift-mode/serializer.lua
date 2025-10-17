@@ -253,9 +253,6 @@ function Serializer.deserialize(data, mode)
                 obj[k] = Serializer.deserialize(v)
             end
         end
-
-        obj:registerDefaultObservers()
-
         return obj
     end
 

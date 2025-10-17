@@ -1,7 +1,7 @@
 local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode.assert')
 
----@class ObjectEditorPoi : ClassBase
+---@class Handle : ClassBase
 ---@field point Point
 ---@field poi_type ObjectEditorPoi.Type
 local ObjectEditorPoi = class("ObjectEditorPoi", ModelBase)
@@ -22,7 +22,7 @@ function ObjectEditorPoi:initialize(point, poi_type)
 end
 
 ---@param element Scorable -- TODO: this should be of type `Element`, as non-scorable course objects may be added in the future (such as a wall). Currently `Element` has no base class.
----@return ObjectEditorPoi[]
+---@return Handle[]
 function ObjectEditorPoi:gatherHandles(element)
     Assert.Error("Abstract method called")
     return {}

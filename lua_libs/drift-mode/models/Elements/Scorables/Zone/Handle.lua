@@ -1,7 +1,6 @@
 local Handle = require('drift-mode.models.Elements.Handle')
 
 ---@class ZoneHandle : Handle
----@field zone Zone
 ---@field point_type ZoneHandle.Type
 ---@field point_index integer
 local ZoneHandle = class("ZoneHandle", Handle)
@@ -15,15 +14,16 @@ ZoneHandle.Type = {
 }
 
 function ZoneHandle:initialize(point, zone, zone_obj_type, point_index)
-    Handle.initialize(self, point)
-    self.zone = zone
+    Handle.initialize(self, point, zone)
     self.point_type = zone_obj_type
     self.point_index = point_index
 end
 
 function ZoneHandle:set(new_pos)
+    local zone = self.element
+    ---@cast zone Zone
     if self.point_type == ZoneHandle.Type.Center then
-        self.zone:setZonePosition(new_pos)
+        zone:setZonePosition(new_pos)
     else
         self.point:set(new_pos)
     end
@@ -31,16 +31,18 @@ end
 
 ---@param context EditorRoutine.Context
 function ZoneHandle:onDelete(context)
+    local zone = self.element
+    ---@cast zone Zone
     if self.point_type == ZoneHandle.Type.FromInsideLine then
-        self.zone:getInsideLine():remove(self.point_index)
+        zone:getInsideLine():remove(self.point_index)
     elseif self.point_type == ZoneHandle.Type.FromOutsideLine then
-        self.zone:getOutsideLine():remove(self.point_index)
+        zone:getOutsideLine():remove(self.point_index)
     elseif self.point_type == ZoneHandle.Type.Center then
         ui.modalPopup(
             "Deleting zone",
             "Are you sure you want to delete the zone?",
             function()
-                table.removeItem(context.course.scorables, self.zone)
+                table.removeItem(context.course.scorables, zone)
             end
         )
     end

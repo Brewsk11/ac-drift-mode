@@ -8,7 +8,7 @@ local EditorRoutine = require("drift-mode.models.Editor.Routines.EditorRoutine")
 
 
 ---@class RoutineMovePoi : EditorRoutine
----@field poi ObjectEditorPoi?
+---@field poi Handle?
 ---@field offset vec3?
 ---@field drawerPoint DrawerObjectEditorPoi --- To highlight possible pois to interact with
 local RoutineMovePoi = class("RoutineMovePoi", EditorRoutine)
@@ -22,14 +22,14 @@ function RoutineMovePoi:initialize(callback)
     self.min_change = 0.01
 end
 
----@param pois ObjectEditorPoi[]
+---@param pois Handle[]
 ---@param origin vec3
 ---@param radius number
----@return ObjectEditorPoi?
+---@return Handle?
 ---@private
 function RoutineMovePoi:findClosestPoi(pois, origin, radius)
     local closest_dist = radius
-    closest_poi = nil ---@type ObjectEditorPoi?
+    closest_poi = nil ---@type Handle?
     if origin then
         for _, poi in ipairs(pois) do
             local distance = origin:distance(poi.point:value())
@@ -69,16 +69,12 @@ function RoutineMovePoi:run(context)
         Point(hit + self.offset),
         PointDir.Drawers.Sphere(rgbm(1.5, 3, 0, 3)))
 
-    if self.poi.isInstanceOf(POIs.Zone) then
-        local poi_zone = self.poi ---@type ZoneHandle # TODO: clean up class names
-        poi_zone.zone:setDirty()
-    end
-
+    self.poi:onChanged()
     return true
 end
 
 ---@param context EditorRoutine.Context
----@param poi ObjectEditorPoi|Handle
+---@param poi Handle|Handle
 function RoutineMovePoi:deletePoi(context, poi)
     if poi.poi_type == POIs.Base.Type.StartingPoint then
         context.course.startingPoint = nil
@@ -114,7 +110,7 @@ function RoutineMovePoi:attachCondition(context)
         return false
     end
 
-    ---@type ObjectEditorPoi?
+    ---@type Handle?
     local poi = self:findClosestPoi(context.pois, hit, 1)
     if not poi then return false end
 

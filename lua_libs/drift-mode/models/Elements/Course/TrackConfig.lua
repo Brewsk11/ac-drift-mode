@@ -39,15 +39,15 @@ function TrackConfig:initialize(name, scorables, startLine, finishLine, respawnL
     self:cacheMethod("gatherHandles")
 end
 
-function TrackConfig:registerDefaultObservers()
+function TrackConfig:setDirty()
+    ModelBase.setDirty(self)
     for _, scorable in ipairs(self.scorables) do
-        scorable:registerObserver(self)
+        scorable:setDirty()
     end
-
-    if self.startLine then self.startLine:registerObserver(self) end
-    if self.finishLine then self.finishLine:registerObserver(self) end
-    if self.respawnLine then self.respawnLine:registerObserver(self) end
-    if self.startingPoint then self.startingPoint:registerObserver(self) end
+    if self.startLine then self.startLine:setDirty() end
+    if self.finishLine then self.finishLine:setDirty() end
+    if self.respawnLine then self.respawnLine:setDirty() end
+    if self.startingPoint then self.startingPoint:setDirty() end
 end
 
 ---2.7.1 migration
@@ -82,6 +82,11 @@ end
 
 function TrackConfig:getNextClipName()
     return "clip_" .. string.format('%03d', #self.scorables + 1)
+end
+
+function TrackConfig:appendScorable(scorable)
+    self.scorables[#self.scorables + 1] = scorable
+    self:setDirty()
 end
 
 function TrackConfig:gatherColliders()
@@ -188,37 +193,24 @@ end
 ---@param gate Gate
 function TrackConfig:setStartLine(gate)
     self.startLine = gate
-
-    if self.startLine then
-        self.startLine:registerObserver(self)
-    end
     self:setDirty()
 end
 
 ---@param gate Gate
 function TrackConfig:setFinishLine(gate)
     self.finishLine = gate
-    if self.finishLine then
-        self.finishLine:registerObserver(self)
-    end
     self:setDirty()
 end
 
 ---@param gate Gate
 function TrackConfig:setRespawnLine(gate)
     self.respawnLine = gate
-    if self.respawnLine then
-        self.respawnLine:registerObserver(self)
-    end
     self:setDirty()
 end
 
 ---@param position Position
 function TrackConfig:setStartingPoint(position)
     self.startingPoint = position
-    if self.startingPoint then
-        self.startingPoint:registerObserver(self)
-    end
     self:setDirty()
 end
 

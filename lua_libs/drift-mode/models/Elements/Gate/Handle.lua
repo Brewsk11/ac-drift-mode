@@ -3,7 +3,6 @@ local Point = require("drift-mode.models.Common.Point.Point")
 
 
 ---@class GateHandle : Handle
----@field gate Gate
 local GateHandle = class("GateHandle", Handle)
 GateHandle.__model_path = "Elements.Gate.Handle"
 
@@ -15,18 +14,19 @@ GateHandle.Type = {
 }
 
 function GateHandle:initialize(point, gate, type)
-    Handle.initialize(self, point)
-    self.gate = gate
+    Handle.initialize(self, point, gate)
     self.type = type
 end
 
 function GateHandle:set(new_pos)
+    local gate = self.element
+    ---@cast gate Gate
     if self.type == GateHandle.Type.Head then
-        self.gate.segment:getHead():set(new_pos)
+        gate.segment:getHead():set(new_pos)
     elseif self.type == GateHandle.Type.Tail then
-        self.gate.segment:getTail():set(new_pos)
+        gate.segment:getTail():set(new_pos)
     elseif self.type == GateHandle.Type.Center then
-        self.gate.segment:moveTo(Point(new_pos))
+        gate.segment:moveTo(Point(new_pos))
     end
 end
 

@@ -11,12 +11,11 @@ Gate.__model_path = "Elements.Gate.Gate"
 function Gate:initialize(name, segment)
     Element.initialize(self, name)
     self.segment = segment
-
-    self:registerDefaultObservers()
 end
 
-function Gate:registerDefaultObservers()
-    if self.segment then self.segment:registerObserver(self) end
+function Gate:setDirty()
+    Element.setDirty(self)
+    if self.segment then self.segment:setDirty() end
 end
 
 function Gate:drawFlat(coord_transformer, scale, color)

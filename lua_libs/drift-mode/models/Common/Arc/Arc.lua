@@ -30,6 +30,11 @@ function Arc:initialize(center, radius, normal, start_angle, sweep_angle)
     self:cacheMethod("getPointOnArc")
 end
 
+function Arc:setDirty()
+    Circle.setDirty(self)
+    if self.center then self.center:setDirty() end
+end
+
 ---@param circle Circle
 ---@return Arc
 function Arc.fromCircle(circle)
@@ -53,15 +58,15 @@ function Arc:calculateAngles(start_point, end_point, control_point)
     else
         self.sweep_angle = relative_end - 2 * math.pi
     end
+    self:setDirty()
 end
 
 function Arc:recalcFromTriplet(from, to, midpoint)
-    -- TODO: This one can probably be optimized not to create a new object
     local a = Arc.fromTriplet(from, to, midpoint)
     if a == nil then return end
-    self._center = a:getCenter()
-    self._radius = a:getRadius()
-    self._normal = a:getNormal()
+    self.center = a:getCenter()
+    self.radius = a:getRadius()
+    self.normal = a:getNormal()
     self.start_angle = a:getStartAngle()
     self.sweep_angle = a:getSweepAngle()
     self:setDirty()
@@ -135,8 +140,8 @@ end
 
 function Arc:__tostring()
     return string.format("Arc[center=(%g, %g, %g), radius=%g, normal=(%g, %g, %g), start_angle=%g, sweep_angle=%g]",
-        self._center:value().x, self._center:value().y, self._center:value().z, self._radius, self._normal.x,
-        self._normal.y, self._normal.z, self.start_angle, self.sweep_angle)
+        self.center:value().x, self.center:value().y, self.center:value().z, self.radius, self.normal.x,
+        self.normal.y, self.normal.z, self.start_angle, self.sweep_angle)
 end
 
 function Arc.test()

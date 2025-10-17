@@ -21,9 +21,10 @@ function Segment:initialize(head, tail)
     self:cacheMethod("getCenter")
 end
 
-function Segment:registerDefaultObservers()
-    if self.head then self.head:registerObserver(self) end
-    if self.tail then self.tail:registerObserver(self) end
+function Segment:setDirty()
+    ModelBase.setDirty(self)
+    if self.head then self.head:setDirty() end
+    if self.tail then self.tail:setDirty() end
 end
 
 ---Return 2-item array with start and end point values
@@ -50,17 +51,11 @@ end
 
 function Segment:setHead(point)
     self.head = point
-    if self.head then
-        self.head:registerObserver(self)
-    end
     self:setDirty()
 end
 
 function Segment:setTail(point)
     self.tail = point
-    if self.tail then
-        self.tail:registerObserver(self)
-    end
     self:setDirty()
 end
 

@@ -39,8 +39,9 @@ function ZoneArc:initialize(name, maxPoints, collide, arc, width)
     self:cacheMethod("getBoundingBox")
 end
 
-function ZoneArc:registerDefaultObservers()
-    if self.arc then self.arc:registerObserver(self) end
+function ZoneArc:setDirty()
+    Scorable.setDirty(self)
+    if self.arc then self.arc:setDirty() end
 end
 
 function ZoneArc:getArc()
@@ -49,15 +50,12 @@ end
 
 function ZoneArc:setArc(arc)
     self.arc = arc
-    if self.arc ~= nil then
-        self.arc:registerObserver(self)
-    end
-
     self:setDirty()
 end
 
 function ZoneArc:recalcArcFromTriplet(from, to, midpoint)
     self:getArc():recalcFromTriplet(from, to, midpoint)
+    self:setDirty()
 end
 
 function ZoneArc:setWidth(width)

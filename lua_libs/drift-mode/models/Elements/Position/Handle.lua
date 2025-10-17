@@ -3,7 +3,6 @@ local Point = require("drift-mode.models.Common.Point.Point")
 
 
 ---@class PoisitionHandle : Handle
----@field position Position
 local PoisitionHandle = class("PoisitionHandle", Handle)
 PoisitionHandle.__model_path = "Elements.Position.Handle"
 
@@ -14,12 +13,13 @@ PoisitionHandle.Type = {
 }
 
 function PoisitionHandle:initialize(point, position, type)
-  Handle.initialize(self, point)
-  self.position = position
+  Handle.initialize(self, point, position)
   self.type = type
 end
 
 function PoisitionHandle:set(new_pos)
+  local position = self.element
+  ---@cast position Position
   if self.type == PoisitionHandle.Type.Origin then
     self.position.origin:set(new_pos)
   elseif self.type == PoisitionHandle.Type.Ending then

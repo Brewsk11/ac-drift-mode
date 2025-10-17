@@ -14,17 +14,12 @@ Array.__model_path = "Common.Array"
 function Array:initialize(items)
     ModelBase.initialize(self)
     self._items = items or {}
-    self:registerObservers()
 end
 
-function Array:registerDefaultObservers()
-    self:registerObservers()
-end
-
-function Array:registerObservers()
-    for _, item in self:iter() do
-        ---@cast item ModelBase
-        item:registerObserver(self)
+function Array:setDirty()
+    ModelBase.setDirty(self)
+    for _, item in ipairs(self:getItems()) do
+        item:setDirty()
     end
 end
 
@@ -32,9 +27,6 @@ end
 ---@param item T
 function Array:append(item)
     self._items[#self._items + 1] = item
-
-    ---@cast item ModelBase
-    item:registerObserver(self)
     self:setDirty()
 end
 
@@ -50,6 +42,15 @@ end
 function Array:get(idx)
     assert(self:count() >= idx, "Index (" .. tostring(idx) .. ") out of range (" .. self:count() .. ")")
     return self._items[idx]
+end
+
+---Get an item from the group
+---@generic T
+---@param idx integer Index of the item in the group
+---@param value T
+function Array:set(idx, value)
+    table.insert(self:getItems(), idx, value)
+    self:setDirty()
 end
 
 ---@generic T
@@ -87,7 +88,6 @@ end
 function Array:pop()
     local item = self._items[self:count()]
     self._items[self:count()] = nil
-    item:unregisterObserver(self)
     self:setDirty()
     return item
 end
@@ -100,7 +100,6 @@ function Array:remove(idx)
     Assert.LessOrEqual(idx, self:count(), "Out-of-bounds error")
     local item = self._items[idx]
     table.remove(self._items, idx)
-    item:unregisterObserver(self)
     self:setDirty()
     return item
 end
@@ -112,7 +111,6 @@ end
 function Array:delete(item)
     local removed = table.removeItem(self._items, item)
     if removed then
-        item:unregisterObserver(self)
         self:setDirty()
     end
     return removed
