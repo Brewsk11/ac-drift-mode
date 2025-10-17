@@ -2,7 +2,7 @@ local Handle = require("drift-mode.models.Elements.Handle")
 local Point = require("drift-mode.models.Common.Point.Point")
 
 ---@class ZoneArcHandle : Handle
----@field zonearc ZoneArc
+---@field element ZoneArc
 ---@field point_type PoiZoneArc.Type
 local ZoneArcHandle = class("ZoneArcHandle", Handle)
 ZoneArcHandle.__model_path = "Elements.Scorables.ZoneArc.Handle"
@@ -23,35 +23,33 @@ end
 
 ---@param new_pos vec3
 function ZoneArcHandle:set(new_pos)
-    local zonearc = self.element
-    ---@cast zonearc ZoneArc
     if self.point_type == ZoneArcHandle.Type.Center then
-        zonearc:setZoneArcPosition(Point(new_pos))
+        self.element:setZoneArcPosition(Point(new_pos))
         return
     end
 
     if self.point_type == ZoneArcHandle.Type.WidthHandle then
-        local arc = zonearc:getArc()
+        local arc = self.element:getArc()
         local dist_from_center = new_pos:distance(arc:getCenter():value())
         if dist_from_center > arc:getRadius() then return end
         if dist_from_center < 2 then return end
 
         local new_width = arc:getRadius() - dist_from_center
 
-        zonearc:setWidth(new_width)
+        self.element:setWidth(new_width)
     end
 
-    local current_arc = zonearc:getArc()
+    local current_arc = self.element:getArc()
     if current_arc == nil then return end
 
     if self.point_type == ZoneArcHandle.Type.ArcStart then
-        zonearc:recalcArcFromTriplet(Point(new_pos), current_arc:getEndPoint(),
+        self.element:recalcArcFromTriplet(Point(new_pos), current_arc:getEndPoint(),
             current_arc:getPointOnArc(0.5))
     elseif self.point_type == ZoneArcHandle.Type.ArcEnd then
-        zonearc:recalcArcFromTriplet(current_arc:getStartPoint(), Point(new_pos),
+        self.element:recalcArcFromTriplet(current_arc:getStartPoint(), Point(new_pos),
             current_arc:getPointOnArc(0.5))
     elseif self.point_type == ZoneArcHandle.Type.ArcControl then
-        zonearc:recalcArcFromTriplet(current_arc:getStartPoint(), current_arc:getEndPoint(), Point(new_pos))
+        self.element:recalcArcFromTriplet(current_arc:getStartPoint(), current_arc:getEndPoint(), Point(new_pos))
     end
 end
 

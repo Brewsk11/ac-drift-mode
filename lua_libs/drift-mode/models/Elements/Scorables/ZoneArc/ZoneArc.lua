@@ -194,7 +194,26 @@ function ZoneArc:setZoneArcPosition(point)
 end
 
 function ZoneArc:realignZoneArcPointOnTrack()
-    -- NOT IMPLEMENTED
+    --TODO: This is buggy when moving the midpoint handle
+    -- don't do automatically, have a button for user to realign if needed instead.
+    local arc = self:getArc()
+    if arc == nil then return end
+
+    local p1, p2, p3 = arc:getStartPoint(), arc:getEndPoint(), arc:getPointOnArc(0.5)
+    RaycastUtils.alignPointToTrack(p1)
+    RaycastUtils.alignPointToTrack(p2)
+    RaycastUtils.alignPointToTrack(p3)
+
+    if p1 == nil or p2 == nil or p3 == nil then
+        return
+    end
+
+    local v1 = p1:value():sub(p2:value())
+    local v2 = p3:value():sub(p2:value())
+    local normal = v2:cross(v1):normalize()
+
+    arc.normal = normal
+    self:setDirty()
 end
 
 function ZoneArc:getBoundingBox()
