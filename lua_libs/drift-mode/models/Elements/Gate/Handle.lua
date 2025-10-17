@@ -13,8 +13,8 @@ GateHandle.Type = {
     Tail = "Tail"
 }
 
-function GateHandle:initialize(point, gate, type)
-    Handle.initialize(self, point, gate)
+function GateHandle:initialize(point, gate, type, drawer)
+    Handle.initialize(self, point, gate, drawer)
     self.type = type
 end
 

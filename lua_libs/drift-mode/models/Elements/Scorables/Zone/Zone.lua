@@ -52,7 +52,8 @@ function Zone:gatherHandles()
             inside_point,
             self,
             Handle.Type.FromInsideLine,
-            idx
+            idx,
+            Common.Point.Drawers.Simple()
         )
     end
     for idx, outside_point in self:getOutsideLine():iter() do
@@ -60,7 +61,8 @@ function Zone:gatherHandles()
             outside_point,
             self,
             Handle.Type.FromOutsideLine,
-            idx
+            idx,
+            Common.Point.Drawers.Simple()
         )
     end
     local zone_center = self:getCenter()
@@ -69,7 +71,8 @@ function Zone:gatherHandles()
             zone_center,
             self,
             Handle.Type.Center,
-            nil
+            nil,
+            Common.Point.Drawers.Simple()
         )
     end
     return handles

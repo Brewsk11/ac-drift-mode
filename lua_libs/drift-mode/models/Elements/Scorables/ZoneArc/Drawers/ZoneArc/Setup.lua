@@ -26,6 +26,10 @@ function DrawerZoneArcSetup:draw(zonearc)
     if zone_name_location then
         render.debugText(zone_name_location + vec3(0, 0.5, 0), zonearc.name)
     end
+
+    for _, handle in ipairs(zonearc:gatherHandles()) do
+        handle:draw()
+    end
 end
 
 return DrawerZoneArcSetup

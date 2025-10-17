@@ -261,32 +261,37 @@ function ZoneArc:gatherHandles()
         pois[#pois + 1] = Handle(
             self:getCenter(),
             self,
-            Handle.Type.Center
+            Handle.Type.Center,
+            Common.Point.Drawers.Simple()
         )
 
         pois[#pois + 1] = Handle(
             arc:getStartPoint(),
             self,
-            Handle.Type.ArcStart
+            Handle.Type.ArcStart,
+            Common.Point.Drawers.Simple()
         )
 
         pois[#pois + 1] = Handle(
             arc:getEndPoint(),
             self,
-            Handle.Type.ArcEnd
+            Handle.Type.ArcEnd,
+            Common.Point.Drawers.Simple()
         )
 
         pois[#pois + 1] = Handle(
             arc:getPointOnArc(0.35),
             self,
-            Handle.Type.ArcControl
+            Handle.Type.ArcControl,
+            Common.Point.Drawers.Simple()
         )
 
         if self:getInsideArc() then
             pois[#pois + 1] = Handle(
                 self:getInsideArc():getPointOnArc(0.10),
                 self,
-                Handle.Type.WidthHandle
+                Handle.Type.WidthHandle,
+                Common.Point.Drawers.Simple()
             )
         end
     end

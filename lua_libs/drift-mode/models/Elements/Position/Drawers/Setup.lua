@@ -17,6 +17,10 @@ function DrawerPositionSetup:draw(startingPoint)
 
     startingPoint.origin:draw(0.6)
 
+    for _, handle in ipairs(startingPoint:gatherHandles()) do
+        handle:draw()
+    end
+
     render.debugArrow(
         startingPoint.origin:value(),
         startingPoint.origin:value() + startingPoint.direction,

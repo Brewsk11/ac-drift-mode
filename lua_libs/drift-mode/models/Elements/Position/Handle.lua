@@ -12,8 +12,8 @@ PositionHandle.Type = {
   Ending = "Ending"
 }
 
-function PositionHandle:initialize(point, position, type)
-  Handle.initialize(self, point, position)
+function PositionHandle:initialize(point, position, type, drawer)
+  Handle.initialize(self, point, position, drawer)
   self.type = type
 end
 

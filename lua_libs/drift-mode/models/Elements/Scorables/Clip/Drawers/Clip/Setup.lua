@@ -40,6 +40,10 @@ function DrawerClipSetup:draw(clip)
             self.custom_label or clip.name
         )
     end
+
+    for _, handle in ipairs(clip:gatherHandles()) do
+        handle:draw()
+    end
 end
 
 return DrawerClipSetup

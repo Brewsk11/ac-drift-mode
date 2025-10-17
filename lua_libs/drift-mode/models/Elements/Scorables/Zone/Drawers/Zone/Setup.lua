@@ -41,6 +41,10 @@ function DrawerZoneSetup:draw(zone)
     if zone_name_location then
         render.debugText(zone_name_location + vec3(0, 0.5, 0), zone.name)
     end
+
+    for _, handle in ipairs(zone:gatherHandles()) do
+        handle:draw()
+    end
 end
 
 return DrawerZoneSetup

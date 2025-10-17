@@ -1,5 +1,5 @@
 local Element = require("drift-mode.models.Elements.Element")
-local Point = require("drift-mode.models.Common.Point.Point")
+local Point = require("drift-mode.models.Common.Point")
 local Handle = require("drift-mode.models.Elements.Position.Handle")
 
 ---@class Position : Element
@@ -26,7 +26,7 @@ function Position:drawFlat(coord_transformer, scale, color)
     ui.drawCircleFilled(coord_transformer(self.origin), scale * 1, color)
     ui.drawLine(
         coord_transformer(self.origin),
-        coord_transformer(Point(self.origin:value() + self.direction * 2)),
+        coord_transformer(Point.Point(self.origin:value() + self.direction * 2)),
         color,
         scale * 0.5
     )
@@ -38,13 +38,15 @@ function Position:gatherHandles()
     handles[#handles + 1] = Handle(
         self.origin,
         self,
-        Handle.Type.Origin
+        Handle.Type.Origin,
+        Point.Drawers.Simple()
     )
 
     handles[#handles + 1] = Handle(
-        Point(self.origin:value() + self.direction),
+        Point.Point(self.origin:value() + self.direction),
         self,
-        Handle.Type.Ending
+        Handle.Type.Ending,
+        Point.Drawers.Simple()
     )
 
     return handles

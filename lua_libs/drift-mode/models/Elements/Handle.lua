@@ -35,4 +35,10 @@ function Handle:getPoint()
     return self.point
 end
 
+function Handle:draw()
+    if self.point and self.drawer then
+        self.drawer:draw(self.point)
+    end
+end
+
 return Handle

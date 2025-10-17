@@ -1,6 +1,6 @@
 local Assert = require('drift-mode.assert')
 
-local Point = require('drift-mode.models.Common.Point.Point')
+local Point = require('drift-mode.models.Common.Point')
 local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")
 local Segment = require("drift-mode.models.Common.Segment.Segment")
 local Handle = require("drift-mode.models.Elements.Scorables.Clip.Handle")
@@ -31,7 +31,7 @@ function Clip:initialize(name, origin, direction, length, maxPoints, collide)
 end
 
 function Clip:getEnd()
-    return Point(self.origin:value() + self.direction * self.length)
+    return Point.Point(self.origin:value() + self.direction * self.length)
 end
 
 function Clip:setEnd(new_end_point)
@@ -74,12 +74,14 @@ function Clip:gatherHandles()
     handles[#handles + 1] = Handle(
         self.origin,
         self,
-        Handle.Type.Origin
+        Handle.Type.Origin,
+        Point.Drawers.Simple()
     )
     handles[#handles + 1] = Handle(
         self:getEnd(),
         self,
-        Handle.Type.Ending
+        Handle.Type.Ending,
+        Point.Drawers.Simple()
     )
     return handles
 end
@@ -110,7 +112,7 @@ function Clip:getBoundingBox()
     pMin:min(self:getEnd():value())
     pMax:max(self:getEnd():value())
 
-    return { p1 = Point(pMin), p2 = Point(pMax) }
+    return { p1 = Point.Point(pMin), p2 = Point.Point(pMax) }
 end
 
 function Clip:drawFlat(coord_transformer, scale)
@@ -121,8 +123,8 @@ function Clip:drawFlat(coord_transformer, scale)
 end
 
 local function test()
-    local test_clip = Clip("TestBoundingBox", Point(vec3(-1, 1, -1)))
-    test_clip:setEnd(Point(vec3(1, -1, 1)))
+    local test_clip = Clip("TestBoundingBox", Point.Point(vec3(-1, 1, -1)))
+    test_clip:setEnd(Point.Point(vec3(1, -1, 1)))
     Assert.Equal(test_clip:getBoundingBox().p1:value(), vec3(-1, -1, -1))
     Assert.Equal(test_clip:getBoundingBox().p2:value(), vec3(1, 1, 1))
 end

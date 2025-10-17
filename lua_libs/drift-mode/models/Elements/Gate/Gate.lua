@@ -34,6 +34,7 @@ function Gate:getCenter()
     return nil
 end
 
+---@return GateHandle[]
 function Gate:gatherHandles()
     local handles = {}
 

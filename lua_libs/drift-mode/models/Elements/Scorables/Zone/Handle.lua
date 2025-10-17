@@ -13,8 +13,8 @@ ZoneHandle.Type = {
     Center = "Center"
 }
 
-function ZoneHandle:initialize(point, zone, zone_obj_type, point_index)
-    Handle.initialize(self, point, zone)
+function ZoneHandle:initialize(point, zone, zone_obj_type, point_index, drawer)
+    Handle.initialize(self, point, zone, drawer)
     self.point_type = zone_obj_type
     self.point_index = point_index
 end

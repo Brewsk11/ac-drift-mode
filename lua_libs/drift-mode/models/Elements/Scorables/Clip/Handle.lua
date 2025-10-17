@@ -12,8 +12,8 @@ ClipHandle.Type = {
     Ending = "Ending"
 }
 
-function ClipHandle:initialize(point, clip, clip_obj_type)
-    Handle.initialize(self, point, clip)
+function ClipHandle:initialize(point, clip, clip_obj_type, drawer)
+    Handle.initialize(self, point, clip, drawer)
     self.point_type = clip_obj_type
 end
 

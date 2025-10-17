@@ -17,6 +17,11 @@ function DrawerGateSetup:draw(gate)
     if gate.segment == nil then return end
 
     self.drawerSegment:draw(gate.segment)
+
+    for _, handle in ipairs(gate:gatherHandles()) do
+        handle:draw()
+    end
+
     render.debugText(gate:getCenter():value() + vec3(0, 0.5, 0), gate.name)
 end
 

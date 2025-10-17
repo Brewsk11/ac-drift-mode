@@ -29,7 +29,7 @@ end
 ---@private
 function RoutineMovePoi:findClosestPoi(pois, origin, radius)
     local closest_dist = radius
-    closest_poi = nil ---@type Handle?
+    local closest_poi = nil ---@type Handle?
     if origin then
         for _, poi in ipairs(pois) do
             local distance = origin:distance(poi.point:value())
@@ -98,15 +98,9 @@ function RoutineMovePoi:attachCondition(context)
 
     context.cursor:unregisterObject("move_poi_attach")
 
-    local light_pois = {}
-    for _, poi in ipairs(context.pois) do light_pois[#light_pois + 1] = { point = poi.point, poi_type = poi.poi_type } end
-
-    context.cursor:registerObject("pois", light_pois, self.drawerPoint)
-
     ---@type vec3?
     local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
-        context.cursor:unregisterObject("pois")
         return false
     end
 
