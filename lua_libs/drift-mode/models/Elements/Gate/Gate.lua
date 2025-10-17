@@ -1,5 +1,5 @@
 local Element = require("drift-mode.models.Elements.Element")
-local Point = require("drift-mode.models.Common.Point.Point")
+local PointDir = require("drift-mode.models.Common.Point")
 local Handle = require("drift-mode.models.Elements.Gate.Handle")
 
 ---@class Gate : Element
@@ -23,7 +23,7 @@ function Gate:drawFlat(coord_transformer, scale, color)
     ui.drawCircleFilled(coord_transformer(self.origin), scale * 1, color)
     ui.drawLine(
         coord_transformer(self.origin),
-        coord_transformer(Point(self.origin:value() + self.direction * 2)),
+        coord_transformer(PointDir.Point(self.origin:value() + self.direction * 2)),
         color,
         scale * 0.5
     )
@@ -41,19 +41,22 @@ function Gate:gatherHandles()
         handles[#handles + 1] = Handle(
             self.segment:getHead(),
             self,
-            Handle.Type.Head
+            Handle.Type.Head,
+            PointDir.Drawers.Simple(rgbm(1, 1, 0, 1), 0.3)
         )
 
         handles[#handles + 1] = Handle(
             self.segment:getTail(),
             self,
-            Handle.Type.Tail
+            Handle.Type.Tail,
+            PointDir.Drawers.Simple(rgbm(1, 1, 0, 1), 0.3)
         )
 
         handles[#handles + 1] = Handle(
             self.segment:getCenter(),
             self,
-            Handle.Type.Center
+            Handle.Type.Center,
+            PointDir.Drawers.Simple(rgbm(1, 0, 1, 1), 0.1)
         )
     end
 
