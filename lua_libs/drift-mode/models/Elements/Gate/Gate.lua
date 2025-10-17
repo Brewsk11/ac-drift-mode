@@ -1,5 +1,5 @@
 local Element = require("drift-mode.models.Elements.Element")
-local PointDir = require("drift-mode.models.Common.Point")
+local PointDir = require("drift-mode.models.Common.Point.init")
 local Handle = require("drift-mode.models.Elements.Gate.Handle")
 
 ---@class Gate : Element
