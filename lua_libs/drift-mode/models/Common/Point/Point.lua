@@ -60,6 +60,11 @@ function Point:draw(size, color)
     render.debugPoint(self:value(), size, color)
 end
 
+---@return Point
+function Point:clone()
+    return Point(self:value())
+end
+
 function Point:__tostring()
     return "Point" .. tostring(self:value())
 end
