@@ -76,19 +76,7 @@ end
 ---@param context EditorRoutine.Context
 ---@param poi Handle|Handle
 function RoutineMovePoi:deletePoi(context, poi)
-    if poi.poi_type == POIs.Base.Type.StartingPoint then
-        context.course.startingPoint = nil
-    elseif poi.poi_type == POIs.Base.Type.Segment then
-        local poi_segment = poi ---@type PoiSegment
-        if poi_segment.segment_type == POIs.Segment.Type.StartLine then
-            context.course.startLine = nil
-        elseif poi_segment.segment_type == POIs.Segment.Type.FinishLine then
-            context.course.finishLine = nil
-        end
-    else
-        ---@cast poi Handle
-        poi:onDelete(context)
-    end
+    poi:onDelete(context)
     self.callback()
 end
 
