@@ -2,11 +2,49 @@ local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode.assert')
 
 ---@class Element : ModelBase
+---@field private name string
+---@field private id string
 local Element = class("ScoringObject", ModelBase)
 Element.__model_path = "Elements.Element"
 
 function Element:initialize(name)
     ModelBase.initialize(self)
+    self.name = name
+    self.id = Element.generateId()
+end
+
+local charset = "abcdefghijklmnopqrstuvwxyz1234567890"
+local function randomString(length)
+    local result = {}
+    for _ = 1, length do
+        local idx = math.random(1, #charset)
+        table.insert(result, charset:sub(idx, idx))
+    end
+    return table.concat(result)
+end
+
+---@return string
+function Element.generateId()
+    return randomString(8)
+end
+
+---@return string
+function Element:getId()
+    return self.id
+end
+
+---@param id string
+function Element:setId(id)
+    self.id = id
+end
+
+---@return string
+function Element:getName()
+    return self.name
+end
+
+---@param name string
+function Element:setName(name)
     self.name = name
 end
 

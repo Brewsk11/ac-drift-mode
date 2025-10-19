@@ -214,6 +214,27 @@ function TrackConfig:setStartingPoint(position)
     self:setDirty()
 end
 
+function TrackConfig:getScorables()
+    return self.scorables
+end
+
+function TrackConfig:getScorableById(id)
+    for _, scorable in ipairs(self.scorables) do
+        if scorable:getId() == id then
+            return scorable
+        end
+    end
+end
+
+function TrackConfig:setScorable(scorable, id)
+    for idx, obj in ipairs(self.scorables) do
+        if obj:getId() == id then
+            self.scorables[idx] = scorable
+            return
+        end
+    end
+end
+
 function TrackConfig:drawFlat(coord_transformer, scale)
     for _, obj in ipairs(self.scorables) do
         obj:drawFlat(coord_transformer, scale)
