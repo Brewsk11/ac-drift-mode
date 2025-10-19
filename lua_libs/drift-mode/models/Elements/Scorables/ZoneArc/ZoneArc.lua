@@ -171,11 +171,16 @@ end
 ---@param self ZoneArc
 ---@return Segment?
 function ZoneArc:getStartGate()
-    return Segment(self:getArc():getPointOnArc(0.0), self:getInsideArc():getPointOnArc(1.0))
+    if self:getArc() and self:getInsideArc() then
+        return Segment(self:getArc():getStartPoint(), self:getInsideArc():getStartPoint())
+    end
+    return nil
 end
 
----@return Point
+---@return Point?
 function ZoneArc:getCenter()
+    if self:getArc() == nil then return end
+
     local dir = (self.arc:getStartDirection() + self.arc:getEndDirection()) / 2
     local dist = self.arc:getRadius() - self.width / 2
     local center = self.arc:getCenter()
@@ -259,16 +264,20 @@ function ZoneArc:isEmpty()
 end
 
 function ZoneArc:drawFlat(coord_transformer, scale)
-    for _, seg in self:getArc():toPointArray(8):segment(false):iter() do
-        local head_mapped = coord_transformer(seg:getHead())
-        local tail_mapped = coord_transformer(seg:getTail())
-        ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 1 * scale)
+    if self:getArc() ~= nil then
+        for _, seg in self:getArc():toPointArray(8):segment(false):iter() do
+            local head_mapped = coord_transformer(seg:getHead())
+            local tail_mapped = coord_transformer(seg:getTail())
+            ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 1 * scale)
+        end
     end
 
-    for _, seg in self:getInsideArc():toPointArray(8):segment(false):iter() do
-        local head_mapped = coord_transformer(seg:getHead())
-        local tail_mapped = coord_transformer(seg:getTail())
-        ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 0.5 * scale)
+    if self:getInsideArc() ~= nil then
+        for _, seg in self:getInsideArc():toPointArray(8):segment(false):iter() do
+            local head_mapped = coord_transformer(seg:getHead())
+            local tail_mapped = coord_transformer(seg:getTail())
+            ui.drawLine(head_mapped, tail_mapped, rgbm.colors.white, 0.5 * scale)
+        end
     end
 end
 
