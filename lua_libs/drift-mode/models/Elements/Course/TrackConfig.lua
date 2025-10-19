@@ -226,13 +226,15 @@ function TrackConfig:getScorableById(id)
     end
 end
 
-function TrackConfig:setScorable(scorable, id)
+function TrackConfig:setScorable(scorable)
     for idx, obj in ipairs(self.scorables) do
-        if obj:getId() == id then
+        if obj:getId() == scorable:getId() then
             self.scorables[idx] = scorable
             return
         end
     end
+
+    self.scorables[#self.scorables + 1] = scorable
 end
 
 function TrackConfig:drawFlat(coord_transformer, scale)
