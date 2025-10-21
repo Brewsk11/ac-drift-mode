@@ -34,26 +34,27 @@ function Gate:getCenter()
     return nil
 end
 
----@return GateHandle[]
+---@return { [HandleId]: GateHandle }
 function Gate:gatherHandles()
     local handles = {}
+    local prefix = self:getId() .. "_"
 
     if self.segment ~= nil then
-        handles[#handles + 1] = Handle(
+        handles[prefix .. Handle.Type.Head] = Handle(
             self.segment:getHead(),
             self,
             Handle.Type.Head,
             PointDir.Drawers.Simple(rgbm(1, 1, 0, 1), 0.3)
         )
 
-        handles[#handles + 1] = Handle(
+        handles[prefix .. Handle.Type.Tail] = Handle(
             self.segment:getTail(),
             self,
             Handle.Type.Tail,
             PointDir.Drawers.Simple(rgbm(1, 1, 0, 1), 0.3)
         )
 
-        handles[#handles + 1] = Handle(
+        handles[prefix .. Handle.Type.Center] = Handle(
             self.segment:getCenter(),
             self,
             Handle.Type.Center,

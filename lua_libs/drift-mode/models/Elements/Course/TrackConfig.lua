@@ -97,17 +97,17 @@ function TrackConfig:gatherColliders()
     return colliders
 end
 
----@return Handle[]
+---@return { [HandleId] : Handle }
 function TrackConfig:gatherHandles()
     local handles = {}
 
     local table_concat = function(t1, t2)
-        for _, item in ipairs(t2) do
+        for _, item in pairs(t2) do
             t1[#t1 + 1] = item
         end
     end
 
-    for _, obj in ipairs(self.scorables) do
+    for _, obj in pairs(self.scorables) do
         table_concat(handles, obj:gatherHandles())
     end
 
@@ -128,6 +128,18 @@ function TrackConfig:gatherHandles()
     end
 
     return handles
+end
+
+---@param id HandleId
+---@param value vec3
+function TrackConfig:setHandleById(id, value)
+    local handles = self:gatherHandles()
+    if handles[id] == nil then
+        ac.warn("No handle with ID " .. id)
+        return
+    end
+
+    handles[id]:set(Point(value))
 end
 
 function TrackConfig:getBoundingBox(padding)

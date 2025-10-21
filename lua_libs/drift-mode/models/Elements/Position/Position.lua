@@ -32,17 +32,19 @@ function Position:drawFlat(coord_transformer, scale, color)
     )
 end
 
+---@return { [HandleId] : PositionHandle }
 function Position:gatherHandles()
     local handles = {}
+    local prefix = self:getId() .. "_"
 
-    handles[#handles + 1] = Handle(
+    handles[prefix .. Handle.Type.Origin] = Handle(
         self.origin,
         self,
         Handle.Type.Origin,
         Point.Drawers.Simple()
     )
 
-    handles[#handles + 1] = Handle(
+    handles[prefix .. Handle.Type.Origin] = Handle(
         Point.Point(self.origin:value() + self.direction),
         self,
         Handle.Type.Ending,

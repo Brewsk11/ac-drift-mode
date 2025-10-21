@@ -281,33 +281,36 @@ function ZoneArc:drawFlat(coord_transformer, scale)
     end
 end
 
----@return ZoneArcHandle[]
+---@return { [HandleId] : ZoneArcHandle }
 function ZoneArc:gatherHandles()
     local pois = {}
     local arc = self:getArc()
+
+    local prefix = self:getId() .. "_"
+
     if arc ~= nil then
-        pois[#pois + 1] = Handle(
+        pois[prefix .. Handle.Type.Center] = Handle(
             self:getCenter(),
             self,
             Handle.Type.Center,
             Common.Point.Drawers.Simple()
         )
 
-        pois[#pois + 1] = Handle(
+        pois[prefix .. Handle.Type.ArcStart] = Handle(
             arc:getStartPoint(),
             self,
             Handle.Type.ArcStart,
             Common.Point.Drawers.Simple()
         )
 
-        pois[#pois + 1] = Handle(
+        pois[prefix .. Handle.Type.ArcEnd] = Handle(
             arc:getEndPoint(),
             self,
             Handle.Type.ArcEnd,
             Common.Point.Drawers.Simple()
         )
 
-        pois[#pois + 1] = Handle(
+        pois[prefix .. Handle.Type.ArcControl] = Handle(
             arc:getPointOnArc(0.35),
             self,
             Handle.Type.ArcControl,
@@ -315,7 +318,7 @@ function ZoneArc:gatherHandles()
         )
 
         if self:getInsideArc() then
-            pois[#pois + 1] = Handle(
+            pois[prefix .. Handle.Type.WidthHandle] = Handle(
                 self:getInsideArc():getPointOnArc(0.10),
                 self,
                 Handle.Type.WidthHandle,

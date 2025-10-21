@@ -31,7 +31,8 @@ function RoutineMovePoi:findClosestPoi(pois, origin, radius)
     local closest_dist = radius
     local closest_poi = nil ---@type Handle?
     if origin then
-        for _, poi in ipairs(pois) do
+        for _, poi in pairs(pois) do
+            ac.log(poi)
             local distance = origin:distance(poi.point:value())
             if distance < closest_dist then
                 closest_poi = poi
@@ -44,8 +45,6 @@ end
 
 ---@param context EditorRoutine.Context
 function RoutineMovePoi:run(context)
-    context.cursor:unregisterObject("pois")
-
     ---@type vec3?
     local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then

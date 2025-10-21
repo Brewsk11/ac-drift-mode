@@ -71,8 +71,9 @@ function Element:getBoundingBox()
     Assert.Error("Called abstract method!")
 end
 
----@return Handle[]
+---@return { [HandleId] : Handle }
 function Element:gatherHandles()
+    Assert.Error("Not implemented!")
     return {}
 end
 

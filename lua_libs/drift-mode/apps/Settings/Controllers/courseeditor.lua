@@ -43,7 +43,7 @@ local input_global_flags = ui.ButtonFlags.None
 
 local unsaved_changes = false
 
-local pois = {} ---@type Handle[]
+local pois = {} ---@type { [HandleId] : Handle }
 
 local current_routine = nil ---@type EditorRoutine?
 
@@ -67,12 +67,10 @@ local function attachRoutine(routine)
   current_routine = routine
 end
 
----@return Handle[]
+---@return { [HandleId] : Handle }
 local function gatherHandles()
-  local handles = {} ---@type Handle[]
-
   if not course then
-    return handles
+    return {}
   end
 
   return course:gatherHandles()

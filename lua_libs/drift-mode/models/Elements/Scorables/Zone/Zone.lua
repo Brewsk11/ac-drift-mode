@@ -44,11 +44,13 @@ function Zone:setDirty()
     if self.outsideLine then self.outsideLine:setDirty() end
 end
 
----@return ZoneHandle[]
+---@return { [HandleId] : ZoneHandle }
 function Zone:gatherHandles()
     local handles = {}
+    local prefix = self:getId() .. "_"
+
     for idx, inside_point in self:getInsideLine():iter() do
-        handles[#handles + 1] = Handle(
+        handles[prefix .. Handle.Type.FromInsideLine .. "_" .. idx] = Handle(
             inside_point,
             self,
             Handle.Type.FromInsideLine,
@@ -57,7 +59,7 @@ function Zone:gatherHandles()
         )
     end
     for idx, outside_point in self:getOutsideLine():iter() do
-        handles[#handles + 1] = Handle(
+        handles[prefix .. Handle.Type.FromOutsideLine .. "_" .. idx] = Handle(
             outside_point,
             self,
             Handle.Type.FromOutsideLine,
@@ -67,7 +69,7 @@ function Zone:gatherHandles()
     end
     local zone_center = self:getCenter()
     if zone_center then
-        handles[#handles + 1] = Handle(
+        handles[prefix .. Handle.Type.Center] = Handle(
             zone_center,
             self,
             Handle.Type.Center,

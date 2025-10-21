@@ -35,6 +35,15 @@ function Handle:getPoint()
     return self.point
 end
 
+---@alias HandleId string
+
+---Unique handle ID. ID must be set by its Element class
+---in gatherHandles() methods
+---@returns HandleId
+function Handle:getId()
+
+end
+
 function Handle:draw()
     if self.point and self.drawer then
         self.drawer:draw(self.point)

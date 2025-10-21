@@ -68,16 +68,18 @@ function Clip:gatherColliders()
     return collider
 end
 
----@return ClipHandle[]
+---@return { [HandleId] : ClipHandle }
 function Clip:gatherHandles()
     local handles = {}
-    handles[#handles + 1] = Handle(
+    local prefix = self:getId() .. "_"
+
+    handles[prefix .. Handle.Type.Origin] = Handle(
         self.origin,
         self,
         Handle.Type.Origin,
         Point.Drawers.Simple()
     )
-    handles[#handles + 1] = Handle(
+    handles[prefix .. Handle.Type.Ending] = Handle(
         self:getEnd(),
         self,
         Handle.Type.Ending,
