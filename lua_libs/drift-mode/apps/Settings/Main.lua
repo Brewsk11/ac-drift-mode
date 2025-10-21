@@ -15,14 +15,12 @@ EventSystem:emit(EventSystem.Signal.EditorsStateChanged, editors_state)
 
 local EditorTab = require('drift-mode.apps.Settings.Tabs.Editor')
 local CarSetupTab = require('drift-mode.apps.Settings.Tabs.CarSetup')
-local TrackPatcherTab = require('drift-mode.apps.Settings.Tabs.TrackPatcher')
 local AboutTab = require('drift-mode.apps.Settings.Tabs.About')
 local DebugTab = require('drift-mode.apps.Settings.Tabs.Debug')
 
 local __tabs = {
     { 'Course editor', EditorTab.drawUIEditor },
     { 'Car setup',     CarSetupTab.drawUICarSetup },
-    { 'Track patcher', TrackPatcherTab.drawUITrackPatcher },
     { 'About',         AboutTab.drawUIAbout }
 }
 
