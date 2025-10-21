@@ -1,5 +1,5 @@
 local EventSystem = require('drift-mode.eventsystem')
-local listener_id = EventSystem:registerListener('app-control')
+local listener_id = EventSystem:registerListener('app-settings')
 
 local Resources = require('drift-mode.Resources')
 local EditorsState = require("drift-mode.models.Editor.EditorsState")
@@ -13,11 +13,11 @@ local editors_state = EditorsState()
 EventSystem:emit(EventSystem.Signal.EditorsStateChanged, editors_state)
 
 
-local EditorTab = require('drift-mode.apps.ControlAppTabs.Editor')
-local CarSetupTab = require('drift-mode.apps.ControlAppTabs.CarSetup')
-local TrackPatcherTab = require('drift-mode.apps.ControlAppTabs.TrackPatcher')
-local AboutTab = require('drift-mode.apps.ControlAppTabs.About')
-local DebugTab = require('drift-mode.apps.ControlAppTabs.Debug')
+local EditorTab = require('drift-mode.apps.Settings.Tabs.Editor')
+local CarSetupTab = require('drift-mode.apps.Settings.Tabs.CarSetup')
+local TrackPatcherTab = require('drift-mode.apps.Settings.Tabs.TrackPatcher')
+local AboutTab = require('drift-mode.apps.Settings.Tabs.About')
+local DebugTab = require('drift-mode.apps.Settings.Tabs.Debug')
 
 local __tabs = {
     { 'Course editor', EditorTab.drawUIEditor },

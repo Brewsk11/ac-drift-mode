@@ -19,7 +19,6 @@ local MinimapHelper = require("drift-mode.MinimapHelper")
 local PointDir = require("drift-mode.models.Common.Point.init")
 
 
-
 -- #region Pre-script definitions
 
 ---Course currently showing (choosen in combo box)

@@ -1,7 +1,7 @@
-local ControlApp = require('drift-mode.apps.ControlApp')
-local ScoresApp = require('drift-mode.apps.ScoresApp')
-local DriftStatusApp = require('drift-mode.apps.DriftStatusApp')
-local CourseView = require('drift-mode.apps.CourseView')
+local SettingsApp = require('drift-mode.apps.Settings.Main')
+local ScoreTableApp = require('drift-mode.apps.ScoreTable.Main')
+local DriftStatusApp = require('drift-mode.apps.DriftStatus.Main')
+local CourseViewApp = require('drift-mode.apps.CourseView.Main')
 
 local dt = 0
 
@@ -11,11 +11,11 @@ function script.update(_dt)
 end
 
 function Window_Controls()
-  ControlApp.Main(dt)
+  SettingsApp.Main(dt)
 end
 
 function Window_Scores()
-  ScoresApp.Main(dt)
+  ScoreTableApp.Main(dt)
 end
 
 function Window_DriftStatus()
@@ -23,5 +23,5 @@ function Window_DriftStatus()
 end
 
 function Window_CourseView()
-  CourseView.Main(dt)
+  CourseViewApp.Main(dt)
 end
