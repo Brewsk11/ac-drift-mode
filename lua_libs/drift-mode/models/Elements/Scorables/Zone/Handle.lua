@@ -25,7 +25,7 @@ function ZoneHandle:set(new_pos)
     local zone = self.element
     ---@cast zone Zone
     if self.point_type == ZoneHandle.Type.Center then
-        zone:setZonePosition(Point(new_pos))
+        zone:setZonePosition(new_pos)
     else
         self.point:set(new_pos)
     end

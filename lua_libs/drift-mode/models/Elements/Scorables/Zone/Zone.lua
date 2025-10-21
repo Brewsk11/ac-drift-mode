@@ -367,7 +367,7 @@ end
 
 ---Moves all zone points such that the passed point
 ---becomes the zones centroid (visual center).
----@param point Point
+---@param point vec3
 function Zone:setZonePosition(point)
     local origin = self:getCenter()
     local offset = point - origin:value()
@@ -417,7 +417,7 @@ function Zone:getBoundingBox()
         end
     end
 
-    self.bounding_box = { p1 = Point(pMin), p2 = Point(pMax) }
+    return { p1 = Point(pMin), p2 = Point(pMax) }
 end
 
 function Zone:isEmpty()
