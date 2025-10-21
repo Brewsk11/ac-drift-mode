@@ -42,7 +42,7 @@ function DrawerZoneSetup:draw(zone)
         render.debugText(zone_name_location + vec3(0, 0.5, 0), zone.name)
     end
 
-    for _, handle in ipairs(zone:gatherHandles()) do
+    for _, handle in pairs(zone:gatherHandles()) do
         handle:draw()
     end
 end

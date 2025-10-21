@@ -27,7 +27,7 @@ function DrawerZoneArcSetup:draw(zonearc)
         render.debugText(zone_name_location + vec3(0, 0.5, 0), zonearc.name)
     end
 
-    for _, handle in ipairs(zonearc:gatherHandles()) do
+    for _, handle in pairs(zonearc:gatherHandles()) do
         handle:draw()
     end
 end

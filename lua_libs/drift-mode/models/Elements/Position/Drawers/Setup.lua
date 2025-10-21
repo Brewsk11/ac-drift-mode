@@ -17,7 +17,7 @@ function DrawerPositionSetup:draw(startingPoint)
 
     startingPoint.origin:draw(0.6)
 
-    for _, handle in ipairs(startingPoint:gatherHandles()) do
+    for _, handle in pairs(startingPoint:gatherHandles()) do
         handle:draw()
     end
 

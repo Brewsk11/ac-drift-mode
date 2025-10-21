@@ -18,7 +18,7 @@ function DrawerGateSetup:draw(gate)
 
     self.drawerSegment:draw(gate.segment)
 
-    for _, handle in ipairs(gate:gatherHandles()) do
+    for _, handle in pairs(gate:gatherHandles()) do
         handle:draw()
     end
 
