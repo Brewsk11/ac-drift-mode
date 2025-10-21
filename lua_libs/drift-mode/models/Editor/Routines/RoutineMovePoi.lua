@@ -118,6 +118,7 @@ end
 ---@param context EditorRoutine.Context
 function RoutineMovePoi:detachCondition(context)
     if ui.mouseReleased() then
+        self.handle_setter:reset()
         self.handle_setter = nil
         return true
     end

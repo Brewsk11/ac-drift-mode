@@ -7,6 +7,10 @@ HandleSetter.__model_path = "Editor.HandleManager.Setter"
 ---@overload fun(id: string) : HandleSetter
 function HandleSetter:initialize(id)
     HandleManager.initialize(self, id)
+    self:reset()
+end
+
+function HandleSetter:reset()
     self.shared_data.sets_counter = 0
 end
 
