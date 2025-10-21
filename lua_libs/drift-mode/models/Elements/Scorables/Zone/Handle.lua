@@ -1,4 +1,5 @@
 local Handle = require('drift-mode.models.Elements.Handle')
+local Point = require("drift-mode.models.Common.Point.Point")
 
 ---@class ZoneHandle : Handle
 ---@field point_type ZoneHandle.Type
@@ -13,17 +14,18 @@ ZoneHandle.Type = {
     Center = "Center"
 }
 
-function ZoneHandle:initialize(point, zone, zone_obj_type, point_index, drawer)
-    Handle.initialize(self, point, zone, drawer)
+function ZoneHandle:initialize(id, point, zone, zone_obj_type, point_index, drawer)
+    Handle.initialize(self, id, point, zone, drawer)
     self.point_type = zone_obj_type
     self.point_index = point_index
 end
 
+---@param new_pos vec3
 function ZoneHandle:set(new_pos)
     local zone = self.element
     ---@cast zone Zone
     if self.point_type == ZoneHandle.Type.Center then
-        zone:setZonePosition(new_pos)
+        zone:setZonePosition(Point(new_pos))
     else
         self.point:set(new_pos)
     end

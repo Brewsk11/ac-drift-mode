@@ -74,12 +74,14 @@ function Clip:gatherHandles()
     local prefix = self:getId() .. "_"
 
     handles[prefix .. Handle.Type.Origin] = Handle(
+        prefix .. Handle.Type.Origin,
         self.origin,
         self,
         Handle.Type.Origin,
         Point.Drawers.Simple()
     )
     handles[prefix .. Handle.Type.Ending] = Handle(
+        prefix .. Handle.Type.Ending,
         self:getEnd(),
         self,
         Handle.Type.Ending,

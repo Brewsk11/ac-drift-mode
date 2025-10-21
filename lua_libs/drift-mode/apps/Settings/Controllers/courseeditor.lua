@@ -622,15 +622,12 @@ function CourseEditor:runEditor(dt)
       cursor_data:reset()
       onCourseEdited()
     else
-      local changed = current_routine:run(context)
-      if changed then
-        onCourseEdited()
-      end
+      current_routine:run(context)
     end
   else
-    for _, routine_class in ipairs({ CourseEditorUtils.Routines.RoutineMovePoi }) do
-      local routine = routine_class(onCourseEdited)
-      if routine:attachCondition(context) then
+    for _, RoutineClass in ipairs({ CourseEditorUtils.Routines.RoutineMovePoi }) do
+      local routine = RoutineClass.attachCondition(context)
+      if routine then
         current_routine = routine
         break
       end

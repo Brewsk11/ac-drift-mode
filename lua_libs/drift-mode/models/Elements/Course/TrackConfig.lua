@@ -102,8 +102,8 @@ function TrackConfig:gatherHandles()
     local handles = {}
 
     local table_concat = function(t1, t2)
-        for _, item in pairs(t2) do
-            t1[#t1 + 1] = item
+        for id, item in pairs(t2) do
+            t1[id] = item
         end
     end
 
@@ -139,7 +139,7 @@ function TrackConfig:setHandleById(id, value)
         return
     end
 
-    handles[id]:set(Point(value))
+    handles[id]:set(value)
 end
 
 function TrackConfig:getBoundingBox(padding)

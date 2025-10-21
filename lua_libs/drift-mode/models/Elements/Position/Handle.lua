@@ -12,11 +12,12 @@ PositionHandle.Type = {
   Ending = "Ending"
 }
 
-function PositionHandle:initialize(point, position, type, drawer)
-  Handle.initialize(self, point, position, drawer)
+function PositionHandle:initialize(id, point, position, type, drawer)
+  Handle.initialize(self, id, point, position, drawer)
   self.type = type
 end
 
+---@param new_pos vec3
 function PositionHandle:set(new_pos)
   local position = self.element
   ---@cast position Position

@@ -5,6 +5,7 @@ local PointDir = require("drift-mode.models.Common.Point.init")
 local Point = PointDir.Point
 local POIs = require("drift-mode.models.Editor.POIs.init")
 local EditorRoutine = require("drift-mode.models.Editor.Routines.EditorRoutine")
+local HandleSetter = require("drift-mode.models.Editor.HandleManager.Setter")
 
 
 ---@class RoutineMovePoi : EditorRoutine
@@ -20,6 +21,7 @@ function RoutineMovePoi:initialize(callback)
     self.drawerPoint = POIs.Drawers.Simple(PointDir.Drawers.Simple(Resources.Colors.EditorInactivePoi, 0.5))
     self.last_pos = nil
     self.min_change = 0.01
+    self.handle_setter = HandleSetter("editor")
 end
 
 ---@param pois Handle[]
@@ -27,12 +29,11 @@ end
 ---@param radius number
 ---@return Handle?
 ---@private
-function RoutineMovePoi:findClosestPoi(pois, origin, radius)
+function RoutineMovePoi.findClosestPoi(pois, origin, radius)
     local closest_dist = radius
     local closest_poi = nil ---@type Handle?
     if origin then
         for _, poi in pairs(pois) do
-            ac.log(poi)
             local distance = origin:distance(poi.point:value())
             if distance < closest_dist then
                 closest_poi = poi
@@ -61,6 +62,8 @@ function RoutineMovePoi:run(context)
     end
 
     self.last_pos = new_pos
+    self.handle_setter:set(self.poi:getId(), new_pos)
+
     self.poi:set(new_pos)
 
     context.cursor:registerObject(
@@ -73,14 +76,8 @@ function RoutineMovePoi:run(context)
 end
 
 ---@param context EditorRoutine.Context
----@param poi Handle|Handle
-function RoutineMovePoi:deletePoi(context, poi)
-    poi:onDelete(context)
-    self.callback()
-end
-
----@param context EditorRoutine.Context
-function RoutineMovePoi:attachCondition(context)
+---@return RoutineMovePoi?
+function RoutineMovePoi.attachCondition(context)
     ---TODO: Massive performance cow
 
     context.cursor:unregisterObject("move_poi_attach")
@@ -88,12 +85,12 @@ function RoutineMovePoi:attachCondition(context)
     ---@type vec3?
     local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
-        return false
+        return nil
     end
 
     ---@type Handle?
-    local poi = self:findClosestPoi(context.pois, hit, 1)
-    if not poi then return false end
+    local poi = RoutineMovePoi.findClosestPoi(context.pois, hit, 1)
+    if not poi then return nil end
 
     local color = rgbm(0, 3, 1.5, 3)
     if ui.keyboardButtonDown(ui.KeyIndex.Control) then
@@ -102,21 +99,29 @@ function RoutineMovePoi:attachCondition(context)
 
     context.cursor:registerObject("move_poi_attach", poi.point, PointDir.Drawers.Simple(color))
 
-    self.poi = poi
-    self.offset = poi.point:value() - hit
-
     -- Handle removing POIs
     if ui.keyboardButtonDown(ui.KeyIndex.Control) and ui.mouseClicked() then
-        self:deletePoi(context, self.poi)
-        return false
+        poi:onDelete(context)
+        return nil
     end
 
-    return ui.mouseClicked()
+    if ui.mouseClicked() then
+        local routine = RoutineMovePoi(context)
+        routine.poi = poi
+        routine.offset = poi.point:value() - hit
+        return routine
+    end
+
+    return nil
 end
 
 ---@param context EditorRoutine.Context
-function RoutineMovePoi.detachCondition(context)
-    return ui.mouseReleased()
+function RoutineMovePoi:detachCondition(context)
+    if ui.mouseReleased() then
+        self.handle_setter = nil
+        return true
+    end
+    return false
 end
 
 return RoutineMovePoi

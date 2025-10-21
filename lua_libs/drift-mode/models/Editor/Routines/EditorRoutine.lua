@@ -20,11 +20,13 @@ function EditorRoutine:run(context)
 end
 
 ---@param context EditorRoutine.Context
-function EditorRoutine:attachCondition(context)
+---@return EditorRoutine?
+function EditorRoutine.attachCondition(context)
     Assert.Error("Abstract method called")
 end
 
 ---@param context EditorRoutine.Context
+---@return boolean
 function EditorRoutine:detachCondition(context)
     Assert.Error("Abstract method called")
 end

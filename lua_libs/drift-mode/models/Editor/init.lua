@@ -2,12 +2,13 @@
 -- Do not edit manually
 
 local Editor = {
-    CarConfig    = require('drift-mode.models.Editor.CarConfig'),
-    Cursor       = require('drift-mode.models.Editor.Cursor'),
-    CursorObject = require('drift-mode.models.Editor.CursorObject'),
-    EditorsState = require('drift-mode.models.Editor.EditorsState'),
-    POIs         = require('drift-mode.models.Editor.POIs.init'),
-    Routines     = require('drift-mode.models.Editor.Routines.init'),
+    CarConfig     = require('drift-mode.models.Editor.CarConfig'),
+    Cursor        = require('drift-mode.models.Editor.Cursor'),
+    CursorObject  = require('drift-mode.models.Editor.CursorObject'),
+    EditorsState  = require('drift-mode.models.Editor.EditorsState'),
+    HandleManager = require('drift-mode.models.Editor.HandleManager.init'),
+    POIs          = require('drift-mode.models.Editor.POIs.init'),
+    Routines      = require('drift-mode.models.Editor.Routines.init'),
 }
 
 return Editor

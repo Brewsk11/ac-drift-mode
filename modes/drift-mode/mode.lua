@@ -14,6 +14,9 @@ local Course = require("drift-mode.models.Elements.Course.init")
 local TrackConfig = Course.TrackConfig
 local RunState = Course.RunState
 
+local HandleReader = require("drift-mode.models.Editor.HandleManager.Reader")
+
+
 local Teleporter = require('drift-mode.modes.Teleporter')
 local LineCrossDetector = require('drift-mode.modes.LineCrossDetector')
 
@@ -40,6 +43,8 @@ local track_config_info = nil
 
 ---@type TrackConfig?
 local track_data = TrackConfig()
+
+local handles_reader = HandleReader("editor")
 
 
 ---@param track_cfg_info TrackConfigInfo
@@ -183,6 +188,11 @@ local timers = {
     local car = ac.getCar(0)
     local current_pos = Point(car.position + car.look * car_data.frontOffset)
     LineCrossDetector.registerPoint(current_pos)
+  end),
+  read_handles = Timer(0.01, function()
+    handles_reader:listen(function(handle_id, vector)
+      track_data:setHandleById(handle_id, vector)
+    end)
   end)
 }
 

@@ -290,6 +290,7 @@ function ZoneArc:gatherHandles()
 
     if arc ~= nil then
         pois[prefix .. Handle.Type.Center] = Handle(
+            prefix .. Handle.Type.Center,
             self:getCenter(),
             self,
             Handle.Type.Center,
@@ -297,6 +298,7 @@ function ZoneArc:gatherHandles()
         )
 
         pois[prefix .. Handle.Type.ArcStart] = Handle(
+            prefix .. Handle.Type.ArcStart,
             arc:getStartPoint(),
             self,
             Handle.Type.ArcStart,
@@ -304,6 +306,7 @@ function ZoneArc:gatherHandles()
         )
 
         pois[prefix .. Handle.Type.ArcEnd] = Handle(
+            prefix .. Handle.Type.ArcEnd,
             arc:getEndPoint(),
             self,
             Handle.Type.ArcEnd,
@@ -311,6 +314,7 @@ function ZoneArc:gatherHandles()
         )
 
         pois[prefix .. Handle.Type.ArcControl] = Handle(
+            prefix .. Handle.Type.ArcControl,
             arc:getPointOnArc(0.35),
             self,
             Handle.Type.ArcControl,
@@ -319,6 +323,7 @@ function ZoneArc:gatherHandles()
 
         if self:getInsideArc() then
             pois[prefix .. Handle.Type.WidthHandle] = Handle(
+                prefix .. Handle.Type.WidthHandle,
                 self:getInsideArc():getPointOnArc(0.10),
                 self,
                 Handle.Type.WidthHandle,

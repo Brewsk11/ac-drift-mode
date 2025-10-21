@@ -1,7 +1,7 @@
 local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode.assert')
 
----@class Handle : ClassBase
+---@class ObjectEditorPoi : ClassBase
 ---@field point Point
 ---@field poi_type ObjectEditorPoi.Type
 local ObjectEditorPoi = class("ObjectEditorPoi", ModelBase)

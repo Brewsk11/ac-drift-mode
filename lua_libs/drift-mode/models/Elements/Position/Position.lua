@@ -38,6 +38,7 @@ function Position:gatherHandles()
     local prefix = self:getId() .. "_"
 
     handles[prefix .. Handle.Type.Origin] = Handle(
+        prefix .. Handle.Type.Origin,
         self.origin,
         self,
         Handle.Type.Origin,
@@ -45,6 +46,7 @@ function Position:gatherHandles()
     )
 
     handles[prefix .. Handle.Type.Origin] = Handle(
+        prefix .. Handle.Type.Origin,
         Point.Point(self.origin:value() + self.direction),
         self,
         Handle.Type.Ending,

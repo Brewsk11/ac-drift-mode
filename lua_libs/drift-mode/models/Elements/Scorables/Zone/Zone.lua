@@ -51,6 +51,7 @@ function Zone:gatherHandles()
 
     for idx, inside_point in self:getInsideLine():iter() do
         handles[prefix .. Handle.Type.FromInsideLine .. "_" .. idx] = Handle(
+            prefix .. Handle.Type.FromInsideLine .. "_" .. idx,
             inside_point,
             self,
             Handle.Type.FromInsideLine,
@@ -60,6 +61,7 @@ function Zone:gatherHandles()
     end
     for idx, outside_point in self:getOutsideLine():iter() do
         handles[prefix .. Handle.Type.FromOutsideLine .. "_" .. idx] = Handle(
+            prefix .. Handle.Type.FromOutsideLine .. "_" .. idx,
             outside_point,
             self,
             Handle.Type.FromOutsideLine,
@@ -70,6 +72,7 @@ function Zone:gatherHandles()
     local zone_center = self:getCenter()
     if zone_center then
         handles[prefix .. Handle.Type.Center] = Handle(
+            prefix .. Handle.Type.Center,
             zone_center,
             self,
             Handle.Type.Center,

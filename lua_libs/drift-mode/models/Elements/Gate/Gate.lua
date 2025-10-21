@@ -41,6 +41,7 @@ function Gate:gatherHandles()
 
     if self.segment ~= nil then
         handles[prefix .. Handle.Type.Head] = Handle(
+            prefix .. Handle.Type.Head,
             self.segment:getHead(),
             self,
             Handle.Type.Head,
@@ -48,6 +49,7 @@ function Gate:gatherHandles()
         )
 
         handles[prefix .. Handle.Type.Tail] = Handle(
+            prefix .. Handle.Type.Tail,
             self.segment:getTail(),
             self,
             Handle.Type.Tail,
@@ -55,6 +57,7 @@ function Gate:gatherHandles()
         )
 
         handles[prefix .. Handle.Type.Center] = Handle(
+            prefix .. Handle.Type.Center,
             self.segment:getCenter(),
             self,
             Handle.Type.Center,

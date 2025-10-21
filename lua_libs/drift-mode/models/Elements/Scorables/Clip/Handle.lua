@@ -12,11 +12,12 @@ ClipHandle.Type = {
     Ending = "Ending"
 }
 
-function ClipHandle:initialize(point, clip, clip_obj_type, drawer)
-    Handle.initialize(self, point, clip, drawer)
+function ClipHandle:initialize(id, point, clip, clip_obj_type, drawer)
+    Handle.initialize(self, id, point, clip, drawer)
     self.point_type = clip_obj_type
 end
 
+---@param new_pos vec3
 function ClipHandle:set(new_pos)
     local clip = self.element
     ---@cast clip Clip

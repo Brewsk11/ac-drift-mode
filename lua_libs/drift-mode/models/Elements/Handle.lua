@@ -2,16 +2,20 @@ local ModelBase = require("drift-mode.models.ModelBase")
 
 local Assert = require('drift-mode.assert')
 
+---@alias HandleId string
+
 ---Class for world-space handles to modify elements
 ---@class Handle : ModelBase
+---@field id HandleId
 ---@field point Point
 ---@field element Element
 ---@field drawer DrawerPoint
 local Handle = class("Handle", ModelBase)
 Handle.__model_path = "Elements.Handle"
 
-function Handle:initialize(point, element, drawer)
+function Handle:initialize(id, point, element, drawer)
     ModelBase.initialize(self)
+    self.id = id
     self.point = point
     self.element = element
     self.drawer = drawer
@@ -22,7 +26,7 @@ function Handle:onDelete(context)
 
 end
 
----@param new_pos  Point
+---@param new_pos vec3
 function Handle:set(new_pos)
     Assert.Error("Abstract method called")
 end
@@ -35,19 +39,21 @@ function Handle:getPoint()
     return self.point
 end
 
----@alias HandleId string
-
 ---Unique handle ID. ID must be set by its Element class
 ---in gatherHandles() methods
 ---@returns HandleId
 function Handle:getId()
-
+    return self.id
 end
 
 function Handle:draw()
     if self.point and self.drawer then
         self.drawer:draw(self.point)
     end
+end
+
+function Handle:__tostring()
+    return "Handle(" .. self:getId() .. ", " .. type(self.element) .. ")"
 end
 
 return Handle

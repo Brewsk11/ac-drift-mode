@@ -24,6 +24,7 @@ local function randomString(length)
 end
 
 ---@return string
+---@private
 function Element.generateId()
     return randomString(8)
 end

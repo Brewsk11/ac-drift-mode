@@ -16,8 +16,8 @@ ZoneArcHandle.Type = {
     WidthHandle = "WidthHandle"
 }
 
-function ZoneArcHandle:initialize(point, zone_arc, zone_obj_type, drawer)
-    Handle.initialize(self, point, zone_arc, drawer)
+function ZoneArcHandle:initialize(id, point, zone_arc, zone_obj_type, drawer)
+    Handle.initialize(self, id, point, zone_arc, drawer)
     self.point_type = zone_obj_type
 end
 

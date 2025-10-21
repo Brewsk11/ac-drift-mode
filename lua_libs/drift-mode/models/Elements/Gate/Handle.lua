@@ -13,11 +13,12 @@ GateHandle.Type = {
     Tail = "Tail"
 }
 
-function GateHandle:initialize(point, gate, type, drawer)
-    Handle.initialize(self, point, gate, drawer)
+function GateHandle:initialize(id, point, gate, type, drawer)
+    Handle.initialize(self, id, point, gate, drawer)
     self.type = type
 end
 
+---@param new_pos vec3
 function GateHandle:set(new_pos)
     local gate = self.element
     ---@cast gate Gate
