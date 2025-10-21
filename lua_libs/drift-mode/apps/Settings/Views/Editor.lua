@@ -1,7 +1,7 @@
 local EventSystem = require('drift-mode.eventsystem')
 local listener_id = EventSystem:registerListener("apptab-editor")
 
-local CourseEditor = require('drift-mode.courseeditor')
+local CourseEditor = require('drift-mode.apps.Settings.Controllers.courseeditor')
 
 
 ---@type EditorsState
