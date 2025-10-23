@@ -1,9 +1,8 @@
 local Assert = require('drift-mode.assert')
 local Resources = require('drift-mode.Resources')
-local Utils = require('drift-mode.CourseEditorUtils') -- TODO: Fix this
-local ConfigIO = require("drift-mode.configio")
 
-local CourseEditorElements = require('drift-mode.ui_layouts.CourseEditorElements')
+local Utils = require('Settings.tabs.Editor.CourseEditorUtils') -- TODO: Fix this
+local CourseEditorElements = require('Settings.tabs.Editor.CourseEditorElements')
 
 local Cursor = require('drift-mode.models.Editor.Cursor')
 local Zone = require("drift-mode.models.Elements.Scorables.Zone")

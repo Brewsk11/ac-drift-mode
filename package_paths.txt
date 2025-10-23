@@ -1,0 +1,17 @@
+APPS
+
+.\?.lua
+lua\?.lua
+lua\?\init.lua
+extension/internal/lua-?.lua
+extension/internal/lua-?.lua
+
+apps\lua\drift-mode/?.lua
+
+MODE
+
+.\?.lua
+lua\?.lua
+lua\?\init.lua
+
+extension\lua\new-modes\drift-mode/?.lua

@@ -8,7 +8,6 @@ local Circle = require("drift-mode.models.Common.Circle")
 local Arc = require("drift-mode.models.Common.Arc.Arc")
 
 
-
 local Cursor = require("drift-mode.models.Editor.Cursor")
 local Course = require("drift-mode.models.Elements.Course.init")
 local TrackConfig = Course.TrackConfig

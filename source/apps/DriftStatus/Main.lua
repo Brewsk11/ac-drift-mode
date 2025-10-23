@@ -2,7 +2,7 @@ local DataBroker = require('drift-mode.databroker')
 local EventSystem = require('drift-mode.eventsystem')
 local DriftState = require("drift-mode.models.Misc.DriftState")
 
-require('drift-mode.ui_layouts.infobars')
+require('DriftStatus.infobars')
 
 local listener_id = EventSystem:registerListener('app-driftstatus')
 

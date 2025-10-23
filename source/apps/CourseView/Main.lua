@@ -2,7 +2,7 @@ local EventSystem = require('drift-mode.eventsystem')
 local listener_id = EventSystem:registerListener('app-courseview')
 local Timer = require('drift-mode.timer')
 
-local ScoresLayout = require('drift-mode.ui_layouts.scores')
+local ScoresLayout = require('ScoreTable/scores')
 local MinimapHelper = require('drift-mode.MinimapHelper')
 
 

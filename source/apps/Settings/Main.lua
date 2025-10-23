@@ -13,10 +13,10 @@ local editors_state = EditorsState()
 EventSystem:emit(EventSystem.Signal.EditorsStateChanged, editors_state)
 
 
-local EditorTab = require('drift-mode.apps.Settings.Views.Editor')
-local CarSetupTab = require('drift-mode.apps.Settings.Views.CarSetup')
-local AboutTab = require('drift-mode.apps.Settings.Views.About')
-local DebugTab = require('drift-mode.apps.Settings.Views.Debug')
+local EditorTab = require('Settings.tabs.Editor.Editor')
+local CarSetupTab = require('Settings.tabs.CarSetup')
+local AboutTab = require('Settings.tabs.About')
+local DebugTab = require('Settings.tabs.Debug')
 
 local __tabs = {
     { 'Course editor', EditorTab.drawUIEditor },

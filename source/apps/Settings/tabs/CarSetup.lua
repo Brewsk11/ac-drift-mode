@@ -1,11 +1,10 @@
-local DataBroker = require('drift-mode.databroker')
 local EventSystem = require('drift-mode.eventsystem')
 local ConfigIO = require('drift-mode.configio')
 
 local listener_id = EventSystem:registerListener("apptab-carsetup")
 
-local CameraHelper = require('drift-mode.modes.CameraHelper')
-local CarConfig = require("drift-mode.models.Editor.CarConfig")
+local CameraHelper = require('drift-mode.CameraHelper')
+local CarConfig = require("drift-mode.models.Misc.CarConfig")
 
 local CarSetup = {}
 
