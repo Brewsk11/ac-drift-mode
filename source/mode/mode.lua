@@ -185,11 +185,13 @@ local timers = {
   monitor_crossing = Timer(0.1, function()
     if not run_state or not track_data or not car_data then return end
     local car = ac.getCar(0)
+    if car == nil then return end
     local current_pos = Point(car.position + car.look * car_data.frontOffset)
     LineCrossDetector.registerPoint(current_pos)
   end),
   read_handles = Timer(0.01, function()
     handles_reader:listen(function(handle_id, vector)
+      if track_data == nil then return end
       track_data:setHandleById(handle_id, vector)
     end)
   end)

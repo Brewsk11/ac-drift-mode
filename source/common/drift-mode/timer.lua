@@ -3,7 +3,7 @@ local Assert = require('drift-mode.Assert')
 ---@class Timer
 ---@field period number
 ---@field private timer number
----@field task function
+---@field task fun()
 local Timer = class("Timer")
 
 function Timer:initialize(period, task)

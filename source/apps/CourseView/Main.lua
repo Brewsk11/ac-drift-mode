@@ -37,7 +37,7 @@ local timers = {
             scoring_object_states = payload;
         end)
     end),
-    fast_listeners = Timer(0.01, function(payload)
+    fast_listeners = Timer(0.01, function()
         EventSystem:listen(listener_id, EventSystem.Signal.ScorableStateChanged, function(payload)
             if scoring_object_states == nil then return end
             for idx, obj in ipairs(scoring_object_states) do
@@ -59,10 +59,14 @@ function CourseView.Main(dt)
         timer:tick(dt)
     end
 
+    if track_data == nil then
+        return
+    end
+
     local window_size = ui.windowSize()
 
     app_map_canvas:clear()
-    app_map_canvas:update(function(dt)
+    app_map_canvas:update(function(_)
         if track_data then
             local bounding_box = track_data:getBoundingBox(0)
 
