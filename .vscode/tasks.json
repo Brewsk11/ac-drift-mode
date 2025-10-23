@@ -4,7 +4,7 @@
         {
             "label": "Install files",
             "type": "shell",
-            "command": "./install.sh"
+            "command": "./scripts/install.sh"
         }
     ]
 }

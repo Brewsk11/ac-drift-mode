@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 
 import os
+import sys
 
-MODELS_DIR = "lua_libs/drift-mode/models"
 
-
-def visit_dir(dir_path: str) -> None:
+def visit_dir(dir_path: str, root_path: str) -> None:
     entries = []
 
     with os.scandir(dir_path) as it:
         for obj in it:
             if obj.is_dir():
                 # Recurse first
-                visit_dir(obj.path)
+                visit_dir(obj.path, root_path)
 
                 # Build the require path (no .lua)
-                rel = os.path.relpath(obj.path, MODELS_DIR).replace("\\", "/")
+                rel = os.path.relpath(obj.path, root_path).replace("\\", "/")
                 require_path = rel.replace("/", ".")
                 entries.append((obj.name, require_path, True))
 
@@ -24,7 +23,7 @@ def visit_dir(dir_path: str) -> None:
                     continue  # skip existing init.lua
 
                 # Strip the .lua extension from the relative path
-                rel = os.path.relpath(obj.path, MODELS_DIR).replace("\\", "/")
+                rel = os.path.relpath(obj.path, root_path).replace("\\", "/")
                 rel_no_ext, _ = os.path.splitext(rel)
                 require_path = rel_no_ext.replace("/", ".")
 
@@ -54,4 +53,9 @@ def visit_dir(dir_path: str) -> None:
 
 # Start from the top‑level models directory
 if __name__ == "__main__":
-    visit_dir(MODELS_DIR)
+    if len(sys.argv) == 0:
+        print("Provide a path to the models directory. Normally 'source/common/models'")
+
+    models_dir = sys.argv[1]
+
+    visit_dir(models_dir, models_dir)

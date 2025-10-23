@@ -2,17 +2,16 @@
 
 import os
 import re
+import sys
 
-MODELS_DIR = "lua_libs/drift-mode/models"
 
-
-def process_file(path):
+def process_file(path, models_dir):
     with open(path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     pattern = re.compile(r'local\s+(\w+)\s*=\s*class\(["\'].*?["\']')
 
-    rel_path = os.path.relpath(path, MODELS_DIR)
+    rel_path = os.path.relpath(path, models_dir)
     model_path = os.path.splitext(rel_path)[0]
     model_path = model_path.replace(os.sep, ".")
 
@@ -35,12 +34,16 @@ def process_file(path):
         f.writelines(new_lines)
 
 
-def main():
-    for root, _, files in os.walk(MODELS_DIR):
+def main(models_dir):
+    for root, _, files in os.walk(models_dir):
         for fname in files:
             if fname.endswith(".lua"):
-                process_file(os.path.join(root, fname))
+                process_file(os.path.join(root, fname), models_dir)
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 0:
+        print("Provide a path to the models directory. Normally 'source/common/models'")
+
+    models_dir = sys.argv[1]
+    main(models_dir)
