@@ -52,7 +52,7 @@ end
 
 ---2.7.1 migration
 function TrackConfig.__deserialize(data)
-    local S = require('drift-mode.serializer')
+    local S = require('drift-mode.Serializer')
 
     -- Use FieldsVerbatim so that deserialize() call ignores this __deserialize() method
     -- avoiding circural call.

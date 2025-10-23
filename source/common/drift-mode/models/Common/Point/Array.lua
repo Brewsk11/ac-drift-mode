@@ -1,5 +1,5 @@
 local Array = require("drift-mode.models.Common.Array")
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 
 local Segment = require('drift-mode.models.Common.Segment.Segment')
 local SegmentArray = require("drift-mode.models.Common.Segment.Array")
@@ -22,7 +22,7 @@ end
 
 -- Needed for 2.7.1 migration, remove afterwards.
 function PointArray.__deserialize(data)
-    local S = require('drift-mode.serializer')
+    local S = require('drift-mode.Serializer')
     local items = data.points or data._items
     return PointArray(S.deserialize(items))
 end

@@ -1,5 +1,5 @@
 local ModelBase = require("drift-mode.models.ModelBase")
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 
 ---@class Point : ModelBase Class representing a point in the world space
 ---@field private _value vec3 World coordinate position of the point on the track
@@ -15,7 +15,7 @@ function Point:initialize(value)
 end
 
 function Point:__serialize()
-    local S = require('drift-mode.serializer')
+    local S = require('drift-mode.Serializer')
     local data = {
         _value = S.serialize(self:value()),
     }
@@ -23,7 +23,7 @@ function Point:__serialize()
 end
 
 function Point.__deserialize(data)
-    local S = require('drift-mode.serializer')
+    local S = require('drift-mode.Serializer')
     return Point(S.deserialize(data._value))
 end
 
@@ -87,7 +87,7 @@ function Point.test()
     assert(point:value() == vec3(4, 5, 6), tostring(point:value()) .. " vs. " .. tostring(vec3(4, 5, 6)))
 
     -- Serialization
-    local S = require('drift-mode.serializer')
+    local S = require('drift-mode.Serializer')
     local pt = Point(vec3(1, 2, 3))
     local serialized = S.serialize(pt)
     local deserialized = S.deserialize(serialized)

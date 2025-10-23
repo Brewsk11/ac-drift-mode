@@ -1,5 +1,5 @@
 local Array = require("drift-mode.models.Common.Array")
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 
 ---@class SegmentArray : Array<Segment>
 local SegmentArray = class("SegmentArray", Array)
@@ -11,7 +11,7 @@ end
 
 -- Needed for 2.7.1 migration, remove afterwards.
 function SegmentArray.__deserialize(data)
-    local S = require('drift-mode.serializer')
+    local S = require('drift-mode.Serializer')
     local items = data.segments or data._items
     return SegmentArray(S.deserialize(items))
 end

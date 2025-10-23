@@ -1,5 +1,5 @@
 local json = require('drift-mode.json')
-local Serializer = require('drift-mode.serializer')
+local Serializer = require('drift-mode.Serializer')
 
 local DataBroker = {}
 local Namespace = "driftmode__"

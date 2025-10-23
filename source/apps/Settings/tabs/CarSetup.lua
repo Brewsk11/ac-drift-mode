@@ -1,5 +1,5 @@
-local EventSystem = require('drift-mode.eventsystem')
-local ConfigIO = require('drift-mode.configio')
+local EventSystem = require('drift-mode.EventSystem')
+local ConfigIO = require('drift-mode.ConfigIO')
 
 local listener_id = EventSystem:registerListener("apptab-carsetup")
 

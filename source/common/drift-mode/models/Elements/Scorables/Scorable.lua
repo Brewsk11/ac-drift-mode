@@ -1,5 +1,5 @@
 local Element = require("drift-mode.models.Elements.Element")
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 
 ---@class Scorable : Element
 local Scorable = class("ScoringObject", Element)

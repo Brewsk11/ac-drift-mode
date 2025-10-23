@@ -1,6 +1,6 @@
 local ModelBase = require("drift-mode.models.ModelBase")
 
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 
 ---@alias HandleId string
 

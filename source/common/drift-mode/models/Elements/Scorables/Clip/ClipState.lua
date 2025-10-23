@@ -1,5 +1,5 @@
-local Assert = require('drift-mode.assert')
-local EventSystem = require("drift-mode.eventsystem")
+local Assert = require('drift-mode.Assert')
+local EventSystem = require("drift-mode.EventSystem")
 local Resources = require('drift-mode.Resources')
 
 local ScorableState = require("drift-mode.models.Elements.Scorables.ScorableState")

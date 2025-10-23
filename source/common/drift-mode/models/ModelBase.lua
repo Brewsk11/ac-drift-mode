@@ -1,4 +1,4 @@
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 
 ---Base class for model classes that are expected to be serialized.
 ---@class ModelBase : ClassBase
@@ -94,7 +94,7 @@ end
 function ModelBase.test()
     ---@class TestClass : ModelBase
     local TestClass = class('test_class', ModelBase)
-TestClass.__model_path = "ModelBase"
+    TestClass.__model_path = "ModelBase"
     function TestClass:initialize()
         ModelBase.initialize(self)
         self.value = 1

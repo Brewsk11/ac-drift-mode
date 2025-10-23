@@ -1,4 +1,4 @@
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 local json = require('drift-mode.json')
 
 local ModelBase = require("drift-mode.models.ModelBase")

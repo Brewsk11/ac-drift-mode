@@ -1,8 +1,8 @@
-local EventSystem = require('drift-mode.eventsystem')
+local EventSystem = require('drift-mode.EventSystem')
 local listener_id = EventSystem:registerListener("mode")
 
-local Timer = require('drift-mode.timer')
-local ConfigIO = require('drift-mode.configio')
+local Timer = require('drift-mode.Timer')
+local ConfigIO = require('drift-mode.ConfigIO')
 local Point = require("drift-mode.models.Common.Point.Point")
 local Circle = require("drift-mode.models.Common.Circle")
 local Arc = require("drift-mode.models.Common.Arc.Arc")

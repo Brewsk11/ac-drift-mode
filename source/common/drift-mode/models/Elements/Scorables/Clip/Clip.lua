@@ -1,4 +1,4 @@
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 
 local Point = require('drift-mode.models.Common.Point.init')
 local Scorable = require("drift-mode.models.Elements.Scorables.Scorable")

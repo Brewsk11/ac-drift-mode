@@ -1,4 +1,4 @@
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 local Resources = require('drift-mode.Resources')
 
 local Utils = require('Settings.tabs.Editor.CourseEditorUtils') -- TODO: Fix this
@@ -12,8 +12,8 @@ local TrackConfig = require("drift-mode.models.Elements.Course.TrackConfig")
 local Position = require("drift-mode.models.Elements.Position.Position")
 local Gate = require("drift-mode.models.Elements.Gate.Gate")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
-local ConfigIO = require("drift-mode.configio")
-local EventSystem = require("drift-mode.eventsystem")
+local ConfigIO = require("drift-mode.ConfigIO")
+local EventSystem = require("drift-mode.EventSystem")
 local MinimapHelper = require("drift-mode.MinimapHelper")
 local PointDir = require("drift-mode.models.Common.Point.init")
 

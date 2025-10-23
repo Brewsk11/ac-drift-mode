@@ -68,7 +68,7 @@ function Gate:gatherHandles()
     return handles
 end
 
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 local function test()
 end
 test()

@@ -24,7 +24,7 @@ function TestHarness:runTesting()
     self:visitModel(Models)
 
     local classes_to_test = {
-        Serializer = require('drift-mode.serializer')
+        Serializer = require('drift-mode.Serializer')
     }
 
     for _, class in pairs(classes_to_test) do

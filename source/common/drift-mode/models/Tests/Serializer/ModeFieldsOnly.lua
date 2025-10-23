@@ -16,7 +16,7 @@ function TestClassSerializerModeFieldsOnly:__serialize()
 end
 
 function TestClassSerializerModeFieldsOnly.__deserialize(data)
-    local S = require('drift-mode.serializer')
+    local S = require('drift-mode.Serializer')
     local obj = S.deserialize(data, S.Mode.FieldsVerbatim)
 
     obj.number = tonumber(string.trim(data.custom_number, "abcdef"))

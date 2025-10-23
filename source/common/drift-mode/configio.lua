@@ -1,4 +1,4 @@
-local Serializer = require('drift-mode.serializer')
+local Serializer = require('drift-mode.Serializer')
 local json = require('drift-mode.json')
 
 local TrackConfigInfo = require("drift-mode.models.Elements.Course.TrackConfigInfo")

@@ -334,7 +334,7 @@ function ZoneArc:gatherHandles()
     return pois
 end
 
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 local function test()
     -- projectToPlane()
     local normal = vec3(0, 1, 0)

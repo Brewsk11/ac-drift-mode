@@ -1,5 +1,5 @@
 local ModelBase = require("drift-mode.models.ModelBase")
-local EventSystem = require('drift-mode.eventsystem')
+local EventSystem = require('drift-mode.EventSystem')
 
 local CursorObject = require("drift-mode.models.Editor.CursorObject")
 
@@ -17,7 +17,7 @@ function Cursor:reset()
 end
 
 function Cursor:registerObject(id, object, drawer)
-    local S = require('drift-mode.serializer') -- TODO: Maybe this doesn't have to require() serializer?
+    local S = require('drift-mode.Serializer') -- TODO: Maybe this doesn't have to require() serializer?
     -- Check if new object is the same and skip for performance (~10ms)
     local are_same, _, _ = S.checkEqual(self.objects[id], { object, drawer })
 

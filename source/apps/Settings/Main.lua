@@ -1,4 +1,4 @@
-local EventSystem = require('drift-mode.eventsystem')
+local EventSystem = require('drift-mode.EventSystem')
 local listener_id = EventSystem:registerListener('app-settings')
 
 local Resources = require('drift-mode.Resources')

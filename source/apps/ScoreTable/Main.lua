@@ -1,6 +1,6 @@
-local DataBroker = require('drift-mode.databroker')
-local EventSystem = require('drift-mode.eventsystem')
-local ScoresLayout = require('ScoreTable.scores')
+local DataBroker = require('drift-mode.DataBroker')
+local EventSystem = require('drift-mode.EventSystem')
+local ScoresLayout = require('ScoreTable.Scores')
 
 local listener_id = EventSystem:registerListener('app-scoretable')
 

@@ -1,4 +1,4 @@
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 local RaycastUtils = require('drift-mode.RaycastUtils')
 
 local EditorRoutine = require('drift-mode.models.Editor.Routines.EditorRoutine')

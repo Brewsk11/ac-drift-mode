@@ -1,4 +1,4 @@
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 local RaycastUtils = require('drift-mode.RaycastUtils')
 local Resources = require('drift-mode.Resources')
 local Handle = require("drift-mode.models.Elements.Scorables.Zone.Handle")
@@ -445,7 +445,7 @@ function Zone:drawFlat(coord_transformer, scale)
     end
 end
 
-local Assert = require('drift-mode.assert')
+local Assert = require('drift-mode.Assert')
 local function test()
     -- Zone.isSegmentInZone
     --   For debugging these it'd be best to draw a coordinate plane (x, z) and check
