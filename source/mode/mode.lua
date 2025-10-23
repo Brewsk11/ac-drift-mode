@@ -16,8 +16,8 @@ local RunState = Course.RunState
 local HandleReader = require("drift-mode.models.Editor.HandleManager.Reader")
 
 
-local Teleporter = require('lib.Teleporter')
-local LineCrossDetector = require('lib.LineCrossDetector')
+local Teleporter = require('lib-mode.Teleporter')
+local LineCrossDetector = require('lib-mode.LineCrossDetector')
 
 local TestHarness = require('drift-mode.TestHarness')
 TestHarness:runTesting()

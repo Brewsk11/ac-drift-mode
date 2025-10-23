@@ -33,21 +33,21 @@ rm -rf output
 
 # Populate output directories
 
-mkdir -p                output/assettocorsa/apps/lua/drift-mode
-cp -r source/apps/*     output/assettocorsa/apps/lua/drift-mode
+mkdir -p               output/assettocorsa/apps/lua/drift-mode
+cp -r source/apps/*    output/assettocorsa/apps/lua/drift-mode
 
 # The common directory is adjusted for VSCode to recognize the paths nicely during development.
-mkdir -p                output/assettocorsa/lua
-cp -r source/common/*   output/assettocorsa/lua
+mkdir -p               output/assettocorsa/lua
+cp -r source/common/*  output/assettocorsa/lua
 
-mkdir -p                output/assettocorsa/extension/lua/new-modes/drift-mode
-cp -r source/modes/*    output/assettocorsa/extension/lua/new-modes/drift-mode
+mkdir -p               output/assettocorsa/extension/lua/new-modes/drift-mode
+cp -r source/mode/*    output/assettocorsa/extension/lua/new-modes/drift-mode
 
-mkdir -p                output/assettocorsa/extension/config/drift-mode
-cp -r source/presets/*  output/assettocorsa/extension/config/drift-mode
+mkdir -p               output/assettocorsa/extension/config/drift-mode
+cp -r source/presets/* output/assettocorsa/extension/config/drift-mode
 
-mkdir -p                output/assettocorsa/content/gui/drift-mode
-cp -r resources/*.png   output/assettocorsa/content/gui/drift-mode
+mkdir -p               output/assettocorsa/content/gui/drift-mode
+cp -r resources/*.png  output/assettocorsa/content/gui/drift-mode
 
 
 # Copy apps logos
