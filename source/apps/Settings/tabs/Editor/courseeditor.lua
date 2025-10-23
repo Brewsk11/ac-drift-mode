@@ -14,7 +14,7 @@ local Gate = require("drift-mode.models.Elements.Gate.Gate")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
 local ConfigIO = require("drift-mode.ConfigIO")
 local EventSystem = require("drift-mode.EventSystem")
-local MinimapHelper = require("drift-mode.MinimapHelper")
+local MinimapHelper = require("lib.MinimapHelper")
 local PointDir = require("drift-mode.models.Common.Point.init")
 
 
