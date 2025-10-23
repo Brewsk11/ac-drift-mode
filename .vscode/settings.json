@@ -1,9 +1,20 @@
 {
-    "triggerTaskOnSave.on": false,
-    "triggerTaskOnSave.tasks": {
-        "install_files": [
-            "*.lua",
-            "*.ini"
-        ],
-    }
+    "Lua.workspace.library": [
+        // Change this is your assetto corsa installation directory differs
+        "C:\\Program Files (x86)\\Steam\\steamapps\\common\\assettocorsa\\extension\\internal\\lua-sdk\\ac_apps"
+    ],
+    "Lua.diagnostics.disableScheme": [
+        "git",
+        "lib.lua"
+    ],
+    "Lua.runtime.version": "LuaJIT",
+    "Lua.codeLens.enable": true,
+    "Lua.hover.expandAlias": false,
+    "Lua.type.weakUnionCheck": true,
+    "Lua.runtime.path": [
+        "source/common/?.lua",
+        "source/apps/?.lua",
+        "source/modes/?.lua"
+    ],
+    "Lua.runtime.pathStrict": true
 }
