@@ -94,7 +94,7 @@ end
 function ModelBase.test()
     ---@class TestClass : ModelBase
     local TestClass = class('test_class', ModelBase)
-    TestClass.__model_path = "ModelBase"
+
     function TestClass:initialize()
         ModelBase.initialize(self)
         self.value = 1

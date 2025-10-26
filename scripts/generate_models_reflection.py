@@ -17,6 +17,8 @@ def process_file(path, models_dir):
 
     new_lines = []
 
+    matched_yet = False
+
     for line in lines:
         # Skip any existing __model_path assignments so they get overwritten.
         if re.search(r"\.\__model_path\b", line):
@@ -26,9 +28,10 @@ def process_file(path, models_dir):
 
         # After a class declaration, insert the updated path assignment.
         match = pattern.search(line)
-        if match:
+        if not matched_yet and match:
             class_name = match.group(1)
             new_lines.append(f'{class_name}.__model_path = "{model_path}"\n')
+            matched_yet = True
 
     with open(path, "w", encoding="utf-8") as f:
         f.writelines(new_lines)
