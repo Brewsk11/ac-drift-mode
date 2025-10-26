@@ -11,7 +11,7 @@ local HandleSetter = require("drift-mode.models.Editor.HandleManager.Setter")
 ---@class RoutineMovePoi : EditorRoutine
 ---@field poi Handle?
 ---@field offset vec3?
----@field drawerPoint DrawerObjectEditorPoi --- To highlight possible pois to interact with
+---@field drawerPoint DrawerPoint --- To highlight possible pois to interact with
 local RoutineMovePoi = class("RoutineMovePoi", EditorRoutine)
 RoutineMovePoi.__model_path = "Editor.Routines.RoutineMovePoi"
 function RoutineMovePoi:initialize(callback)
