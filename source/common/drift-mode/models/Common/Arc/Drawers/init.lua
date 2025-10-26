@@ -4,6 +4,7 @@
 local Drawers = {
     Base   = require('drift-mode.models.Common.Arc.Drawers.Base'),
     Debug  = require('drift-mode.models.Common.Arc.Drawers.Debug'),
+    Setup  = require('drift-mode.models.Common.Arc.Drawers.Setup'),
     Simple = require('drift-mode.models.Common.Arc.Drawers.Simple'),
 }
 

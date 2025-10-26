@@ -1,5 +1,5 @@
 local DrawerZoneArc = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.ZoneArc.Base')
-local DrawerArcSimple = require("drift-mode.models.Common.Arc.Drawers.Simple")
+local DrawerArcSetup = require("drift-mode.models.Common.Arc.Drawers.Setup")
 
 
 ---@class DrawerZoneArcSetup : DrawerZoneArc
@@ -8,8 +8,8 @@ DrawerZoneArcSetup.__model_path = "Elements.Scorables.ZoneArc.Drawers.ZoneArc.Se
 
 function DrawerZoneArcSetup:initialize()
     DrawerZoneArc.initialize(self)
-    self.drawerArcInside = DrawerArcSimple()
-    self.drawerArcOutside = DrawerArcSimple()
+    self.drawerArcInside = DrawerArcSetup()
+    self.drawerArcOutside = DrawerArcSetup()
 end
 
 ---@param zonearc ZoneArc
