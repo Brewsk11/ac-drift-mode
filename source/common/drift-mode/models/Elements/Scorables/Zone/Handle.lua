@@ -1,5 +1,4 @@
 local Handle = require('drift-mode.models.Elements.Handle')
-local Point = require("drift-mode.models.Common.Point.Point")
 
 ---@class ZoneHandle : Handle
 ---@field point_type ZoneHandle.Type
@@ -40,13 +39,8 @@ function ZoneHandle:onDelete(context)
     elseif self.point_type == ZoneHandle.Type.FromOutsideLine then
         zone:getOutsideLine():remove(self.point_index)
     elseif self.point_type == ZoneHandle.Type.Center then
-        ui.modalPopup(
-            "Deleting zone",
-            "Are you sure you want to delete the zone?",
-            function()
-                table.removeItem(context.course.scorables, zone)
-            end
-        )
+        table.removeItem(context.course.scorables, zone) -- Change to course method call
+        context.course:setDirty()
     end
 end
 

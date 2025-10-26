@@ -6,6 +6,7 @@ local Drawers = {
     ArraySimple    = require('drift-mode.models.Common.Point.Drawers.ArraySimple'),
     Base           = require('drift-mode.models.Common.Point.Drawers.Base'),
     BaseArray      = require('drift-mode.models.Common.Point.Drawers.BaseArray'),
+    Precise        = require('drift-mode.models.Common.Point.Drawers.Precise'),
     Simple         = require('drift-mode.models.Common.Point.Drawers.Simple'),
     Sphere         = require('drift-mode.models.Common.Point.Drawers.Sphere'),
 }

@@ -6,6 +6,8 @@ local Assert = require('drift-mode.Assert')
 ---@field task fun()
 local Timer = class("Timer")
 
+---@overload fun(self: Timer, period: number, task: fun()) : Timer
+---@overload fun(period: number, task: fun()) : Timer
 function Timer:initialize(period, task)
     self.period = period
     self.timer = period
@@ -26,4 +28,4 @@ local function test()
 end
 test()
 
-return Timer
+return class.emmy(Timer, Timer.initialize)

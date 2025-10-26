@@ -19,8 +19,15 @@ function EditorRoutine:run(context)
     Assert.Error("Abstract method called")
 end
 
+---@enum EditorRoutine.AttachResult
+EditorRoutine.AttachResult = {
+    NoAction = 0,
+    RoutineAttached = 1,
+    CourseChanged = 2
+}
+
 ---@param context EditorRoutine.Context
----@return EditorRoutine?
+---@return EditorRoutine.AttachResult, EditorRoutine?
 function EditorRoutine.attachCondition(context)
     Assert.Error("Abstract method called")
 end

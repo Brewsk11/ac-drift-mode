@@ -1,5 +1,6 @@
 local Assert = require('drift-mode.Assert')
 local Resources = require('drift-mode.Resources')
+local EditorRoutine = require('drift-mode.models.Editor.Routines.EditorRoutine')
 
 local Utils = require('Settings.tabs.Editor.CourseEditorUtils') -- TODO: Fix this
 local CourseEditorElements = require('Settings.tabs.Editor.CourseEditorElements')
@@ -13,9 +14,11 @@ local Position = require("drift-mode.models.Elements.Position.Position")
 local Gate = require("drift-mode.models.Elements.Gate.Gate")
 local CourseEditorUtils = require("drift-mode.models.Editor.init")
 local ConfigIO = require("drift-mode.ConfigIO")
-local EventSystem = require("drift-mode.EventSystem")
+local EventSystem = require("drift-mode.EventSystem") ---@type EventSystem
 local MinimapHelper = require("lib-apps.MinimapHelper")
 local PointDir = require("drift-mode.models.Common.Point.init")
+local Timer = require("drift-mode.Timer")
+
 
 
 -- #region Pre-script definitions
@@ -607,7 +610,7 @@ Clips are scored with the front.]]
   ui.dwriteTextAligned(help_text, 14, -1, -1, vec2(ui.availableSpaceX(), 0), true)
 end
 
-function CourseEditor:runEditor(dt)
+function CourseEditor:runEditor()
   ---@type EditorRoutine.Context
   local context = {
     course = course,
@@ -625,8 +628,13 @@ function CourseEditor:runEditor(dt)
     end
   else
     for _, RoutineClass in ipairs({ CourseEditorUtils.Routines.RoutineMovePoi }) do
-      local routine = RoutineClass.attachCondition(context)
-      if routine then
+      local res, routine = RoutineClass.attachCondition(context)
+
+      if res == EditorRoutine.AttachResult.CourseChanged then
+        onCourseEdited()
+      end
+
+      if res == EditorRoutine.AttachResult.RoutineAttached then
         current_routine = routine
         break
       end

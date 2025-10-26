@@ -6,7 +6,6 @@ local Editor = {
     CursorObject  = require('drift-mode.models.Editor.CursorObject'),
     EditorsState  = require('drift-mode.models.Editor.EditorsState'),
     HandleManager = require('drift-mode.models.Editor.HandleManager.init'),
-    POIs          = require('drift-mode.models.Editor.POIs.init'),
     Routines      = require('drift-mode.models.Editor.Routines.init'),
 }
 

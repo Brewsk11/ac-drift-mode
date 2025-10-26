@@ -1,5 +1,6 @@
 local RaycastUtils = require('drift-mode.RaycastUtils')
 local Resources = require('drift-mode.Resources')
+local EventSystem = require("drift-mode.EventSystem") ---@type EventSystem
 
 local PointDir = require("drift-mode.models.Common.Point.init")
 local Point = PointDir.Point
@@ -76,21 +77,21 @@ function RoutineMovePoi:run(context)
 end
 
 ---@param context EditorRoutine.Context
----@return RoutineMovePoi?
+---@return EditorRoutine.AttachResult, RoutineMovePoi?
 function RoutineMovePoi.attachCondition(context)
-    ---TODO: Massive performance cow
-
     context.cursor:unregisterObject("move_poi_attach")
 
     ---@type vec3?
     local hit = RaycastUtils.getTrackRayMouseHit()
     if not hit then
-        return nil
+        return EditorRoutine.AttachResult.NoAction
     end
 
     ---@type Handle?
     local poi = RoutineMovePoi.findClosestPoi(context.pois, hit, 1)
-    if not poi then return nil end
+    if not poi then
+        return EditorRoutine.AttachResult.NoAction
+    end
 
     local color = rgbm(0, 3, 1.5, 3)
     if ui.keyboardButtonDown(ui.KeyIndex.Control) then
@@ -102,17 +103,17 @@ function RoutineMovePoi.attachCondition(context)
     -- Handle removing POIs
     if ui.keyboardButtonDown(ui.KeyIndex.Control) and ui.mouseClicked() then
         poi:onDelete(context)
-        return nil
+        return EditorRoutine.AttachResult.CourseChanged
     end
 
     if ui.mouseClicked() then
         local routine = RoutineMovePoi(context)
         routine.poi = poi
         routine.offset = poi.point:value() - hit
-        return routine
+        return EditorRoutine.AttachResult.RoutineAttached, routine
     end
 
-    return nil
+    return EditorRoutine.AttachResult.NoAction
 end
 
 ---@param context EditorRoutine.Context
