@@ -23,10 +23,13 @@ function DrawerRunState:draw(run_state)
     -- if self.drawerDriftState and run_state.drift_state then self.drawerDriftState:draw(run_State.drift_state) end
     for _, scoring_object_state in ipairs(run_state.scoringObjectStates) do
         if scoring_object_state.isInstanceOf(ZoneState) then
+            ---@cast scoring_object_state ZoneState
             self.drawerZoneState:draw(scoring_object_state)
         elseif scoring_object_state.isInstanceOf(ClipState) then
+            ---@cast scoring_object_state ClipState
             self.drawerClipState:draw(scoring_object_state)
         elseif scoring_object_state.isInstanceOf(ZoneArcState) then
+            ---@cast scoring_object_state ZoneArcState
             self.drawerZoneArcState:draw(scoring_object_state)
         else
             Assert.Error("")

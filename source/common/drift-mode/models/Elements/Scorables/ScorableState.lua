@@ -1,7 +1,7 @@
 local ModelBase = require("drift-mode.models.ModelBase")
 local Assert = require('drift-mode.Assert')
 
----@class ScorableState : ClassBase
+---@class ScorableState : ModelBase
 local ScorableState = class("ScorableState", ModelBase)
 ScorableState.__model_path = "Elements.Scorables.ScorableState"
 

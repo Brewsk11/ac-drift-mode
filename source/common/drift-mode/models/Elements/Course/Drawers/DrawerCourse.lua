@@ -21,10 +21,13 @@ end
 function DrawerCourse:draw(course)
     for _, obj in ipairs(course.scorables) do
         if obj.isInstanceOf(Zone) and self.drawerZone then
+            ---@cast obj Zone
             self.drawerZone:draw(obj)
         elseif obj.isInstanceOf(Clip) and self.drawerClip then
+            ---@cast obj Clip
             self.drawerClip:draw(obj)
         elseif obj.isInstanceOf(ZoneArc) and self.drawerZoneArc then
+            ---@cast obj ZoneArc
             self.drawerZoneArc:draw(obj)
         end
     end

@@ -8,9 +8,9 @@ DrawerZoneArcState.__model_path = "Elements.Scorables.ZoneArc.Drawers.State.Base
 function DrawerZoneArcState:initialize()
 end
 
----@param zone_state ZoneState
-function DrawerZoneArcState:draw(zone_state)
-    if self.drawerZoneArc then self.drawerZoneArc:draw(zone_state.zone) end
+---@param zonearc_state ZoneArcState
+function DrawerZoneArcState:draw(zonearc_state)
+    if self.drawerZoneArc then self.drawerZoneArc:draw(zonearc_state.zonearc) end
 end
 
 return DrawerZoneArcState

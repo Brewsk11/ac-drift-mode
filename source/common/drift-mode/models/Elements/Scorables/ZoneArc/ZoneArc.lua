@@ -63,6 +63,7 @@ function ZoneArc:setWidth(width)
     self:setDirty()
 end
 
+---@return Arc
 function ZoneArc:getInsideArc()
     local arc = self:getArc()
     if arc == nil then return nil end
