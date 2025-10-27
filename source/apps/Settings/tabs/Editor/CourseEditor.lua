@@ -626,7 +626,7 @@ function CourseEditor:runEditor()
       current_routine:run(context)
     end
   else
-    for _, RoutineClass in ipairs({ CourseEditorUtils.Routines.RoutineMovePoi }) do
+    for _, RoutineClass in ipairs({ CourseEditorUtils.Routines.RoutineMovePoi, CourseEditorUtils.Routines.CheckInZoneArc }) do
       local res, routine = RoutineClass.attachCondition(context)
 
       if res == EditorRoutine.AttachResult.CourseChanged then

@@ -2,6 +2,7 @@
 -- Do not edit manually
 
 local Routines = {
+    CheckInZoneArc          = require('drift-mode.models.Editor.Routines.CheckInZoneArc'),
     EditorRoutine           = require('drift-mode.models.Editor.Routines.EditorRoutine'),
     RoutineExtendPointArray = require('drift-mode.models.Editor.Routines.RoutineExtendPointArray'),
     RoutineMovePoi          = require('drift-mode.models.Editor.Routines.RoutineMovePoi'),
