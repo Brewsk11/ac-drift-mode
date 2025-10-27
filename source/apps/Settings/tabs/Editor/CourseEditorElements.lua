@@ -1,5 +1,6 @@
 local Resources = require('drift-mode.Resources')
 local Utils = require('Settings.tabs.Editor.CourseEditorUtils')
+local ZoneArc = require('drift-mode.models.Elements.Scorables.ZoneArc.ZoneArc')
 
 local Zone = require("drift-mode.models.Elements.Scorables.Zone.Zone")
 local Clip = require("drift-mode.models.Elements.Scorables.Clip.Clip")
@@ -18,6 +19,8 @@ function CourseEditorElements.ObjectConfigPanel(idx, object, is_disabled, cursor
         CourseEditorElements.ZoneConfigPanel(idx, object, is_disabled, cursor_data, onCourseEdited, attachRoutine)
     elseif Clip.isInstanceOf(object) then
         CourseEditorElements.ClipConfigPanel(idx, object, is_disabled, cursor_data, onCourseEdited, attachRoutine)
+    elseif ZoneArc.isInstanceOf(object) then
+        CourseEditorElements.ZoneArcConfigPanel(idx, object, is_disabled, cursor_data, onCourseEdited, attachRoutine)
     end
 end
 
@@ -115,6 +118,37 @@ function CourseEditorElements.ZoneConfigPanel(idx, zone, is_disabled, cursor_dat
         ac.setCameraPosition(cam_pos)
         ac.setCameraDirection(vec3(0.01, -1, 0)) -- Add slight skew to fix a mysterious bug (division by zero?)
         ac.setCameraFOV(40)
+    end
+end
+
+---comment
+---@param idx any
+---@param zonearc ZoneArc
+---@param is_disabled any
+---@param cursor_data any
+---@param onCourseEdited any
+---@param attachRoutine any
+function CourseEditorElements.ZoneArcConfigPanel(idx, zonearc, is_disabled, cursor_data, onCourseEdited, attachRoutine)
+    if ui.checkbox("Enable collisions", zonearc:getCollide()) then
+        zonearc:setCollide(not zonearc:getCollide())
+        onCourseEdited()
+    end
+
+    ui.offsetCursorY(4)
+    if ui.button("Focus camera", vec2(ui.availableSpaceX() / 2, line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
+        ac.setCurrentCamera(ac.CameraMode.Free)
+
+        local cam_pos = zonearc:getCenter():value() + vec3(0, 60, 0)
+
+        ac.setCameraPosition(cam_pos)
+        ac.setCameraDirection(vec3(0.01, -1, 0)) -- Add slight skew to fix a mysterious bug (division by zero?)
+        ac.setCameraFOV(40)
+    end
+
+    ui.sameLine(0, 8)
+    if ui.button("Realign on track", vec2(ui.availableSpaceX(), line_height), Utils.wrapFlags({}, Utils.DisableFlags.Button, is_disabled)) then
+        zonearc:realignZoneArcPointOnTrack()
+        onCourseEdited()
     end
 end
 

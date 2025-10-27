@@ -88,7 +88,7 @@ function ZoneArc:gatherColliders()
 
     local colliders = {}
 
-    for idx, segment in self:getArc():toPointArray(8):segment(false) do
+    for idx, segment in self:getArc():toPointArray(8):segment(false):iter() do
         local parallel = (segment:getTail():value() - segment:getHead():value()):normalize()
         local look = parallel:clone():cross(vec3(0, 1, 0))
         local up = parallel:clone():cross(look)
@@ -218,11 +218,7 @@ function ZoneArc:realignZoneArcPointOnTrack()
         return
     end
 
-    local v1 = p1:value():sub(p2:value())
-    local v2 = p3:value():sub(p2:value())
-    local normal = v2:cross(v1):normalize()
-
-    arc.normal = normal
+    self:getArc():recalcFromTriplet(p1, p2, p3)
     self:setDirty()
 end
 

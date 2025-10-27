@@ -19,7 +19,7 @@ function DrawerZoneArcSimple:draw(zonearc)
 end
 
 function DrawerZoneArcSimple:setOutsideWallHeight(value)
-    self.drawerArcOutside.height = value
+    self.drawerArcOutside.drawerSegment.height = value
 end
 
 return DrawerZoneArcSimple
