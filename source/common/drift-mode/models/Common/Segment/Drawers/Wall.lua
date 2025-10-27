@@ -7,7 +7,7 @@ local DrawerSegmentWall = class("DrawerSegmentWall", DrawerSegment)
 DrawerSegmentWall.__model_path = "Common.Segment.Drawers.Wall"
 
 function DrawerSegmentWall:initialize(color, height)
-    self.color = color or rgbm(1, 1, 1, 3)
+    self.color = color or rgbm(1, 1, 1, 1)
     self.height = height or 1
 end
 

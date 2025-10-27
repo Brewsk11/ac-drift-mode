@@ -4,7 +4,7 @@ local DrawerZoneArcState = require('drift-mode.models.Elements.Scorables.ZoneArc
 local DrawerZoneArcPlay = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.ZoneArc.Simple')
 
 ---@class DrawerZoneArcStatePlay : DrawerZoneArcState
----@field drawerZone DrawerZoneArc
+---@field drawerZoneArc DrawerZoneArc
 ---@field protected drawerInactive DrawerZoneArc
 ---@field protected drawerActive DrawerZoneArc
 ---@field protected drawerDone DrawerZoneArc
@@ -25,7 +25,7 @@ function DrawerZoneArcStatePlay:initialize(showZoneScorePoints)
     self.drawerActive = DrawerZoneArcPlay(self.color_active)
     self.drawerDone = DrawerZoneArcPlay(self.color_done)
 
-    self.drawerZone = self.drawerInactive
+    self.drawerZoneArc = self.drawerInactive
 end
 
 ---@param zonearc_state ZoneArcState
@@ -33,17 +33,17 @@ function DrawerZoneArcStatePlay:draw(zonearc_state)
     render.setDepthMode(render.DepthMode.ReadOnly)
 
     if zonearc_state:isActive() then
-        self.drawerZone = self.drawerActive
+        self.drawerZoneArc = self.drawerActive
     elseif zonearc_state:isDone() then
-        self.drawerZone = self.drawerDone
+        self.drawerZoneArc = self.drawerDone
     else
-        self.drawerZone = self.drawerInactive
+        self.drawerZoneArc = self.drawerInactive
     end
 
     if zonearc_state.zonearc:getCollide() then
-        self.drawerZone:setOutsideWallHeight(1.2)
+        self.drawerZoneArc:setOutsideWallHeight(1.2)
     else
-        self.drawerZone:setOutsideWallHeight(0.6)
+        self.drawerZoneArc:setOutsideWallHeight(0.6)
     end
 
     DrawerZoneArcState.draw(self, zonearc_state)

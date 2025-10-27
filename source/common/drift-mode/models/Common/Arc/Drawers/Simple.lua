@@ -6,9 +6,10 @@ local DrawerSegmentWall = require("drift-mode.models.Common.Segment.Drawers.Wall
 local DrawerArcSimple = class("DrawerArcSimple", DrawerArc)
 DrawerArcSimple.__model_path = "Common.Arc.Drawers.Simple"
 
-function DrawerArcSimple:initialize(color)
+function DrawerArcSimple:initialize(color, height)
     self.color = color or rgbm(1, 1, 1, 1)
-    self.drawerSegment = DrawerSegmentWall()
+    self.height = 1 or height
+    self.drawerSegment = DrawerSegmentWall(color, height)
 end
 
 ---@param arc Arc

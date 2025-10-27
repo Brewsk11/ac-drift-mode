@@ -1,24 +1,25 @@
-local DrawerZone = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Base')
-local DrawerSegmentWall = require('drift-mode.models.Common.Segment.Drawers.Wall')
+local DrawerZoneArc = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.ZoneArc.Base')
+local DrawerArcSimple = require("drift-mode.models.Common.Arc.Drawers.Simple")
 
----@class DrawerZoneArcSimple : DrawerZone
-local DrawerZoneArcSimple = class("DrawerZoneArcSimple", DrawerZone)
+
+---@class DrawerZoneArcSimple : DrawerZoneArc
+local DrawerZoneArcSimple = class("DrawerZoneArcSimple", DrawerZoneArc)
 DrawerZoneArcSimple.__model_path = "Elements.Scorables.ZoneArc.Drawers.ZoneArc.Simple"
 
 function DrawerZoneArcSimple:initialize(wall_color)
-    DrawerZone.initialize(self)
-    self.drawerInsideLine = DrawerSegmentWall(wall_color, 0.1)
-    self.drawerOutsideLine = DrawerSegmentWall(wall_color, 0.6)
+    DrawerZoneArc.initialize(self)
+    self.drawerArcInside = DrawerArcSimple(wall_color, 0.1)
+    self.drawerArcOutside = DrawerArcSimple(wall_color, 0.6)
 end
 
----@param zone Zone
-function DrawerZoneArcSimple:draw(zone)
+---@param zonearc ZoneArc
+function DrawerZoneArcSimple:draw(zonearc)
     render.setDepthMode(render.DepthMode.ReadOnly)
-    DrawerZone.draw(self, zone)
+    DrawerZoneArc.draw(self, zonearc)
 end
 
 function DrawerZoneArcSimple:setOutsideWallHeight(value)
-    self.drawerOutsideLine.height = value
+    self.drawerArcOutside.height = value
 end
 
 return DrawerZoneArcSimple
