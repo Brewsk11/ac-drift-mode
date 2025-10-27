@@ -62,7 +62,10 @@ function Circle.getV(self)
     return self:getNormal():clone():cross(self:getU())
 end
 
-function Circle:getAngleForPoint(point)
+---Calculate angle between point and circles 0 degree direction
+---@param point Point
+---@return Angle
+function Circle:getAngle(point)
     local vec_to_point = (point:value() - self:getCenter():value()):normalize()
     local local_x = vec_to_point:dot(self:getU())
     local local_y = vec_to_point:dot(self:getV())

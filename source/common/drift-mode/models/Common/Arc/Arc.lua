@@ -45,11 +45,11 @@ end
 ---@param end_point Point
 ---@param control_point Point?
 function Arc:calculateAngles(start_point, end_point, control_point)
-    local start_angle = self:getAngleForPoint(start_point)
+    local start_angle = self:getAngle(start_point)
     self.start_angle = start_angle
 
-    local end_angle = self:getAngleForPoint(end_point)
-    local control_point_angle = self:getAngleForPoint(control_point)
+    local end_angle = self:getAngle(end_point)
+    local control_point_angle = self:getAngle(control_point)
 
     local relative_end = (end_angle - start_angle + 2 * math.pi) % (2 * math.pi)
     local relative_control = (control_point_angle - start_angle + 2 * math.pi) % (2 * math.pi)
@@ -107,6 +107,24 @@ function Arc:getPointOnArc(t)
         math.sin(alpha) * v)))
 
     return point_on_arc
+end
+
+---@param point Point
+---@return Angle # angle from start of the arc to the point.
+function Arc:getAngleFromStart(point)
+    -- Global angle of the point relative to the circle's 0 deg direction
+    local global_angle = self:getAngle(point)
+
+    -- Angle from the arc's start
+    local relative = (global_angle - self.start_angle + 2 * math.pi) % (2 * math.pi)
+
+    if self.sweep_angle >= 0 then
+        -- Counter‑clockwise arc - return the positive relative angle
+        return relative
+    else
+        -- Clockwise arc - return the negative angle (relative to start)
+        return -(2 * math.pi - relative)
+    end
 end
 
 ---@return Point
