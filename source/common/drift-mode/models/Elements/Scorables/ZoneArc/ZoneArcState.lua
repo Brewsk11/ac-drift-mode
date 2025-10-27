@@ -76,37 +76,42 @@ function ZoneArcState:registerPosition(point, drift_state, is_inside)
 
     if is_inside then
         local zone_width = self.zonearc:getWidth()
-        local point_dist_to_center = self.zonearc:getCenter():value():distance(point:value())
+        local point_dist_to_center = self.zonearc:getArc():getCenter():value():distance(point:value())
         local point_dist_to_inner = point_dist_to_center - self.zonearc:getInsideArc():getRadius()
 
         ratio_mult = point_dist_to_inner / zone_width
     end
 
-    -- Calculate how far the point is in the zone as a fraction
-    -- dependent on which segments the shortest cross line has hit
-    local center_vec = self.zonearc:getArc():getCenter():value()
-
-    local arc_start_vec = self.zonearc:getArc():getStartPoint():value() - center_vec
-    local hit_vec = point:value() - center_vec
-
-    local angle_from_start = arc_start_vec:angle(hit_vec)
+    local angle_from_start = self.zonearc:getArc():getAngleFromStart(point)
     local angle_sweep = self.zonearc:getArc():getSweepAngle()
 
-    local distance = angle_from_start / angle_sweep
-    ac.log(angle_from_start, angle_sweep)
+    if angle_from_start == -1 then
+        return ratio_mult
+    end
 
-    -- Workaround for first segment
-    -- If any of out or in segment hit number is 1, set the distance to 0
-    -- as it's most likely player entered the zone exactly at the start.
-    -- Setting the distance to 0 will allow to report 100% zone completion.
-    -- if cross_line.in_no == 1 or cross_line.out_no == 1 then distance = 0 end
+    local distance = angle_from_start / angle_sweep
+
+    distance = math.clamp(distance, 0.0, 1.0)
+
+    -- Min distance in testing was ~0.005
+    if distance <= 0.01 then
+        distance = 0.0
+    end
+
+    if distance >= 0.99 then
+        distance = 1.0
+    end
+
+    -- The distance should not be below 0 or exceed 1 but the calculation
+    -- is definitely mostly correct. Clamping to discard 1.0001 values etc.
+    distance = math.clamp(distance, 0.0, 1.0)
 
     self.scores[#self.scores + 1] = ZoneArcScoringPoint(
         point,
         drift_state.shared_data.speed_mult,
         drift_state.shared_data.angle_mult,
         ratio_mult,
-        0,
+        distance,
         is_inside
     )
 
