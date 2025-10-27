@@ -72,26 +72,32 @@ function Arc:recalcFromTriplet(from, to, midpoint)
     self:setDirty()
 end
 
+---@return Angle
 function Arc:getStartAngle()
     return self.start_angle
 end
 
+---@return Angle
 function Arc:getSweepAngle()
     return self.sweep_angle
 end
 
+---@return number
 function Arc:getDistance()
     return math.abs(2 * math.pi * self:getRadius() * self:getSweepAngle())
 end
 
+---@return vec3
 function Arc:getStartDirection()
     return Circle._rotateVectorAroundAxis(self:getU(), self:getNormal(), self:getStartAngle())
 end
 
+---@return vec3
 function Arc:getEndDirection()
     return Circle._rotateVectorAroundAxis(self:getU(), self:getNormal(), self:getStartAngle() + self:getSweepAngle())
 end
 
+---@return Point
 function Arc:getPointOnArc(t)
     local u = self:getU()
     local v = self:getV()
@@ -103,10 +109,12 @@ function Arc:getPointOnArc(t)
     return point_on_arc
 end
 
+---@return Point
 function Arc:getStartPoint()
     return self:getPointOnArc(0.0)
 end
 
+---@return Point
 function Arc:getEndPoint()
     return self:getPointOnArc(1.0)
 end
