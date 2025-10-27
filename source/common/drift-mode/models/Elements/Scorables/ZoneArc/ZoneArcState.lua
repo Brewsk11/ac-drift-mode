@@ -38,14 +38,89 @@ end
 ---@param drift_state DriftState
 ---@return number|nil
 function ZoneArcState:registerCar(car_config, car, drift_state)
-    return nil
+    -- If zone has already been finished, ignore call
+    if self:isDone() then return nil end
+
+    local zone_scoring_point = Point(car.position - car.look * car_config.rearOffset +
+        car.side * drift_state.shared_data.side_drifting * car_config.rearSpan)
+
+    -- Check if the registering point belongs to the zone
+    if not self.zonearc:isInZoneArc(zone_scoring_point) then
+        -- If zone was started then check if center point
+        -- is still in for small buffer
+        if self.started then
+            local rear_bumper_center = Point(car.position - car.look * car_config.rearOffset)
+            if not self.zonearc:isInZoneArc(rear_bumper_center) then
+                self:setFinished(true)
+                return nil
+            else
+                return self:registerPosition(zone_scoring_point, drift_state, false)
+            end
+        else
+            return nil
+        end
+    else
+        self.started = true
+    end
+
+    return self:registerPosition(zone_scoring_point, drift_state, true)
 end
 
 ---@param point Point
 ---@param drift_state DriftState
 ---@return number
 function ZoneArcState:registerPosition(point, drift_state, is_inside)
-    return 0.0
+    local ratio_mult = 0.0
+    -- Initialize with 0.0 In case of calculating for point in safety buffer (when player slightly ran outside
+    -- but we keep scoring 0 to allow coming back to the zone)
+
+    if is_inside then
+        local zone_width = self.zonearc:getWidth()
+        local point_dist_to_center = self.zonearc:getCenter():value():distance(point:value())
+        local point_dist_to_inner = point_dist_to_center - self.zonearc:getInsideArc():getRadius()
+
+        ratio_mult = point_dist_to_inner / zone_width
+    end
+
+    -- Calculate how far the point is in the zone as a fraction
+    -- dependent on which segments the shortest cross line has hit
+    local center_vec = self.zonearc:getArc():getCenter():value()
+
+    local arc_start_vec = self.zonearc:getArc():getStartPoint():value() - center_vec
+    local hit_vec = point:value() - center_vec
+
+    local angle_from_start = arc_start_vec:angle(hit_vec)
+    local angle_sweep = self.zonearc:getArc():getSweepAngle()
+
+    local distance = angle_from_start / angle_sweep
+    ac.log(angle_from_start, angle_sweep)
+
+    -- Workaround for first segment
+    -- If any of out or in segment hit number is 1, set the distance to 0
+    -- as it's most likely player entered the zone exactly at the start.
+    -- Setting the distance to 0 will allow to report 100% zone completion.
+    -- if cross_line.in_no == 1 or cross_line.out_no == 1 then distance = 0 end
+
+    self.scores[#self.scores + 1] = ZoneArcScoringPoint(
+        point,
+        drift_state.shared_data.speed_mult,
+        drift_state.shared_data.angle_mult,
+        ratio_mult,
+        0,
+        is_inside
+    )
+
+    self:calculateFields()
+
+    EventSystem:emit(EventSystem.Signal.ScorableStateChanged,
+        {
+            name = self.zonearc.name,
+            payload = {
+                new_scoring_point = self.scores[#self.scores]
+            }
+        })
+
+    return ratio_mult
 end
 
 function ZoneArcState:updatesFully()

@@ -1,23 +1,99 @@
 local Resources = require('drift-mode.Resources')
 
-local DrawerZoneState = require('drift-mode.models.Elements.Scorables.Zone.Drawers.State.Base')
-local DrawerZonePlay = require('drift-mode.models.Elements.Scorables.Zone.Drawers.Zone.Simple')
+local DrawerZoneArcState = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.State.Base')
+local DrawerZoneArcPlay = require('drift-mode.models.Elements.Scorables.ZoneArc.Drawers.ZoneArc.Simple')
 
----@class DrawerZoneArcStatePlay : DrawerZoneState
+---@class DrawerZoneArcStatePlay : DrawerZoneArcState
 ---@field drawerZone DrawerZoneArc
 ---@field protected drawerInactive DrawerZoneArc
 ---@field protected drawerActive DrawerZoneArc
 ---@field protected drawerDone DrawerZoneArc
-local DrawerZoneArcStatePlay = class("DrawerZoneArcStatePlay", DrawerZoneState)
+local DrawerZoneArcStatePlay = class("DrawerZoneArcStatePlay", DrawerZoneArcState)
 DrawerZoneArcStatePlay.__model_path = "Elements.Scorables.ZoneArc.Drawers.State.Simple"
 
 function DrawerZoneArcStatePlay:initialize(showZoneScorePoints)
-    DrawerZoneState.initialize(self)
+    self.color_inactive = Resources.Colors.ScorableInactive
+    self.color_active = Resources.Colors.ScorableActive
+    self.color_done = Resources.Colors.ScorableDone
+    self.color_bad = Resources.Colors.ScorableBad
+    self.color_good = Resources.Colors.ScorableGood
+    self.color_outside = Resources.Colors.ScorableOutside
+
+    self.showZoneScorePoints = showZoneScorePoints or false
+
+    self.drawerInactive = DrawerZoneArcPlay(self.color_inactive)
+    self.drawerActive = DrawerZoneArcPlay(self.color_active)
+    self.drawerDone = DrawerZoneArcPlay(self.color_done)
+
+    self.drawerZone = self.drawerInactive
 end
 
----@param zone_state ZoneState
-function DrawerZoneArcStatePlay:draw(zone_state)
+---@param zonearc_state ZoneArcState
+function DrawerZoneArcStatePlay:draw(zonearc_state)
+    render.setDepthMode(render.DepthMode.ReadOnly)
 
+    if zonearc_state:isActive() then
+        self.drawerZone = self.drawerActive
+    elseif zonearc_state:isDone() then
+        self.drawerZone = self.drawerDone
+    else
+        self.drawerZone = self.drawerInactive
+    end
+
+    if zonearc_state.zonearc:getCollide() then
+        self.drawerZone:setOutsideWallHeight(1.2)
+    else
+        self.drawerZone:setOutsideWallHeight(0.6)
+    end
+
+    DrawerZoneArcState.draw(self, zonearc_state)
+
+    if not self.showZoneScorePoints then
+        return
+    end
+
+    -- Draw at most N lines for performance reasons
+    local N = 50
+    local nth = 1
+    while #zonearc_state.scores / nth > N do
+        nth = nth + 1
+    end
+
+    for idx, scoring_point in ipairs(zonearc_state.scores) do
+        local next_idx = idx + nth
+        if next_idx > #zonearc_state.scores then break end -- Skip last point
+
+        if idx % nth == 0 then
+            local color = nil
+
+            if not scoring_point.inside then
+                color = self.color_outside
+            else
+                -- Ignore ratio in visualization as the distance from outside line can be gauged by point position
+                local perf_without_ratio = scoring_point.speed_mult * scoring_point.angle_mult
+                color = self.color_bad * (1 - perf_without_ratio) + self.color_good * perf_without_ratio
+            end
+
+            local dir = (zonearc_state.scores[next_idx].point:value() - scoring_point.point:value()):normalize()
+            local normal = dir:clone():cross(vec3(0, 1, 0)):normalize()
+            local width = 0.08
+
+            render.quad(
+                scoring_point.point:value() + vec3(0, 0.1, 0) + (normal * width / 2),
+                zonearc_state.scores[next_idx].point:value() + vec3(0, 0.1, 0) + (normal * width / 2),
+                zonearc_state.scores[next_idx].point:value() + vec3(0, 0.1, 0) - (normal * width / 2),
+                scoring_point.point:value() + vec3(0, 0.1, 0) - (normal * width / 2),
+                color
+            )
+
+            render.circle(
+                scoring_point.point:value() + vec3(0, 0.1, 0),
+                vec3(0, 1, 0),
+                width,
+                color
+            )
+        end
+    end
 end
 
 function DrawerZoneArcStatePlay:setShowZoneScorePoints(value)

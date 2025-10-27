@@ -48,6 +48,10 @@ function ZoneArc:getArc()
     return self.arc
 end
 
+function ZoneArc:getWidth()
+    return self.width
+end
+
 function ZoneArc:setArc(arc)
     self.arc = arc
     self:setDirty()
@@ -154,7 +158,7 @@ function ZoneArc:isInZoneArc(point)
     local v               = self.arc:getV()
 
     -- 5. Signed angle between start direction and radial vector
-    local alpha           = math.atan2(radial:dot(v), radial:dot(u)) -- in (-π,π]
+    local alpha           = math.atan2(radial:clone():dot(v), radial:clone():dot(u)) -- in (-π,π]
 
     -- 6. Signed sweep test
     local delta           = alpha - startAngle

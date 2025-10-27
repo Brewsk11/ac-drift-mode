@@ -14,6 +14,7 @@ function DrawerCoursePlay:initialize()
     self.drawerRespawnLine = DrawerGateSimple(Resources.Colors.Respawn)
     self.drawerClip = nil
     self.drawerZone = nil
+    self.drawerZoneArc = nil
     self.drawerStartingPoint = nil
 end
 
