@@ -111,6 +111,10 @@ function Segment:drawFlat(coord_transformer, scale, color)
     ui.drawLine(coord_transformer(self.head), coord_transformer(self.tail), color, scale)
 end
 
+function Segment:__tostring()
+    return string.format("Segment[head=%s, tail=%s]", self.head, self.tail)
+end
+
 local function test()
     local points = {}
     points[1] = Point(vec3(1, 1, 1))
