@@ -391,7 +391,6 @@ function CourseEditor:drawUIScorables(dt)
 
   if ui.button("Create new zone", vec2(button_width, 40), button_global_flags) then
     course:appendScorable(Zone.Zone(course:getNextZoneName(), nil, nil, 1000))
-    onCourseEdited()
   end
 
   ui.sameLine(0, button_gap)
