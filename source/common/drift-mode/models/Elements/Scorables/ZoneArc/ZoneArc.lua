@@ -143,7 +143,7 @@ function ZoneArc:isInZoneArc(point)
 
     -- Grab the geometric data
     local center          = self.arc:getCenter()
-    local normal          = self.arc:getNormal()
+    local normal          = self.arc:getNormal():clone()
     local startAngle      = self.arc:getStartAngle()
     local sweepAngle      = self.arc:getSweepAngle()
 
@@ -151,11 +151,11 @@ function ZoneArc:isInZoneArc(point)
     local projected_point = projectToPlane(point, center, normal)
 
     -- 2. Vector from centre to projected point & its length
-    local radial          = (projected_point:value() - center:value()):normalize() -- assumes vector subtraction
+    local radial          = (projected_point:value():clone() - center:value():clone()):normalize():clone() -- assumes vector subtraction
 
     -- 4. Build an orthonormal basis in the plane
-    local u               = self.arc:getU() -- first basis vector
-    local v               = self.arc:getV()
+    local u               = self.arc:getU():clone() -- first basis vector
+    local v               = self.arc:getV():clone()
 
     -- 5. Signed angle between start direction and radial vector
     local alpha           = math.atan2(radial:clone():dot(v), radial:clone():dot(u)) -- in (-π,π]
