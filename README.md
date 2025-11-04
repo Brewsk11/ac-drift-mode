@@ -1,79 +1,78 @@
-<img src="res/emblem inverted.png" width=400px></img>
+<p align=center>
+    <img src="resources/emblem inverted.png" width=400px></img>
+</p>
 
-# Drift mode for Assetto Corsa
+# DriftMode for Assetto Corsa
 
-A custom game mode and course editor for scoring drift runs.
+Create your own drift courses and run them trying to maximize the score.
+
+## Main features
+
+- Drift course editor: zones, clips
+- Sophisticated score calculation based on drift angle, speed and precision
 
 https://github.com/Brewsk11/ac-drift-mode/assets/26325340/0502a5f8-488a-48d4-9d33-a98d9ef4d194
 
 # User manual
 
+## Prerequisites
+
+* [Content Manager](https://assettocorsa.club/content-manager.html)
+* [Custom Shaders Patch](https://acstuff.club/patch/) 0.2.11 or newer
+
 ## Installation
-
-Content Manager is highly recommended (seriously, please use it).
-
-Custom Shaders Patch is required. This mod is developed on latest preview version of the Custom Shaders Patch. It is highly recommended to use latest preview versions.
 
 **Important note:** You cannot install the mod by drag & dropping into Content Manager
 
-1. **Recommended:** Extract `uninstall_driftmode.bat` into Assetto Corsa directory and run.
+1. **Recommended:** If you are upgrading from older DriftMode versions, run `uninstall_driftmode.bat` from the Assetto Corsa installation directory.
 
-2. Extract contents of the archive into the Assetto Corsa directory; overwrite if asked.
+2. Extract contents of `assettocorsa` directory into your Assetto Corsa installation directory.
+
+    > For Steam version: `C:\Program Files (x86)\Steam\steamapps\common\assettocorsa`.
+    >
+    > To quickly open the directory, you can press `Win + R` and paste the path above.
+
 
 ## Setup
 
-### Enable the DriftMode
+Before you run your first course, there are a few things that need to be done.
 
-Using latest CSP the option to choose custom modes is directly in the drive tab:
+### Enable DriftMode
 
-![](res/docs/driftmode_location.png)
+DriftMode installs as a custom mode available in the "Drive" tab in Content Manager:
 
-Older CSP have option to change to custom mode in settings.
+![](resources/docs/driftmode_location.png)
 
-### Set up the car
+### Car setup
 
-Using the app adjust points on the car bumpers.
+Setting up car scoring points is manual and must be done for each car.
 
-These settings are needed for score calculations.
+See the video for a general idea how to set the scoring points.
 
 https://github.com/Brewsk11/ac-drift-mode/assets/26325340/2df856a9-367a-496c-b367-6dea2b6fe313
 
+Automated car setup is planned.
+
 ### Choose or create a course
 
-Example of a simple course created with the course editor:
+An example of a simple course created with the course editor:
 
 https://github.com/Brewsk11/ac-drift-mode/assets/26325340/30485a49-ee03-4227-9167-17b53f55aa15
 
-Additionally, you may want to patch the track in the controls app. The patch enables extended physics which is needed for teleportation on the track and custom zone colliders. After patching restart the game.
-
-Patched track may become incompatible with online play. To be able to play online again, unpatch the track.
-
-### Start, finish and respawn line
-
-**Start line** resets the score for the run.
-
-**Finish line** shows scoring points in the zones. This is done after the run for performance reasons.
-
-Crossing the **respawn line** will teleport to the starting point.
+For more in-depth information see [Course editor manual](docs/course_editor.md).
 
 ### Teleport button
 
-    Content Manager > Settings > Assetto Corsa > Controls > Patch > Car > Extra option F
+Usually courses feature a respawn line at the end of the course, however, for a quick restart there's an option to bind `Extra option F` in Content Manager to teleport on demand:
 
-is used to manually teleport to the starting point of the course.
+    Content Manager > Settings > Assetto Corsa > Controls > Patch > Car > Extra option F
 
 ## Play
 
-### Run the course
-
-For now what course is active is chosen from the editor window.
-Choose what you want to run and uncheck "enable editor".
-
-Press the `Extra option F` button to respawn
+To run a course the editor must be disabled.
 
 ### Scoring system
 
-**Zones** are scored with the rear of the car.<br/>
-**Clips** are scored with the front of the car.
+Each scoring object scores points differently, but in general score is calculated based on speed, angle and/or precision.
 
-Score is calculated based on speed, angle or closeness to the outside wall for the zones or closeness to the origins of clipping points.
+For more information about scoring elements see [Scoring objects](docs/scoring_elements.md).

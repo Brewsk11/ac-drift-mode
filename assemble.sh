@@ -62,7 +62,7 @@ cp "resources/logo_white_map.png"   output/assettocorsa/apps/lua/drift-mode/icon
 # Copy supplemental files
 
 cp ./INSTALL.md output/README.txt
-cp source/misc/uninstall_driftmode.bat output/
+cp source/misc/uninstall_driftmode.bat output/assettocorsa/uninstall_driftmode.bat
 
 
 # Put a version in the output
