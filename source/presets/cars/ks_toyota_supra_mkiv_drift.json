@@ -1,1 +1,1 @@
-{"__class":"CarConfig","frontOffset":{"__val":2.08},"frontSpan":{"__val":0.63},"rearSpan":{"__val":0.62},"rearOffset":{"__val":2.18}}
+{"rearOffset":{"__val":2.31},"__class":"Misc.CarConfig","frontOffset":{"__val":2.08},"frontSpan":{"__val":0.63},"rearSpan":{"__val":0.64}}
