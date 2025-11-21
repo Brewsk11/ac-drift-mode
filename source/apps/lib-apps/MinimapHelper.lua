@@ -168,9 +168,11 @@ end
 ---@param idx integer
 ---@param car_config CarConfig?
 function MinimapHelper:drawCar(origin, idx, car_config)
+    if car_config == nil then return end
+
     local car = ac.getCar(idx)
 
-    if car_config ~= nil and car ~= nil then
+    if car ~= nil then
         local p1, p2, p3, p4 =
             car.position + car.look * car_config.frontOffset + car.side * car_config.frontSpan,
             car.position + car.look * car_config.frontOffset - car.side * car_config.frontSpan,

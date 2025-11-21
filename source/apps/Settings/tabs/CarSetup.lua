@@ -16,11 +16,13 @@ local car_data = nil
 
 local function loadCar()
     car_data = ConfigIO.loadCarConfig()
-    if car_data == nil then car_data = CarConfig() end
-    EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
+    if car_data == nil then
+        car_data = CarConfig()
+    else
+        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
+    end
 end
 loadCar()
-
 
 local is_helper_cam_active = false
 
@@ -127,6 +129,7 @@ function CarSetup.drawUICarSetup()
     -- [BUTTON] Save car config
     if ui.button("Save ##saveCar", vec2(button_width, button_height)) then
         ConfigIO.saveCarConfig(car_data)
+        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
 
     -- [BUTTON] Reset car config
