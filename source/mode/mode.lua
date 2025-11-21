@@ -204,7 +204,10 @@ function script.update(dt)
     timer:tick(dt)
   end
 
-  ac.debug("physics.allowed()", physics.allowed())
+  if car_data == nil then
+    ac.setMessage("Using default car config",
+      "Scoring will be inaccurate. Use the car config tab to adjust and save the scoring points.", nil, 0.1)
+  end
 
   if ac.getCar(0).extraF then
     ac.setExtraSwitch(5, false)
@@ -215,7 +218,11 @@ function script.update(dt)
 end
 
 function script.draw3D()
-  if car_data and editors_state and editors_state.isCarSetup then car_data:drawAlignment() end
+  if car_data == nil then
+    return
+  end
+
+  if editors_state and editors_state.isCarSetup then car_data:drawAlignment() end
 
   if editors_state and editors_state:anyEditorEnabled() then
     if track_data then drawerSetup:draw(track_data) end
