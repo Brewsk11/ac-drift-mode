@@ -8,16 +8,31 @@
 
 ### Zone
 
+Zones are scored with the rear of the car.
+
 While the car is scoring, its position is continously sampled and averaged.
 This makes the system points-capped and disallows going over the maximum.
 
-For each sample the score is a weighted sum of the following factors:
+For each sample the following factors are captured:
 
-| Factor                 | Weight | Calculation | Note                                                                                                               |
-| ---------------------- | ------ | ----------- | ------------------------------------------------------------------------------------------------------------------ |
-| $F_\mathrm{Speed}$     | $1/5$  |             | Speed has low weight and steep reward curve. Maxing speed but lacking precision or angle is not skillful, so speed |
-| $F_\mathrm{Angle}$     | $2/5$  |             |                                                                                                                    |
-| $F_\mathrm{Precision}$ | $2/5$  |             |                                                                                                                    |
+| Factor                 | Note                                                                          |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| $F_\mathrm{Speed}$     | $[0, 1]$ range based on the course maximum and minimum speed defined.         |
+| $F_\mathrm{Angle}$     | $[0, 1]$ range based on the course maximum and minimum angle defined.         |
+| $F_\mathrm{Precision}$ | $[0, 1]$ range based on how close the car is to the outside line of the zone. |
 
-**Zones** are scored with the rear of the car.<br/>
-**Clips** are scored with the front of the car.
+And the score final score is calculated as:
+
+$$
+F_\mathrm{Speed} \times F_\mathrm{Angle} \times F_\mathrm{Precision}
+$$
+
+### Clip
+
+Clips are scored with the front of the car.
+
+Clip is scored just once when crossing it's line.
+
+The score is calculated the same way the zone is, except $F_\mathrm{Precision}$ is defined as the ratio of how close the car is to the clip point.
+
+In general clips are easier to score higher on, because the score is taken once, whereas in zone the precision needs to be maintained throughout the whole zone for the same score.
