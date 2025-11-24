@@ -75,7 +75,7 @@ function RoutineSelectArc:run(context)
         context.cursor:registerObject(
             "routine_select_arc",
             arc,
-            ArcDir.Drawers.Debug(rgbm(0, 0, 3, 1))
+            ArcDir.Drawers.Setup(rgbm(0, 0, 3, 1))
         )
     end
 end
