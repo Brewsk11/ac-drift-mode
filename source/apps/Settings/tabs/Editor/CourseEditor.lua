@@ -381,28 +381,29 @@ function CourseEditor:drawUIScorables(dt)
 
   ui.offsetCursorY(10)
 
-  local button_width = 130
-  local button_gap = 10
+  local button_width = 105
+  local button_gap = 5
 
-  ui.offsetCursorX((ui.availableSpaceX() - (button_width * 2 + button_gap)) / 2)
+  ui.offsetCursorX((ui.availableSpaceX() - (button_width * 3 + button_gap * 2)) / 2)
   if ui.availableSpaceY() > 0 + 65 then
     ui.offsetCursorY(ui.availableSpaceY() - 65)
   end
 
-  if ui.button("Create new zone", vec2(button_width, 40), button_global_flags) then
+  if ui.button("Zone [Polygon]", vec2(button_width, 40), button_global_flags) then
     course:appendScorable(Zone.Zone(course:getNextZoneName(), nil, nil, 1000))
   end
 
   ui.sameLine(0, button_gap)
 
-  if ui.button("Create new arc", vec2(button_width, 40), button_global_flags) then
+  if ui.button("Zone [Arc]", vec2(button_width, 40), button_global_flags) then
     current_routine = CourseEditorUtils.Routines.SelectArc(function(arc)
       local new_zonearc = ZoneArc.ZoneArc(course:getNextZoneName(), 1000, false, arc, 5)
       course:appendScorable(new_zonearc)
     end)
   end
 
-  if ui.button("Create new clip", vec2(button_width, 40), button_global_flags) then
+  ui.sameLine(0, button_gap)
+  if ui.button("Clip", vec2(button_width, 40), button_global_flags) then
     current_routine = CourseEditorUtils.Routines.RoutineSelectSegment(function(segment)
       local new_clip = Clip.Clip(course:getNextClipName(), segment:getHead(), nil, nil, 1000)
       new_clip:setEnd(segment:getTail())
