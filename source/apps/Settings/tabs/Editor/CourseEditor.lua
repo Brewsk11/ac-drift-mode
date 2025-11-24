@@ -284,7 +284,12 @@ function CourseEditor:drawUIScorables(dt)
         if objects[i].isInstanceOf(Zone.Zone) then
           ui.image(Resources.IconZoneWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
           if ui.itemHovered() then
-            ui.setTooltip("Zone")
+            ui.setTooltip("Zone (py polygon)")
+          end
+        elseif objects[i].isInstanceOf(ZoneArc.ZoneArc) then
+          ui.image(Resources.IconZoneWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
+          if ui.itemHovered() then
+            ui.setTooltip("Zone (by arc)")
           end
         elseif objects[i].isInstanceOf(Clip.Clip) then
           ui.image(Resources.IconClipWhite, vec2(26, 26), rgbm(1, 1, 1, 0.7))
