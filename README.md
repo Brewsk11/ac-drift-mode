@@ -13,7 +13,12 @@ Create your own drift courses and run them trying to maximize the score.
 
 https://github.com/Brewsk11/ac-drift-mode/assets/26325340/0502a5f8-488a-48d4-9d33-a98d9ef4d194
 
-# User manual
+## User manual
+
+- [Course editor overview](./docs/course_editor.md)
+- [Scoring system details](./docs/scoring_elements.md)
+
+Also, see below for the installation instructions.
 
 ## Prerequisites
 
@@ -22,16 +27,18 @@ https://github.com/Brewsk11/ac-drift-mode/assets/26325340/0502a5f8-488a-48d4-9d3
 
 ## Installation
 
-**Important note:** You cannot install the mod by drag & dropping into Content Manager
+> [!WARNING]
+> You cannot install the mod by drag & dropping into Content Manager
 
-1. **Recommended:** If you are upgrading from older DriftMode versions, run `uninstall_driftmode.bat` from the Assetto Corsa installation directory.
+> [!TIP] Upgrading from older versions
+> If you are upgrading from older DriftMode versions, run `uninstall_driftmode.bat` from the Assetto Corsa directory to ensure proper functionality.
 
-2. Extract contents of `assettocorsa` directory into your Assetto Corsa installation directory.
+To install extract contents of `assettocorsa` directory into your Assetto Corsa installation directory.
 
-    > For Steam version: `C:\Program Files (x86)\Steam\steamapps\common\assettocorsa`.
-    >
-    > To quickly open the directory, you can press `Win + R` and paste the path above.
+For Steam version it is: `C:\Program Files (x86)\Steam\steamapps\common\assettocorsa`
 
+> [!TIP]
+> To quickly open the directory, you can press `Win + R` and paste the path above.
 
 ## Setup
 
@@ -47,7 +54,7 @@ DriftMode installs as a custom mode available in the "Drive" tab in Content Mana
 
 Setting up car scoring points is manual and must be done for each car.
 
-See the video for a general idea how to set the scoring points.
+See the video for a general idea how to setup the car configuration.
 
 https://github.com/Brewsk11/ac-drift-mode/assets/26325340/2df856a9-367a-496c-b367-6dea2b6fe313
 
@@ -66,13 +73,3 @@ For more in-depth information see [Course editor manual](docs/course_editor.md).
 Usually courses feature a respawn line at the end of the course, however, for a quick restart there's an option to bind `Extra option F` in Content Manager to teleport on demand:
 
     Content Manager > Settings > Assetto Corsa > Controls > Patch > Car > Extra option F
-
-## Play
-
-To run a course the editor must be disabled.
-
-### Scoring system
-
-Each scoring object scores points differently, but in general score is calculated based on speed, angle and/or precision.
-
-For more information about scoring elements see [Scoring objects](docs/scoring_elements.md).
