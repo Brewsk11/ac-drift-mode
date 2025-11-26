@@ -194,19 +194,23 @@ local timers = {
       if track_data == nil then return end
       track_data:setHandleById(handle_id, vector)
     end)
+  end),
+  car_config_checker = Timer(1, function()
+    if not ConfigIO.carConfigExists() then
+      ac.setMessage("Using default car config",
+        "Scoring will be inaccurate. Use the car config tab to adjust and save the scoring points.", nil, 1.1)
+    end
   end)
 }
 
-
 ---@diagnostic disable-next-line duplicate-set-field
 function script.update(dt)
-  for _, timer in pairs(timers) do
-    timer:tick(dt)
+  if timers.car_config_checker and ConfigIO.carConfigExists() then
+    timers.car_config_checker = nil
   end
 
-  if car_data == nil then
-    ac.setMessage("Using default car config",
-      "Scoring will be inaccurate. Use the car config tab to adjust and save the scoring points.", nil, 0.1)
+  for _, timer in pairs(timers) do
+    timer:tick(dt)
   end
 
   if ac.getCar(0).extraF then
