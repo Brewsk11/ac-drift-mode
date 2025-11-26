@@ -41,17 +41,18 @@ Currently you can define zones and clips, but there are more scorable objects pl
 To define a zone by polygon click the "Zone [Polygon]" button.
 A new zone object will be created.
 
+
+
 ![](./img/zone_polygon.png)
 
 Hover over the zone in the editor and click "Outside line" button.
 Then, by clicking on the track define an outside line for the zone.
-Then, click the "Inside line" button and do the same to define the inside line.
+Press right click to finish placing the points.
+
+Click the "Inside line" button and do the same to define the inside line, or use "Generate inside line" feature to generate the points automatically.
 
 > [!WARNING]
 > Polygon zones with many defined points can worsen the performance.
-
-> [!TIP]
-> Once you define the outside line, you can use the "Generate inside line" button now to  generate the inside line automatically.
 
 The "Focus camera" button will move the free camera to above the zone for easier editing.
 
