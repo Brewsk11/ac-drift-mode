@@ -45,7 +45,7 @@ Before you run your first course, there are a few things that need to be done:
 
 DriftMode installs as a custom mode available in the "Drive" tab in Content Manager:
 
-![](resources/docs/driftmode_location.png)
+![](./docs/img/driftmode_location.png)
 
 ## Car setup
 
