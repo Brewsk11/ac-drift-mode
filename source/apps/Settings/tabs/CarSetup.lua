@@ -5,26 +5,34 @@ local listener_id = EventSystem:registerListener("apptab-carsetup")
 
 local CameraHelper = require('drift-mode.CameraHelper')
 local CarConfig = require("drift-mode.models.Misc.CarConfig")
+local CarConfigState = require("drift-mode.models.Misc.CarConfigState")
+
 
 local CarSetup = {}
 
 ---@type EditorsState?
 local editors_state = nil
 
----@type CarConfig?
-local car_data = nil
+---@type CarConfigState
+local car_config_state = CarConfigState()
 
 local function loadCar()
-    car_data = ConfigIO.loadCarConfig()
+    local car_data = ConfigIO.loadCarConfig()
     if car_data == nil then
         car_data = CarConfig()
-    else
-        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
     end
+
+    car_config_state.shared_data.front_offset = car_data.frontOffset
+    car_config_state.shared_data.front_span = car_data.frontSpan
+    car_config_state.shared_data.rear_offset = car_data.rearOffset
+    car_config_state.shared_data.rear_span = car_data.rearSpan
+
+    EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
 end
 loadCar()
 
 local is_helper_cam_active = false
+local unsaved_changes = false
 
 function CarSetup.drawUICarSetup()
     EventSystem:listen(listener_id, EventSystem.Signal.EditorsStateChanged, function(payload)
@@ -75,18 +83,18 @@ function CarSetup.drawUICarSetup()
     ui.offsetCursor(vec2(65, -35))
     ui.pushFont(ui.Font.Monospace)
     ui.pushItemWidth(ui.availableSpaceX())
-    local value, changed = ui.slider("##foffset", car_data.frontOffset, 0.5, 3, 'Offset: %.2f')
+    local value, changed = ui.slider("##foffset", car_config_state.shared_data.front_offset, 0.5, 3, 'Offset: %.2f')
     if changed then
-        car_data.frontOffset = tonumber(string.format("%.3f", value))
-        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
+        unsaved_changes = true
+        car_config_state.shared_data.front_offset = tonumber(string.format("%.3f", value))
     end
 
     -- [SLIDER] Front span
     ui.offsetCursorX(65)
-    local value, changed = ui.slider("##fwidth", car_data.frontSpan, 0.05, 1.5, 'Span: %.2f')
+    local value, changed = ui.slider("##fwidth", car_config_state.shared_data.front_span, 0.05, 1.5, 'Span: %.2f')
     if changed then
-        car_data.frontSpan = tonumber(string.format("%.3f", value))
-        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
+        unsaved_changes = true
+        car_config_state.shared_data.front_span = tonumber(string.format("%.3f", value))
     end
     ui.popFont()
     ui.popItemWidth()
@@ -101,18 +109,18 @@ function CarSetup.drawUICarSetup()
     ui.offsetCursor(vec2(65, -35))
     ui.pushFont(ui.Font.Monospace)
     ui.pushItemWidth(ui.availableSpaceX())
-    local value, changed = ui.slider("##roffset", car_data.rearOffset, 0.5, 3, 'Offset: %.2f')
+    local value, changed = ui.slider("##roffset", car_config_state.shared_data.rear_offset, 0.5, 3, 'Offset: %.2f')
     if changed then
-        car_data.rearOffset = tonumber(string.format("%.3f", value))
-        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
+        unsaved_changes = true
+        car_config_state.shared_data.rear_offset = tonumber(string.format("%.3f", value))
     end
 
     -- [SLIDER] Rear span
     ui.offsetCursorX(65)
-    local value, changed = ui.slider("##rwidth", car_data.rearSpan, 0.05, 1.5, 'Span: %.2f')
+    local value, changed = ui.slider("##rwidth", car_config_state.shared_data.rear_span, 0.05, 1.5, 'Span: %.2f')
     if changed then
-        car_data.rearSpan = tonumber(string.format("%.3f", value))
-        EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
+        unsaved_changes = true
+        car_config_state.shared_data.rear_span = tonumber(string.format("%.3f", value))
     end
     ui.popFont()
     ui.popItemWidth()
@@ -127,14 +135,26 @@ function CarSetup.drawUICarSetup()
     ui.offsetCursorX(initial_gap)
 
     -- [BUTTON] Save car config
-    if ui.button("Save ##saveCar", vec2(button_width, button_height)) then
+    if ui.button("Save##saveCar", vec2(button_width, button_height)) then
+        local car_data = CarConfig(
+            car_config_state.shared_data.front_offset,
+            car_config_state.shared_data.front_span,
+            car_config_state.shared_data.rear_offset,
+            car_config_state.shared_data.rear_span
+        )
+
         ConfigIO.saveCarConfig(car_data)
+        unsaved_changes = false
         EventSystem:emit(EventSystem.Signal.CarConfigChanged, car_data)
+    end
+
+    if unsaved_changes then
+        ui.notificationCounter()
     end
 
     -- [BUTTON] Reset car config
     ui.sameLine(0, button_gap)
-    if ui.button("Reset ##resetCar", vec2(button_width, button_height)) then
+    if ui.button("Reset##resetCar", vec2(button_width, button_height)) then
         loadCar()
     end
 

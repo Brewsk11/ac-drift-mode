@@ -3,6 +3,8 @@ local listener_id = EventSystem:registerListener("mode")
 
 local Timer = require('drift-mode.Timer')
 local ConfigIO = require('drift-mode.ConfigIO')
+local CarConfigState = require("drift-mode.models.Misc.CarConfigState")
+
 local Point = require("drift-mode.models.Common.Point.Point")
 local Circle = require("drift-mode.models.Common.Circle")
 local Arc = require("drift-mode.models.Common.Arc.Arc")
@@ -14,7 +16,6 @@ local TrackConfig = Course.TrackConfig
 local RunState = Course.RunState
 
 local HandleReader = require("drift-mode.models.Editor.HandleManager.Reader")
-
 
 local Teleporter = require('lib-mode.Teleporter')
 local LineCrossDetector = require('lib-mode.LineCrossDetector')
@@ -30,6 +31,9 @@ EventSystem:emit(EventSystem.Signal.CursorChanged, cursor_data)
 
 ---@type CarConfig?
 local car_data = nil
+
+---@type CarConfigState
+local car_config_state = CarConfigState()
 
 ---@type EditorsState?
 local editors_state = nil
@@ -226,7 +230,9 @@ function script.draw3D()
     return
   end
 
-  if editors_state and editors_state.isCarSetup then car_data:drawAlignment() end
+  if editors_state and editors_state.isCarSetup then
+    car_config_state:drawAlignment()
+  end
 
   if editors_state and editors_state:anyEditorEnabled() then
     if track_data then drawerSetup:draw(track_data) end
