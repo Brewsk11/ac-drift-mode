@@ -45,8 +45,6 @@ end
 
 function ControlApp.Main(dt)
     drawAppUI()
-
-    ac.debug("physics.allowed()", physics.allowed())
 end
 
 return ControlApp
