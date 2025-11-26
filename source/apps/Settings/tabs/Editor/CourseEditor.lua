@@ -190,7 +190,7 @@ function CourseEditor:drawUI(dt)
     self:onSelectedCourseChange(new_course_info)
   end
   if unsaved_changes then
-    ui.notificationCounter()
+    ui.notificationCounter(-1, nil, true)
   end
 
   if ui.itemHovered() then
