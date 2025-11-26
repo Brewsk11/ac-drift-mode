@@ -1,4 +1,6 @@
 local Serializer = require('drift-mode.Serializer')
+local Resources = require("drift-mode.Resources")
+
 local json = require('drift-mode.json')
 
 local TrackConfigInfo = require("drift-mode.models.Elements.Course.TrackConfigInfo")
@@ -104,6 +106,9 @@ function ConfigIO.saveTrackConfig(track_config)
         usr_track_config_dir .. "\\" .. track_config.name .. '.json',
         TrackConfigType.User
     )
+
+    track_config.__version = Resources.Version
+
     ConfigIO.saveConfig(track_cfg_info.path, track_config)
     ConfigIO.setLastUsedTrackConfigInfo(track_cfg_info)
     return track_cfg_info

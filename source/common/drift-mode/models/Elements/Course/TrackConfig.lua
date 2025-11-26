@@ -8,9 +8,9 @@ local Segment = require("drift-mode.models.Common.Segment.Segment")
 
 local Gate = require("drift-mode.models.Elements.Gate.Gate")
 
+---@alias Version string
 
 -- Track configration data
-
 ---@class TrackConfig : ModelBase
 ---@field name string Configuration name
 ---@field scorables Scorable[]
@@ -19,6 +19,7 @@ local Gate = require("drift-mode.models.Elements.Gate.Gate")
 ---@field finishLine Gate
 ---@field startingPoint Position
 ---@field scoringRanges ScoringRanges
+---@field __version Version  DriftMode version in which the course was created
 local TrackConfig = class("TrackConfig", ModelBase)
 TrackConfig.__model_path = "Elements.Course.TrackConfig"
 
@@ -35,6 +36,7 @@ function TrackConfig:initialize(name, scorables, startLine, finishLine, respawnL
     self:setStartingPoint(startingPoint)
 
     self.scoringRanges = scoringRanges or ScoringRanges(Range(15, 50), Range(5, 45))
+    self.__version = Resources.Version
 
     self:cacheMethod("gatherHandles")
 end

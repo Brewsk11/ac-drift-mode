@@ -4,6 +4,9 @@ local gui_dir = ac.getFolder(ac.FolderID.Root) .. "/content/gui/drift-mode"
 
 ---@enum Resources
 local Resources = {
+    ---@diagnostic disable-next-line: undefined-global
+    -- The version string
+    Version = "VERSION",
     IconZoneWhite = gui_dir .. "/zone_icon_white.png",
     IconZoneBlack = gui_dir .. "/zone_icon_black.png",
     IconClipWhite = gui_dir .. "/clip_icon_white.png",

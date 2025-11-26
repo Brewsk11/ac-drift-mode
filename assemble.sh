@@ -65,7 +65,8 @@ cp ./INSTALL.md output/README.txt
 cp source/misc/uninstall_driftmode.bat output/assettocorsa/uninstall_driftmode.bat
 
 
-# Put a version in the output
+# Put the version in the output
 
 find ./output -name *.ini -exec sed -i "s/VERSION = XXX/VERSION = $VERSION/"  {} \;
+find ./output -name Resources.lua -exec sed -i "s/Version = \"VERSION\"/Version = \"$VERSION\"/" {} \;
 echo "$VERSION" > ./output/VERSION.txt
