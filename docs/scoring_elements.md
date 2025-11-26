@@ -1,8 +1,7 @@
 # DriftMode
 
-> [!CAUTION]
-> The following document is under construction.
-> The information may be inaccurate and are subject to change.
+> [!NOTE]
+> Changes to the score calculation are planned for future releases to rebalance the importance of the speed and precision factors.
 
 ## Scoring elements
 

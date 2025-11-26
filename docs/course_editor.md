@@ -1,9 +1,5 @@
 # DriftMode
 
-> [!CAUTION]
-> The following document is under construction.
-> The information may be inaccurate and are subject to change.
-
 ## Control panel window
 
 ![](./img/control_panel.png)
@@ -14,7 +10,7 @@ The course editor window is the main interface for creating courses.
 
 To create a new course click "New", change the name of the course and click "Save".
 
-Courses can be created in outside car camera view, however it is highly recommended to be familiar with Assetto Corsa free camera controls.
+Courses can be created in any camera view, however it is highly recommended to be familiar with Assetto Corsa free camera controls.
 
 To enable free camera tick this box in Content Manager settings:
 
@@ -40,8 +36,6 @@ Currently you can define zones and clips, but there are more scorable objects pl
 
 To define a zone by polygon click the "Zone [Polygon]" button.
 A new zone object will be created.
-
-
 
 ![](./img/zone_polygon.png)
 
