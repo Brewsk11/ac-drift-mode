@@ -1,5 +1,5 @@
 <p align=center>
-    <img src="resources/emblem inverted.png" width=400px></img>
+    <img src="resources/emblem_inverted.png" width=400px></img>
 </p>
 
 # DriftMode for Assetto Corsa
