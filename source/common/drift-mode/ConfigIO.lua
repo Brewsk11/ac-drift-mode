@@ -22,6 +22,7 @@ local car_id = ac.getCarID(0)
 local usr_car_config_dir = usr_cfg_path .. "\\cars"
 local sys_car_config_dir = sys_cfg_path .. "\\cars"
 
+---@return CarConfig?
 function ConfigIO.loadCarConfig()
     local usr_car_cfg_path = usr_car_config_dir .. "\\" .. car_id .. '.json'
     local sys_car_cfg_path = sys_car_config_dir .. "\\" .. car_id .. '.json'
@@ -35,6 +36,15 @@ function ConfigIO.loadCarConfig()
     end
 
     return nil
+end
+
+function ConfigIO.carConfigExists()
+    local car_config = ConfigIO.loadCarConfig()
+    if car_config == nil then
+        return false
+    else
+        return true
+    end
 end
 
 function ConfigIO.saveCarConfig(car_data)
