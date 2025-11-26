@@ -33,13 +33,13 @@ https://github.com/Brewsk11/ac-drift-mode/assets/26325340/0502a5f8-488a-48d4-9d3
 > [!IMPORTANT]
 > If you are upgrading from older DriftMode versions, run `uninstall_driftmode.bat` before reinstallation from the Assetto Corsa directory to ensure proper functionality.
 
-To install extract contents of `assettocorsa` directory into your Assetto Corsa installation directory.
+Extract contents of `assettocorsa` directory into your Assetto Corsa installation directory.
 
 For Steam version it is: `C:\Program Files (x86)\Steam\steamapps\common\assettocorsa`
 
 # How to play
 
-Before you run your first course, there are a few things that need to be done.
+Before you run your first course, there are a few things that need to be done:
 
 ## Enable DriftMode
 
@@ -58,6 +58,9 @@ https://github.com/Brewsk11/ac-drift-mode/assets/26325340/2df856a9-367a-496c-b36
 Automated car setup is planned.
 
 ## Choose or create a course
+
+> [!NOTE]
+> Set the game-time to midnight for setup geometry to be more visible.
 
 An example of a simple course created with the course editor:
 
