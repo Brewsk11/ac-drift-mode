@@ -25,10 +25,6 @@ local __tabs = {
 }
 
 local function drawAppUI()
-    local logo_height = 150
-
-    ui.image(Resources.EmblemFlat, vec2(ui.availableSpaceX(), logo_height), ui.ImageFit.Fit)
-
     ui.tabBar('tabs', function()
         for _, v in ipairs(__tabs) do
             ui.tabItem(v[1], ui.TabItemFlags.None, function()
