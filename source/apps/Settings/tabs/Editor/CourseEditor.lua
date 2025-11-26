@@ -189,7 +189,7 @@ function CourseEditor:drawUI(dt)
     local new_course_info = ConfigIO.saveTrackConfig(course)
     self:onSelectedCourseChange(new_course_info)
   end
-  if unsaved_changes and ac.getPatchVersionCode() > 2144 then
+  if unsaved_changes then
     ui.notificationCounter()
   end
 
