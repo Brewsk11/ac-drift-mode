@@ -2,8 +2,9 @@
 -- Do not edit manually
 
 local Misc = {
-    CarConfig  = require('drift-mode.models.Misc.CarConfig'),
-    DriftState = require('drift-mode.models.Misc.DriftState'),
+    CarConfig      = require('drift-mode.models.Misc.CarConfig'),
+    CarConfigState = require('drift-mode.models.Misc.CarConfigState'),
+    DriftState     = require('drift-mode.models.Misc.DriftState'),
 }
 
 return Misc
