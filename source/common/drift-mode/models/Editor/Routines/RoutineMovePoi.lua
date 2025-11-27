@@ -4,7 +4,6 @@ local EventSystem = require("drift-mode.EventSystem") ---@type EventSystem
 
 local PointDir = require("drift-mode.models.Common.Point.init")
 local Point = PointDir.Point
-local POIs = require("drift-mode.models.Editor.POIs.init")
 local EditorRoutine = require("drift-mode.models.Editor.Routines.EditorRoutine")
 local HandleSetter = require("drift-mode.models.Editor.HandleManager.Setter")
 
@@ -12,14 +11,12 @@ local HandleSetter = require("drift-mode.models.Editor.HandleManager.Setter")
 ---@class RoutineMovePoi : EditorRoutine
 ---@field poi Handle?
 ---@field offset vec3?
----@field drawerPoint DrawerPoint --- To highlight possible pois to interact with
 local RoutineMovePoi = class("RoutineMovePoi", EditorRoutine)
 RoutineMovePoi.__model_path = "Editor.Routines.RoutineMovePoi"
 function RoutineMovePoi:initialize(callback)
     EditorRoutine.initialize(self, callback)
     self.poi = nil
     self.offset = nil
-    self.drawerPoint = POIs.Drawers.Simple(PointDir.Drawers.Simple(Resources.Colors.EditorInactivePoi, 0.5))
     self.last_pos = nil
     self.min_change = 0.01
     self.handle_setter = HandleSetter("editor")
