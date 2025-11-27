@@ -63,6 +63,7 @@ function ConfigIO.getLastUsedTrackConfigInfo()
 end
 
 function ConfigIO.setLastUsedTrackConfigInfo(track_cfg_info)
+    io.createDir(usr_track_config_dir)
     ConfigIO.saveConfig(last_used_track_config_path, track_cfg_info)
 end
 
@@ -140,7 +141,7 @@ end
 
 function ConfigIO.saveConfig(path, data)
     assert(type(path) == 'string', 'Parameter "fileName" must be a string.')
-    local file = assert(io.open(path, 'w+b'), 'Error loading file :' .. path)
+    local file = assert(io.open(path, 'w+b'), 'Error loading file: ' .. path)
 
     local serialized = Serializer.serialize(data)
     local json_content = json.encode(serialized)
